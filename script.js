@@ -16783,7 +16783,10 @@
     // Check initial hash for deep linking
     const hash = window.location.hash.slice(1);
     const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
-    if (validViews.includes(hash)) {
+    if (hash.startsWith("events-")) {
+      State.eventsTab = hash.replace("events-", "");
+      State.view = "events";
+    } else if (validViews.includes(hash)) {
       State.view = hash;
     } else {
       State.view = "screener";
@@ -16805,8 +16808,11 @@
     // Handle browser back/forward and deep link hash changes
     window.addEventListener("hashchange", () => {
       const h = window.location.hash.slice(1);
-      if (h && h !== State.view) {
-        if (h === "sector-turnover") {
+      if (h) {
+        if (h.startsWith("events-")) {
+          State.eventsTab = h.replace("events-", "");
+          State.view = "events";
+        } else if (h === "sector-turnover") {
           State.sectorSubTab = "turnover";
           State.view = "sectors";
         } else {
