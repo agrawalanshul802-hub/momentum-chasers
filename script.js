@@ -58,14 +58,15 @@
     ["ORICONENT", "MC", "Packaging", 54.60, 0.40, "rv", "r", 6, { pe: 16.5, pb: 1.6, rev: 11, profit: 9, name: "Oricon Enterprises Ltd", high52: 68, low52: 41, results: "2026-11-22", resultsStatus: "Tentative" }],
     ["BSE", "LC", "Capital Markets", 5120.00, 2.70, "abvx", "abp", 1, { pe: 35.4, pb: 8.2, rev: 28, profit: 42, name: "BSE Limited (Exchange)", high52: 5400, low52: 2400, results: "2026-11-11", resultsStatus: "Confirmed" }],
     ["NDRAUTO", "MC", "Auto Components", 1688.40, -0.30, "r4", "c", 9, { pe: 18.9, pb: 2.5, rev: 9, profit: 14, name: "NDR Auto Components Ltd", high52: 1950, low52: 1200, results: "2026-11-25", resultsStatus: "Tentative" }],
-    ["BAJAJ-AUTO", "LC", "Automobiles", 10410.00, -0.72, "r", "c", 2, { pe: 22.1, pb: 5.8, rev: 6, profit: 11, name: "Bajaj Auto Limited", high52: 12700, low52: 7800, results: "2026-11-12", resultsStatus: "Confirmed" }],
+    ["BAJAJ-AUTO", "LC", "Automobiles", 10850.00, -0.46, "r", "c", 2, { pe: 22.1, pb: 5.8, rev: 6, profit: 11, name: "Bajaj Auto Limited", high52: 12700, low52: 7800, results: "2026-11-12", resultsStatus: "Confirmed" }],
     ["RELIANCE", "LC", "Oil & Gas", 1900.00, 0.80, "abr", "ab", 3, { pe: 24.5, pb: 2.1, rev: 4, profit: 8, name: "Reliance Industries Ltd", high52: 2150, low52: 1580, results: "2026-11-19", resultsStatus: "Confirmed" }],
     ["HDFCBANK", "LC", "Private Banks", 1300.00, -0.40, "c", "c", 7, { pe: 18.2, pb: 2.4, rev: 12, profit: 16, name: "HDFC Bank Limited", high52: 1790, low52: 1280, results: "2026-11-15", resultsStatus: "Confirmed" }],
     ["TCS", "LC", "IT", 3920.00, 1.20, "abv", "ab", 2, { pe: 28.1, pb: 11.2, rev: 9, profit: 14, name: "Tata Consultancy Services", high52: 4500, low52: 3600, results: "2026-11-09", resultsStatus: "Confirmed" }],
     ["SUNPHARMA", "LC", "Pharmaceuticals", 1890.00, 1.10, "abr", "a", 4, { pe: 31.5, pb: 5.2, rev: 14, profit: 19, name: "Sun Pharmaceutical Industries", high52: 1980, low52: 1390, results: "2026-11-17", resultsStatus: "Confirmed" }],
     ["LENSKART", "LC", "Healthcare Services", 697.15, 1.25, "ab", "a", 2, { pe: 64.2, pb: 6.8, rev: 32, profit: 45, name: "Lenskart Solutions", high52: 745.00, low52: 580.00, results: "2026-11-16", resultsStatus: "Confirmed" }],
     ["ALIVUS", "MC", "Pharmaceuticals", 1370.00, -0.80, "c", "c", 5, { pe: 42.1, pb: 4.5, rev: 18, profit: 22, name: "Alivus Life Sciences", high52: 1450.00, low52: 980.00, results: "2026-11-21", resultsStatus: "Tentative" }],
-    ["RENTOMOJO", "MC", "Consumer Services", 591.45, 1.85, "abr", "a", 2, { pe: 28.5, pb: 4.1, rev: 24, profit: 19, name: "Rentomojo Limited", high52: 645.00, low52: 480.00, results: "2026-11-25", resultsStatus: "Confirmed" }]
+    ["RENTOMOJO", "MC", "Consumer Services", 591.45, 1.85, "abr", "a", 2, { pe: 28.5, pb: 4.1, rev: 24, profit: 19, name: "Rentomojo Limited", high52: 645.00, low52: 480.00, results: "2026-11-25", resultsStatus: "Confirmed" }],
+    ["EICHERMOT", "LC", "Automobiles", 7650.00, 1.34, "abr", "a", 2, { pe: 34.9, pb: 8.1, rev: 6, profit: 8, name: "Eicher Motors Ltd (Royal Enfield)", high52: 8233.00, low52: 6439.00, results: "2026-11-12", resultsStatus: "Confirmed" }]
   ];
 
   // Helper to compute Distance from All-Time High / 52W High
@@ -325,8 +326,8 @@
         { symbol: "M&M", name: "Mahindra & Mahindra Ltd", price: 2890.00, chg: 1.10, rsi: 58.6, ema: "Above 20 EMA", vol: "1.9M" }
       ],
       declining: [
-        { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd", price: 4820.00, chg: -0.45, rsi: 47.2, ema: "Below 20 EMA", vol: "480K" },
-        { symbol: "EICHERMOT", name: "Eicher Motors Ltd", price: 4680.00, chg: -0.90, rsi: 44.5, ema: "Below 20 EMA", vol: "390K" },
+        { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd", price: 5385.00, chg: 0.80, rsi: 52.2, ema: "Above 20 EMA", vol: "480K" },
+        { symbol: "EICHERMOT", name: "Eicher Motors Ltd", price: 7650.00, chg: 1.34, rsi: 54.5, ema: "Above 20 EMA", vol: "390K" },
         { symbol: "ASHOKLEY", name: "Ashok Leyland Ltd", price: 218.00, chg: -1.25, rsi: 42.1, ema: "Below 20 EMA", vol: "5.6M" },
         { symbol: "BHARATFORG", name: "Bharat Forge Ltd", price: 1320.00, chg: -1.55, rsi: 40.6, ema: "Below 20 EMA", vol: "820K" }
       ]
@@ -3405,7 +3406,7 @@
     { symbol: "LALPATHLAB", name: "Dr. Lal PathLabs Ltd.", sector: "Healthcare / Diagnostics", price: 3120.00, chg: 0.85 },
     { symbol: "VIJAYA", name: "Vijaya Diagnostic Centre Ltd.", sector: "Healthcare / Diagnostics", price: 920.00, chg: 2.10 },
     { symbol: "THYROCARE", name: "Thyrocare Technologies Ltd.", sector: "Healthcare / Diagnostics", price: 865.00, chg: -0.40 },
-    { symbol: "APOLLOHOSP", name: "Apollo Hospitals Enterprise", sector: "Healthcare", price: 6940.00, chg: 1.25 },
+    { symbol: "APOLLOHOSP", name: "Apollo Hospitals Enterprise", sector: "Healthcare", price: 8526.00, chg: 0.95 },
     { symbol: "MAXHEALTH", name: "Max Healthcare Institute Ltd.", sector: "Healthcare", price: 980.00, chg: 2.30 },
     { symbol: "FORTIS", name: "Fortis Healthcare Ltd.", sector: "Healthcare", price: 540.00, chg: 0.90 },
 
@@ -3446,7 +3447,7 @@
     // Bluechips & High Momentum Stars
     { symbol: "TATAMOTORS", name: "Tata Motors Limited", sector: "Automobiles", price: 782.50, chg: 1.15 },
     { symbol: "TATASTEEL", name: "Tata Steel Limited", sector: "Metals", price: 142.30, chg: 0.65 },
-    { symbol: "TATAPOWER", name: "Tata Power Company Ltd.", sector: "Power", price: 392.40, chg: 1.80 },
+    { symbol: "TATAPOWER", name: "Tata Power Company Ltd.", sector: "Power", price: 348.00, chg: -1.28 },
     { symbol: "TATATECH", name: "Tata Technologies Ltd.", sector: "IT / ER&D", price: 928.00, chg: 1.05, isIpo: true },
     { symbol: "TATACONSUM", name: "Tata Consumer Products Ltd.", sector: "FMCG", price: 965.00, chg: 0.40 },
     { symbol: "TATAELXSI", name: "Tata Elxsi Limited", sector: "IT Services", price: 6850.00, chg: 1.90 },
@@ -3457,8 +3458,8 @@
     { symbol: "IRFC", name: "Indian Railway Finance Corp", sector: "Railways", price: 148.00, chg: 1.95 },
     { symbol: "RVNL", name: "Rail Vikas Nigam Ltd.", sector: "Railways", price: 420.00, chg: 3.10 },
     { symbol: "IREDA", name: "Indian Renewable Energy Agency", sector: "Green Energy", price: 215.00, chg: 4.20, isIpo: true },
-    { symbol: "BEL", name: "Bharat Electronics Ltd.", sector: "Defence", price: 295.00, chg: 1.60 },
-    { symbol: "HAL", name: "Hindustan Aeronautics Ltd.", sector: "Defence", price: 4320.00, chg: 2.40 },
+    { symbol: "BEL", name: "Bharat Electronics Ltd.", sector: "Defence", price: 400.85, chg: 1.22 },
+    { symbol: "HAL", name: "Hindustan Aeronautics Ltd.", sector: "Defence", price: 4810.00, chg: -0.69 },
     { symbol: "MAZDOCK", name: "Mazagon Dock Shipbuilders", sector: "Defence", price: 4120.00, chg: 3.80 },
     { symbol: "COCHINSHIP", name: "Cochin Shipyard Ltd.", sector: "Shipbuilding", price: 1480.00, chg: 2.90 },
     { symbol: "CDSL", name: "Central Depository Services", sector: "Capital Markets", price: 1680.00, chg: 2.50 },
@@ -3466,7 +3467,7 @@
     { symbol: "POLICYBZR", name: "PB Fintech Ltd (Policybazaar)", sector: "Insurtech", price: 1740.00, chg: 2.80 },
     { symbol: "KAYNES", name: "Kaynes Technology India", sector: "Electronics", price: 5450.00, chg: 3.40, isIpo: true },
     { symbol: "POLYCAB", name: "Polycab India Ltd.", sector: "Cables & Wires", price: 6680.00, chg: 1.10 },
-    { symbol: "DIXON", name: "Dixon Technologies Ltd.", sector: "EMS / Electronics", price: 14920.00, chg: 2.70 },
+    { symbol: "DIXON", name: "Dixon Technologies Ltd.", sector: "EMS / Electronics", price: 12798.00, chg: 1.37 },
     { symbol: "TRENT", name: "Trent Ltd.", sector: "Retail / Westside", price: 6720.00, chg: 3.10 },
     { symbol: "PERSISTENT", name: "Persistent Systems Ltd.", sector: "IT Services", price: 5420.00, chg: 1.50 },
     { symbol: "COFORGE", name: "Coforge Limited", sector: "IT Services", price: 7850.00, chg: 2.30 },
@@ -3474,7 +3475,8 @@
     { symbol: "PIDILITIND", name: "Pidilite Industries Ltd.", sector: "Chemicals", price: 3040.00, chg: 0.70 },
     { symbol: "ASIANPAINT", name: "Asian Paints Ltd.", sector: "Paints", price: 2380.00, chg: -0.80 },
     { symbol: "TITAN", name: "Titan Company Ltd.", sector: "Jewellery", price: 3340.00, chg: 1.10 },
-    { symbol: "TTKPRESTIG", name: "TTK Prestige Ltd.", sector: "Consumer Durables / Kitchen Appliances", price: 565.10, chg: -2.55, prevClose: 579.90, cap: "MC", epsEst: "₹6.80", revEst: "₹720 Cr" }
+    { symbol: "TTKPRESTIG", name: "TTK Prestige Ltd.", sector: "Consumer Durables / Kitchen Appliances", price: 565.10, chg: -2.55, prevClose: 579.90, cap: "MC", epsEst: "₹6.80", revEst: "₹720 Cr" },
+    { symbol: "EICHERMOT", name: "Eicher Motors Ltd. (Royal Enfield)", sector: "Automobiles", price: 7650.00, chg: 1.34, prevClose: 7549.00, cap: "LC", epsEst: "₹40.18", revEst: "₹4,263 Cr" }
   ];
 
   // ==========================================================================
@@ -3561,7 +3563,7 @@
     { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
     // 2026-11-12 (EarningsPulse.ai Main Featured Date)
     { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹38.20", revEst: "₹4,850 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
+    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
     { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹17,100 Cr", status: "Confirmed", cap: "LC", sector: "Power" },
     { symbol: "APOLLOHOSP", company: "Apollo Hospitals Enterprise Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹24.50", revEst: "₹5,580 Cr", status: "Confirmed", cap: "LC", sector: "Healthcare" },
     { symbol: "PIDILITIND", company: "Pidilite Industries Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹11.20", revEst: "₹3,420 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals" },
@@ -3625,6 +3627,7 @@
     { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", time: "07:00 PM IST", topic: "Q2 FY27 Earnings Call & Financial Performance Review", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://tcs.com/investor-relations/q2-fy27", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
     { symbol: "BSE", company: "BSE Limited", date: "2026-11-11", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call & Growth Strategy", dialIn: "+91 22 6280 1259 / +91 22 7115 8160", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO), Deepak Goel (CFO)" },
     { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", time: "04:30 PM IST", topic: "Q2 FY27 Financial Results & 2W/3W Volume Outlook", dialIn: "+91 22 6280 1384 / +91 22 7115 8285", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
+    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call, Royal Enfield Demand & VECV Commercial Performance", dialIn: "+91 22 6280 1149 / +91 22 7115 8050", webcast: "https://eicher.in/investors/q2-fy27", attendees: "Siddhartha Lal (MD), B. Govindarajan (CEO, Royal Enfield), Vidhya Srinivasan (CFO)" },
     { symbol: "TTKPRESTIG", company: "TTK Prestige Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Call, Festive Cookware Demand & Distribution Expansion", dialIn: "+91 22 6280 1567 / +91 22 7115 8432", webcast: "https://ttkprestige.com/investor-relations/q2-fy27", attendees: "Chandru Kalro (MD), Venkatesh Vijayaraghavan (CEO)" },
     { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-11-16", time: "08:30 AM IST", topic: "Q2 FY27 Earnings Call, NIM Guidance & LDR Updates", dialIn: "+91 22 6280 1321 / +91 22 7115 8822", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD & CEO), Srinivasan Vaidyanathan (CFO)" },
     { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries Ltd.", date: "2026-11-17", time: "06:30 PM IST", topic: "Q2 FY27 Earnings Conference Call & US Specialty Pipeline", dialIn: "+91 22 6280 1155 / +91 22 7115 8056", webcast: "https://sunpharma.com/investors", attendees: "Dilip Shanghvi (MD), C. S. Muralidharan (CFO)" },
@@ -5659,6 +5662,7 @@
     if (!resultsContainer) return;
 
     const q = (query || "").trim().toLowerCase();
+    const resolvedTypo = typeof resolveStockSymbol === "function" ? resolveStockSymbol(q) : null;
     const suggestions = [];
 
     // 1. Common Indices
@@ -5682,7 +5686,8 @@
     for (const s of ST) {
       const sym = s[0];
       const name = s[8]?.name || sym;
-      if (!q || sym.toLowerCase().includes(q) || name.toLowerCase().includes(q)) {
+      const match = !q || sym.toLowerCase().includes(q) || name.toLowerCase().includes(q) || (resolvedTypo && sym.toUpperCase() === resolvedTypo);
+      if (match) {
         if (!State.tickerDisplayStocks.some(d => d.id === sym) && !suggestions.some(g => g.id === sym)) {
           suggestions.push({ id: sym, name, type: "stock" });
           if (suggestions.length >= 10) break;
@@ -5690,10 +5695,11 @@
       }
     }
 
-    // 3. Indian Popular Stocks (Suraksha, Rentomojo, Swiggy, Zomato, etc.)
+    // 3. Indian Popular Stocks (Suraksha, Rentomojo, Swiggy, Zomato, Eicher, etc.)
     if (suggestions.length < 10 && typeof INDIAN_POPULAR_STOCKS !== "undefined") {
       for (const stk of INDIAN_POPULAR_STOCKS) {
-        if (!q || stk.symbol.toLowerCase().includes(q) || stk.name.toLowerCase().includes(q)) {
+        const match = !q || stk.symbol.toLowerCase().includes(q) || stk.name.toLowerCase().includes(q) || (resolvedTypo && stk.symbol.toUpperCase() === resolvedTypo);
+        if (match) {
           if (!State.tickerDisplayStocks.some(d => d.id === stk.symbol) && !suggestions.some(g => g.id === stk.symbol)) {
             suggestions.push({ id: stk.symbol, name: stk.name, type: "stock" });
             if (suggestions.length >= 10) break;
@@ -5702,7 +5708,20 @@
       }
     }
 
-    // 4. Current & Recent IPOs
+    // 4. Heatmap Nifty 50 Data (Bluechips)
+    if (suggestions.length < 10 && typeof HEATMAP_NIFTY50_DATA !== "undefined") {
+      for (const stk of HEATMAP_NIFTY50_DATA) {
+        const match = !q || stk.symbol.toLowerCase().includes(q) || stk.name.toLowerCase().includes(q) || (resolvedTypo && stk.symbol.toUpperCase() === resolvedTypo);
+        if (match) {
+          if (!State.tickerDisplayStocks.some(d => d.id === stk.symbol) && !suggestions.some(g => g.id === stk.symbol)) {
+            suggestions.push({ id: stk.symbol, name: stk.name, type: "stock" });
+            if (suggestions.length >= 10) break;
+          }
+        }
+      }
+    }
+
+    // 5. Current & Recent IPOs
     if (suggestions.length < 10 && typeof IPO_CURRENT !== "undefined") {
       for (const ipo of IPO_CURRENT) {
         if (ipo.symbol && (!q || ipo.symbol.toLowerCase().includes(q) || (ipo.company && ipo.company.toLowerCase().includes(q)))) {
@@ -12686,7 +12705,7 @@
     const EVENT_QUOTES = {
       "TCS": { price: 4125.50, chg: 0.95, cap: "LC", sector: "IT Services", name: "Tata Consultancy Services Ltd." },
       "BSE": { price: 5120.00, chg: 2.85, cap: "LC", sector: "Capital Markets", name: "BSE Limited (Exchange)" },
-      "BAJAJ-AUTO": { price: 10410.00, chg: 1.80, cap: "LC", sector: "Automobiles", name: "Bajaj Auto Limited" },
+      "BAJAJ-AUTO": { price: 10850.00, chg: -0.46, cap: "LC", sector: "Automobiles", name: "Bajaj Auto Limited" },
       "HDFCBANK": { price: 1745.20, chg: 0.45, cap: "LC", sector: "Banking & Finance", name: "HDFC Bank Limited" },
       "SUNPHARMA": { price: 1820.60, chg: 1.40, cap: "LC", sector: "Pharmaceuticals", name: "Sun Pharmaceutical Industries Ltd." },
       "RELIANCE": { price: 1285.40, chg: 1.15, cap: "LC", sector: "Conglomerate", name: "Reliance Industries Ltd." },
@@ -12696,16 +12715,16 @@
       "COALINDIA": { price: 418.50, chg: 0.70, cap: "LC", sector: "Mining & Resources", name: "Coal India Limited" },
       "ONGC": { price: 248.30, chg: -0.40, cap: "LC", sector: "Oil & Gas", name: "Oil and Natural Gas Corp Ltd." },
       "DIVISLAB": { price: 5890.00, chg: 2.10, cap: "LC", sector: "Pharmaceuticals", name: "Divi's Laboratories Ltd." },
-      "EICHERMOT": { price: 4890.00, chg: 1.65, cap: "LC", sector: "Automobiles", name: "Eicher Motors Ltd." },
-      "TATAPOWER": { price: 392.40, chg: 1.80, cap: "LC", sector: "Power & Energy", name: "Tata Power Company Ltd." },
-      "APOLLOHOSP": { price: 6940.00, chg: 1.25, cap: "LC", sector: "Healthcare", name: "Apollo Hospitals Enterprise" },
+      "EICHERMOT": { price: 7650.00, chg: 1.34, cap: "LC", sector: "Automobiles (Royal Enfield)", name: "Eicher Motors Ltd." },
+      "TATAPOWER": { price: 348.00, chg: -1.28, cap: "LC", sector: "Power & Energy", name: "Tata Power Company Ltd." },
+      "APOLLOHOSP": { price: 8526.00, chg: 0.95, cap: "LC", sector: "Healthcare", name: "Apollo Hospitals Enterprise" },
       "PIDILITIND": { price: 3040.00, chg: 0.70, cap: "LC", sector: "Chemicals", name: "Pidilite Industries Ltd." },
-      "DIXON": { price: 14920.00, chg: 2.70, cap: "MC", sector: "Electronics & EMS", name: "Dixon Technologies Ltd." },
-      "ALKEM": { price: 5410.00, chg: 1.25, cap: "MC", sector: "Pharmaceuticals", name: "Alkem Laboratories Ltd." },
-      "PAGEIND": { price: 43800.00, chg: 0.40, cap: "LC", sector: "Textiles & Apparel", name: "Page Industries Ltd." },
-      "GRASIM": { price: 2540.00, chg: 0.85, cap: "LC", sector: "Conglomerate", name: "Grasim Industries Ltd." },
-      "HEROMOTOCO": { price: 4720.00, chg: -0.30, cap: "LC", sector: "Automobiles", name: "Hero MotoCorp Ltd." },
-      "HAL": { price: 4320.00, chg: 2.40, cap: "LC", sector: "Defence & Aerospace", name: "Hindustan Aeronautics Ltd." },
+      "DIXON": { price: 12798.00, chg: 1.37, cap: "LC", sector: "Electronics & EMS", name: "Dixon Technologies Ltd." },
+      "ALKEM": { price: 5114.00, chg: -3.45, cap: "MC", sector: "Pharmaceuticals", name: "Alkem Laboratories Ltd." },
+      "PAGEIND": { price: 31325.00, chg: -1.65, cap: "LC", sector: "Textiles & Apparel", name: "Page Industries Ltd." },
+      "GRASIM": { price: 3034.00, chg: -2.60, cap: "LC", sector: "Conglomerate", name: "Grasim Industries Ltd." },
+      "HEROMOTOCO": { price: 5385.00, chg: 0.80, cap: "LC", sector: "Automobiles", name: "Hero MotoCorp Ltd." },
+      "HAL": { price: 4810.00, chg: -0.69, cap: "LC", sector: "Defence & Aerospace", name: "Hindustan Aeronautics Ltd." },
       "SHUKRAPHAR": { price: 158.20, chg: 2.40, cap: "MC", sector: "Pharmaceuticals", name: "Shukra Pharmaceuticals Ltd." },
       "SHRINGARMS": { price: 342.80, chg: 1.10, cap: "MC", sector: "Jewellery & Retail", name: "Shringar House of Jewels" },
       "SAREGAMA": { price: 412.30, chg: 1.80, cap: "SC", sector: "Media & Entertainment", name: "Saregama India Ltd." },
@@ -12726,11 +12745,11 @@
       "NTPCGREEN": { price: 112.40, chg: 1.20, cap: "LC", sector: "Renewable Energy", name: "NTPC Green Energy Ltd." },
       "PAYTM": { price: 890.00, chg: 1.65, cap: "MC", sector: "Fintech", name: "One97 Communications (Paytm)" },
       "SUZLON": { price: 64.20, chg: 2.10, cap: "MC", sector: "Wind Energy", name: "Suzlon Energy Ltd." },
-      "BEL": { price: 295.40, chg: 1.75, cap: "LC", sector: "Defence", name: "Bharat Electronics Ltd." },
+      "BEL": { price: 400.85, chg: 1.22, cap: "LC", sector: "Defence", name: "Bharat Electronics Ltd." },
       "CDSL": { price: 1680.00, chg: 2.40, cap: "MC", sector: "Capital Markets", name: "Central Depository Services Ltd." },
       "TTKPRESTIG": { price: 565.10, chg: -2.55, cap: "MC", sector: "Consumer Durables / Kitchen Appliances", name: "TTK Prestige Ltd." },
       "NESTLEIND": { price: 2240.00, chg: -0.45, cap: "LC", sector: "FMCG / Food", name: "Nestle India Ltd." },
-      "MARUTI": { price: 11280.00, chg: 0.95, cap: "LC", sector: "Automobiles", name: "Maruti Suzuki India Ltd." }
+      "MARUTI": { price: 12854.00, chg: 0.82, cap: "LC", sector: "Automobiles", name: "Maruti Suzuki India Ltd." }
     };
 
     const targetKey = (typeof resolveStockSymbol === "function" ? resolveStockSymbol(cleanSym) : cleanSym) || cleanSym;
