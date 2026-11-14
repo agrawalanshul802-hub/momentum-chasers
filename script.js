@@ -5302,6 +5302,37 @@
       }
     }
 
+    // Check SC (44 Sector Benchmarks & Thematic Indices)
+    if (typeof SC !== "undefined") {
+      const sec = SC.find(s => s[0].toUpperCase() === cleanSym || s[0].toUpperCase() === sym.toUpperCase());
+      if (sec) {
+        const p = sec[1] || 1000;
+        const c = sec[2] || 0;
+        return [
+          sec[0],
+          "INDEX",
+          "NSE Sector Benchmark",
+          p,
+          c,
+          c >= 0 ? "abr" : "c",
+          c >= 0 ? "ab" : "c",
+          1,
+          {
+            pe: 28.5,
+            pb: 4.2,
+            rev: 18,
+            profit: 22,
+            name: `${sec[0]} Benchmark Index`,
+            high52: typeof SECTOR_ATH !== "undefined" && SECTOR_ATH[sec[0]] ? SECTOR_ATH[sec[0]] : Math.round(p * 1.08 * 100) / 100,
+            low52: typeof SECTOR_ATL !== "undefined" && SECTOR_ATL[sec[0]] ? SECTOR_ATL[sec[0]] : Math.round(p * 0.75 * 100) / 100,
+            results: "Live Index",
+            resultsStatus: "Active",
+            currency: "INR"
+          }
+        ];
+      }
+    }
+
     return ST[0] || [cleanSym, "MC", "Equities", 500, 1.0, "abr", "a", 1, { name: cleanSym, high52: 600, low52: 400 }];
   };
 
@@ -7589,11 +7620,15 @@
             <h2 class="turnover-title">${escapeHtml(sectorIndex)} Constituents</h2>
             <p class="turnover-subtitle">Live prices and daily changes for all ${stocks.length} stocks in this sector.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <input type="text" id="sector-stocks-search" placeholder="Search ${stocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:240px;outline:none;" />
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <input type="text" id="sector-stocks-search" placeholder="Search ${stocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:200px;outline:none;" />
+            <button class="row-action-btn" data-action="open-stock" data-symbol="${escapeHtml(sectorIndex)}" title="Open ${escapeHtml(sectorIndex)} interactive candlestick chart workstation" style="padding:7px 14px;background:#38bdf8;color:#0f172a;font-weight:700;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              <span>📈</span>
+              <span>View Sector Chart</span>
+            </button>
             <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sectorIndex)}" target="_blank" rel="noopener noreferrer" class="sector-header-tv-btn" title="Open ${escapeHtml(sectorIndex)} sector index live chart on TradingView ↗">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-              <span>TradingView Chart ↗</span>
+              <span>TradingView ↗</span>
             </a>
             <button class="section-back-btn" data-action="go-back" title="Back to sectors">← Back</button>
           </div>
@@ -9085,6 +9120,14 @@
     if (typeof resolveStockSymbol === "function") {
       sym = resolveStockSymbol(sym) || sym;
     }
+
+    // 1. Check if it is a Sector or Thematic Index first
+    if (typeof getTradingViewSectorSymbol === "function") {
+      const secSym = getTradingViewSectorSymbol(sym);
+      if (secSym && secSym !== "NSE:NIFTY") return secSym;
+      if (sym === "NIFTY" || sym === "NIFTY 50" || sym === "NIFTY50") return "NSE:NIFTY";
+    }
+
     const SPECIAL_TV_MAP = {
       "HOTELS": "NSE:INDHOTEL",
       "INDHOTEL": "NSE:INDHOTEL",
@@ -9851,23 +9894,43 @@
 
         <!-- Main Workspace Split: [Left Technical Hub] + [Right Watchlist & Depth] -->
         <div class="tv-workspace-split ${State.chartFullWidth ? 'full-width' : ''}">
-          <!-- Center TradingView Command & Technical Center (No canvas chart) -->
-          <div class="tv-chart-viewport" style="display:flex;flex-direction:column;justify-content:space-between;padding:22px;min-height:560px;">
-            <!-- Big TradingView Direct Launch Hero Banner -->
-            <div class="tv-launchpad-card">
+          <!-- Center TradingView & Native Candlestick Chart Viewport -->
+          <div class="tv-chart-viewport" style="display:flex;flex-direction:column;gap:12px;padding:16px;min-height:640px;">
+            <!-- Dynamic OHLC Bar + Multi-EMA Legends (Updates real-time on crosshair move) -->
+            <div class="chart-ohlc-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sf2);border:1px solid var(--ln);border-radius:8px;font-family:var(--font-mono);font-size:12px;flex-wrap:wrap;gap:8px;">
+              <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+                <span style="color:var(--mu)">O: <strong id="tv-ohlc-o" style="color:var(--ink)">₹${defaultOpen}</strong></span>
+                <span style="color:var(--mu)">H: <strong id="tv-ohlc-h" style="color:var(--ink)">₹${defaultHigh}</strong></span>
+                <span style="color:var(--mu)">L: <strong id="tv-ohlc-l" style="color:var(--ink)">₹${defaultLow}</strong></span>
+                <span style="color:var(--mu)">C: <strong id="tv-ohlc-c" style="color:var(--ink)">₹${defaultClose}</strong></span>
+                <span id="tv-ohlc-chg" class="ohlc-chg ${s[4] >= 0 ? 'val-green' : 'val-red'}">${defaultChg}</span>
+                <span style="color:var(--mu);margin-left:4px;">Vol: <strong id="legend-vol-val" style="color:var(--ink)">—</strong></span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;font-size:11px;flex-wrap:wrap;">
+                <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>10 EMA: <strong id="legend-ema10-val">₹${formatNumber(e10)}</strong></span>
+                <span style="color:#22c55e;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>20 EMA: <strong id="legend-ema20-val">₹${formatNumber(e20)}</strong></span>
+                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">₹${formatNumber(e50)}</strong></span>
+                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">₹${formatNumber(e200)}</strong></span>
+              </div>
+            </div>
+
+            <!-- Candlestick Chart Stage (TradingView Lightweight Charts Engine) -->
+            <div class="chart-stage-wrapper" style="position:relative;width:100%;height:520px;min-height:520px;background:#0c1017;border:1px solid var(--ln);border-radius:8px;overflow:hidden;">
+              <div id="canvas-candlestick-box" style="width:100%;height:100%;min-height:520px;"></div>
+              <div class="chart-watermark-symbol" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:72px;font-weight:900;color:rgba(255,255,255,0.035);pointer-events:none;user-select:none;font-family:var(--font-mono);letter-spacing:2px;">${s[0]}</div>
+            </div>
+
+            <!-- TradingView Live Bridge Bar -->
+            <div class="tv-launchpad-card" style="padding:12px 18px;margin:0;">
               <div class="tv-launchpad-left">
                 <div class="tv-launchpad-badge">
                   <span class="dot-green"></span>
-                  <span>Official TradingView Real-Time Charting</span>
+                  <span>TradingView Live Candlestick Feed Active</span>
                 </div>
-                <div class="tv-launchpad-title">${s[0]} — Advanced Real-Time Chart</div>
-                <div class="tv-launchpad-desc">
-                  Full TradingView workstation with 100+ technical indicators, multi-timeframe analysis (1m, 5m, 15m, 1D), volume profile, trendlines, and live NSE tick feed.
-                </div>
+                <div class="tv-launchpad-title" style="font-size:13px;">${s[0]} • 60-Session Candlesticks • Dynamic Volume Profile • 10/20/50/200 EMAs</div>
               </div>
-              <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="tv-launch-big-btn">
-                <span>📈 Launch Chart on TradingView</span>
-                <span style="font-size:18px">↗</span>
+              <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="tv-launch-big-btn" style="padding:8px 16px;font-size:12px;" title="Open full chart directly on TradingView.com">
+                <span>Open in TradingView ↗</span>
               </a>
             </div>
 
