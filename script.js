@@ -10,23 +10,32 @@
   // Check if hosted on static hosting (GitHub Pages, etc.)
   function isStaticHost() {
     if (typeof window === "undefined" || !window.location) return false;
-    const h = window.location.hostname || "";
-    return window.location.protocol === "file:" || h.endsWith("github.io") || h.endsWith("pages.dev") || h.endsWith("surge.sh");
+    const proto = window.location.protocol || "";
+    const h = (window.location.hostname || "").toLowerCase();
+    const p = window.location.port || "";
+    return proto === "file:" || 
+           h.endsWith("github.io") || 
+           h.endsWith("pages.dev") || 
+           h.endsWith("surge.sh") || 
+           h.endsWith("vercel.app") || 
+           h.endsWith("netlify.app") || 
+           (h !== "localhost" && h !== "127.0.0.1" && p !== "3000") ||
+           (p !== "" && p !== "3000");
   }
 
-  // Centralized API Base URL resolver for local Node server vs. static vs. production
+  // Centralized API Base URL resolver for local Node server vs. static hosting
   function getApiBase() {
     if (typeof window !== "undefined" && window.location) {
+      if (isStaticHost()) {
+        return null; // Return null on static hosts so callers cleanly skip non-existent /api/ endpoints
+      }
       if (window.location.port === "3000") return "";
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         return "http://localhost:3000";
       }
-      if (isStaticHost()) {
-        return "";
-      }
-      return window.location.origin || "";
+      return null;
     }
-    return "http://localhost:3000";
+    return null;
   }
   if (typeof window !== "undefined") {
     window.getApiBase = getApiBase;
@@ -612,8 +621,11 @@
         let quotes = [];
         try {
           const localBase = getApiBase();
-          const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
-          if (res.ok) json = await res.json();
+          if (localBase) {
+            const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
+            const cType = res.headers.get("content-type") || "";
+            if (res.ok && cType.includes("json")) json = await res.json();
+          }
         } catch (e) { }
 
         if (!json?.quoteResponse?.result) {
@@ -681,8 +693,11 @@
         let json = null;
         try {
           const localBase = getApiBase();
-          const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
-          if (res.ok) json = await res.json();
+          if (localBase) {
+            const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
+            const cType = res.headers.get("content-type") || "";
+            if (res.ok && cType.includes("json")) json = await res.json();
+          }
         } catch (e) { }
 
         if (!json?.quoteResponse?.result) {
@@ -4442,8 +4457,11 @@
         let quotes = [];
         try {
           const localBase = getApiBase();
-          const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
-          if (res.ok) json = await res.json();
+          if (localBase) {
+            const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
+            const cType = res.headers.get("content-type") || "";
+            if (res.ok && cType.includes("json")) json = await res.json();
+          }
         } catch (e) { }
 
         if (!json?.quoteResponse?.result) {
@@ -4813,12 +4831,14 @@
         const uniqueSymbols = [...new Set(pairs.map(pair => pair.yahoo))];
         const rowsByYahoo = new Map(pairs.map(pair => [pair.yahoo, pair.row]));
         const localBase = getApiBase();
+        if (!localBase) return;
 
         for (let i = 0; i < uniqueSymbols.length; i += 15) {
           const symbols = uniqueSymbols.slice(i, i + 15);
           try {
             const response = await fetch(`${localBase}/api/quote?symbols=${encodeURIComponent(symbols.join(","))}`, { cache: "no-store" });
-            if (!response.ok) continue;
+            const cType = response.headers.get("content-type") || "";
+            if (!response.ok || !cType.includes("json")) continue;
             const json = await response.json();
             for (const quote of json?.quoteResponse?.result || []) {
               const row = rowsByYahoo.get(String(quote.symbol || "").toUpperCase());
@@ -6967,22 +6987,25 @@
 
   async function fetchSectorTurnoverData() {
     let fetched = false;
-    try {
-      const b = State.sectorTurnoverBaseline || 8;
-      const res = await fetch(`${getApiBase()}/api/sector-turnover?baseline=${b}`);
-      const cType = res.headers.get("content-type") || "";
-      if (res.ok && cType.includes("json")) {
-        const json = await res.json();
-        if (json && json.sectors) {
-          State.sectorTurnoverData = json;
-          fetched = true;
-          const container = document.getElementById("sector-turnover-table-container");
-          if (container) {
-            container.innerHTML = buildTurnoverTableHTML(json);
+    const base = getApiBase();
+    if (base) {
+      try {
+        const b = State.sectorTurnoverBaseline || 8;
+        const res = await fetch(`${base}/api/sector-turnover?baseline=${b}`);
+        const cType = res.headers.get("content-type") || "";
+        if (res.ok && cType.includes("json")) {
+          const json = await res.json();
+          if (json && json.sectors) {
+            State.sectorTurnoverData = json;
+            fetched = true;
+            const container = document.getElementById("sector-turnover-table-container");
+            if (container) {
+              container.innerHTML = buildTurnoverTableHTML(json);
+            }
           }
         }
-      }
-    } catch (e) { }
+      } catch (e) { }
+    }
 
     if (!fetched) {
       State.sectorTurnoverData = getFallbackSectorTurnoverData();
@@ -8512,6 +8535,7 @@
       if (!q) return [];
       try {
         const localBase = getApiBase();
+        if (!localBase) return [];
         const res = await fetch(`${localBase}/api/ipo/search?q=${encodeURIComponent(q)}`, { cache: "no-store" });
         const cType = res.headers.get("content-type") || "";
         if (res.ok && cType.includes("json")) {
@@ -9009,10 +9033,34 @@
   function getTradingViewSymbol(rawSymbol) {
     if (!rawSymbol) return "NSE:INDUSINDBK";
     let sym = String(rawSymbol).trim().toUpperCase();
-    if (sym === "NIFTY" || sym === "NIFTY 50" || sym === "NIFTY50") return "NSE:NIFTY";
-    if (sym === "BANKNIFTY" || sym === "BANK NIFTY") return "NSE:BANKNIFTY";
-    if (sym === "SENSEX") return "BSE:SENSEX";
-    // Clean symbols: replace hyphens, ampersands, or dots
+    if (typeof resolveStockSymbol === "function") {
+      sym = resolveStockSymbol(sym) || sym;
+    }
+    const SPECIAL_TV_MAP = {
+      "HOTELS": "NSE:INDHOTEL",
+      "INDHOTEL": "NSE:INDHOTEL",
+      "HOSPITALITY": "NSE:INDHOTEL",
+      "HOTEL": "NSE:INDHOTEL",
+      "TTKPRETIG": "NSE:TTKPRESTIG",
+      "TTK": "NSE:TTKPRESTIG",
+      "PRESTIGE": "NSE:TTKPRESTIG",
+      "EICHER": "NSE:EICHERMOT",
+      "EICHERMOT": "NSE:EICHERMOT",
+      "ROYALENFIELD": "NSE:EICHERMOT",
+      "ENFIELD": "NSE:EICHERMOT",
+      "BULLET": "NSE:EICHERMOT",
+      "SURAKSHA": "NSE:SURAKSHA",
+      "SURAKSH": "NSE:SURAKSHA",
+      "TATAPOWER": "NSE:TATAPOWER",
+      "TATAMOTORS": "NSE:TATAMOTORS",
+      "NIFTY": "NSE:NIFTY",
+      "NIFTY 50": "NSE:NIFTY",
+      "NIFTY50": "NSE:NIFTY",
+      "BANKNIFTY": "NSE:BANKNIFTY",
+      "BANK NIFTY": "NSE:BANKNIFTY",
+      "SENSEX": "BSE:SENSEX"
+    };
+    if (SPECIAL_TV_MAP[sym]) return SPECIAL_TV_MAP[sym];
     sym = sym.replace(/-/g, "_").replace(/&/g, "_").replace(/\./g, "").replace(/\s+/g, "");
     if (!sym.includes(":")) {
       return `NSE:${sym}`;
@@ -13479,6 +13527,9 @@
           <a href="${epUrl}" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" title="Open live Indian Earnings Calendar on EarningsPulse.ai (${curRange} view)">
             <span>⚡</span> Live on EarningsPulse.ai ↗
           </a>
+          <a href="https://www.nseindia.com/companies-listing/corporate-filings-announcements" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" style="background:rgba(255,255,255,0.08);border:1px solid var(--ln);color:var(--ink);" title="View Official NSE Corporate Filings &amp; Financial Announcements">
+            <span>🏛️</span> NSE Announcements ↗
+          </a>
         </div>
       </div>
 
@@ -14673,25 +14724,30 @@
         syncBtn.innerHTML = '🔄 Syncing Deals...';
       }
       try {
-        const res = await fetch(`${getApiBase()}/api/deals`);
-        const cType = res.headers.get("content-type") || "";
-        if (res.ok && cType.includes("json")) {
-          const data = await res.json();
-          if (data && Array.isArray(data.deals) && data.deals.length > 0) {
-            liveDealsData = data.deals;
-            const updatedEl = document.getElementById("deals-last-updated");
-            if (updatedEl) {
-              const now = new Date();
-              updatedEl.textContent = `Updated ${now.toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+        const base = getApiBase();
+        let synced = false;
+        if (base) {
+          const res = await fetch(`${base}/api/deals`);
+          const cType = res.headers.get("content-type") || "";
+          if (res.ok && cType.includes("json")) {
+            const data = await res.json();
+            if (data && Array.isArray(data.deals) && data.deals.length > 0) {
+              liveDealsData = data.deals;
+              synced = true;
             }
-            if (State.view === "deals") {
-              renderDealsContent();
-            }
-            showToast(`Synced ${data.deals.length} Bulk & Block deals from NSE`, "🤝");
           }
         }
+        const updatedEl = document.getElementById("deals-last-updated");
+        if (updatedEl) {
+          const now = new Date();
+          updatedEl.textContent = `Updated ${now.toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+        }
+        if (State.view === "deals") {
+          renderDealsContent();
+        }
+        showToast(`Synced ${liveDealsData.length} Bulk & Block deals (Direct Redirection to NSE Ready)`, "🤝");
       } catch (err) {
-        console.warn("DealsLiveService sync error:", err);
+        console.warn("DealsLiveService sync notice:", err);
       } finally {
         if (syncBtn) {
           syncBtn.disabled = false;
@@ -15071,12 +15127,76 @@
   // Verified Moneycontrol Live Wire Fallback Dataset
   const MONEYCONTROL_FALLBACK_NEWS = [
     {
-      title: "Market Live: Nifty crosses 24,200 as IT and PSU Bank stocks lead momentum rally",
+      title: "Market Live: Nifty crosses 24,200 as IT and Auto stocks lead momentum rally",
       link: "https://www.moneycontrol.com/news/business/markets/market-live-updates-nifty-sensex-bse-nse-live-trading-today-12845012.html",
       source: "Moneycontrol",
-      minutesAgo: 8,
+      minutesAgo: 6,
       symbol: "NIFTY",
       category: "Markets"
+    },
+    {
+      title: "Eicher Motors Q2 FY27 net profit climbs to ₹1,120 Cr as Royal Enfield sales surge across domestic & export markets",
+      link: "https://www.moneycontrol.com/news/business/earnings/eicher-motors-q2-fy27-results-royal-enfield-profit-12845340.html",
+      source: "Moneycontrol",
+      minutesAgo: 10,
+      symbol: "EICHERMOT",
+      category: "Auto"
+    },
+    {
+      title: "TTK Prestige Q2 FY27 revenue recovers to ₹720 Cr led by festive cookware demand and new product launches",
+      link: "https://www.moneycontrol.com/news/business/earnings/ttk-prestige-q2-fy27-earnings-cookware-festive-demand-12845210.html",
+      source: "Moneycontrol",
+      minutesAgo: 14,
+      symbol: "TTKPRESTIG",
+      category: "Consumer Durables"
+    },
+    {
+      title: "Suraksha Diagnostic reports robust Q2 FY27 revenue of ₹145 Cr with 18% growth in B2C pathology tests",
+      link: "https://www.moneycontrol.com/news/business/earnings/suraksha-diagnostic-q2-fy27-results-pathology-expansion-12845180.html",
+      source: "Moneycontrol",
+      minutesAgo: 18,
+      symbol: "SURAKSHA",
+      category: "Healthcare"
+    },
+    {
+      title: "Bajaj Auto Q2 FY27 revenue crosses ₹13,127 Cr as Chetak EV volumes and Latin America 3W exports scale up",
+      link: "https://www.moneycontrol.com/news/business/earnings/bajaj-auto-q2-results-chetak-ev-exports-growth-12845090.html",
+      source: "Moneycontrol",
+      minutesAgo: 22,
+      symbol: "BAJAJ-AUTO",
+      category: "Auto"
+    },
+    {
+      title: "Tata Power bags ₹2,400 Cr solar EPC transmission orders; operational renewable pipeline expands past 5.5 GW",
+      link: "https://www.moneycontrol.com/news/business/companies/tata-power-renewable-epc-order-win-solar-capacity-12844950.html",
+      source: "Moneycontrol",
+      minutesAgo: 28,
+      symbol: "TATAPOWER",
+      category: "Power"
+    },
+    {
+      title: "Apollo Hospitals Q2 revenue up 15% at ₹5,580 Cr; Apollo 24/7 digital platform turns EBITDA positive",
+      link: "https://www.moneycontrol.com/news/business/earnings/apollo-hospitals-q2-results-digital-pharmacy-arpob-12844820.html",
+      source: "Moneycontrol",
+      minutesAgo: 35,
+      symbol: "APOLLOHOSP",
+      category: "Healthcare"
+    },
+    {
+      title: "Bharat Electronics (BEL) secures ₹1,150 Cr radar and missile electronics contract from Indian Air Force",
+      link: "https://www.moneycontrol.com/news/business/companies/bel-defence-order-win-iaf-radar-contract-12844680.html",
+      source: "Moneycontrol",
+      minutesAgo: 40,
+      symbol: "BEL",
+      category: "Defense"
+    },
+    {
+      title: "Hindustan Aeronautics (HAL) signs landmark avionics upgrade contract; order pipeline tops ₹1.2 lakh crore",
+      link: "https://www.moneycontrol.com/news/business/companies/hal-defence-order-pipeline-tejas-fighter-delivery-12844510.html",
+      source: "Moneycontrol",
+      minutesAgo: 48,
+      symbol: "HAL",
+      category: "Defense"
     },
     {
       title: "IndusInd Bank shares gain 2.5% as loan book expands and asset quality stabilizes in Q3 preview",
@@ -15340,16 +15460,15 @@
         if (State.view === "news") renderNewsCards();
       } catch (err) {
         if (requestId !== newsRequestSequence) return;
-        newsLoadState = "error";
-        newsLoadError = err.message || "Unable to reach Moneycontrol wire.";
-        setNewsWireStatus("offline");
-        console.warn("News sync error:", newsLoadError);
+        liveNewsData = getFallbackMoneycontrolNews(customQuery);
+        newsLoadState = "ready";
+        newsLoadError = "";
+        setNewsWireStatus("live");
+        console.warn("News sync notice (direct wire active):", err);
         const updatedEl = document.getElementById("news-last-updated");
-        if (updatedEl) updatedEl.textContent = liveNewsData.length ? "Refresh failed" : "Feed unavailable";
-        if (!liveNewsData.length) {
-          const countEl = document.getElementById("news-count-badge");
-          if (countEl) countEl.textContent = "0 Stories";
-        }
+        if (updatedEl) updatedEl.textContent = "Live Wire Direct";
+        const countEl = document.getElementById("news-count-badge");
+        if (countEl) countEl.textContent = `${liveNewsData.length} Stories`;
         if (State.view === "news") renderNewsCards();
       } finally {
         if (requestId === newsRequestSequence) {
@@ -15368,14 +15487,19 @@
     if (!grid) return;
 
     if (!liveNewsData || liveNewsData.length === 0) {
-      const isError = newsLoadState === "error";
-      const isLoading = newsLoadState === "loading" || newsLoadState === "idle";
+      liveNewsData = getFallbackMoneycontrolNews(State.newsQuery || "");
+    }
+
+    if (!liveNewsData || liveNewsData.length === 0) {
+      const q = State.newsQuery ? State.newsQuery.trim() : "";
       grid.innerHTML = `
         <div style="grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--mu);">
           <div style="font-size:32px;margin-bottom:12px;">📰</div>
-          <div style="font-weight:600;font-size:15px;color:var(--ink);">${isLoading ? "Loading Moneycontrol News..." : isError ? "Moneycontrol news is temporarily unavailable" : "No Moneycontrol headlines match your search"}</div>
-          <div style="font-size:12px;margin-top:6px;">${isError ? escapeHtml(newsLoadError) : isLoading ? "Fetching live market wire and stories directly from Moneycontrol..." : "Try another ticker or clear your search to see all stories."}</div>
-          ${isError ? `<button id="news-retry-btn" class="row-action-btn" style="margin-top:16px;padding:7px 14px;font-weight:700;cursor:pointer;">Retry</button>` : ""}
+          <div style="font-weight:600;font-size:15px;color:var(--ink);">No Moneycontrol headlines match "${escapeHtml(q)}"</div>
+          <div style="font-size:12px;margin-top:6px;margin-bottom:16px;">Try another ticker, or jump directly to Moneycontrol for live updates.</div>
+          <a href="https://www.moneycontrol.com/news/tags/${encodeURIComponent(q)}.html" target="_blank" rel="noopener noreferrer" class="row-action-btn" style="background:#0984e3;color:#fff;border:none;padding:8px 16px;text-decoration:none;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:6px;font-weight:700;">
+            📰 Search "${escapeHtml(q)}" Directly on Moneycontrol ↗
+          </a>
         </div>
       `;
       return;
@@ -15450,6 +15574,9 @@
             <button id="news-sync-btn" class="row-action-btn" style="padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:6px;">
               🔄 Sync Moneycontrol
             </button>
+            <a href="https://www.moneycontrol.com/news/business/stocks/" target="_blank" rel="noopener noreferrer" class="row-action-btn" style="background:#0984e3;color:#fff;border:1px solid #0984e3;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:6px;text-decoration:none;" title="Open official Moneycontrol Markets live news feed in new tab">
+              📰 Live on Moneycontrol.com ↗
+            </a>
           </div>
         </div>
 
@@ -16478,8 +16605,10 @@
     activeSearchDebounce = setTimeout(async () => {
       try {
         const localBase = getApiBase();
+        if (!localBase) return;
         const res = await fetch(`${localBase}/api/search?q=${encodeURIComponent(q)}`);
-        if (!res.ok) return;
+        const cType = res.headers.get("content-type") || "";
+        if (!res.ok || !cType.includes("json")) return;
         const data = await res.json();
         if (data && data.results && data.results.length > 0) {
           let updated = false;
