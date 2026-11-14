@@ -7141,10 +7141,10 @@
       const baselineAvg = metric.avg;
       return `
               <tr class="turnover-row" data-sector-name="${escapeHtml(sec.name)}">
-                <td class="turnover-td-sector" data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}">
+                <td class="turnover-td-sector" data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View ${escapeHtml(sec.name)} constituent stocks">
                   <div class="sector-td-name-cell">
                     <span class="sector-name-label">${escapeHtml(sec.name)}</span>
-                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} sector index chart on TradingView ↗" onclick="event.stopPropagation()">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                         <polyline points="16 7 22 7 22 13"></polyline>
@@ -7445,10 +7445,10 @@
                       <span style="font-weight:600;color:var(--ink);">${idx + 1}</span>
                       ${activeCol !== "default" ? `<span style="font-size:9px;color:var(--mu);display:block;opacity:0.75;" title="Original Benchmark Index #${sec.origIdx + 1}">#${sec.origIdx + 1}</span>` : ""}
                     </td>
-                    <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}" style="cursor:pointer">
+                    <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View ${escapeHtml(sec.name)} constituent stocks" style="cursor:pointer">
                       <div class="sector-td-name-cell">
                         <strong class="sector-name-label">${sec.name}</strong>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} sector index chart on TradingView ↗" onclick="event.stopPropagation()">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                             <polyline points="16 7 22 7 22 13"></polyline>
@@ -7539,10 +7539,10 @@
                 ${list.map((sec, idx) => `
                   <tr>
                     <td style="font-weight:700;color:var(--mu);">${idx + 1}</td>
-                    <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}" style="cursor:pointer">
+                    <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View ${escapeHtml(sec.name)} constituent stocks" style="cursor:pointer">
                       <div class="sector-td-name-cell">
                         <strong class="stock-symbol-text sector-name-label">${sec.name}</strong>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} sector index chart on TradingView ↗" onclick="event.stopPropagation()">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                             <polyline points="16 7 22 7 22 13"></polyline>
@@ -7591,7 +7591,7 @@
           </div>
           <div style="display:flex;align-items:center;gap:12px;">
             <input type="text" id="sector-stocks-search" placeholder="Search ${stocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:240px;outline:none;" />
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sectorIndex)}" target="_blank" rel="noopener noreferrer" class="sector-header-tv-btn" title="Open ${escapeHtml(sectorIndex)} live chart on TradingView">
+            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sectorIndex)}" target="_blank" rel="noopener noreferrer" class="sector-header-tv-btn" title="Open ${escapeHtml(sectorIndex)} sector index live chart on TradingView ↗">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
               <span>TradingView Chart ↗</span>
             </a>
@@ -8882,18 +8882,20 @@
       "NIFTY50": "NSE:NIFTY",
       "NIFTY 50 BENCHMARK": "NSE:NIFTY",
       "NIFTY 100": "NSE:NIFTY100",
-      "NIFTY MIDCAP 150": "NSE:MIDCPNIFTY",
-      "MIDCAP 150": "NSE:MIDCPNIFTY",
-      "MIDCAP": "NSE:MIDCPNIFTY",
-      "NIFTY MIDCAP": "NSE:MIDCPNIFTY",
+      "NIFTY MIDCAP 150": "NSE:NIFTYMIDCAP150",
+      "MIDCAP 150": "NSE:NIFTYMIDCAP150",
+      "MIDCAP": "NSE:NIFTYMIDCAP150",
+      "NIFTY MIDCAP": "NSE:NIFTYMIDCAP150",
+      "MIDCPNIFTY": "NSE:MIDCPNIFTY",
       "NIFTY SMLCAP 250": "NSE:NIFTYSMLCAP250",
       "NIFTY SMALLCAP 250": "NSE:NIFTYSMLCAP250",
       "SMALLCAP 250": "NSE:NIFTYSMLCAP250",
       "SMALLCAP": "NSE:NIFTYSMLCAP250",
-      "NIFTY IPO": "NSE:NIFTY",
-      "IPO UNIVERSE": "NSE:NIFTY",
+      "NIFTY IPO": "NSE:NIFTY_IPO",
+      "IPO": "NSE:NIFTY_IPO",
+      "IPO UNIVERSE": "NSE:NIFTY_IPO",
 
-      // 2. Official TradingView Sector Indices
+      // 2. Official TradingView Sector Indices (NSE Benchmark & Sector Indices)
       "NIFTY BANK": "NSE:BANKNIFTY",
       "BANK NIFTY": "NSE:BANKNIFTY",
       "NIFTY IT": "NSE:CNXIT",
@@ -8951,57 +8953,98 @@
       "CONSUMPTION": "NSE:CNXCONSUMPTION",
       "NIFTY HEALTHCARE": "NSE:NIFTYHEALTHCARE",
       "HEALTHCARE": "NSE:NIFTYHEALTHCARE",
-      "NIFTY CONSR DURBL": "NSE:NIFTYCONSRDURBL",
-      "NIFTY CONSUMER DURABLES": "NSE:NIFTYCONSRDURBL",
-      "CONSUMER DURABLES": "NSE:NIFTYCONSRDURBL",
-      "NIFTY OIL AND GAS": "NSE:NIFTYOILGAS",
-      "NIFTY OIL & GAS": "NSE:NIFTYOILGAS",
-      "OIL AND GAS": "NSE:NIFTYOILGAS",
-      "OIL & GAS": "NSE:NIFTYOILGAS",
+      "NIFTY CONSR DURBL": "NSE:NIFTY_CONSR_DURBL",
+      "NIFTY CONSUMER DURABLES": "NSE:NIFTY_CONSR_DURBL",
+      "CONSUMER DURABLES": "NSE:NIFTY_CONSR_DURBL",
+      "NIFTYCONSRDURBL": "NSE:NIFTY_CONSR_DURBL",
+      "NIFTY OIL AND GAS": "NSE:NIFTY_OIL_AND_GAS",
+      "NIFTY OIL & GAS": "NSE:NIFTY_OIL_AND_GAS",
+      "OIL AND GAS": "NSE:NIFTY_OIL_AND_GAS",
+      "OIL & GAS": "NSE:NIFTY_OIL_AND_GAS",
+      "NIFTYOILGAS": "NSE:NIFTY_OIL_AND_GAS",
 
-      // 3. Thematic Sectors & Industry Categories -> Anchor Bellwether Stocks on TradingView
-      "NIFTY IND TOURISM": "NSE:INDHOTEL",
-      "HOTELS": "NSE:INDHOTEL",
-      "HOTEL": "NSE:INDHOTEL",
-      "HOSPITALITY": "NSE:INDHOTEL",
-      "TOURISM": "NSE:INDHOTEL",
+      // 3. Official Thematic Sector Indices (Verified TradingView Sector Index Symbols)
+      "NIFTY IND DEFENCE": "NSE:NIFTY_IND_DEFENCE",
+      "NIFTY INDIA DEFENCE": "NSE:NIFTY_IND_DEFENCE",
+      "IND DEFENCE": "NSE:NIFTY_IND_DEFENCE",
+      "DEFENCE": "NSE:NIFTY_IND_DEFENCE",
+      "AEROSPACE & DEFENCE": "NSE:NIFTY_IND_DEFENCE",
 
-      "NIFTY IND DEFENCE": "NSE:HAL",
-      "DEFENCE": "NSE:HAL",
-      "AEROSPACE & DEFENCE": "NSE:HAL",
+      "NIFTY IND TOURISM": "NSE:NIFTY_IND_TOURISM",
+      "NIFTY INDIA TOURISM": "NSE:NIFTY_IND_TOURISM",
+      "IND TOURISM": "NSE:NIFTY_IND_TOURISM",
+      "TOURISM": "NSE:NIFTY_IND_TOURISM",
+      "HOTELS": "NSE:NIFTY_IND_TOURISM",
+      "HOTEL": "NSE:NIFTY_IND_TOURISM",
+      "HOSPITALITY": "NSE:NIFTY_IND_TOURISM",
 
-      "NIFTY CAPITAL MKT": "NSE:BSE",
-      "CAPITAL MARKETS": "NSE:BSE",
-      "CAPITAL MARKET": "NSE:BSE",
+      "NIFTY CAPITAL MKT": "NSE:NIFTY_CAPITAL_MKT",
+      "NIFTY CAPITAL MARKETS": "NSE:NIFTY_CAPITAL_MKT",
+      "CAPITAL MARKETS": "NSE:NIFTY_CAPITAL_MKT",
+      "CAPITAL MARKET": "NSE:NIFTY_CAPITAL_MKT",
 
-      "NIFTY RAILWAYS PSU": "NSE:IRCTC",
-      "RAILWAYS": "NSE:IRCTC",
-      "RAILWAYS PSU": "NSE:IRCTC",
+      "NIFTY RAILWAYS PSU": "NSE:NIFTY_RAILWAYSPSU",
+      "NIFTY RAILWAYS": "NSE:NIFTY_RAILWAYSPSU",
+      "RAILWAYS PSU": "NSE:NIFTY_RAILWAYSPSU",
+      "RAILWAYS": "NSE:NIFTY_RAILWAYSPSU",
 
-      "NIFTY TRANS LOGIS": "NSE:CONCOR",
-      "TRANSPORT": "NSE:CONCOR",
-      "LOGISTICS": "NSE:CONCOR",
-      "TRANSPORTATION & LOGISTICS": "NSE:CONCOR",
-      "NIFTY TRANSPORTATION & LOGISTICS": "NSE:CONCOR",
+      "NIFTY TRANS LOGIS": "NSE:NIFTY_TRANS_LOGIS",
+      "NIFTY TRANSPORTATION & LOGISTICS": "NSE:NIFTY_TRANS_LOGIS",
+      "TRANSPORTATION & LOGISTICS": "NSE:NIFTY_TRANS_LOGIS",
+      "TRANS LOGIS": "NSE:NIFTY_TRANS_LOGIS",
+      "LOGISTICS": "NSE:NIFTY_TRANS_LOGIS",
+      "TRANSPORT": "NSE:NIFTY_TRANS_LOGIS",
 
-      "NIFTY CHEMICALS": "NSE:PIDILITIND",
-      "CHEMICALS": "NSE:PIDILITIND",
-      "COMMODITY CHEMICALS": "NSE:PIDILITIND",
-      "SPECIALTY CHEMICALS": "NSE:PIDILITIND",
+      "NIFTY CHEMICALS": "NSE:NIFTY_CHEMICALS",
+      "CHEMICALS": "NSE:NIFTY_CHEMICALS",
+      "COMMODITY CHEMICALS": "NSE:NIFTY_CHEMICALS",
+      "SPECIALTY CHEMICALS": "NSE:NIFTY_CHEMICALS",
 
-      "NIFTY IND DIGITAL": "NSE:TCS",
-      "NIFTY INDIA DIGITAL": "NSE:TCS",
-      "DIGITAL & TECH": "NSE:TCS",
-      "DIGITAL TECH": "NSE:TCS",
+      "NIFTY IND DIGITAL": "NSE:NIFTY_IND_DIGITAL",
+      "NIFTY INDIA DIGITAL": "NSE:NIFTY_IND_DIGITAL",
+      "DIGITAL & TECH": "NSE:NIFTY_IND_DIGITAL",
+      "DIGITAL TECH": "NSE:NIFTY_IND_DIGITAL",
+      "IND DIGITAL": "NSE:NIFTY_IND_DIGITAL",
 
-      "NIFTY INTERNET": "NSE:NAUKRI",
-      "INTERNET": "NSE:NAUKRI",
+      "NIFTY INTERNET": "NSE:NIFTY_INTERNET",
+      "INTERNET": "NSE:NIFTY_INTERNET",
 
-      "NIFTY EV": "NSE:TATAMOTORS",
-      "NIFTY EV & NEW AGE AUTOMOTIVE": "NSE:TATAMOTORS",
-      "EV & NEW AGE AUTO": "NSE:TATAMOTORS",
-      "EV": "NSE:TATAMOTORS",
+      "NIFTY EV": "NSE:NIFTY_EV",
+      "NIFTY EV & NEW AGE AUTOMOTIVE": "NSE:NIFTY_EV",
+      "EV & NEW AGE AUTO": "NSE:NIFTY_EV",
+      "EV": "NSE:NIFTY_EV",
 
+      "NIFTY MOBILITY": "NSE:NIFTY_MOBILITY",
+      "MOBILITY": "NSE:NIFTY_MOBILITY",
+
+      "NIFTY HOUSING": "NSE:NIFTY_HOUSING",
+      "HOUSING": "NSE:NIFTY_HOUSING",
+
+      "NIFTY CORE HOUSING": "NSE:NIFTY_COREHOUSING",
+      "CORE HOUSING": "NSE:NIFTY_COREHOUSING",
+
+      "NIFTY RURAL": "NSE:NIFTY_RURAL",
+      "RURAL": "NSE:NIFTY_RURAL",
+      "RURAL ECONOMY": "NSE:NIFTY_RURAL",
+
+      "NIFTY MS IT TELCM": "NSE:NIFTY_MS_IT_TELCM",
+      "NIFTY MIDSMALL IT & TELECOM": "NSE:NIFTY_MS_IT_TELCM",
+      "MS IT TELCM": "NSE:NIFTY_MS_IT_TELCM",
+      "TELECOM": "NSE:NIFTY_MS_IT_TELCM",
+
+      "NIFTY MS IND CONS": "NSE:NIFTY_MS_IND_CONS",
+      "NIFTY MIDSMALL INDIA CONSUMPTION": "NSE:NIFTY_MS_IND_CONS",
+      "MS IND CONS": "NSE:NIFTY_MS_IND_CONS",
+
+      "NIFTY MIDSML HLTH": "NSE:NIFTY_MIDSML_HLTH",
+      "NIFTY MIDSMALL HEALTHCARE": "NSE:NIFTY_MIDSML_HLTH",
+      "MIDSML HLTH": "NSE:NIFTY_MIDSML_HLTH",
+
+      "NIFTY MS FIN SERV": "NSE:NIFTY_MS_FIN_SERV",
+      "NIFTY MIDSMALL FINANCIAL SERVICES": "NSE:NIFTY_MS_FIN_SERV",
+      "MS FIN SERV": "NSE:NIFTY_MS_FIN_SERV",
+
+      // 4. Industry Group Fallbacks (Used in Screener / Stock Meta)
       "CEMENT": "NSE:ULTRACEMCO",
       "CONSTRUCTION & ENGINEERING": "NSE:LT",
       "CONSTRUCTION": "NSE:LT",
@@ -9017,22 +9060,9 @@
       "PACKAGING": "NSE:POLYPLEX",
       "PAPER PRODUCTS": "NSE:JKPAPER",
       "PAPER": "NSE:JKPAPER",
-      "TELECOM": "NSE:BHARTIARTL",
-      "NIFTY MS IT TELCM": "NSE:BHARTIARTL",
       "GAS DISTRIBUTION": "NSE:IGL",
       "INSURANCE": "NSE:HDFCLIFE",
-      "HOUSING": "NSE:DLF",
-      "NIFTY HOUSING": "NSE:DLF",
-      "NIFTY CORE HOUSING": "NSE:DLF",
-      "CORE HOUSING": "NSE:DLF",
-      "RURAL": "NSE:M_M",
-      "NIFTY RURAL": "NSE:M_M",
-      "RURAL ECONOMY": "NSE:M_M",
-      "AUTO ANCILLARIES": "NSE:MOTHERSON",
-      "NIFTY MOBILITY": "NSE:TATAMOTORS",
-      "NIFTY MS IND CONS": "NSE:CNXCONSUMPTION",
-      "NIFTY MIDSML HLTH": "NSE:NIFTYHEALTHCARE",
-      "NIFTY MS FIN SERV": "NSE:FINNIFTY"
+      "AUTO ANCILLARIES": "NSE:MOTHERSON"
     };
 
     if (TV_MAP[s]) return TV_MAP[s];
