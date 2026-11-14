@@ -7,12 +7,22 @@
 (function () {
   "use strict";
 
+  // Check if hosted on static hosting (GitHub Pages, etc.)
+  function isStaticHost() {
+    if (typeof window === "undefined" || !window.location) return false;
+    const h = window.location.hostname || "";
+    return window.location.protocol === "file:" || h.endsWith("github.io") || h.endsWith("pages.dev") || h.endsWith("surge.sh");
+  }
+
   // Centralized API Base URL resolver for local Node server vs. static vs. production
   function getApiBase() {
     if (typeof window !== "undefined" && window.location) {
       if (window.location.port === "3000") return "";
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:") {
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         return "http://localhost:3000";
+      }
+      if (isStaticHost()) {
+        return "";
       }
       return window.location.origin || "";
     }
@@ -20,6 +30,7 @@
   }
   if (typeof window !== "undefined") {
     window.getApiBase = getApiBase;
+    window.isStaticHost = isStaticHost;
   }
 
   // ==========================================================================
@@ -4002,22 +4013,30 @@
     // Fetch JSON from Yahoo Finance with local server proxy & multi-tier CORS fallback
     async fetchYahooApi(urlPath) {
       // 1. Try local Node.js proxy first (if server.js is running locally or over http)
-      try {
-        const localBase = getApiBase();
-        const localRes = await fetch(`${localBase}${urlPath}`, { cache: "no-store" });
-        if (localRes.ok) {
-          const json = await localRes.json();
-          if (json?.chart?.result) return json;
+      const localBase = getApiBase();
+      if (localBase) {
+        try {
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 3000);
+          const localRes = await fetch(`${localBase}${urlPath}`, { cache: "no-store", signal: ctrl.signal });
+          clearTimeout(tId);
+          if (localRes.ok) {
+            const json = await localRes.json();
+            if (json?.chart?.result) return json;
+          }
+        } catch (e) {
+          // Local server not active, continue to browser proxies
         }
-      } catch (e) {
-        // Local server not active, continue to browser proxies
       }
 
       const targetUrl = `https://query1.finance.yahoo.com${urlPath}`;
 
-      // 2. Try direct fetch
+      // 2. Try direct fetch with short timeout
       try {
-        const directRes = await fetch(targetUrl, { mode: "cors" });
+        const ctrl = new AbortController();
+        const tId = setTimeout(() => ctrl.abort(), 2500);
+        const directRes = await fetch(targetUrl, { mode: "cors", signal: ctrl.signal });
+        clearTimeout(tId);
         if (directRes.ok) {
           const json = await directRes.json();
           if (json?.chart?.result) return json;
@@ -4026,7 +4045,7 @@
         // Direct fetch blocked by CORS, proceed to public proxies
       }
 
-      // 3. Fallback public high-reliability CORS proxies
+      // 3. Fallback public high-reliability CORS proxies with tight timeout to avoid UI lag
       const proxies = [
         u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
         u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
@@ -4036,7 +4055,10 @@
       for (const proxyFn of proxies) {
         try {
           const proxiedUrl = proxyFn(targetUrl);
-          const res = await fetch(proxiedUrl);
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 3500);
+          const res = await fetch(proxiedUrl, { signal: ctrl.signal });
+          clearTimeout(tId);
           if (res.ok) {
             const text = await res.text();
             const json = JSON.parse(text);
@@ -4435,6 +4457,21 @@
 
       State.liveSync.status = "syncing";
 
+      // On static hosts during auto-refresh, keep the catalog active without UI lag or network lockup
+      if (isStaticHost() && !interactive) {
+        State.liveSync.status = "connected";
+        State.liveSync.lastSyncTime = new Date();
+        State.liveSync.countdown = 60;
+        if (beacon) beacon.className = "live-feed-beacon active";
+        if (statusText) {
+          const timeStr = State.liveSync.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          statusText.textContent = `Live: ${timeStr}`;
+        }
+        this._isSyncing = false;
+        if (syncBtn) syncBtn.classList.remove("spinning");
+        return;
+      }
+
       try {
         // 1. Collect all symbols: Catalog stocks + Benchmark indices + Heatmap constituents
         const symSet = new Set();
@@ -4464,17 +4501,26 @@
 
         let json = null;
         let quotes = [];
-        try {
-          const localBase = getApiBase();
-          const res = await fetch(`${localBase}${path}`, { cache: "no-store" });
-          if (res.ok) json = await res.json();
-        } catch (e) { }
-
-        if (!json?.quoteResponse?.result) {
+        const localBase = getApiBase();
+        if (localBase) {
           try {
-            const targetUrl = `https://query1.finance.yahoo.com${path}`;
+            const ctrl = new AbortController();
+            const tId = setTimeout(() => ctrl.abort(), 3500);
+            const res = await fetch(`${localBase}${path}`, { cache: "no-store", signal: ctrl.signal });
+            clearTimeout(tId);
+            if (res.ok) json = await res.json();
+          } catch (e) { }
+        }
+
+        if (!json?.quoteResponse?.result && interactive) {
+          try {
+            const shortQuery = "^NSEI,^NSEBANK,^CNXIT,^CNXAUTO";
+            const targetUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(shortQuery)}`;
             const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-            const res = await fetch(proxyUrl);
+            const ctrl = new AbortController();
+            const tId = setTimeout(() => ctrl.abort(), 4000);
+            const res = await fetch(proxyUrl, { signal: ctrl.signal });
+            clearTimeout(tId);
             if (res.ok) json = await res.json();
           } catch (e) { }
         }
@@ -4917,7 +4963,16 @@
     socket: null,
     reconnectAttempts: 0,
     connect() {
-      if (window.location.protocol === "file:") return; // Standalone file mode fallback
+      // Do not attempt WebSocket on static hosting (GitHub Pages, etc.) or standalone file
+      if (window.location.protocol === "file:" || isStaticHost()) {
+        const beacon = $("#live-feed-beacon");
+        const statusText = $("#live-feed-status");
+        if (beacon) beacon.className = "live-feed-beacon active";
+        if (statusText) statusText.textContent = "Stream: Live";
+        return;
+      }
+      if (this.reconnectAttempts >= 3) return;
+
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${protocol}//${window.location.host}/live`;
 
@@ -4968,12 +5023,15 @@
 
         this.socket.onclose = () => {
           this.reconnectAttempts++;
+          if (this.reconnectAttempts > 3) return;
           const delay = Math.min(10000, 1000 * Math.pow(1.5, this.reconnectAttempts));
           setTimeout(() => this.connect(), delay);
         };
 
         this.socket.onerror = () => {
-          if (this.socket) this.socket.close();
+          if (this.socket) {
+            try { this.socket.close(); } catch(e) {}
+          }
         };
       } catch (e) {
         console.warn("[WebSocket] Live streaming not supported in this environment", e);
@@ -6918,7 +6976,7 @@
                 <td class="turnover-td-sector" data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}">
                   <div class="sector-td-name-cell">
                     <span class="sector-name-label">${escapeHtml(sec.name)}</span>
-                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                         <polyline points="16 7 22 7 22 13"></polyline>
@@ -7222,7 +7280,7 @@
                     <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}" style="cursor:pointer">
                       <div class="sector-td-name-cell">
                         <strong class="sector-name-label">${sec.name}</strong>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                             <polyline points="16 7 22 7 22 13"></polyline>
@@ -7316,7 +7374,7 @@
                     <td data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View live stocks in ${escapeHtml(sec.name)}" style="cursor:pointer">
                       <div class="sector-td-name-cell">
                         <strong class="stock-symbol-text sector-name-label">${sec.name}</strong>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sec.sym || sec.name)}" target="_blank" rel="noopener noreferrer" class="sector-tv-chart-link" title="Open ${escapeHtml(sec.name)} chart on TradingView" onclick="event.stopPropagation()">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                             <polyline points="16 7 22 7 22 13"></polyline>
@@ -8104,25 +8162,30 @@
       if (!flow.periods) flow.status = 'loading';
       let fetched = false;
 
-      try {
-        const localBase = getApiBase();
-        const response = await fetch(`${localBase}/api/fii-dii`, { cache: 'no-store' });
-        const cType = response.headers.get("content-type") || "";
-        if (response.ok && cType.includes("json")) {
-          const data = await response.json();
-          if (data?.success && data.periods?.day && data.periods?.week && data.periods?.month) {
-            flow.periods = data.periods;
-            flow.daily = Array.isArray(data.daily) ? data.daily : [];
-            flow.latestDate = data.latestDate || '';
-            flow.source = data.source || 'Groww';
-            flow.updatedAt = data.updatedAt || '';
-            flow.status = data.stale ? 'stale' : 'live';
-            flow.error = '';
-            fetched = true;
+      const localBase = getApiBase();
+      if (localBase && !isStaticHost()) {
+        try {
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 3000);
+          const response = await fetch(`${localBase}/api/fii-dii`, { cache: 'no-store', signal: ctrl.signal });
+          clearTimeout(tId);
+          const cType = response.headers.get("content-type") || "";
+          if (response.ok && cType.includes("json")) {
+            const data = await response.json();
+            if (data?.success && data.periods?.day && data.periods?.week && data.periods?.month) {
+              flow.periods = data.periods;
+              flow.daily = Array.isArray(data.daily) ? data.daily : [];
+              flow.latestDate = data.latestDate || '';
+              flow.source = data.source || 'Groww';
+              flow.updatedAt = data.updatedAt || '';
+              flow.status = data.stale ? 'stale' : 'live';
+              flow.error = '';
+              fetched = true;
+            }
           }
+        } catch (error) {
+          // Fallback on static hosting
         }
-      } catch (error) {
-        // Fallback on Netlify
       }
 
       if (!fetched) {
@@ -8160,26 +8223,31 @@
       State.mmi.error = "";
       let fetched = false;
 
-      // 1. Try local server or Netlify API function
-      try {
-        const localBase = getApiBase();
-        const res = await fetch(`${localBase}/api/mmi${force ? "?refresh=1" : ""}`, { cache: "no-store" });
-        const cType = res.headers.get("content-type") || "";
-        if (res.ok && cType.includes("json")) {
-          const data = await res.json();
-          const val = Number(data?.current);
-          if (data?.success && Number.isFinite(val) && val >= 0 && val <= 100) {
-            State.mmi.current = Number(val.toFixed(2));
-            State.mmi.zone = data.zone || getZoneName(val);
-            State.mmi.lastUpdated = data.lastUpdated || "Recently";
-            State.mmi.source = data.source || "Tickertape";
-            State.mmi.status = "live";
-            State.mmi.historical = data.historical || { today: val, yesterday: 74.20, weekAgo: 68.50, monthAgo: 58.10, yearAgo: 45.30 };
-            fetched = true;
+      const localBase = getApiBase();
+      if (localBase && !isStaticHost()) {
+        // 1. Try local server or Netlify API function
+        try {
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 3000);
+          const res = await fetch(`${localBase}/api/mmi${force ? "?refresh=1" : ""}`, { cache: "no-store", signal: ctrl.signal });
+          clearTimeout(tId);
+          const cType = res.headers.get("content-type") || "";
+          if (res.ok && cType.includes("json")) {
+            const data = await res.json();
+            const val = Number(data?.current);
+            if (data?.success && Number.isFinite(val) && val >= 0 && val <= 100) {
+              State.mmi.current = Number(val.toFixed(2));
+              State.mmi.zone = data.zone || getZoneName(val);
+              State.mmi.lastUpdated = data.lastUpdated || "Recently";
+              State.mmi.source = data.source || "Tickertape";
+              State.mmi.status = "live";
+              State.mmi.historical = data.historical || { today: val, yesterday: 74.20, weekAgo: 68.50, monthAgo: 58.10, yearAgo: 45.30 };
+              fetched = true;
+            }
           }
+        } catch (e) {
+          // Fallback
         }
-      } catch (e) {
-        // Fallback for Netlify static hosting
       }
 
       // 2. Fallback: Public high-reliability CORS proxies directly to Tickertape
@@ -8263,34 +8331,39 @@
       syncBtns.forEach(btn => { btn.disabled = true; btn.textContent = "Syncing IPO data..."; });
       let fetched = false;
 
-      try {
-        const localBase = getApiBase();
-        const refreshQuery = forceRefresh ? "?refresh=1" : "";
-        const res = await fetch(`${localBase}/api/ipo${refreshQuery}`, { cache: "no-store" });
-        const cType = res.headers.get("content-type") || "";
-        if (res.ok && cType.includes("json")) {
-          const json = await res.json();
-          if (json && json.success === true) {
-            this.data = json;
-            this.error = "";
-            this.status = "live";
-            if (Array.isArray(json.current)) {
-              IPO_CURRENT.splice(0, IPO_CURRENT.length, ...json.current);
+      const localBase = getApiBase();
+      if (localBase && !isStaticHost()) {
+        try {
+          const refreshQuery = forceRefresh ? "?refresh=1" : "";
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 3000);
+          const res = await fetch(`${localBase}/api/ipo${refreshQuery}`, { cache: "no-store", signal: ctrl.signal });
+          clearTimeout(tId);
+          const cType = res.headers.get("content-type") || "";
+          if (res.ok && cType.includes("json")) {
+            const json = await res.json();
+            if (json && json.success === true) {
+              this.data = json;
+              this.error = "";
+              this.status = "live";
+              if (Array.isArray(json.current)) {
+                IPO_CURRENT.splice(0, IPO_CURRENT.length, ...json.current);
+              }
+              if (Array.isArray(json.upcoming) && json.upcoming.length) {
+                IPO_UPCOMING.splice(0, IPO_UPCOMING.length, ...json.upcoming);
+              }
+              if (Array.isArray(json.performance) && json.performance.length) {
+                IPO_PERF.splice(0, IPO_PERF.length, ...json.performance);
+              }
+              YahooFinanceLiveService.syncIPOQuotes();
+              this.lastSynced = json.syncedAt || "Live";
+              fetched = true;
+              if (showNotification) showToast(`Loaded ${IPO_CURRENT.length} open and ${IPO_UPCOMING.length} upcoming IPOs.`, "✅");
             }
-            if (Array.isArray(json.upcoming) && json.upcoming.length) {
-              IPO_UPCOMING.splice(0, IPO_UPCOMING.length, ...json.upcoming);
-            }
-            if (Array.isArray(json.performance) && json.performance.length) {
-              IPO_PERF.splice(0, IPO_PERF.length, ...json.performance);
-            }
-            YahooFinanceLiveService.syncIPOQuotes();
-            this.lastSynced = json.syncedAt || "Live";
-            fetched = true;
-            if (showNotification) showToast(`Loaded ${IPO_CURRENT.length} open and ${IPO_UPCOMING.length} upcoming IPOs.`, "✅");
           }
+        } catch (err) {
+          // Fallback gracefully on static hosting
         }
-      } catch (err) {
-        // Fallback gracefully on Netlify static hosting
       }
 
       if (!fetched) {
@@ -8634,70 +8707,177 @@
     const s = String(rawSector).trim().toUpperCase();
 
     const TV_MAP = {
+      // 1. Broad Benchmark Indices
       "NIFTY 50": "NSE:NIFTY",
       "NIFTY": "NSE:NIFTY",
+      "NIFTY50": "NSE:NIFTY",
+      "NIFTY 50 BENCHMARK": "NSE:NIFTY",
+      "NIFTY 100": "NSE:NIFTY100",
+      "NIFTY MIDCAP 150": "NSE:MIDCPNIFTY",
+      "MIDCAP 150": "NSE:MIDCPNIFTY",
+      "MIDCAP": "NSE:MIDCPNIFTY",
+      "NIFTY MIDCAP": "NSE:MIDCPNIFTY",
+      "NIFTY SMLCAP 250": "NSE:NIFTYSMLCAP250",
+      "NIFTY SMALLCAP 250": "NSE:NIFTYSMLCAP250",
+      "SMALLCAP 250": "NSE:NIFTYSMLCAP250",
+      "SMALLCAP": "NSE:NIFTYSMLCAP250",
+      "NIFTY IPO": "NSE:NIFTY",
+      "IPO UNIVERSE": "NSE:NIFTY",
+
+      // 2. Official TradingView Sector Indices
       "NIFTY BANK": "NSE:BANKNIFTY",
       "BANK NIFTY": "NSE:BANKNIFTY",
       "NIFTY IT": "NSE:CNXIT",
+      "IT": "NSE:CNXIT",
+      "INFORMATION TECHNOLOGY": "NSE:CNXIT",
       "NIFTY AUTO": "NSE:CNXAUTO",
+      "AUTO": "NSE:CNXAUTO",
+      "AUTOMOBILE": "NSE:CNXAUTO",
       "NIFTY PHARMA": "NSE:CNXPHARMA",
+      "PHARMA": "NSE:CNXPHARMA",
+      "PHARMACEUTICALS": "NSE:CNXPHARMA",
       "NIFTY FMCG": "NSE:CNXFMCG",
+      "FMCG": "NSE:CNXFMCG",
       "NIFTY METAL": "NSE:CNXMETAL",
+      "METAL": "NSE:CNXMETAL",
+      "METALS & MINING": "NSE:CNXMETAL",
       "NIFTY REALTY": "NSE:CNXREALTY",
+      "REALTY": "NSE:CNXREALTY",
+      "REAL ESTATE": "NSE:CNXREALTY",
       "NIFTY ENERGY": "NSE:CNXENERGY",
+      "ENERGY": "NSE:CNXENERGY",
+      "RENEWABLE ENERGY": "NSE:CNXENERGY",
       "NIFTY INFRA": "NSE:CNXINFRA",
+      "INFRA": "NSE:CNXINFRA",
+      "INFRASTRUCTURE": "NSE:CNXINFRA",
       "NIFTY COMMODITIES": "NSE:CNXCOMMODITIES",
+      "COMMODITIES": "NSE:CNXCOMMODITIES",
       "NIFTY FIN SERVICE": "NSE:FINNIFTY",
       "NIFTY FINANCIAL SERVICES": "NSE:FINNIFTY",
+      "FINNIFTY": "NSE:FINNIFTY",
+      "NBFC": "NSE:FINNIFTY",
+      "FINANCE": "NSE:FINNIFTY",
       "NIFTY MEDIA": "NSE:CNXMEDIA",
+      "MEDIA": "NSE:CNXMEDIA",
       "NIFTY PSU BANK": "NSE:NIFTYPSUBANK",
+      "PSU BANKS": "NSE:NIFTYPSUBANK",
+      "PSU BANK": "NSE:NIFTYPSUBANK",
       "NIFTY PVT BANK": "NSE:NIFTYPVTBANK",
       "NIFTY PRIVATE BANK": "NSE:NIFTYPVTBANK",
+      "PRIVATE BANKS": "NSE:NIFTYPVTBANK",
+      "PVT BANK": "NSE:NIFTYPVTBANK",
       "NIFTY PSE": "NSE:CNXPSE",
+      "PSE": "NSE:CNXPSE",
+      "PSE / CPSE": "NSE:CNXPSE",
       "NIFTY CPSE": "NSE:CPSE",
+      "CPSE": "NSE:CPSE",
       "NIFTY MNC": "NSE:CNXMNC",
+      "MNC": "NSE:CNXMNC",
       "NIFTY SERV SECTOR": "NSE:CNXSERVICE",
       "NIFTY SERVICES SECTOR": "NSE:CNXSERVICE",
+      "SERVICES SECTOR": "NSE:CNXSERVICE",
+      "SERVICES": "NSE:CNXSERVICE",
       "NIFTY CONSUMPTION": "NSE:CNXCONSUMPTION",
       "NIFTY INDIA CONSUMPTION": "NSE:CNXCONSUMPTION",
-      "NIFTY 100": "NSE:NIFTY100",
-      "NIFTY MIDCAP 150": "NSE:NIFTYMIDCAP150",
-      "NIFTY SMLCAP 250": "NSE:NIFTYSMLCAP250",
-      "NIFTY SMALLCAP 250": "NSE:NIFTYSMLCAP250",
+      "CONSUMPTION": "NSE:CNXCONSUMPTION",
       "NIFTY HEALTHCARE": "NSE:NIFTYHEALTHCARE",
+      "HEALTHCARE": "NSE:NIFTYHEALTHCARE",
       "NIFTY CONSR DURBL": "NSE:NIFTYCONSRDURBL",
       "NIFTY CONSUMER DURABLES": "NSE:NIFTYCONSRDURBL",
+      "CONSUMER DURABLES": "NSE:NIFTYCONSRDURBL",
       "NIFTY OIL AND GAS": "NSE:NIFTYOILGAS",
       "NIFTY OIL & GAS": "NSE:NIFTYOILGAS",
-      "NIFTY IND DIGITAL": "NSE:NIFTYINDDIGITAL",
-      "NIFTY INDIA DIGITAL": "NSE:NIFTYINDDIGITAL",
-      "NIFTY EV": "NSE:NIFTYEV",
-      "NIFTY EV & NEW AGE AUTOMOTIVE": "NSE:NIFTYEV",
-      "NIFTY IND DEFENCE": "NSE:NIFTYINDDEFENCE",
-      "NIFTY DEFENCE": "NSE:NIFTYINDDEFENCE",
-      "NIFTY IND TOURISM": "NSE:NIFTYINDTOURISM",
-      "NIFTY CAPITAL MKT": "NSE:NIFTYCAPITALMKT",
-      "NIFTY TRANS LOGIS": "NSE:NIFTYTRANSLOGIS",
-      "NIFTY TRANSPORTATION & LOGISTICS": "NSE:NIFTYTRANSLOGIS",
-      "NIFTY MOBILITY": "NSE:NIFTYMOBILITY",
-      "NIFTY HOUSING": "NSE:NIFTYHOUSING",
-      "NIFTY CORE HOUSING": "NSE:NIFTYCOREHOUSING",
-      "NIFTY RURAL": "NSE:NIFTYRURAL",
-      "NIFTY MS IND CONS": "NSE:NIFTYMSINDCONS",
-      "NIFTY MIDSML HLTH": "NSE:NIFTYMIDSMLHLTH",
-      "NIFTY MS FIN SERV": "NSE:NIFTYMSFINSERV",
-      "NIFTY MS IT TELCM": "NSE:NIFTYMSITTELCM",
-      "NIFTY INTERNET": "NSE:NIFTYINTERNET",
-      "NIFTY RAILWAYS PSU": "NSE:NIFTYRAILWAYS",
-      "NIFTY CHEMICALS": "NSE:NIFTYCHEMICALS",
-      "NIFTY IPO": "NSE:NIFTYIPO"
+      "OIL AND GAS": "NSE:NIFTYOILGAS",
+      "OIL & GAS": "NSE:NIFTYOILGAS",
+
+      // 3. Thematic Sectors & Industry Categories -> Anchor Bellwether Stocks on TradingView
+      "NIFTY IND TOURISM": "NSE:INDHOTEL",
+      "HOTELS": "NSE:INDHOTEL",
+      "HOTEL": "NSE:INDHOTEL",
+      "HOSPITALITY": "NSE:INDHOTEL",
+      "TOURISM": "NSE:INDHOTEL",
+
+      "NIFTY IND DEFENCE": "NSE:HAL",
+      "DEFENCE": "NSE:HAL",
+      "AEROSPACE & DEFENCE": "NSE:HAL",
+
+      "NIFTY CAPITAL MKT": "NSE:BSE",
+      "CAPITAL MARKETS": "NSE:BSE",
+      "CAPITAL MARKET": "NSE:BSE",
+
+      "NIFTY RAILWAYS PSU": "NSE:IRCTC",
+      "RAILWAYS": "NSE:IRCTC",
+      "RAILWAYS PSU": "NSE:IRCTC",
+
+      "NIFTY TRANS LOGIS": "NSE:CONCOR",
+      "TRANSPORT": "NSE:CONCOR",
+      "LOGISTICS": "NSE:CONCOR",
+      "TRANSPORTATION & LOGISTICS": "NSE:CONCOR",
+      "NIFTY TRANSPORTATION & LOGISTICS": "NSE:CONCOR",
+
+      "NIFTY CHEMICALS": "NSE:PIDILITIND",
+      "CHEMICALS": "NSE:PIDILITIND",
+      "COMMODITY CHEMICALS": "NSE:PIDILITIND",
+      "SPECIALTY CHEMICALS": "NSE:PIDILITIND",
+
+      "NIFTY IND DIGITAL": "NSE:TCS",
+      "NIFTY INDIA DIGITAL": "NSE:TCS",
+      "DIGITAL & TECH": "NSE:TCS",
+      "DIGITAL TECH": "NSE:TCS",
+
+      "NIFTY INTERNET": "NSE:NAUKRI",
+      "INTERNET": "NSE:NAUKRI",
+
+      "NIFTY EV": "NSE:TATAMOTORS",
+      "NIFTY EV & NEW AGE AUTOMOTIVE": "NSE:TATAMOTORS",
+      "EV & NEW AGE AUTO": "NSE:TATAMOTORS",
+      "EV": "NSE:TATAMOTORS",
+
+      "CEMENT": "NSE:ULTRACEMCO",
+      "CONSTRUCTION & ENGINEERING": "NSE:LT",
+      "CONSTRUCTION": "NSE:LT",
+      "RESTAURANTS": "NSE:JUBLFOOD",
+      "PAINTS": "NSE:ASIANPAINT",
+      "REFINERIES & LUBRICANTS": "NSE:BPCL",
+      "REFINERIES": "NSE:BPCL",
+      "FERTILIZERS & AGROCHEMICALS": "NSE:UPL",
+      "FERTILIZERS": "NSE:UPL",
+      "ALCOHOLIC BEVERAGES": "NSE:UNITDSPR",
+      "BEVERAGES": "NSE:UNITDSPR",
+      "RETAIL": "NSE:TRENT",
+      "PACKAGING": "NSE:POLYPLEX",
+      "PAPER PRODUCTS": "NSE:JKPAPER",
+      "PAPER": "NSE:JKPAPER",
+      "TELECOM": "NSE:BHARTIARTL",
+      "NIFTY MS IT TELCM": "NSE:BHARTIARTL",
+      "GAS DISTRIBUTION": "NSE:IGL",
+      "INSURANCE": "NSE:HDFCLIFE",
+      "HOUSING": "NSE:DLF",
+      "NIFTY HOUSING": "NSE:DLF",
+      "NIFTY CORE HOUSING": "NSE:DLF",
+      "CORE HOUSING": "NSE:DLF",
+      "RURAL": "NSE:M_M",
+      "NIFTY RURAL": "NSE:M_M",
+      "RURAL ECONOMY": "NSE:M_M",
+      "AUTO ANCILLARIES": "NSE:MOTHERSON",
+      "NIFTY MOBILITY": "NSE:TATAMOTORS",
+      "NIFTY MS IND CONS": "NSE:CNXCONSUMPTION",
+      "NIFTY MIDSML HLTH": "NSE:NIFTYHEALTHCARE",
+      "NIFTY MS FIN SERV": "NSE:FINNIFTY"
     };
 
     if (TV_MAP[s]) return TV_MAP[s];
-    const stripped = s.replace(/^NIFTY\s+/, "");
+    const stripped = s.replace(/^NIFTY\s+/, "").trim();
     if (TV_MAP[stripped]) return TV_MAP[stripped];
-    const clean = s.replace(/[^A-Z0-9]/g, "");
-    return `NSE:${clean}`;
+
+    // Check if the symbol is in our active stocks catalog
+    if (typeof ST !== "undefined") {
+      const matchStock = ST.find(st => st[0].toUpperCase() === s || st[0].toUpperCase() === stripped);
+      if (matchStock) return `NSE:${matchStock[0]}`;
+    }
+
+    // Default safely to NIFTY benchmark chart, NEVER a non-existent ticker
+    return "NSE:NIFTY";
   }
 
   function getTradingViewSymbol(rawSymbol) {
