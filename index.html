@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Momentum Chasers — Enhanced Stock Screener & AI Intelligence</title>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Main Stylesheet & Favicon -->
+    <link rel="icon" type="image/png" href="logo-icon.png">
+    <link rel="apple-touch-icon" href="logo-icon.png">
+    <link rel="stylesheet" href="styles.css?v=4.1.9">
+
+    <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
+    <script src="lightweight-charts.js"></script>
+</head>
+
+<body>
+
+    <!-- Ambient Dark Green Background FX -->
+    <div class="bg-ambient-fx" aria-hidden="true"></div>
+
+    <!-- FEATURE 01: Customisable Moving Market Ticker -->
+    <header class="ticker-container" id="ticker-bar" aria-label="Market Ticker">
+        <div class="ticker-track-wrapper">
+            <div class="ticker-track" id="ticker-track">
+                <!-- Rendered dynamically via script.js -->
+            </div>
+        </div>
+
+        <!-- Modern Glassmorphic Ticker Action Controls -->
+        <div class="ticker-controls-group" role="group" aria-label="Ticker Tape Controls">
+            <button class="ticker-ctrl-btn ticker-customise-btn" id="open-ticker-modal-btn" data-action="open-ticker-modal" title="Configure Ticker Tape &amp; Watchlist" aria-label="Ticker Settings">
+                <svg class="ticker-btn-icon ticker-gear-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+            <button class="ticker-ctrl-btn ticker-pause-btn is-live" id="ticker-pause-btn" data-action="toggle-ticker-pause" title="Ticker Tape is Live (Click to Pause)" aria-label="Toggle Ticker Tape">
+                <span class="ticker-live-dot"></span>
+                <svg class="ticker-btn-icon ticker-pause-svg" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+                    <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Dynamic User Auth Action & Profile Pill -->
+        <div class="header-auth-container" id="header-auth-container">
+            <!-- Rendered dynamically via renderUserAuthUI() -->
+        </div>
+    </header>
+
+    <!-- APP SHELL: BananaPatterns Collapsible Sidebar + Modular Content -->
+    <div class="app-shell" id="app-shell">
+
+        <!-- Collapsible Sidebar -->
+        <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+            <!-- Pinned Brand Header (Stable - Never scrolls) -->
+            <div class="sidebar-header" data-view="home" title="Momentum Chasers — Home" style="cursor:pointer">
+                <div class="sidebar-logo-icon">
+                    <img src="logo-icon.png" alt="Momentum Chasers Logo" class="sidebar-logo-img">
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>MOMENTUM <span>CHASERS</span></h1>
+                </div>
+            </div>
+
+            <!-- Scrollable Navigation & Watchlist Body -->
+            <div class="sidebar-scrollable-body" id="sidebar-scrollable-body">
+                <!-- Navigation Links -->
+                <nav class="sidebar-nav" id="sidebar-nav">
+                    <!-- Primary Dashboard Link -->
+                    <button class="nav-link active" data-view="home" style="margin-bottom: 6px;">
+                        <span class="nav-icon">🏠</span>
+                        <span>Dashboard</span>
+                    </button>
+
+                    <!-- Category: Analytics & Screening -->
+                    <div class="nav-accordion-group" data-group="analytics">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="analytics" aria-expanded="false">
+                            <span class="nav-section-header-left">
+                                <span class="nav-section-title-text">Analytics & Screening</span>
+                            </span>
+                            <span class="nav-section-header-right">
+                                <span class="nav-section-badge">7</span>
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="nav-group-items" id="nav-group-analytics">
+                            <button class="nav-link" data-view="breadth">
+                                <span class="nav-icon">📊</span>
+                                <span>Market Breadth</span>
+                                <span class="nav-badge-pill" style="background:var(--gs);color:var(--g)">New</span>
+                            </button>
+                            <button class="nav-link" data-view="screener">
+                                <span class="nav-icon">⚡</span>
+                                <span>Smart Screener</span>
+                                <span class="nav-badge-pill" id="screener-count-badge">15</span>
+                            </button>
+                            <button class="nav-link" data-view="sectors">
+                                <span class="nav-icon">📈</span>
+                                <span>Sector Indices</span>
+                                <span class="nav-badge-pill" id="sector-count-badge">44</span>
+                            </button>
+                            <button class="nav-link" data-view="sector-turnover">
+                                <span class="nav-icon">💵</span>
+                                <span>Sector Turnover</span>
+                                <span class="nav-badge-pill" style="background:rgba(45,212,191,0.18);color:#2dd4bf">Flow</span>
+                            </button>
+                            <button class="nav-link" data-view="mmi">
+                                <span class="nav-icon">🧭</span>
+                                <span>Market Mood (MMI)</span>
+                                <span class="nav-badge-pill" id="mmi-nav-pill"
+                                    style="background:rgba(34,197,94,0.18);color:#22c55e">Greed 58</span>
+                            </button>
+                            <button class="nav-link" data-view="netflow">
+                                <span class="nav-icon">🌊</span>
+                                <span>A/D Net Flow</span>
+                            </button>
+                            <button class="nav-link" data-view="stock">
+                                <span class="nav-icon">🔍</span>
+                                <span>AI Stock Analysis</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category: Market Intel & Demat -->
+                    <div class="nav-accordion-group" data-group="intel">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="intel" aria-expanded="false">
+                            <span class="nav-section-header-left">
+                                <span class="nav-section-title-text">Market Intel & Demat</span>
+                            </span>
+                            <span class="nav-section-header-right">
+                                <span class="nav-section-badge">6</span>
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="nav-group-items" id="nav-group-intel">
+                            <button class="nav-link" data-view="events">
+                                <span class="nav-icon">🗓️</span>
+                                <span>Events Calendar</span>
+                                <span class="nav-badge-pill" style="background:var(--gs);color:var(--g)">New</span>
+                            </button>
+                            <button class="nav-link" data-view="deals">
+                                <span class="nav-icon">🤝</span>
+                                <span>Bulk / Block Deals</span>
+                                <span class="nav-badge-pill" style="background:rgba(245,158,11,0.18);color:#f59e0b">Live</span>
+                            </button>
+                            <button class="nav-link" data-view="news">
+                                <span class="nav-icon">📰</span>
+                                <span>Market News</span>
+                                <span class="nav-badge-pill" style="background:rgba(34,197,94,0.18);color:#22c55e">Live</span>
+                            </button>
+                            <button class="nav-link" data-view="heatmap">
+                                <span class="nav-icon">🗺️</span>
+                                <span>Market Heatmap</span>
+                            </button>
+                            <button class="nav-link" data-view="valuation">
+                                <span class="nav-icon">⚖️</span>
+                                <span>Market Valuation</span>
+                            </button>
+                            <button class="nav-link" data-view="portfolio">
+                                <span class="nav-icon">💼</span>
+                                <span>Multi-Demat Tracker</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category: Mainboard IPO Info -->
+                    <div class="nav-accordion-group" data-group="ipo">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="ipo" aria-expanded="false">
+                            <span class="nav-section-header-left">
+                                <span class="nav-section-title-text">Mainboard IPO Info</span>
+                            </span>
+                            <span class="nav-section-header-right">
+                                <span class="nav-section-badge">2</span>
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="nav-group-items" id="nav-group-ipo">
+                            <button class="nav-link" data-view="ipo" data-tab="timetable">
+                                <span class="nav-icon" style="color:var(--mu)">▶</span>
+                                <span>IPO Timetable</span>
+                            </button>
+                            <button class="nav-link" data-view="ipo" data-tab="tracker">
+                                <span class="nav-icon" style="color:var(--g)">▶</span>
+                                <span>IPO Performance Tracker</span>
+                                <span class="nav-badge-pill" style="background:var(--gs);color:var(--g)">3 Yr</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Sidebar Watchlist Box -->
+                <div class="sidebar-watchlist-box" id="sidebar-watchlist-box">
+                    <div class="sidebar-watchlist-title" data-action="toggle-watchlist-accordion" style="cursor:pointer" title="Click to collapse / expand watchlist">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <span>Starred Watchlist</span>
+                            <span id="watchlist-count" style="color:var(--g);font-family:var(--font-mono)">3</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <button class="sidebar-watchlist-add-trigger" id="sidebar-watchlist-add-btn" title="Add / manage watchlist stocks">＋</button>
+                            <svg class="watchlist-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sidebar-watchlist-collapsible" id="sidebar-watchlist-collapsible">
+                        <!-- Quick Add Dropdown / Search Box (collapsible) -->
+                        <div class="sidebar-watchlist-quick-add" id="sidebar-watchlist-quick-add" style="display:none">
+                            <input type="text" id="sidebar-watchlist-search-input" placeholder="Add stock (e.g. TCS)..." autocomplete="off">
+                            <div class="watchlist-quick-dropdown" id="sidebar-watchlist-dropdown"></div>
+                        </div>
+                        <div class="sidebar-watchlist-list" id="sidebar-watchlist">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="market-status-card">
+                    <span>● NSE / BSE Live</span>
+                    <span style="font-family:var(--font-mono)">15m Delay</span>
+                </div>
+                <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle White or Midnight Theme">
+                    <span id="theme-btn-icon">☀️</span>
+                    <span id="theme-btn-text">Switch to White</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-content" role="main">
+
+            <!-- Top Action Bar -->
+            <div class="top-bar-controls">
+                <button class="mobile-menu-trigger" id="mobile-menu-btn" aria-label="Toggle Mobile Sidebar">
+                    ☰
+                </button>
+
+                <div class="top-bar-meta">
+                    <!-- Live Market Data Feed Control & Status -->
+                    <div class="live-feed-pill" id="live-feed-pill" title="Live Market Data Engine">
+                        <span class="live-feed-beacon" id="live-feed-beacon"></span>
+                        <span class="live-feed-text" id="live-feed-status">Live Feed</span>
+                        <span class="live-feed-countdown font-mono" id="live-feed-timer">30s</span>
+                        <button class="live-sync-icon-btn" id="manual-sync-btn"
+                            title="Click to refresh live market data immediately" aria-label="Refresh Data">
+                            <span id="sync-icon">🔄</span>
+                        </button>
+                    </div>
+
+                    <div class="timeframe-badge-switch" role="group" aria-label="Timeframe selection">
+                        <button class="timeframe-btn active" data-tf="15m">15m</button>
+                        <button class="timeframe-btn" data-tf="d">Daily (D)</button>
+                        <button class="timeframe-btn" data-tf="w">Weekly (W)</button>
+                    </div>
+                    <div class="data-delay-note-tag" id="live-source-tag">
+                        <span>📡</span>
+                        <span id="source-label">Live Market Feed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic View Container -->
+            <div id="view-container">
+                <!-- Rendered dynamically by script.js -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Dialog: Ticker Settings (Exact Design Match) -->
+    <div class="modal-overlay-backdrop" id="ticker-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-ticker-title">
+        <div class="modal-content-window ticker-settings-window">
+            <!-- Modal Header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+                <h3 id="modal-ticker-title" style="font-size:16px;font-weight:600;color:var(--ink);margin:0;">
+                    Ticker Settings
+                </h3>
+                <button class="modal-close-trigger" id="ticker-modal-close-btn" style="background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;line-height:1;padding:4px;" aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Setting Row: Speed -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+                <span style="font-size:14px;color:var(--mu);font-weight:500;">Speed</span>
+                <div style="width:160px;display:flex;flex-direction:column;align-items:center;">
+                    <div id="ticker-speed-label" style="font-size:12px;color:var(--ink);font-weight:600;margin-bottom:2px;">Normal</div>
+                    <input type="range" id="ticker-speed-range" min="1" max="3" step="1" value="2" class="ticker-range-slider" />
+                </div>
+            </div>
+
+            <!-- Setting Row: Show price change -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <span style="font-size:14px;color:var(--ink);font-weight:500;">Show price change</span>
+                <label class="ticker-apple-switch">
+                    <input type="checkbox" id="ticker-toggle-price" checked>
+                    <span class="ticker-apple-slider"></span>
+                </label>
+            </div>
+
+            <!-- Setting Row: Show % Change -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+                <span style="font-size:14px;color:var(--ink);font-weight:500;">Show % Change</span>
+                <label class="ticker-apple-switch">
+                    <input type="checkbox" id="ticker-toggle-percent" checked>
+                    <span class="ticker-apple-slider"></span>
+                </label>
+            </div>
+
+            <!-- Section: Display Stocks -->
+            <div>
+                <div style="font-size:14px;font-weight:500;color:var(--mu);margin-bottom:10px;">Display Stocks</div>
+                <div class="ticker-stocks-card" id="ticker-stocks-card">
+                    <!-- Items List -->
+                    <div id="ticker-stocks-list-items" style="display:flex;flex-direction:column;max-height:240px;overflow-y:auto;">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+                    <!-- + Add Stock Trigger Button -->
+                    <div id="ticker-add-stock-trigger" class="ticker-add-stock-trigger">
+                        <span>+ Add Stock</span>
+                    </div>
+
+                    <!-- Inline Add Search Form (Expands when clicking + Add Stock) -->
+                    <div id="ticker-inline-search-wrap" class="ticker-inline-search-wrap" style="display:none;">
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="text" id="ticker-inline-search-input" placeholder="Search stock or index (e.g. RELIANCE, TCS, ZOMATO)..." class="screener-input" style="flex:1;font-size:12px;padding:6px 10px;" autocomplete="off" />
+                            <button id="ticker-inline-cancel-btn" type="button" style="background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:4px;">✕</button>
+                        </div>
+                        <div id="ticker-inline-search-results" style="max-height:140px;overflow-y:auto;margin-top:8px;display:none;flex-direction:column;gap:2px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog: Simulated Screenshot Upload (FEATURE 12) -->
+    <div class="modal-overlay-backdrop" id="upload-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-upload-title">
+        <div class="modal-content-window">
+            <div class="modal-header-row">
+                <h3 id="modal-upload-title" style="font-size:16px;font-weight:700">Import Holdings Screenshot</h3>
+                <button class="modal-close-trigger" id="modal-close-btn">&times;</button>
+            </div>
+            <p style="font-size:12px;color:var(--mu);margin-bottom:16px">
+                Upload a screenshot of your Zerodha, Groww, or AngelOne holdings page. Our optical parser will extract
+                holdings without asking for broker passwords or OTPs.
+            </p>
+
+            <div class="upload-drop-zone" id="upload-drop-zone">
+                <div style="font-size:32px;margin-bottom:8px">📷</div>
+                <div style="font-weight:600;margin-bottom:4px">Click or drag image file here</div>
+                <div style="font-size:11px;color:var(--mu)">Supports PNG, JPG, or PDF statement</div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px">
+                <button class="pill-segment-btn" id="modal-cancel-btn">Cancel</button>
+                <button class="row-action-btn" id="simulate-ocr-btn" style="padding:8px 16px">Simulate
+                    Auto-Extract</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog: Add / Edit Holding (Multi-Demat Portfolio Tracker) -->
+    <div class="modal-overlay-backdrop" id="holding-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-holding-title" style="display:none;">
+        <div class="modal-content-window" style="max-width: 480px;">
+            <div class="modal-header-row">
+                <h3 id="modal-holding-title" style="font-size:18px;font-weight:700;color:var(--ink);margin:0;">Add holding</h3>
+                <button class="modal-close-trigger" id="holding-modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            
+            <form id="holding-modal-form" style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
+                <input type="hidden" id="holding-edit-id" value="">
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div style="position:relative;">
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Symbol <span style="color:var(--r)">*</span></label>
+                        <input type="text" id="holding-symbol-input" required placeholder="e.g. NTPC" autocomplete="off" style="width:100%;text-transform:uppercase;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
+                        <div id="holding-cmp-indicator" style="display:none;font-size:11px;font-weight:600;color:var(--g);margin-top:5px;align-items:center;gap:6px;">
+                            <span style="display:inline-block;width:6px;height:6px;background:var(--g);border-radius:50%;"></span>
+                            <span id="holding-cmp-text">Live CMP: ₹0.00</span>
+                            <button type="button" id="holding-use-cmp-btn" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--g);border-radius:4px;font-size:10px;font-weight:700;padding:1px 6px;cursor:pointer;">Use as Buy Price</button>
+                        </div>
+                        <div id="holding-symbol-autocomplete" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--bdr);border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);"></div>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Exchange</label>
+                        <select id="holding-exchange-input" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                            <option value="NSE">NSE (Equities / ETFs)</option>
+                            <option value="BSE">BSE (Equities)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Demat / Broker Account</label>
+                        <select id="holding-broker-input" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                            <option value="Zerodha">Zerodha (Kite)</option>
+                            <option value="Groww">Groww</option>
+                            <option value="Angel One">Angel One</option>
+                            <option value="Dhan">Dhan</option>
+                            <option value="Upstox">Upstox</option>
+                            <option value="ICICI Direct">ICICI Direct</option>
+                            <option value="HDFC Sky">HDFC Sky</option>
+                            <option value="Kotak Neo">Kotak Neo</option>
+                            <option value="Consolidated">Consolidated / Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Name (optional)</label>
+                        <input type="text" id="holding-name-input" placeholder="e.g. NTPC Ltd" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Buy price <span style="color:var(--r)">*</span></label>
+                        <input type="number" step="any" min="0" required id="holding-buyprice-input" placeholder="e.g. 330" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Quantity <span style="color:var(--r)">*</span></label>
+                        <input type="number" step="any" min="0.0001" required id="holding-qty-input" placeholder="e.g. 1" value="1" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Yahoo symbol (optional override)</label>
+                    <input type="text" id="holding-yahoo-input" placeholder="Auto: NTPC.NS" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--mu);font-size:12px;font-family:var(--font-mono);box-sizing:border-box;">
+                    <div style="font-size:11px;color:var(--mu);margin-top:4px;line-height:1.4;">Leave blank to auto-build from symbol + exchange. Live CMP updates automatically via exchange feeds.</div>
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px;">
+                    <button type="button" class="pill-segment-btn" id="holding-modal-cancel-btn" style="padding:8px 18px;font-size:13px;">Cancel</button>
+                    <button type="submit" id="holding-modal-submit-btn" style="background:var(--g);color:#060d09;border:none;border-radius:20px;padding:8px 22px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(34,197,94,0.35);">Add holding</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Dialog: User Account & Profile Settings -->
+    <div class="modal-overlay-backdrop" id="user-profile-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-profile-title">
+        <div class="modal-content-window" style="max-width: 440px;">
+            <div class="modal-header-row">
+                <h3 id="modal-profile-title"
+                    style="font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px">
+                    <span>👤</span>
+                    <span>Trader Account &amp; Settings</span>
+                </h3>
+                <button class="modal-close-trigger" id="user-profile-modal-close-btn">&times;</button>
+            </div>
+            <div id="user-profile-modal-body">
+                <!-- Rendered dynamically via renderUserProfileModal() -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog: TradingView Symbol Search & Stock Switcher -->
+    <div class="modal-overlay-backdrop" id="symbol-search-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-symbol-search-title" style="display:none;">
+        <div class="modal-content-window symbol-search-window">
+            <div class="symbol-search-topbar">
+                <span class="symbol-search-icon">🔍</span>
+                <input type="text" id="symbol-search-input" class="symbol-search-input"
+                    placeholder="Search symbol or company name... (e.g. RELIANCE, TCS, IRFC)"
+                    autocomplete="off" spellcheck="false">
+                <button type="button" class="modal-close-trigger" id="symbol-search-close-btn"
+                    style="background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1;padding:4px;"
+                    aria-label="Close">&times;</button>
+            </div>
+            <div class="symbol-search-filter-pills">
+                <button class="symbol-filter-pill active" data-symbol-filter="all">All Stocks</button>
+                <button class="symbol-filter-pill" data-symbol-filter="nifty50">Nifty 50</button>
+                <button class="symbol-filter-pill" data-symbol-filter="gainers">Gainers ↗</button>
+                <button class="symbol-filter-pill" data-symbol-filter="losers">Losers ↘</button>
+                <button class="symbol-filter-pill" data-symbol-filter="fno">F&amp;O Heavyweights</button>
+            </div>
+            <div class="symbol-search-results-box" id="symbol-search-results">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="symbol-search-bottom-bar">
+                <span>Tip: <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↑</kbd> <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↓</kbd> navigate &bull; <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Enter</kbd> select &bull; <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Esc</kbd> close</span>
+                <span id="symbol-search-count-label">0 stocks</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Shelf -->
+    <div class="toast-notification-shelf" id="toast-shelf" aria-live="polite"></div>
+
+    <!-- Main JavaScript File -->
+    <script src="script.js?v=4.1.9"></script>
+</body>
+
+</html>

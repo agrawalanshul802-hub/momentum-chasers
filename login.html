@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Momentum Chasers — Terminal Login</title>
+  <link rel="icon" type="image/png" href="logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="login-styles.css?v=3.6.1">
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: #040b1c;
+      overflow: hidden;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+
+  <section id="login">
+    <canvas id="chart"></canvas>
+    <div class="card" id="card">
+      <div id="logoL"></div>
+      <h1>Welcome back, chaser</h1>
+      <p class="sub">Sign in to access real-time NSE/BSE momentum feeds</p>
+
+      <!-- Google Sign-In Option -->
+      <button class="google-btn" id="google-go" type="button" title="Sign in with your Google account">
+        <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="#4285F4"
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+          <path fill="#34A853"
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+          <path fill="#FBBC05"
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+          <path fill="#EA4335"
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <div class="login-divider">
+        <span>or sign in with email</span>
+      </div>
+
+      <!-- Default Email & Password Login -->
+      <form id="login-form" onsubmit="return false;">
+        <label for="email">EMAIL</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"
+          value="trader@momentumchasers.com" required>
+        <label for="pw">PASSWORD</label>
+        <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" value="momentum2026"
+          required>
+
+        <div class="login-options-row">
+          <label class="login-remember">
+            <input type="checkbox" id="remember-me" checked>
+            <span>Remember me</span>
+          </label>
+          <a href="javascript:void(0)" class="login-forgot-link" id="forgot-pw">Forgot password?</a>
+        </div>
+
+        <button class="primary" id="go" type="button">
+          <span>SIGN IN TO TERMINAL</span>
+          <span style="font-size:16px">→</span>
+        </button>
+      </form>
+
+      <div class="hint">⚡ Instant access: Email login or Google 1-click both active</div>
+      <button type="button" class="login-visitor-link" id="skip-visitor">Skip &amp; browse terminal as visitor
+        →</button>
+    </div>
+  </section>
+
+  <div id="intro" aria-hidden="true">
+    <div id="grid"></div>
+    <div id="vig"></div>
+    <div id="cam">
+      <div id="rig">
+        <div id="logoI"></div>
+      </div>
+    </div>
+    <div id="flash"></div>
+    <div id="pt"></div>
+    <div id="pb"></div>
+    <div id="seam"></div>
+    <div id="nv"></div>
+    <button id="skip" type="button">Skip</button>
+    <div id="done">
+      <p>Intro finished. Launching Momentum Chasers terminal...</p><button id="replay" type="button">Replay
+        intro</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var NEXT_URL = "index.html#home";
+
+      var RNG = [[23.66, 27.15], [29.03, 32.53], [34.05, 37.46], [38.71, 42.11], [43.37, 46.77], [48.12, 51.52], [52.96, 56.45], [58.06, 61.56], [63.26, 66.76], [68.19, 71.59]];
+      var $ = function (id) { return document.getElementById(id) };
+      var intro = $('intro'), login = $('login'), cam = $('cam'), rig = $('rig');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var timers = []; function later(f, ms) { timers.push(setTimeout(f, ms)) } function clear() { timers.forEach(clearTimeout); timers = [] }
+
+      function logoHTML() {
+        var h = '<div class="logo">';
+        RNG.forEach(function (r, i) { h += '<div class="cd" style="--i:' + i + ';clip-path:inset(0 ' + (100 - r[1] - 0.6).toFixed(2) + '% 0 ' + (r[0] - 0.6).toFixed(2) + '%)"></div>' });
+        h += '<div class="glow"><div class="bw"><div class="bull"></div></div></div>';
+        h += '<div class="tw"><div class="tx tx1"></div><div class="tx tx2"></div></div></div>';
+        return h;
+      }
+      $('logoL').innerHTML = logoHTML();
+      $('logoI').innerHTML = logoHTML();
+      var logoI = $('logoI').firstChild;
+
+      /* ---- live scrolling candlestick background ---- */
+      var cv = $('chart'), ctx = cv.getContext('2d'), W, H, cw = 26, data = [], off = 0, raf, p = .5, dpr = Math.min(2, window.devicePixelRatio || 1);
+      function nxt() { var o = p; p += (Math.random() - .47) * .07 + (.5 - p) * .03; var c = p; return { o: o, c: c, h: Math.max(o, c) + Math.random() * .03, l: Math.min(o, c) - Math.random() * .03 } }
+      function size() {
+        W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        while (data.length < W / cw + 3) data.push(nxt())
+      }
+      function Y(v) { return H * .82 - v * H * .62 }
+      function draw() {
+        off += .35; if (off >= cw) { off -= cw; data.shift(); data.push(nxt()) }
+        ctx.clearRect(0, 0, W, H);
+        data.forEach(function (d, i) {
+          var x = i * cw - off, up = d.c >= d.o, col = up ? '#19d46a' : '#e0342b';
+          ctx.strokeStyle = ctx.fillStyle = col; ctx.globalAlpha = .75; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(x + cw / 2 - 3, Y(d.h)); ctx.lineTo(x + cw / 2 - 3, Y(d.l)); ctx.stroke();
+          ctx.fillRect(x + 3, Y(Math.max(d.o, d.c)), cw - 12, Math.max(2, Math.abs(Y(d.o) - Y(d.c))))
+        });
+        var e = data[0].c; ctx.beginPath(); ctx.globalAlpha = 1; ctx.strokeStyle = '#7fb0ff'; ctx.lineWidth = 2.2; ctx.shadowColor = '#5a96ff'; ctx.shadowBlur = 12;
+        data.forEach(function (d, i) { e = e * .88 + d.c * .12; var x = i * cw - off + cw / 2 - 3; i ? ctx.lineTo(x, Y(e)) : ctx.moveTo(x, Y(e)) }); ctx.stroke(); ctx.shadowBlur = 0;
+        raf = requestAnimationFrame(draw)
+      }
+      size(); addEventListener('resize', size); draw();
+
+      /* ---- card tilt ---- */
+      var card = $('card');
+      login.addEventListener('mousemove', function (e) {
+        var x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
+        card.style.transform = 'perspective(900px) rotateY(' + x * 7 + 'deg) rotateX(' + (-y * 7) + 'deg)'
+      });
+      login.addEventListener('mouseleave', function () {
+        card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+      });
+
+      /* ---- intro ---- */
+      function el(c, css, parent) { var d = document.createElement('div'); d.className = c; d.style.cssText = css; parent.appendChild(d); return d }
+      function impact() {
+        rig.classList.add('shake'); $('flash').classList.add('hit');
+        var box = logoI;
+        el('ring', 'left:42%;top:84%;', box);
+        for (var i = 0; i < 26; i++) {
+          var a = Math.random() * Math.PI, s = 60 + Math.random() * 180;
+          el('dust', 'left:42%;top:84%;--dx:' + (Math.cos(a) * s * (Math.random() > .5 ? 1 : -1)).toFixed(0) + 'px;--dy:' + (-Math.sin(a) * s * .7).toFixed(0) + 'px;animation-delay:' + (Math.random() * .1).toFixed(2) + 's', box)
+        }
+      }
+      var pendingUser = null;
+
+      function finish(customUser) {
+        clear();
+        cancelAnimationFrame(raf);
+        var user = customUser || pendingUser;
+        if (!user) {
+          var emailVal = ($('email') && $('email').value.trim()) || "trader@momentumchasers.com";
+          var nameVal = emailVal.split("@")[0].toUpperCase() || "PRO TRADER";
+          user = {
+            name: nameVal,
+            email: emailVal,
+            plan: "PRO Terminal",
+            avatar: nameVal.charAt(0) || "⚡",
+            provider: "default",
+            broker: "Kite / Demat Linked"
+          };
+        }
+        try {
+          localStorage.setItem("momentum_user", JSON.stringify(user));
+        } catch (e) { }
+        location.href = NEXT_URL;
+      }
+
+      function play(customUser) {
+        if (customUser) pendingUser = customUser;
+        clear(); cancelAnimationFrame(raf);
+        login.style.display = 'none';
+        intro.className = 'on'; intro.setAttribute('aria-hidden', 'false');
+        cam.classList.remove('zoom'); rig.classList.remove('shake'); $('flash').classList.remove('hit');
+        logoI.querySelectorAll('.ring,.dust').forEach(function (n) { n.remove() });
+        document.querySelectorAll('.sl').forEach(function (n) { n.remove() });
+        logoI.classList.remove('play'); void logoI.offsetWidth;
+        if (reduce) { later(function () { finish(customUser); }, 700); return }
+        logoI.classList.add('play');
+        for (var i = 0; i < 16; i++)el('sl', 'top:' + (20 + Math.random() * 60).toFixed(1) + '%;width:' + (30 + Math.random() * 50).toFixed(0) + '%;margin-left:' + (Math.random() * 30).toFixed(0) + '%;animation-delay:' + (1.45 + Math.random() * .25).toFixed(2) + 's', cam);
+        later(impact, 2150);
+        later(function () {
+          intro.classList.add('seam');
+          intro.classList.add('end');
+        }, 3500);
+        later(function () { finish(customUser); }, 4750);
+      }
+
+      // 1. Default Email & Password Login
+      $('go').onclick = function () {
+        if (!$('email').value.trim() || !$('pw').value) {
+          (!$('email').value.trim() ? $('email') : $('pw')).focus();
+          return;
+        }
+        play();
+      };
+
+      // 2. Google 1-Click Login
+      var googleBtn = $('google-go');
+      if (googleBtn) {
+        googleBtn.onclick = function () {
+          var gUser = {
+            name: "Google Trader",
+            email: "trader.google@gmail.com",
+            plan: "PRO Terminal",
+            avatar: "G",
+            provider: "google",
+            broker: "Kite / Demat Linked"
+          };
+          play(gUser);
+        };
+      }
+
+      // 3. Forgot Password Modal/Alert
+      var forgotLink = $('forgot-pw');
+      if (forgotLink) {
+        forgotLink.onclick = function () {
+          var em = ($('email') && $('email').value.trim()) || "your email";
+          alert("A secure password reset link has been dispatched to: " + em + "\n\n(Demo environment: any password will allow terminal access)");
+        };
+      }
+
+      $('skip-visitor').onclick = function () {
+        location.href = NEXT_URL;
+      };
+      addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && login.style.display !== 'none') $('go').click();
+      });
+      $('skip').onclick = function () { finish(); };
+      $('replay').onclick = function () { intro.className = ''; cam.classList.remove('zoom'); login.style.display = 'grid'; draw() };
+    })();
+  </script>
+</body>
+
+</html>
