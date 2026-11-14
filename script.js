@@ -69,6 +69,59 @@
     ["EICHERMOT", "LC", "Automobiles", 7650.00, 1.34, "abr", "a", 2, { pe: 34.9, pb: 8.1, rev: 6, profit: 8, name: "Eicher Motors Ltd (Royal Enfield)", high52: 8233.00, low52: 6439.00, results: "2026-11-12", resultsStatus: "Confirmed" }]
   ];
 
+  // Comprehensive stock symbol & search typo aliases (Available globally throughout app)
+  const STOCK_TYPO_ALIASES = {
+    "TTKPRETIG": "TTKPRESTIG",
+    "TTK": "TTKPRESTIG",
+    "PRESTIGE": "TTKPRESTIG",
+    "TTKPRESTIGE": "TTKPRESTIG",
+    "SURAKSH": "SURAKSHA",
+    "SURAKSHADIAG": "SURAKSHA",
+    "SWIGY": "SWIGGY",
+    "ZOMAT": "ZOMATO",
+    "ETERNAL": "ZOMATO",
+    "TATAMOTOR": "TATAMOTORS",
+    "TATAMOT": "TATAMOTORS",
+    "TATASTEEL": "TATASTEEL",
+    "TATAPOWER": "TATAPOWER",
+    "RELIANC": "RELIANCE",
+    "RIL": "RELIANCE",
+    "INFOSYS": "INFY",
+    "HDFC": "HDFCBANK",
+    "ICICI": "ICICIBANK",
+    "SBI": "SBIN",
+    "STATEBANK": "SBIN",
+    "BAJAJ": "BAJAJ-AUTO",
+    "BAJAJAUTO": "BAJAJ-AUTO",
+    "BAJAJFIN": "BAJFINANCE",
+    "WAAREE": "WAAREEENER",
+    "WAARE": "WAAREEENER",
+    "PREMIER": "PREMIERENE",
+    "SUZLO": "SUZLON",
+    "ONE97": "PAYTM",
+    "LALPATH": "LALPATHLAB",
+    "DRLAL": "LALPATHLAB",
+    "METROPOL": "METROPOLIS",
+    "VIJAY": "VIJAYA",
+    "THYRO": "THYROCARE",
+    "APOLLO": "APOLLOHOSP",
+    "PIDILITE": "PIDILITIND",
+    "EICHER": "EICHERMOT",
+    "EICHERMOT": "EICHERMOT",
+    "EICHERMOTORS": "EICHERMOT",
+    "ROYALENFIELD": "EICHERMOT",
+    "ROYAL-ENFIELD": "EICHERMOT",
+    "ENFIELD": "EICHERMOT",
+    "ROYAL": "EICHERMOT",
+    "BULLET": "EICHERMOT",
+    "HERO": "HEROMOTOCO",
+    "HEROMOTO": "HEROMOTOCO",
+    "HEROMOTORCORP": "HEROMOTOCO",
+    "HEROHONDA": "HEROMOTOCO",
+    "MARUTI": "MARUTI",
+    "SUZUKI": "MARUTI"
+  };
+
   // Helper to compute Distance from All-Time High / 52W High
   function getStockAthDistance(stock) {
     const curPrice = Number(stock[3]) || 0;
@@ -5112,7 +5165,10 @@
 
   const getStockBySymbol = sym => {
     if (!sym) return ST[0];
-    const cleanSym = String(sym).trim().toUpperCase();
+    let cleanSym = String(sym).trim().toUpperCase();
+    if (typeof resolveStockSymbol === "function") {
+      cleanSym = resolveStockSymbol(cleanSym) || cleanSym;
+    }
     const found = ST.find(s => s[0] === cleanSym || s[0] === sym);
     if (found) return found;
 
@@ -5734,10 +5790,15 @@
     }
 
     if (suggestions.length === 0) {
+      const cleanUpper = (resolvedTypo || q).toUpperCase();
       resultsContainer.style.display = "flex";
       resultsContainer.innerHTML = `
-        <div style="padding:10px;text-align:center;color:var(--mu);font-size:12px;">
-          No matching stocks found. Press Enter to lookup live on NSE.
+        <div class="ticker-inline-suggestion-row" data-symbol="${cleanUpper}" data-name="${cleanUpper}" data-type="stock">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <strong style="color:var(--ink);font-size:13px;">${cleanUpper}</strong>
+            <span style="color:var(--mu);font-size:12px;">Add to ticker</span>
+          </div>
+          <span style="font-size:11px;color:var(--g);font-weight:600;">+ Add</span>
         </div>
       `;
       return;
@@ -5758,8 +5819,14 @@
   // Add stock to display list
   async function addStockToTicker(stockItem) {
     if (!stockItem) return;
-    const sym = typeof stockItem === "string" ? stockItem.trim().toUpperCase() : (stockItem.id || "").toUpperCase();
-    const name = typeof stockItem === "string" ? sym : (stockItem.name || sym);
+    let sym = typeof stockItem === "string" ? stockItem.trim().toUpperCase() : (stockItem.id || "").toUpperCase();
+    if (typeof resolveStockSymbol === "function") {
+      sym = resolveStockSymbol(sym) || sym;
+    }
+    const resolvedStock = typeof findStockInUniverse === "function" ? findStockInUniverse(sym) : null;
+    const name = (typeof stockItem === "object" && stockItem.name && stockItem.name !== stockItem.id)
+      ? stockItem.name
+      : (resolvedStock?.name || (typeof getStockBySymbol === "function" ? getStockBySymbol(sym)?.[8]?.name : null) || sym);
     const type = typeof stockItem === "string" ? "stock" : (stockItem.type || "stock");
 
     if (!sym) return;
@@ -5847,8 +5914,16 @@
       });
       searchInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter" && this.value.trim()) {
-          const sym = this.value.trim().toUpperCase();
-          addStockToTicker(sym);
+          const firstSugg = searchResults?.querySelector(".ticker-inline-suggestion-row");
+          if (firstSugg) {
+            const sym = firstSugg.dataset.symbol;
+            const name = firstSugg.dataset.name;
+            const type = firstSugg.dataset.type;
+            addStockToTicker({ id: sym, name, type });
+          } else {
+            const sym = this.value.trim().toUpperCase();
+            addStockToTicker(sym);
+          }
           this.value = "";
           if (searchWrap) searchWrap.style.display = "none";
           if (addTrigger) addTrigger.style.display = "flex";
@@ -12786,48 +12861,7 @@
     return { symbol: targetKey, price: 565.10, chg: -2.55, cap: "MC", sector: "Consumer Durables", name: targetKey, isLive: true };
   }
 
-  // Common Indian Equity Ticker & Name Typo Aliases (e.g. TTKPRETIG -> TTKPRESTIG)
-  const STOCK_TYPO_ALIASES = {
-    "TTKPRETIG": "TTKPRESTIG",
-    "TTK": "TTKPRESTIG",
-    "PRESTIGE": "TTKPRESTIG",
-    "TTKPRESTIGE": "TTKPRESTIG",
-    "SURAKSH": "SURAKSHA",
-    "SURAKSHADIAG": "SURAKSHA",
-    "SWIGY": "SWIGGY",
-    "ZOMAT": "ZOMATO",
-    "ETERNAL": "ZOMATO",
-    "TATAMOTOR": "TATAMOTORS",
-    "TATAMOT": "TATAMOTORS",
-    "TATASTEEL": "TATASTEEL",
-    "TATAPOWER": "TATAPOWER",
-    "RELIANC": "RELIANCE",
-    "RIL": "RELIANCE",
-    "INFOSYS": "INFY",
-    "HDFC": "HDFCBANK",
-    "ICICI": "ICICIBANK",
-    "SBI": "SBIN",
-    "STATEBANK": "SBIN",
-    "BAJAJ": "BAJAJ-AUTO",
-    "BAJAJAUTO": "BAJAJ-AUTO",
-    "BAJAJFIN": "BAJFINANCE",
-    "WAAREE": "WAAREEENER",
-    "WAARE": "WAAREEENER",
-    "PREMIER": "PREMIERENE",
-    "SUZLO": "SUZLON",
-    "ONE97": "PAYTM",
-    "LALPATH": "LALPATHLAB",
-    "DRLAL": "LALPATHLAB",
-    "METROPOL": "METROPOLIS",
-    "VIJAY": "VIJAYA",
-    "THYRO": "THYROCARE",
-    "APOLLO": "APOLLOHOSP",
-    "PIDILITE": "PIDILITIND",
-    "EICHER": "EICHERMOT",
-    "HERO": "HEROMOTOCO",
-    "MARUTI": "MARUTI",
-    "SUZUKI": "MARUTI"
-  };
+  // Levenshtein distance helper for fuzzy matching
 
   function levenshteinDistance(a, b) {
     const m = a.length, n = b.length;
