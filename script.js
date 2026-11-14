@@ -12977,8 +12977,10 @@
     const concallItems = getEventsForCategory("concall", State.eventsYear, State.eventsMonth);
     const actionItems = getEventsForCategory("actions", State.eventsYear, State.eventsMonth);
     const holidayItems = getEventsForCategory("holidays", State.eventsYear, State.eventsMonth);
+    const totalEvents = ecoItems.length + earnItems.length + concallItems.length + actionItems.length + holidayItems.length;
 
     const tabs = [
+      { key: "all", label: `All Events (${totalEvents})` },
       { key: "economic", label: `Economic (${ecoItems.length})` },
       { key: "earnings", label: `Earnings (${earnItems.length})` },
       { key: "concall", label: `Upcoming Concall (${concallItems.length})` },
@@ -12997,6 +12999,7 @@
       contentHtml = renderEventsCalendarGrid();
     } else {
       switch (State.eventsTab) {
+        case "all": contentHtml = renderEventsAllTable(); break;
         case "earnings": contentHtml = renderEventsEarningsTable(); break;
         case "concall": contentHtml = renderEventsConcallTable(); break;
         case "actions": contentHtml = renderEventsActionsTable(); break;
@@ -13073,7 +13076,7 @@
           </div>
           <div class="events-search-wrap">
             <input type="text" class="global-search-input" id="events-search-box"
-              placeholder="Search ${State.eventsTab}..." value="${State.eventsSearch}"
+              placeholder="Search ${State.eventsTab === 'all' ? 'all events' : State.eventsTab}..." value="${escapeHtml(State.eventsSearch)}"
               style="width:220px;padding:6px 12px;font-size:12px" />
           </div>
         </div>
@@ -13803,13 +13806,246 @@
     `;
   }
 
-  // Dynamic Full Interactive Calendar Grid
+  // 0. Consolidated All-Events Table (Multi-category master feed)
+  function renderEventsAllTable() {
+    const q = (State.eventsSearch || "").trim().toLowerCase();
+    const year = State.eventsYear;
+    const month = State.eventsMonth;
+    const monthLabel = `${EVENTS_MONTH_NAMES[month]} ${year}`;
+
+    const ecos = getEventsForCategory("economic", year, month);
+    const earns = getEventsForCategory("earnings", year, month);
+    const concs = getEventsForCategory("concall", year, month);
+    const acts = getEventsForCategory("actions", year, month);
+    const hols = getEventsForCategory("holidays", year, month);
+
+    const all = [];
+
+    hols.forEach(h => {
+      all.push({
+        category: "holidays",
+        catLabel: "Holiday",
+        badgeClass: "cal-holiday",
+        icon: "🏖️",
+        date: h.date,
+        time: "All Day",
+        symbol: "",
+        title: h.holiday,
+        company: "NSE / BSE Trading Holiday",
+        details: `${h.segments || "Capital Markets & F&O"} — Exchanges Closed`,
+        cmpHtml: `<span class="event-impact-badge high">Markets Closed</span>`,
+        actionsHtml: `<span style="font-size:11px;color:var(--mu)">Holiday</span>`,
+        raw: h
+      });
+    });
+
+    ecos.forEach(e => {
+      all.push({
+        category: "economic",
+        catLabel: "Economic",
+        badgeClass: "cal-economic",
+        icon: "📊",
+        date: e.date,
+        time: e.time,
+        symbol: "",
+        title: e.event,
+        company: e.country,
+        details: `Period: ${e.period} • Impact: ${e.impact.toUpperCase()}`,
+        cmpHtml: `
+          <div style="font-family:var(--font-mono);font-size:11px">
+            <div>Fcst: <strong>${escapeHtml(e.forecast)}</strong></div>
+            <div style="color:var(--mu)">Prior: ${escapeHtml(e.prior)}</div>
+          </div>
+        `,
+        actionsHtml: `<span class="event-impact-badge ${escapeHtml(e.impact)}">${escapeHtml(e.impact)}</span>`,
+        raw: e
+      });
+    });
+
+    earns.forEach(e => {
+      const qQuote = getEventStockLiveQuote(e.symbol);
+      const chgColor = qQuote.chg >= 0 ? "var(--g)" : "var(--r)";
+      const chgSign = qQuote.chg >= 0 ? "+" : "";
+      all.push({
+        category: "earnings",
+        catLabel: "Earnings",
+        badgeClass: "cal-earnings",
+        icon: "📈",
+        date: e.date,
+        time: "Results Out",
+        symbol: e.symbol,
+        title: e.symbol,
+        company: e.company,
+        details: `${e.quarter || "Q2 FY27"} Results (${e.status || "Confirmed"}) • EPS: ₹${e.epsEst || "—"} • Rev: ${e.revEst || "—"}`,
+        cmpHtml: `
+          <div style="text-align:right;font-family:var(--font-mono)">
+            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+          </div>
+        `,
+        actionsHtml: `
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(e.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
+            <button class="row-action-btn" data-action="open-stock" data-symbol="${escapeHtml(e.symbol)}" style="padding:4px 8px;font-size:11px">Quote</button>
+          </div>
+        `,
+        raw: e
+      });
+    });
+
+    concs.forEach(c => {
+      const qQuote = getEventStockLiveQuote(c.symbol);
+      const chgColor = qQuote.chg >= 0 ? "var(--g)" : "var(--r)";
+      const chgSign = qQuote.chg >= 0 ? "+" : "";
+      all.push({
+        category: "concall",
+        catLabel: "Concall",
+        badgeClass: "cal-concall",
+        icon: "🎧",
+        date: c.date,
+        time: c.time,
+        symbol: c.symbol,
+        title: c.symbol,
+        company: c.company,
+        details: `${c.topic} (Attendees: ${c.attendees || "Leadership"})`,
+        cmpHtml: `
+          <div style="text-align:right;font-family:var(--font-mono)">
+            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+          </div>
+        `,
+        actionsHtml: `
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <button class="row-action-btn" data-action="copy-dial-in" data-dial="${escapeHtml(c.dialIn)}" style="padding:4px 8px;font-size:11px">📞 Dial-In</button>
+            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(c.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈</a>
+          </div>
+        `,
+        raw: c
+      });
+    });
+
+    acts.forEach(a => {
+      const qQuote = getEventStockLiveQuote(a.symbol);
+      const chgColor = qQuote.chg >= 0 ? "var(--g)" : "var(--r)";
+      const chgSign = qQuote.chg >= 0 ? "+" : "";
+      all.push({
+        category: "actions",
+        catLabel: "Action",
+        badgeClass: "cal-action",
+        icon: "💰",
+        date: a.exDate || a.recordDate,
+        time: "Ex-Date",
+        symbol: a.symbol,
+        title: a.symbol,
+        company: a.company,
+        details: `${a.type}: ${a.details} ${a.yield ? `• Yield: ${a.yield}` : ""}`,
+        cmpHtml: `
+          <div style="text-align:right;font-family:var(--font-mono)">
+            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+          </div>
+        `,
+        actionsHtml: `
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(a.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
+            <button class="row-action-btn" data-action="open-stock" data-symbol="${escapeHtml(a.symbol)}" style="padding:4px 8px;font-size:11px">Quote</button>
+          </div>
+        `,
+        raw: a
+      });
+    });
+
+    all.sort((a, b) => a.date.localeCompare(b.date));
+
+    let filtered = all.filter(item => {
+      if (!q) return true;
+      return item.date.includes(q) ||
+        item.title.toLowerCase().includes(q) ||
+        item.company.toLowerCase().includes(q) ||
+        item.details.toLowerCase().includes(q) ||
+        (item.symbol && item.symbol.toLowerCase().includes(q)) ||
+        item.catLabel.toLowerCase().includes(q);
+    });
+
+    const rows = filtered.map(item => `
+      <tr class="events-table-row">
+        <td>
+          <span class="cal-event ${item.badgeClass}" style="display:inline-flex;align-items:center;gap:4px">
+            ${item.icon} ${item.catLabel}
+          </span>
+        </td>
+        <td>
+          <div style="font-weight:700;color:var(--ink);font-family:var(--font-mono);font-size:12px">${item.date}</div>
+          <div style="font-size:11px;color:var(--mu)">${item.time}</div>
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${item.symbol ? `
+              <strong style="color:var(--ink);cursor:pointer;font-size:13px" data-action="open-stock" data-symbol="${escapeHtml(item.symbol)}">
+                ${escapeHtml(item.symbol)}
+              </strong>
+            ` : `<strong style="color:var(--ink);font-size:13px">${escapeHtml(item.title)}</strong>`}
+          </div>
+          <div style="font-size:11px;color:var(--mu);margin-top:2px">${escapeHtml(item.company)}</div>
+        </td>
+        <td style="max-width:320px;font-size:12px;color:var(--ink)">
+          ${escapeHtml(item.details)}
+        </td>
+        <td>
+          ${item.cmpHtml}
+        </td>
+        <td style="text-align:right">
+          ${item.actionsHtml}
+        </td>
+      </tr>
+    `).join("");
+
+    return `
+      <div class="events-table-container">
+        <div class="events-sub-bar" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;color:var(--mu);font-weight:600">
+            ${q ? `Search for "${escapeHtml(State.eventsSearch)}" — ` : ""}${filtered.length} Scheduled Events in ${monthLabel}
+          </span>
+          <span style="font-size:11px;color:var(--g);font-weight:600">● Live NSE/BSE Feeds Connected</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table events-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Date &amp; Time</th>
+                <th>Company / Release</th>
+                <th>Details &amp; Agenda</th>
+                <th style="text-align:right">CMP / Forecast</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows || `
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:36px;color:var(--mu);">
+                    <div style="font-size:24px;margin-bottom:8px;">📅</div>
+                    <div style="font-weight:700;color:var(--ink);">No events scheduled for this selection.</div>
+                    <div style="font-size:12px;margin-top:4px;">Try clearing the search query or switching months.</div>
+                  </td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  // Dynamic Full Interactive Calendar Grid (Supports Category Tabs, Real-time Search, and Day Modal)
   function renderEventsCalendarGrid() {
     const year = State.eventsYear;
     const month = State.eventsMonth;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDayOfWeek = new Date(year, month, 1).getDay();
     const monthLabel = `${EVENTS_MONTH_NAMES[month]} ${year}`;
+    const q = (State.eventsSearch || "").trim().toLowerCase();
+    const activeTab = State.eventsTab || "all";
 
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     let gridHtml = daysOfWeek.map(d => `<div class="cal-header-cell">${d}</div>`).join("");
@@ -13824,63 +14060,434 @@
     const isCurrentYearMonth = (year === today.getFullYear() && month === today.getMonth());
     const todayDate = today.getDate();
 
-    const ecosMonth = getEventsForCategory("economic", year, month);
-    const earnsMonth = getEventsForCategory("earnings", year, month);
-    const concsMonth = getEventsForCategory("concall", year, month);
-    const actsMonth = getEventsForCategory("actions", year, month);
-    const holsMonth = getEventsForCategory("holidays", year, month);
+    // Query month data
+    let ecosMonth = getEventsForCategory("economic", year, month);
+    let earnsMonth = getEventsForCategory("earnings", year, month);
+    let concsMonth = getEventsForCategory("concall", year, month);
+    let actsMonth = getEventsForCategory("actions", year, month);
+    let holsMonth = getEventsForCategory("holidays", year, month);
+
+    // Apply text search filter if q is present
+    if (q) {
+      ecosMonth = ecosMonth.filter(e => e.event.toLowerCase().includes(q) || e.country.toLowerCase().includes(q) || e.period.toLowerCase().includes(q));
+      earnsMonth = earnsMonth.filter(e => e.symbol.toLowerCase().includes(q) || e.company.toLowerCase().includes(q) || (e.sector && e.sector.toLowerCase().includes(q)));
+      concsMonth = concsMonth.filter(c => c.symbol.toLowerCase().includes(q) || c.company.toLowerCase().includes(q) || c.topic.toLowerCase().includes(q) || (c.attendees && c.attendees.toLowerCase().includes(q)));
+      actsMonth = actsMonth.filter(a => a.symbol.toLowerCase().includes(q) || a.company.toLowerCase().includes(q) || a.type.toLowerCase().includes(q) || a.details.toLowerCase().includes(q));
+      holsMonth = holsMonth.filter(h => h.holiday.toLowerCase().includes(q) || (h.segments && h.segments.toLowerCase().includes(q)));
+    }
+
+    // Determine which categories to include based on activeTab
+    const showHols = (activeTab === "all" || activeTab === "holidays");
+    const showEcos = (activeTab === "all" || activeTab === "economic");
+    const showEarns = (activeTab === "all" || activeTab === "earnings");
+    const showConcs = (activeTab === "all" || activeTab === "concall");
+    const showActs = (activeTab === "all" || activeTab === "actions");
+
+    let totalMonthEventsCount = 0;
 
     // Fill days
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = `${year}-${monthStr}-${String(d).padStart(2, "0")}`;
       const isToday = isCurrentYearMonth && (d === todayDate);
 
-      // Find matching events
-      const ecos = ecosMonth.filter(e => e.date === dateStr);
-      const earns = earnsMonth.filter(e => e.date === dateStr);
-      const concs = concsMonth.filter(e => e.date === dateStr);
-      const acts = actsMonth.filter(e => (e.exDate === dateStr || e.recordDate === dateStr));
-      const hols = holsMonth.filter(e => e.date === dateStr);
+      // Collect all events for day d matching activeTab
+      const dayEvents = [];
 
-      let eventPills = "";
-      hols.forEach(h => {
-        eventPills += `<div class="cal-event cal-holiday" title="${h.holiday}">🏖️ ${h.holiday.slice(0, 16)}</div>`;
-      });
-      ecos.forEach(e => {
-        eventPills += `<div class="cal-event cal-economic" title="${e.event}">📊 ${e.event.slice(0, 16)}</div>`;
-      });
-      earns.forEach(e => {
-        eventPills += `<div class="cal-event cal-earnings" title="${e.symbol} Results">📈 ${e.symbol} Results</div>`;
-      });
-      concs.forEach(c => {
-        eventPills += `<div class="cal-event cal-concall" title="${c.symbol} Concall">🎧 ${c.symbol} Call</div>`;
-      });
-      acts.forEach(a => {
-        eventPills += `<div class="cal-event cal-action" title="${a.symbol} ${a.type}">💰 ${a.symbol} ${a.type}</div>`;
-      });
+      if (showHols) {
+        const hols = holsMonth.filter(e => e.date === dateStr);
+        hols.forEach(h => {
+          dayEvents.push({
+            type: "holiday",
+            badgeClass: "cal-holiday",
+            icon: "🏖️",
+            title: `Holiday: ${h.holiday} (Exchanges Closed)`,
+            text: h.holiday.slice(0, 16),
+            raw: h
+          });
+        });
+      }
 
-      const hasEvents = (ecos.length + earns.length + concs.length + acts.length + hols.length) > 0;
+      if (showEcos) {
+        const ecos = ecosMonth.filter(e => e.date === dateStr);
+        ecos.forEach(e => {
+          dayEvents.push({
+            type: "economic",
+            badgeClass: "cal-economic",
+            icon: "📊",
+            title: `${e.country}: ${e.event} (${e.time})`,
+            text: e.event.slice(0, 16),
+            raw: e
+          });
+        });
+      }
+
+      if (showEarns) {
+        const earns = earnsMonth.filter(e => e.date === dateStr);
+        earns.forEach(e => {
+          dayEvents.push({
+            type: "earnings",
+            badgeClass: "cal-earnings",
+            icon: "📈",
+            title: `${e.symbol} Results (${e.company})`,
+            text: `${e.symbol} Results`,
+            raw: e
+          });
+        });
+      }
+
+      if (showConcs) {
+        const concs = concsMonth.filter(e => e.date === dateStr);
+        concs.forEach(c => {
+          dayEvents.push({
+            type: "concall",
+            badgeClass: "cal-concall",
+            icon: "🎧",
+            title: `${c.symbol} Call (${c.time})`,
+            text: `${c.symbol} Call`,
+            raw: c
+          });
+        });
+      }
+
+      if (showActs) {
+        const acts = actsMonth.filter(e => (e.exDate === dateStr || e.recordDate === dateStr));
+        acts.forEach(a => {
+          dayEvents.push({
+            type: "actions",
+            badgeClass: "cal-action",
+            icon: "💰",
+            title: `${a.symbol} ${a.type} (${a.details})`,
+            text: `${a.symbol} ${a.type}`,
+            raw: a
+          });
+        });
+      }
+
+      totalMonthEventsCount += dayEvents.length;
+      const hasEvents = dayEvents.length > 0;
+
+      // Limit to 3 visible pills
+      const maxVisible = 3;
+      const visible = dayEvents.slice(0, maxVisible);
+      const extraCount = dayEvents.length - maxVisible;
+
+      let eventPills = visible.map(ev => `
+        <div class="cal-event ${ev.badgeClass}" title="${escapeHtml(ev.title)}"
+          data-action="events-cal-day-select" data-day="${dateStr}">
+          ${ev.icon} ${escapeHtml(ev.text)}
+        </div>
+      `).join("");
+
+      if (extraCount > 0) {
+        eventPills += `
+          <div class="cal-more-chip" data-action="events-cal-day-select" data-day="${dateStr}"
+            title="View all ${dayEvents.length} events on ${dateStr}">
+            +${extraCount} more ▾
+          </div>
+        `;
+      }
 
       gridHtml += `
           <div class="cal-day-cell ${isToday ? "today" : ""} ${hasEvents ? "has-events" : ""}"
-            data-action="events-cal-day-select" data-day="${dateStr}">
+            data-action="events-cal-day-select" data-day="${dateStr}"
+            title="${hasEvents ? `Click to view ${dayEvents.length} scheduled events for ${dateStr}` : `No events scheduled for ${dateStr}`}">
             <div class="cal-day-num">${d}</div>
             <div class="cal-events-wrap">${eventPills}</div>
           </div>`;
     }
 
-    return `
-      <div class="ipo-cal-legend" style="margin-bottom:14px">
-        <span class="cal-legend-dot" style="background:#ef4444"></span> Holiday
-        <span class="cal-legend-dot" style="background:#3b82f6"></span> Economic Release
-        <span class="cal-legend-dot" style="background:#22c55e"></span> Corporate Earnings
-        <span class="cal-legend-dot" style="background:#a855f7"></span> Concall
-        <span class="cal-legend-dot" style="background:#f59e0b"></span> Corporate Action (Dividend/Bonus)
+    // Search or Tab Filter Status Banner
+    let filterBanner = "";
+    if (q) {
+      filterBanner = `
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--ink)">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span>🔍 Filtering Calendar for: <strong>"${escapeHtml(State.eventsSearch)}"</strong></span>
+            <span style="color:var(--mu)">(${totalMonthEventsCount} matching events found)</span>
+          </div>
+          <button class="pill-segment-btn" data-action="events-clear-search" style="padding:2px 10px;font-size:11px;cursor:pointer">✕ Clear Search</button>
+        </div>
+      `;
+    } else if (activeTab !== "all") {
+      const catNames = {
+        economic: "Economic Releases",
+        earnings: "Corporate Earnings",
+        concall: "Upcoming Earnings Concalls",
+        actions: "Corporate Actions (Dividends & Bonus)",
+        holidays: "Stock Market Holidays"
+      };
+      filterBanner = `
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:7px 14px;margin-bottom:12px;font-size:12px;color:var(--ink)">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:var(--g)">●</span>
+            <span>Category Filter Active: <strong>${catNames[activeTab] || activeTab}</strong> (${totalMonthEventsCount} events)</span>
+          </div>
+          <button class="pill-segment-btn" data-action="events-tab" data-tab="all" style="padding:2px 10px;font-size:11px;cursor:pointer">Show All Categories</button>
+        </div>
+      `;
+    }
+
+    // Legend with Interactive Pill Toggles
+    const legendHtml = `
+      <div class="ipo-cal-legend" style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="cal-legend-item ${activeTab === "all" ? "active" : ""}" data-action="events-tab" data-tab="all"
+          style="cursor:pointer;font-weight:${activeTab === "all" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "all" ? "var(--g)" : "transparent"};color:var(--ink)">
+          All Categories
+        </span>
+        <span class="cal-legend-item ${activeTab === "holidays" ? "active" : ""}" data-action="events-tab" data-tab="holidays"
+          style="cursor:pointer;font-weight:${activeTab === "holidays" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "holidays" ? "#ef4444" : "transparent"};color:var(--ink)">
+          <span class="cal-legend-dot" style="background:#ef4444"></span> Holiday
+        </span>
+        <span class="cal-legend-item ${activeTab === "economic" ? "active" : ""}" data-action="events-tab" data-tab="economic"
+          style="cursor:pointer;font-weight:${activeTab === "economic" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "economic" ? "#3b82f6" : "transparent"};color:var(--ink)">
+          <span class="cal-legend-dot" style="background:#3b82f6"></span> Economic Release
+        </span>
+        <span class="cal-legend-item ${activeTab === "earnings" ? "active" : ""}" data-action="events-tab" data-tab="earnings"
+          style="cursor:pointer;font-weight:${activeTab === "earnings" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "earnings" ? "#22c55e" : "transparent"};color:var(--ink)">
+          <span class="cal-legend-dot" style="background:#22c55e"></span> Corporate Earnings
+        </span>
+        <span class="cal-legend-item ${activeTab === "concall" ? "active" : ""}" data-action="events-tab" data-tab="concall"
+          style="cursor:pointer;font-weight:${activeTab === "concall" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "concall" ? "#a855f7" : "transparent"};color:var(--ink)">
+          <span class="cal-legend-dot" style="background:#a855f7"></span> Concall
+        </span>
+        <span class="cal-legend-item ${activeTab === "actions" ? "active" : ""}" data-action="events-tab" data-tab="actions"
+          style="cursor:pointer;font-weight:${activeTab === "actions" ? "700" : "500"};padding:3px 8px;border-radius:4px;border:1px solid ${activeTab === "actions" ? "#f59e0b" : "transparent"};color:var(--ink)">
+          <span class="cal-legend-dot" style="background:#f59e0b"></span> Corporate Action (Dividend/Bonus)
+        </span>
       </div>
+    `;
+
+    return `
+      ${filterBanner}
+      ${legendHtml}
       <div class="ipo-calendar-grid">
         ${gridHtml}
       </div>
     `;
+  }
+
+  // Interactive Day Details Modal Renderer
+  function openEventsDayModal(dateStr) {
+    const modal = document.getElementById("events-day-modal");
+    if (!modal) return;
+
+    const parts = dateStr.split("-");
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    const d = parseInt(parts[2], 10);
+    const dateObj = new Date(y, m, d);
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const formattedDate = `${dayNames[dateObj.getDay()]}, ${d} ${EVENTS_MONTH_NAMES[m]} ${y}`;
+
+    // Get events for dateStr
+    const ecos = getEventsForCategory("economic", y, m).filter(e => e.date === dateStr);
+    const earns = getEventsForCategory("earnings", y, m).filter(e => e.date === dateStr);
+    const concs = getEventsForCategory("concall", y, m).filter(e => e.date === dateStr);
+    const acts = getEventsForCategory("actions", y, m).filter(e => (e.exDate === dateStr || e.recordDate === dateStr));
+    const hols = getEventsForCategory("holidays", y, m).filter(e => e.date === dateStr);
+    const totalCount = ecos.length + earns.length + concs.length + acts.length + hols.length;
+
+    const titleEl = document.getElementById("events-day-modal-title");
+    const subEl = document.getElementById("events-day-modal-sub");
+    const bodyEl = document.getElementById("events-day-modal-body");
+    const switchListBtn = document.getElementById("events-day-switch-list-btn");
+
+    if (titleEl) titleEl.textContent = `Scheduled Events — ${formattedDate}`;
+    if (subEl) subEl.textContent = `${totalCount} Scheduled Events across Market & Corporate Releases`;
+    if (switchListBtn) switchListBtn.dataset.day = dateStr;
+
+    let bodyHtml = "";
+
+    // 1. Holiday Section
+    if (hols.length > 0) {
+      bodyHtml += `
+        <div class="events-day-section">
+          <div class="events-day-section-title" style="color:#ef4444">
+            <span>🏖️</span> <span>Stock Market Holiday (${hols.length})</span>
+          </div>
+          ${hols.map(h => `
+            <div class="events-day-card" style="border-left:3px solid #ef4444;background:rgba(239,68,68,0.06)">
+              <div class="events-day-card-left">
+                <strong style="color:var(--ink);font-size:14px">${escapeHtml(h.holiday)}</strong>
+                <span style="font-size:11px;color:var(--mu);margin-top:2px">Trading Segments: ${escapeHtml(h.segments || "Capital Markets, F&O, Debt")}</span>
+              </div>
+              <div class="events-day-card-right">
+                <span class="event-impact-badge high">Markets Closed</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    // 2. Earnings Section
+    if (earns.length > 0) {
+      bodyHtml += `
+        <div class="events-day-section">
+          <div class="events-day-section-title" style="color:#22c55e">
+            <span>📈</span> <span>Corporate Earnings Results (${earns.length})</span>
+          </div>
+          ${earns.map(e => {
+            const q = getEventStockLiveQuote(e.symbol);
+            const chgSign = q.chg >= 0 ? "+" : "";
+            const chgColor = q.chg >= 0 ? "var(--g)" : "var(--r)";
+            return `
+              <div class="events-day-card" style="border-left:3px solid #22c55e">
+                <div class="events-day-card-left">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <strong style="color:var(--ink);font-size:13px;cursor:pointer" data-action="open-stock" data-symbol="${escapeHtml(e.symbol)}">${escapeHtml(e.symbol)}</strong>
+                    <span class="pill-segment-btn" style="padding:1px 6px;font-size:10px">${escapeHtml(e.cap || q.cap)}</span>
+                    <span style="font-size:11px;color:var(--mu)">${escapeHtml(e.company)}</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--mu);margin-top:3px">
+                    ${escapeHtml(e.quarter || "Q2 FY27")} • EPS Est: <strong>₹${escapeHtml(String(e.epsEst))}</strong> • Rev Est: <strong>${escapeHtml(String(e.revEst))}</strong> • Sector: ${escapeHtml(e.sector || q.sector)}
+                  </div>
+                </div>
+                <div class="events-day-card-right">
+                  <div>
+                    <div style="font-weight:700;font-size:13px;font-family:var(--font-mono);color:var(--ink)">₹${formatNumber(q.price, 2)}</div>
+                    <div style="font-size:11px;font-weight:700;font-family:var(--font-mono);color:${chgColor}">${chgSign}${q.chg}%</div>
+                  </div>
+                  <div class="events-day-card-actions">
+                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(e.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
+                    <button class="row-action-btn" data-action="open-stock" data-symbol="${escapeHtml(e.symbol)}" style="padding:4px 8px;font-size:11px">Quote</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // 3. Concalls Section
+    if (concs.length > 0) {
+      bodyHtml += `
+        <div class="events-day-section">
+          <div class="events-day-section-title" style="color:#a855f7">
+            <span>🎧</span> <span>Upcoming Earnings Concalls (${concs.length})</span>
+          </div>
+          ${concs.map(c => {
+            const q = getEventStockLiveQuote(c.symbol);
+            return `
+              <div class="events-day-card" style="border-left:3px solid #a855f7">
+                <div class="events-day-card-left">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <strong style="color:var(--ink);font-size:13px;cursor:pointer" data-action="open-stock" data-symbol="${escapeHtml(c.symbol)}">${escapeHtml(c.symbol)}</strong>
+                    <span style="font-size:11px;color:var(--mu)">${escapeHtml(c.company)}</span>
+                    <span style="font-size:11px;color:#a855f7;font-weight:700">🕒 ${escapeHtml(c.time)}</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--ink);margin-top:3px;font-weight:500">
+                    ${escapeHtml(c.topic)}
+                  </div>
+                  <div style="font-size:10px;color:var(--mu);margin-top:2px">
+                    Attendees: ${escapeHtml(c.attendees || "Senior Leadership")}
+                  </div>
+                </div>
+                <div class="events-day-card-right">
+                  <button class="row-action-btn" data-action="copy-dial-in" data-dial="${escapeHtml(c.dialIn)}" style="padding:4px 10px;font-size:11px;white-space:nowrap">
+                    📞 Copy Dial-In
+                  </button>
+                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(c.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // 4. Corporate Actions Section
+    if (acts.length > 0) {
+      bodyHtml += `
+        <div class="events-day-section">
+          <div class="events-day-section-title" style="color:#f59e0b">
+            <span>💰</span> <span>Corporate Actions (${acts.length})</span>
+          </div>
+          ${acts.map(a => {
+            const q = getEventStockLiveQuote(a.symbol);
+            const isEx = (a.exDate === dateStr);
+            return `
+              <div class="events-day-card" style="border-left:3px solid #f59e0b">
+                <div class="events-day-card-left">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <strong style="color:var(--ink);font-size:13px;cursor:pointer" data-action="open-stock" data-symbol="${escapeHtml(a.symbol)}">${escapeHtml(a.symbol)}</strong>
+                    <span class="action-type-pill bg-amber" style="font-size:10px">${escapeHtml(a.type)}</span>
+                    <span style="font-size:11px;color:var(--mu)">${escapeHtml(a.company)}</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--ink);margin-top:3px">
+                    ${escapeHtml(a.details)} ${a.yield ? `• Yield: <strong>${escapeHtml(a.yield)}</strong>` : ""}
+                  </div>
+                  <div style="font-size:10px;color:var(--mu);margin-top:2px">
+                    ${isEx ? `⚠️ Ex-Date today (${a.exDate})` : `Record Date: ${a.recordDate}`}
+                  </div>
+                </div>
+                <div class="events-day-card-right">
+                  <div>
+                    <div style="font-weight:700;font-size:13px;font-family:var(--font-mono);color:var(--ink)">₹${formatNumber(q.price, 2)}</div>
+                  </div>
+                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(a.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // 5. Economic Releases Section
+    if (ecos.length > 0) {
+      bodyHtml += `
+        <div class="events-day-section">
+          <div class="events-day-section-title" style="color:#3b82f6">
+            <span>📊</span> <span>Macro &amp; Economic Releases (${ecos.length})</span>
+          </div>
+          ${ecos.map(e => `
+            <div class="events-day-card" style="border-left:3px solid #3b82f6">
+              <div class="events-day-card-left">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span class="event-impact-badge ${escapeHtml(e.impact)}">${escapeHtml(e.impact)}</span>
+                  <span style="font-size:11px;color:var(--mu)">${escapeHtml(e.country)}</span>
+                  <span style="font-size:11px;color:#3b82f6;font-weight:700">🕒 ${escapeHtml(e.time)}</span>
+                </div>
+                <div style="font-weight:600;font-size:13px;color:var(--ink);margin-top:3px">
+                  ${escapeHtml(e.event)}
+                </div>
+                <div style="font-size:11px;color:var(--mu);margin-top:2px">
+                  Period: ${escapeHtml(e.period)}
+                </div>
+              </div>
+              <div class="events-day-card-right" style="font-size:12px;font-family:var(--font-mono)">
+                <div><strong>Forecast:</strong> ${escapeHtml(e.forecast)}</div>
+                <div style="color:var(--mu)"><strong>Prior:</strong> ${escapeHtml(e.prior)}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    if (totalCount === 0) {
+      bodyHtml = `
+        <div style="text-align:center;padding:36px 16px;color:var(--mu)">
+          <div style="font-size:36px;margin-bottom:10px">📅</div>
+          <div style="font-size:15px;font-weight:700;color:var(--ink)">No Scheduled Events for ${formattedDate}</div>
+          <div style="font-size:12px;margin-top:4px">Exchanges are open for normal trading sessions with no scheduled earnings or holiday halts.</div>
+        </div>
+      `;
+    }
+
+    if (bodyEl) bodyEl.innerHTML = bodyHtml;
+    modal.style.display = "flex";
+    modal.classList.add("show");
+  }
+
+  function closeEventsDayModal() {
+    const modal = document.getElementById("events-day-modal");
+    if (modal) {
+      modal.style.display = "none";
+      modal.classList.remove("show");
+    }
   }
 
   // Export Events Data to CSV (Filtered by active month and year)
@@ -13891,7 +14498,30 @@
     const year = State.eventsYear;
     const month = State.eventsMonth;
 
-    if (tab === "economic") {
+    if (tab === "all") {
+      headers = ["Category", "Date", "Time", "Symbol/Country", "Event/Company", "Details", "CMP/Impact"];
+      const ecos = getEventsForCategory("economic", year, month);
+      const earns = getEventsForCategory("earnings", year, month);
+      const concs = getEventsForCategory("concall", year, month);
+      const acts = getEventsForCategory("actions", year, month);
+      const hols = getEventsForCategory("holidays", year, month);
+
+      hols.forEach(h => rows.push(["Holiday", h.date, "All Day", "NSE/BSE", `"${h.holiday}"`, `"${h.segments}"`, "Market Closed"]));
+      ecos.forEach(e => rows.push(["Economic", e.date, `"${e.time}"`, `"${e.country}"`, `"${e.event}"`, `"${e.period}"`, `"${e.impact}"`]));
+      earns.forEach(e => {
+        const q = getEventStockLiveQuote(e.symbol);
+        rows.push(["Earnings", e.date, "Results", e.symbol, `"${e.company}"`, `"${e.quarter} EPS: ${e.epsEst} Rev: ${e.revEst}"`, q.price]);
+      });
+      concs.forEach(c => {
+        const q = getEventStockLiveQuote(c.symbol);
+        rows.push(["Concall", c.date, `"${c.time}"`, c.symbol, `"${c.company}"`, `"${c.topic}"`, q.price]);
+      });
+      acts.forEach(a => {
+        const q = getEventStockLiveQuote(a.symbol);
+        rows.push(["Action", a.exDate || a.recordDate, "Ex-Date", a.symbol, `"${a.company}"`, `"${a.type}: ${a.details}"`, q.price]);
+      });
+      rows.sort((a, b) => a[1].localeCompare(b[1]));
+    } else if (tab === "economic") {
       headers = ["Impact", "Country", "Event", "Date", "Time", "Period", "Actual", "Forecast", "Prior"];
       rows = getEventsForCategory("economic", year, month).map(e => [
         e.impact, `"${e.country}"`, `"${e.event}"`, e.date, `"${e.time}"`, `"${e.period}"`, e.actual, e.forecast, e.prior
@@ -15956,6 +16586,12 @@
         return;
       }
 
+      // 5c. Events Day Inspector Modal Close
+      if (e.target.closest("#events-day-modal-close-btn, [data-action='events-close-day-modal']") || e.target.id === "events-day-modal") {
+        closeEventsDayModal();
+        return;
+      }
+
       // 6. Symbol Search Modal Triggers
       if (e.target.closest(".tv-symbol-selector, [data-action='open-symbol-search']")) {
         openSymbolSearchModal();
@@ -16112,13 +16748,30 @@
         exportEventsToCSV();
       }
       else if (action === "events-cal-day-select") {
-        const selectedDay = target.dataset.day;
+        const selectedDay = target.dataset.day || target.closest("[data-day]")?.dataset.day;
         if (selectedDay) {
+          openEventsDayModal(selectedDay);
+        }
+      }
+      else if (action === "events-close-day-modal") {
+        closeEventsDayModal();
+      }
+      else if (action === "events-day-modal-to-list") {
+        const selectedDay = target.dataset.day || document.getElementById("events-day-switch-list-btn")?.dataset.day;
+        closeEventsDayModal();
+        if (selectedDay) {
+          State.eventsTab = "all";
           State.eventsSearch = selectedDay;
           State.eventsViewMode = "list";
           renderActiveView();
-          showToast(`Filtered events for: ${selectedDay}`, "📅");
+          showToast(`Filtered all scheduled events for: ${selectedDay}`, "📅");
         }
+      }
+      else if (action === "events-clear-search") {
+        State.eventsSearch = "";
+        const box = document.getElementById("events-search-box");
+        if (box) box.value = "";
+        renderActiveView();
       }
       else if (action === "copy-dial-in") {
         const dial = target.dataset.dial || target.closest("[data-dial]")?.dataset.dial;
@@ -16724,6 +17377,7 @@
             contentHtml = renderEventsCalendarGrid();
           } else {
             switch (State.eventsTab) {
+              case "all": contentHtml = renderEventsAllTable(); break;
               case "earnings": contentHtml = renderEventsEarningsTable(); break;
               case "concall": contentHtml = renderEventsConcallTable(); break;
               case "actions": contentHtml = renderEventsActionsTable(); break;
@@ -16824,6 +17478,7 @@
         const um = document.getElementById("user-profile-modal");
         const up = document.getElementById("upload-modal");
         const hm = document.getElementById("holding-modal");
+        closeEventsDayModal();
         if (hm && hm.style.display !== "none") hm.style.display = "none";
         if (tm && tm.style.display !== "none") tm.style.display = "none";
         if (um && um.style.display !== "none") um.style.display = "none";

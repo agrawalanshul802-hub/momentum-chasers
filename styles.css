@@ -6913,6 +6913,36 @@ body.theme-white .ipo-live-status-pill {
     transition: var(--transition);
 }
 
+.cal-day-cell.has-events {
+    cursor: pointer;
+}
+
+.cal-day-cell.has-events:hover {
+    border-color: var(--g);
+    background: var(--sf3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.cal-more-chip {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--g);
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px dashed rgba(34, 197, 94, 0.4);
+    border-radius: 3px;
+    padding: 2px 4px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    transition: var(--transition);
+}
+
+.cal-more-chip:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: var(--g);
+}
+
 .cal-day-cell.empty {
     background: transparent;
     border-color: transparent;
@@ -7250,6 +7280,66 @@ body.theme-white .col-filter-input {
     gap: 3px;
     overflow-y: auto;
     max-height: 70px;
+}
+
+/* Scheduled Events Day Modal Styles */
+.events-day-section {
+    margin-bottom: 16px;
+}
+.events-day-section:last-child {
+    margin-bottom: 0;
+}
+.events-day-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--mu);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.04em;
+}
+.events-day-card {
+    background: var(--sf2);
+    border: 1px solid var(--ln);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+}
+.events-day-card:hover {
+    border-color: var(--ln-light);
+    background: var(--sf3);
+}
+.events-day-card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+.events-day-card-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: right;
+}
+.events-day-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+body.theme-white .events-day-card {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+body.theme-white .events-day-card:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
 }
 
 /* Events Live Intelligence Hero Cards */

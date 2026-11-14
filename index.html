@@ -19,7 +19,7 @@
     <!-- Main Stylesheet & Favicon -->
     <link rel="icon" type="image/png" href="logo-icon.png">
     <link rel="apple-touch-icon" href="logo-icon.png">
-    <link rel="stylesheet" href="styles.css?v=4.3.4">
+    <link rel="stylesheet" href="styles.css?v=4.3.7">
 
     <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
     <script src="lightweight-charts.js"></script>
@@ -509,11 +509,48 @@
         </div>
     </div>
 
+    <!-- Modal Dialog: Economic & Corporate Events Day Inspector -->
+    <div class="modal-overlay-backdrop" id="events-day-modal" role="dialog" aria-modal="true"
+        aria-labelledby="events-day-modal-title" style="display:none;">
+        <div class="modal-content-window" style="max-width: 660px; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header-row" style="padding-bottom: 12px; border-bottom: 1px solid var(--ln); display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 22px;">📅</span>
+                    <div>
+                        <h3 id="events-day-modal-title" style="font-size: 17px; font-weight: 700; color: var(--ink); margin: 0;">
+                            Scheduled Events
+                        </h3>
+                        <div id="events-day-modal-sub" style="font-size: 12px; color: var(--mu); margin-top: 2px;">
+                            Detailed Day Breakdown
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="modal-close-trigger" id="events-day-modal-close-btn"
+                    data-action="events-close-day-modal"
+                    style="background:none;border:none;color:var(--mu);font-size:22px;cursor:pointer;line-height:1;padding:4px;"
+                    aria-label="Close">&times;</button>
+            </div>
+            <div id="events-day-modal-body" style="padding: 16px 0; overflow-y: auto; flex: 1;">
+                <!-- Populated dynamically via openEventsDayModal(dateStr) -->
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--ln); margin-top: 8px;">
+                <button type="button" class="pill-segment-btn" id="events-day-switch-list-btn"
+                    data-action="events-day-modal-to-list" style="padding: 6px 14px; font-size: 12px;">
+                    📋 Open in List View
+                </button>
+                <button type="button" class="row-action-btn" data-action="events-close-day-modal"
+                    style="padding: 6px 18px; font-size: 12px; background:var(--sf2); color:var(--ink);">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Shelf -->
     <div class="toast-notification-shelf" id="toast-shelf" aria-live="polite"></div>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=4.3.6"></script>
+    <script src="script.js?v=4.3.7"></script>
 </body>
 
 </html>
