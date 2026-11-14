@@ -3801,7 +3801,7 @@
   }
 
   let State = {
-    view: "login",              // Starts with the cool login page as requested
+    view: "screener",           // Default view: Smart Screener with real-time momentum & ATH tracking
     previousView: "home",       // Tracks previous view for back navigation
     user: savedUser,            // Active user object { name, email, plan, avatar, broker }
     authTab: "signin",          // "signin" or "signup"
@@ -4278,7 +4278,6 @@
       for (const item of idxMap) {
         try {
           const live = await this.fetchLiveChart(item.symbol, "1mo", "1d");
-          const target = IDX.find(i => i[0] === item.name);
           const target = IDX.find(i => i[0].toLowerCase() === item.name.toLowerCase());
           if (target) {
             target[1] = live.currentPrice;
@@ -16030,13 +16029,12 @@
     loadTickerPreferences();
 
     // Check initial hash for deep linking
-    // Check initial hash for deep linking
     const hash = window.location.hash.slice(1);
-    const validViews = ["login", "home", "screener", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals"];
+    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
     if (validViews.includes(hash)) {
       State.view = hash;
-    } else if (typeof savedUser !== "undefined" && savedUser) {
-      State.view = "home";
+    } else {
+      State.view = "screener";
     }
 
     renderTicker();
