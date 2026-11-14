@@ -7252,6 +7252,53 @@ body.theme-white .col-filter-input {
     max-height: 70px;
 }
 
+/* Events Live Intelligence Hero Cards */
+.events-live-hero-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.events-hero-card {
+    background: var(--sf);
+    border: 1px solid var(--ln);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: var(--transition);
+}
+
+.events-hero-card:hover {
+    border-color: var(--ln-light);
+    transform: translateY(-1px);
+}
+
+.events-hero-card-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--mu);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.events-hero-card-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    font-family: var(--font-mono);
+}
+
+.events-hero-card-sub {
+    font-size: 11px;
+    color: var(--mu);
+}
+
 /* White Theme Overrides for Events Calendar */
 body.theme-white .events-heading {
     color: #0f172a;
@@ -7312,6 +7359,15 @@ body.theme-white .event-impact-badge.low {
     background: #f0fdf4;
     color: #16a34a;
     border-color: #86efac;
+}
+
+body.theme-white .events-hero-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+body.theme-white .events-hero-card-val {
+    color: #0f172a;
 }
 
 /* Logo styling in Hero & White Theme */
