@@ -3645,8 +3645,6 @@
     { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹9.80", revEst: "₹1,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Oil & Gas" },
     { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
     // 2026-11-12 (EarningsPulse.ai Main Featured Date)
-    { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd.", date: "2026-11-12", time: "04:00 PM IST", topic: "Q2 FY27 Earnings Call, HVDC & Grid Transmission Demand", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://hitachienergy.com/in/investors/q2-fy27", attendees: "N. Venu (MD & CEO), Ajay Singh (CFO)" },
-    { symbol: "POWERGRID", company: "Power Grid Corporation of India Ltd.", date: "2026-11-11", time: "03:30 PM IST", topic: "Q2 FY27 Earnings Call, Inter-State Transmission Capacity Expansion", dialIn: "+91 22 6280 1250 / +91 22 7115 8120", webcast: "https://powergrid.in/investors/q2-fy27", attendees: "R. K. Tyagi (CMD), G. Ravisankar (Director Finance)" },
     { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
     { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
     { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹16,400 Cr", status: "Confirmed", cap: "LC", sector: "Power Generation / Renewables" },
@@ -3712,8 +3710,10 @@
 
     // November 2026 (Live Benchmark Session)
     { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", time: "07:00 PM IST", topic: "Q2 FY27 Earnings Call & Financial Performance Review", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://tcs.com/investor-relations/q2-fy27", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
+    { symbol: "POWERGRID", company: "Power Grid Corporation of India Ltd.", date: "2026-11-11", time: "03:30 PM IST", topic: "Q2 FY27 Earnings Call, Inter-State Transmission Capacity Expansion", dialIn: "+91 22 6280 1250 / +91 22 7115 8120", webcast: "https://powergrid.in/investors/q2-fy27", attendees: "R. K. Tyagi (CMD), G. Ravisankar (Director Finance)" },
     { symbol: "BSE", company: "BSE Limited", date: "2026-11-11", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call & Growth Strategy", dialIn: "+91 22 6280 1259 / +91 22 7115 8160", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO), Deepak Goel (CFO)" },
     { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", time: "04:30 PM IST", topic: "Q2 FY27 Financial Results & 2W/3W Volume Outlook", dialIn: "+91 22 6280 1384 / +91 22 7115 8285", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
+    { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd. (Power India)", date: "2026-11-12", time: "04:00 PM IST", topic: "Q2 FY27 Earnings Call, HVDC & Grid Transmission Demand", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://hitachienergy.com/in/investors/q2-fy27", attendees: "N. Venu (MD & CEO), Ajay Singh (CFO)" },
     { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call, Royal Enfield Demand & VECV Commercial Performance", dialIn: "+91 22 6280 1149 / +91 22 7115 8050", webcast: "https://eicher.in/investors/q2-fy27", attendees: "Siddhartha Lal (MD), B. Govindarajan (CEO, Royal Enfield), Vidhya Srinivasan (CFO)" },
     { symbol: "TTKPRESTIG", company: "TTK Prestige Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Call, Festive Cookware Demand & Distribution Expansion", dialIn: "+91 22 6280 1567 / +91 22 7115 8432", webcast: "https://ttkprestige.com/investor-relations/q2-fy27", attendees: "Chandru Kalro (MD), Venkatesh Vijayaraghavan (CEO)" },
     { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-11-16", time: "08:30 AM IST", topic: "Q2 FY27 Earnings Call, NIM Guidance & LDR Updates", dialIn: "+91 22 6280 1321 / +91 22 7115 8822", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD & CEO), Srinivasan Vaidyanathan (CFO)" },
@@ -13519,9 +13519,21 @@
     }
 
     // Retrieve live or fallback scheduled earnings data
-    let baseData = (EarningsLiveService.data && EarningsLiveService.data.length > 0)
+    let rawBaseData = (EarningsLiveService.data && EarningsLiveService.data.length > 0)
       ? EarningsLiveService.data
       : getEventsForCategory("earnings", State.eventsYear, State.eventsMonth);
+
+    // Clean, validate, and deduplicate by symbol + date
+    const seenEarnings = new Set();
+    const baseData = [];
+    rawBaseData.forEach(item => {
+      if (!item || item.topic) return; // Skip any concall briefings
+      const key = `${(item.symbol || '').toUpperCase()}_${item.date}`;
+      if (!seenEarnings.has(key)) {
+        seenEarnings.add(key);
+        baseData.push(item);
+      }
+    });
 
     // Apply Range Filter: Day, Week, or Month
     let rangeFiltered = baseData;
@@ -13635,11 +13647,11 @@
               </span>
             </td>
             <td style="white-space:nowrap;font-weight:600;">${item.date}</td>
-            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.quarter}</span></td>
-            <td class="font-mono" style="text-align:right">${item.epsEst}</td>
-            <td class="font-mono" style="text-align:right">${item.revEst}</td>
-            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.sector || q.sector}</span></td>
-            <td><span class="${statusClass}" style="font-weight:700">● ${item.status}</span></td>
+            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.quarter || "Q2 FY27"}</span></td>
+            <td class="font-mono" style="text-align:right">${item.epsEst || "—"}</td>
+            <td class="font-mono" style="text-align:right">${item.revEst || "—"}</td>
+            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.sector || q.sector || "Equities"}</span></td>
+            <td><span class="${statusClass}" style="font-weight:700">● ${item.status || "Confirmed"}</span></td>
             <td>
               <div style="display:flex;align-items:center;gap:6px;">
                 <a href="${tvUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
