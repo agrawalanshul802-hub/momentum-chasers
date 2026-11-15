@@ -10,8 +10,8 @@
   // 1. Default Configuration
   // Paste your Supabase project credentials below or set them in .env / Netlify environment variables.
   const DEFAULT_CONFIG = {
-    url: '', // e.g. "https://abcdefghijklmnopqrst.supabase.co"
-    anonKey: '' // e.g. "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    url: 'https://jxrvdlduhhcfbwjfqvog.supabase.co',
+    anonKey: 'sb_publishable_e8oMJgGwxyXf0YomGTXYRg_wL2uxY12'
   };
 
   // 2. State & Client Container
