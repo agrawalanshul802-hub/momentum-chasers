@@ -416,7 +416,6 @@ footer .risk{margin:0 0 22px;max-width:none;font-size:.8rem;color:var(--muted)}
       <a class="lk" href="#faq">FAQ</a>
     </nav>
     <div class="nr">
-      <button class="srch" id="srchBtn" type="button" aria-label="Search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>Search</span><kbd id="kbd">Ctrl K</kbd></button>
       <a class="lg" href="login.html">Log in</a>
       <a class="btn sm" href="login.html#signup">Get started</a>
     </div>
@@ -879,7 +878,7 @@ document.querySelectorAll('img[data-logo]').forEach(function(i){i.src=LOGO});
   function go(i){var x=vis[i];if(!x)return;close();if(x[2].indexOf('.html')>-1){location.href=x[2];return}var t=document.querySelector(x[2]);if(t)t.scrollIntoView({behavior:'smooth',block:x[2]==='#signin'?'center':'start'})}
   function show(){open=true;pal.classList.add('open');pin.value='';render();setTimeout(function(){pin.focus()},0)}
   function close(){open=false;pal.classList.remove('open')}
-  document.getElementById('srchBtn').onclick=show;
+  var sb=document.getElementById('srchBtn'); if(sb) sb.onclick=show;
   pal.addEventListener('mousedown',function(e){if(e.target===pal)close()});
   pl.addEventListener('click',function(e){var i=e.target.closest('.pi');if(i)go(+i.dataset.i)});
   pin.addEventListener('input',render);
