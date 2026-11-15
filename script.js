@@ -8145,14 +8145,12 @@
     const yScore = m.historical?.yesterday ?? 74.20;
     const wScore = m.historical?.lastWeek ?? m.historical?.weekAgo ?? 68.50;
     const mScore = m.historical?.lastMonth ?? m.historical?.monthAgo ?? 58.10;
-    const yrScore = m.historical?.lastYear ?? m.historical?.yearAgo ?? 45.30;
 
     const histRows = [
       { label: "Today", score: hasLiveScore ? m.current : null, tag: "Live", delta: null },
       { label: "Yesterday", score: yScore, tag: "T-1", delta: hasLiveScore ? Number((score - yScore).toFixed(1)) : null },
       { label: "1 Week Ago", score: wScore, tag: "1W", delta: hasLiveScore ? Number((score - wScore).toFixed(1)) : null },
-      { label: "1 Month Ago", score: mScore, tag: "1M", delta: hasLiveScore ? Number((score - mScore).toFixed(1)) : null },
-      { label: "1 Year Ago", score: yrScore, tag: "1Y", delta: hasLiveScore ? Number((score - yrScore).toFixed(1)) : null }
+      { label: "1 Month Ago", score: mScore, tag: "1M", delta: hasLiveScore ? Number((score - mScore).toFixed(1)) : null }
     ].map((h, idx) => {
       if (!Number.isFinite(h.score)) return `
               <div class="mmi-history-item ${idx === 0 ? 'today' : ''}">
