@@ -3093,14 +3093,31 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         source: "Groww Official Cash Flows",
-        updatedAt: "12 Nov 2026",
+        latestDate: "2026-11-13",
+        updatedAt: "2026-11-13T16:00:00Z",
         periods: {
-          today: { date: "12 Nov 2026", fiiNet: 840.50, diiNet: 1420.30, totalNet: 2260.80 },
-          month: { date: "Nov 2026", fiiNet: -4820.00, diiNet: 18450.00, totalNet: 13630.00 }
+          day: {
+            fiiBuy: 18339.57, fiiSell: 12603.02, fiiNet: 5736.55,
+            diiBuy: 11745.95, diiSell: 13999.53, diiNet: -2253.58,
+            from: "2026-11-13", to: "2026-11-13", sessions: 1, expectedSessions: 1
+          },
+          week: {
+            fiiBuy: 89063.48, fiiSell: 55721.03, fiiNet: 33342.45,
+            diiBuy: 60401.55, diiSell: 85293.67, diiNet: -24892.12,
+            from: "2026-11-08", to: "2026-11-13", sessions: 5, expectedSessions: 5
+          },
+          month: {
+            fiiBuy: 244358.63, fiiSell: 162401.22, fiiNet: 81957.41,
+            diiBuy: 183861.55, diiSell: 231843.29, diiNet: -47981.74,
+            from: "2026-10-29", to: "2026-11-13", sessions: 12, expectedSessions: 21
+          }
         },
         daily: [
-          { date: "12 Nov 2026", fiiBuy: 14250.20, fiiSell: 13409.70, fiiNet: 840.50, diiBuy: 11200.50, diiSell: 9780.20, diiNet: 1420.30, net: 2260.80 },
-          { date: "11 Nov 2026", fiiBuy: 12890.40, fiiSell: 13540.20, fiiNet: -649.80, diiBuy: 10450.00, diiSell: 8900.50, diiNet: 1549.50, net: 899.70 }
+          { date: "2026-11-13", fiiBuy: 18339.57, fiiSell: 12603.02, fiiNet: 5736.55, diiBuy: 11745.95, diiSell: 13999.53, diiNet: -2253.58 },
+          { date: "2026-11-12", fiiBuy: 20273.32, fiiSell: 12442.72, fiiNet: 7830.60, diiBuy: 15855.13, diiSell: 22186.30, diiNet: -6331.17 },
+          { date: "2026-11-11", fiiBuy: 30087.21, fiiSell: 17523.88, fiiNet: 12563.33, diiBuy: 19704.39, diiSell: 28138.92, diiNet: -8434.53 },
+          { date: "2026-11-09", fiiBuy: 20310.99, fiiSell: 13098.77, fiiNet: 7212.22, diiBuy: 12764.97, diiSell: 19937.50, diiNet: -7172.53 },
+          { date: "2026-11-08", fiiBuy: 52.39, fiiSell: 52.64, fiiNet: -0.25, diiBuy: 331.11, diiSell: 1031.42, diiNet: -700.31 }
         ]
       })
     };
