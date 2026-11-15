@@ -62,12 +62,12 @@
     initClient(config.url, config.anonKey);
   }
 
-  // 4. Try fetching config from server /api/auth/config (for Node / Netlify environments)
+  // 4. Try fetching config from server /api/auth/config (for local Node server)
   async function fetchServerConfig() {
     if (isValidConfig(config.url, config.anonKey)) return true;
 
     try {
-      const endpoints = ['/api/auth/config', '/.netlify/functions/api/auth/config'];
+      const endpoints = ['/api/auth/config'];
       for (const ep of endpoints) {
         try {
           const res = await fetch(ep, { headers: { 'Accept': 'application/json' } });

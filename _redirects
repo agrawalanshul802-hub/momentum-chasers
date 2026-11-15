@@ -1,9 +1,0 @@
-# Netlify Single Page Application (SPA) & API Redirects
-# 1. Netlify Functions API Mapping (if functions deployed)
-/api/*    /.netlify/functions/api/:splat    200
-/v7/*     /.netlify/functions/api/v7/:splat 200
-/v8/*     /.netlify/functions/api/v8/:splat 200
-
-# 2. SPA Deep-Linking Fallback (Prevents 404 on page refresh)
-/*        /index.html                       200
-

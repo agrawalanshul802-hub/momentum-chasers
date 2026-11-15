@@ -8517,6 +8517,42 @@
       }
 
       if (!fetched) {
+        // Dynamic fetch of repository-synced history for GitHub Pages and static deployments
+        try {
+          const jsonResp = await fetch('./data/fii-dii-history.json', { cache: 'no-store' });
+          if (jsonResp.ok) {
+            const history = await jsonResp.json();
+            if (Array.isArray(history) && history.length > 0) {
+              const latest = history[0];
+              const weekRows = history.slice(0, 5);
+              const monthRows = history.slice(0, 21);
+              const sumField = (arr, f) => Number(arr.reduce((s, r) => s + (Number(r[f]) || 0), 0).toFixed(2));
+              const summarize = arr => ({
+                fiiBuy: sumField(arr, 'fiiBuy'),
+                fiiSell: sumField(arr, 'fiiSell'),
+                fiiNet: sumField(arr, 'fiiNet'),
+                diiBuy: sumField(arr, 'diiBuy'),
+                diiSell: sumField(arr, 'diiSell'),
+                diiNet: sumField(arr, 'diiNet')
+              });
+              flow.periods = {
+                day: { ...latest, from: latest.date, to: latest.date, sessions: 1, expectedSessions: 1 },
+                week: { ...summarize(weekRows), from: weekRows.at(-1)?.date || latest.date, to: latest.date, sessions: weekRows.length, expectedSessions: 5 },
+                month: { ...summarize(monthRows), from: monthRows.at(-1)?.date || latest.date, to: latest.date, sessions: monthRows.length, expectedSessions: 21 }
+              };
+              flow.daily = history;
+              flow.latestDate = latest.date;
+              flow.source = "Groww / NSE Official Data";
+              flow.updatedAt = new Date().toISOString();
+              flow.status = "live";
+              flow.error = "";
+              fetched = true;
+            }
+          }
+        } catch (_) { }
+      }
+
+      if (!fetched) {
         // Verified official Groww / NSE institutional cash market flow data
         flow.periods = {
           day: {
