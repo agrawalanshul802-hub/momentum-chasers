@@ -4799,6 +4799,8 @@
             const err = res.error || "";
             if (err.toLowerCase().includes("already registered") || err.toLowerCase().includes("user already")) {
               showMsg("Account already exists! Please click 'Sign In' above.", false);
+            } else if (err.toLowerCase().includes("rate limit")) {
+              showMsg("Supabase email rate limit reached (free tier allows 3 emails/hr). Please click 'Continue with Google' to sign in instantly!", false);
             } else {
               showMsg(err || "Failed to create account.", false);
             }
