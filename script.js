@@ -13,14 +13,14 @@
     const proto = window.location.protocol || "";
     const h = (window.location.hostname || "").toLowerCase();
     const p = window.location.port || "";
-    return proto === "file:" || 
-           h.endsWith("github.io") || 
-           h.endsWith("pages.dev") || 
-           h.endsWith("surge.sh") || 
-           h.endsWith("vercel.app") || 
-           h.endsWith("netlify.app") || 
-           (h !== "localhost" && h !== "127.0.0.1" && p !== "3000") ||
-           (p !== "" && p !== "3000");
+    return proto === "file:" ||
+      h.endsWith("github.io") ||
+      h.endsWith("pages.dev") ||
+      h.endsWith("surge.sh") ||
+      h.endsWith("vercel.app") ||
+      h.endsWith("netlify.app") ||
+      (h !== "localhost" && h !== "127.0.0.1" && p !== "3000") ||
+      (p !== "" && p !== "3000");
   }
 
   // Centralized API Base URL resolver for local Node server vs. static hosting
@@ -5197,7 +5197,7 @@
 
         this.socket.onerror = () => {
           if (this.socket) {
-            try { this.socket.close(); } catch(e) {}
+            try { this.socket.close(); } catch (e) { }
           }
         };
       } catch (e) {
@@ -6147,8 +6147,8 @@
     };
     const dateLabel = formatFiiDate(flow.latestDate);
     const status = flow.status === 'stale' || flow.status === 'error'
-      ? `Groww refresh unavailable · showing last fetched data for ${dateLabel}`
-      : flow.status === 'loading' ? 'Fetching latest Groww report…' : `Latest session ${dateLabel} · updated after market close`;
+        ? `Groww refresh unavailable · showing last fetched data for ${dateLabel}`
+        : flow.status === 'loading' ? 'Fetching latest Groww report…' : `Latest session ${dateLabel} · updated after market close`;
     return `
       <section class="fii-dii-section" aria-labelledby="fii-dii-heading">
         <div class="fii-dii-section-header">
@@ -8481,6 +8481,42 @@
       }
 
       if (!fetched) {
+        // Dynamic fetch of repository-synced history for GitHub Pages and static deployments
+        try {
+          const jsonResp = await fetch('./data/fii-dii-history.json', { cache: 'no-store' });
+          if (jsonResp.ok) {
+            const history = await jsonResp.json();
+            if (Array.isArray(history) && history.length > 0) {
+              const latest = history[0];
+              const weekRows = history.slice(0, 5);
+              const monthRows = history.slice(0, 21);
+              const sumField = (arr, f) => Number(arr.reduce((s, r) => s + (Number(r[f]) || 0), 0).toFixed(2));
+              const summarize = arr => ({
+                fiiBuy: sumField(arr, 'fiiBuy'),
+                fiiSell: sumField(arr, 'fiiSell'),
+                fiiNet: sumField(arr, 'fiiNet'),
+                diiBuy: sumField(arr, 'diiBuy'),
+                diiSell: sumField(arr, 'diiSell'),
+                diiNet: sumField(arr, 'diiNet')
+              });
+              flow.periods = {
+                day: { ...latest, from: latest.date, to: latest.date, sessions: 1, expectedSessions: 1 },
+                week: { ...summarize(weekRows), from: weekRows.at(-1)?.date || latest.date, to: latest.date, sessions: weekRows.length, expectedSessions: 5 },
+                month: { ...summarize(monthRows), from: monthRows.at(-1)?.date || latest.date, to: latest.date, sessions: monthRows.length, expectedSessions: 21 }
+              };
+              flow.daily = history;
+              flow.latestDate = latest.date;
+              flow.source = "Groww / NSE Official Data";
+              flow.updatedAt = new Date().toISOString();
+              flow.status = "live";
+              flow.error = "";
+              fetched = true;
+            }
+          }
+        } catch (_) { }
+      }
+
+      if (!fetched) {
         // Verified official Groww / NSE institutional cash market flow data
         flow.periods = {
           day: {
@@ -10762,30 +10798,30 @@
     { symbol: "SUVENPHAR", name: "Suven Pharmaceuticals", sector: "Pharma CDMO", price: 1180.00, chg: 2.20, mcap: 30000, volume: "9.2 L", logoBg: "#7c3aed", logoColor: "#ffffff", logoText: "SUVEN" },
     { symbol: "ERIS", name: "Eris Lifesciences", sector: "Pharmaceuticals", price: 1340.00, chg: 1.70, mcap: 18200, volume: "6.8 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "ERIS" },
     { symbol: "VIJAYA", name: "Vijaya Diagnostic Centre", sector: "Diagnostics", price: 980.00, chg: 2.50, mcap: 10000, volume: "5.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "VIJAYA" },
-    { symbol: "KIMS", name: "Krishna Inst of Medical", sector: "Hospitals", price: 540.00, chg: 2.15, mcap: 21600, volume: "14.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "KIMS" },
-    { symbol: "ASTERDM", name: "Aster DM Healthcare", sector: "Hospitals", price: 410.00, chg: 1.85, mcap: 20500, volume: "16.0 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "ASTER" },
+  { symbol: "KIMS", name: "Krishna Inst of Medical", sector: "Hospitals", price: 540.00, chg: 2.15, mcap: 21600, volume: "14.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "KIMS" },
+  { symbol: "ASTERDM", name: "Aster DM Healthcare", sector: "Hospitals", price: 410.00, chg: 1.85, mcap: 20500, volume: "16.0 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "ASTER" },
 
-    // Consumer Durables, MNC, SmallCap & IPO
-    { symbol: "DIXON", name: "Dixon Technologies", sector: "Electronics Mfg", price: 14200.00, chg: 3.20, mcap: 85000, volume: "14.5 L", logoBg: "#0369a1", logoColor: "#ffffff", logoText: "DIXON" },
-    { symbol: "CROMPTON", name: "Crompton Consumer", sector: "Consumer Electricals", price: 395.00, chg: 1.15, mcap: 25000, volume: "28.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "CROMP" },
-    { symbol: "WHIRLPOOL", name: "Whirlpool of India", sector: "Home Appliances", price: 1890.00, chg: 0.85, mcap: 24000, volume: "8.0 L", logoBg: "#d97706", logoColor: "#ffffff", logoText: "WHIRL" },
-    { symbol: "BLUESTARCO", name: "Blue Star Limited", sector: "Air Conditioning", price: 1820.00, chg: 2.10, mcap: 37000, volume: "12.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "BLSTAR" },
-    { symbol: "KAJARIACER", name: "Kajaria Ceramics", sector: "Ceramic Tiles", price: 1240.00, chg: 1.25, mcap: 19800, volume: "9.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "KAJAR" },
-    { symbol: "AMBER", name: "Amber Enterprises", sector: "HVAC Solutions", price: 6450.00, chg: 2.90, mcap: 22000, volume: "8.5 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "AMBER" },
-    { symbol: "ABB", name: "ABB India", sector: "Industrial Automation", price: 7250.00, chg: 2.10, mcap: 153000, volume: "11.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "ABB" },
-    { symbol: "SIEMENS", name: "Siemens Limited", sector: "Smart Infrastructure", price: 6890.00, chg: 1.95, mcap: 245000, volume: "14.0 L", logoBg: "#0f766e", logoColor: "#ffffff", logoText: "SIEMENS" },
-    { symbol: "CUMMINSIND", name: "Cummins India", sector: "Engines & Generators", price: 3680.00, chg: 1.75, mcap: 102000, volume: "12.0 L", logoBg: "#b91c1c", logoColor: "#ffffff", logoText: "CUMMINS" },
-    { symbol: "HONAUT", name: "Honeywell Automation", sector: "Building Automation", price: 44500.00, chg: 0.95, mcap: 39300, volume: "1.2 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "HONEY" },
-    { symbol: "3MINDIA", name: "3M India", sector: "Diversified Tech", price: 35200.00, chg: 1.20, mcap: 39600, volume: "1.1 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "3M" },
-    { symbol: "PFIZER", name: "Pfizer Limited", sector: "Biopharmaceuticals", price: 5150.00, chg: 0.80, mcap: 23500, volume: "4.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "PFIZER" },
-    { symbol: "IREDA", name: "Indian Renewable Energy", sector: "Green Financing", price: 205.00, chg: 3.80, mcap: 55000, volume: "1.8 Cr", logoBg: "#059669", logoColor: "#ffffff", logoText: "IREDA" },
-    { symbol: "TATACOMM", name: "Tata Technologies", sector: "Automotive ER&D", price: 960.00, chg: 1.70, mcap: 38900, volume: "36.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "TCOMM" },
-    { symbol: "DOMS", name: "DOMS Industries", sector: "Stationery Products", price: 2650.00, chg: 2.20, mcap: 16100, volume: "8.5 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "DOMS" },
-    { symbol: "JYOTICNC", name: "Jyoti CNC Automation", sector: "CNC Machinery", price: 1120.00, chg: 3.10, mcap: 25500, volume: "14.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "JYOTI" },
-    { symbol: "KAYNES", name: "Kaynes Technology", sector: "IoT & Electronics", price: 5200.00, chg: 3.80, mcap: 33200, volume: "16.0 L", logoBg: "#0369a1", logoColor: "#ffffff", logoText: "KAYNES" },
-    { symbol: "ANANDRATHI", name: "Anand Rathi Wealth", sector: "Private Wealth", price: 3950.00, chg: 2.60, mcap: 16500, volume: "7.2 L", logoBg: "#d97706", logoColor: "#ffffff", logoText: "ARWL" },
-    { symbol: "CLEAN", name: "Clean Science and Tech", sector: "Green Chemicals", price: 1340.00, chg: 1.40, mcap: 14200, volume: "6.0 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "CLEAN" },
-    { symbol: "ELECON", name: "Elecon Engineering", sector: "Industrial Gears", price: 620.00, chg: 2.90, mcap: 13900, volume: "18.0 L", logoBg: "#ea580c", logoColor: "#ffffff", logoText: "ELECON" }
+  // Consumer Durables, MNC, SmallCap & IPO
+  { symbol: "DIXON", name: "Dixon Technologies", sector: "Electronics Mfg", price: 14200.00, chg: 3.20, mcap: 85000, volume: "14.5 L", logoBg: "#0369a1", logoColor: "#ffffff", logoText: "DIXON" },
+  { symbol: "CROMPTON", name: "Crompton Consumer", sector: "Consumer Electricals", price: 395.00, chg: 1.15, mcap: 25000, volume: "28.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "CROMP" },
+  { symbol: "WHIRLPOOL", name: "Whirlpool of India", sector: "Home Appliances", price: 1890.00, chg: 0.85, mcap: 24000, volume: "8.0 L", logoBg: "#d97706", logoColor: "#ffffff", logoText: "WHIRL" },
+  { symbol: "BLUESTARCO", name: "Blue Star Limited", sector: "Air Conditioning", price: 1820.00, chg: 2.10, mcap: 37000, volume: "12.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "BLSTAR" },
+  { symbol: "KAJARIACER", name: "Kajaria Ceramics", sector: "Ceramic Tiles", price: 1240.00, chg: 1.25, mcap: 19800, volume: "9.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "KAJAR" },
+  { symbol: "AMBER", name: "Amber Enterprises", sector: "HVAC Solutions", price: 6450.00, chg: 2.90, mcap: 22000, volume: "8.5 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "AMBER" },
+  { symbol: "ABB", name: "ABB India", sector: "Industrial Automation", price: 7250.00, chg: 2.10, mcap: 153000, volume: "11.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "ABB" },
+  { symbol: "SIEMENS", name: "Siemens Limited", sector: "Smart Infrastructure", price: 6890.00, chg: 1.95, mcap: 245000, volume: "14.0 L", logoBg: "#0f766e", logoColor: "#ffffff", logoText: "SIEMENS" },
+  { symbol: "CUMMINSIND", name: "Cummins India", sector: "Engines & Generators", price: 3680.00, chg: 1.75, mcap: 102000, volume: "12.0 L", logoBg: "#b91c1c", logoColor: "#ffffff", logoText: "CUMMINS" },
+  { symbol: "HONAUT", name: "Honeywell Automation", sector: "Building Automation", price: 44500.00, chg: 0.95, mcap: 39300, volume: "1.2 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "HONEY" },
+  { symbol: "3MINDIA", name: "3M India", sector: "Diversified Tech", price: 35200.00, chg: 1.20, mcap: 39600, volume: "1.1 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "3M" },
+  { symbol: "PFIZER", name: "Pfizer Limited", sector: "Biopharmaceuticals", price: 5150.00, chg: 0.80, mcap: 23500, volume: "4.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "PFIZER" },
+  { symbol: "IREDA", name: "Indian Renewable Energy", sector: "Green Financing", price: 205.00, chg: 3.80, mcap: 55000, volume: "1.8 Cr", logoBg: "#059669", logoColor: "#ffffff", logoText: "IREDA" },
+  { symbol: "TATACOMM", name: "Tata Technologies", sector: "Automotive ER&D", price: 960.00, chg: 1.70, mcap: 38900, volume: "36.0 L", logoBg: "#1e3a8a", logoColor: "#ffffff", logoText: "TCOMM" },
+  { symbol: "DOMS", name: "DOMS Industries", sector: "Stationery Products", price: 2650.00, chg: 2.20, mcap: 16100, volume: "8.5 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "DOMS" },
+  { symbol: "JYOTICNC", name: "Jyoti CNC Automation", sector: "CNC Machinery", price: 1120.00, chg: 3.10, mcap: 25500, volume: "14.0 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "JYOTI" },
+  { symbol: "KAYNES", name: "Kaynes Technology", sector: "IoT & Electronics", price: 5200.00, chg: 3.80, mcap: 33200, volume: "16.0 L", logoBg: "#0369a1", logoColor: "#ffffff", logoText: "KAYNES" },
+  { symbol: "ANANDRATHI", name: "Anand Rathi Wealth", sector: "Private Wealth", price: 3950.00, chg: 2.60, mcap: 16500, volume: "7.2 L", logoBg: "#d97706", logoColor: "#ffffff", logoText: "ARWL" },
+  { symbol: "CLEAN", name: "Clean Science and Tech", sector: "Green Chemicals", price: 1340.00, chg: 1.40, mcap: 14200, volume: "6.0 L", logoBg: "#047857", logoColor: "#ffffff", logoText: "CLEAN" },
+  { symbol: "ELECON", name: "Elecon Engineering", sector: "Industrial Gears", price: 620.00, chg: 2.90, mcap: 13900, volume: "18.0 L", logoBg: "#ea580c", logoColor: "#ffffff", logoText: "ELECON" }
   ];
 
   // Full 150 Official Constituents of NIFTY MIDCAP 150 (NSE Official Index)
@@ -13084,8 +13120,8 @@
       "DIVISLAB": { price: 5890.00, chg: 2.10, cap: "LC", sector: "Pharmaceuticals", name: "Divi's Laboratories Ltd." },
       "EICHERMOT": { price: 7650.00, chg: 1.34, cap: "LC", sector: "Automobiles (Royal Enfield)", name: "Eicher Motors Ltd." },
       "TATAPOWER": { price: 348.00, chg: -1.28, cap: "LC", sector: "Power Generation / Renewables", name: "Tata Power Company Ltd." },
-    "POWERINDIA": { price: 31610.00, chg: 1.85, cap: "LC", sector: "Heavy Electrical / Power Equipment", name: "Hitachi Energy India Ltd. (Power India)" },
-    "POWERGRID": { price: 324.10, chg: 2.20, cap: "LC", sector: "Power Transmission / Utilities", name: "Power Grid Corporation of India Ltd." },
+      "POWERINDIA": { price: 31610.00, chg: 1.85, cap: "LC", sector: "Heavy Electrical / Power Equipment", name: "Hitachi Energy India Ltd. (Power India)" },
+      "POWERGRID": { price: 324.10, chg: 2.20, cap: "LC", sector: "Power Transmission / Utilities", name: "Power Grid Corporation of India Ltd." },
       "APOLLOHOSP": { price: 8526.00, chg: 0.95, cap: "LC", sector: "Healthcare", name: "Apollo Hospitals Enterprise" },
       "PIDILITIND": { price: 3040.00, chg: 0.70, cap: "LC", sector: "Chemicals", name: "Pidilite Industries Ltd." },
       "DIXON": { price: 12798.00, chg: 1.37, cap: "LC", sector: "Electronics & EMS", name: "Dixon Technologies Ltd." },
@@ -14702,10 +14738,10 @@
             <span>📈</span> <span>Corporate Earnings Results (${earns.length})</span>
           </div>
           ${earns.map(e => {
-            const q = getEventStockLiveQuote(e.symbol);
-            const chgSign = q.chg >= 0 ? "+" : "";
-            const chgColor = q.chg >= 0 ? "var(--g)" : "var(--r)";
-            return `
+        const q = getEventStockLiveQuote(e.symbol);
+        const chgSign = q.chg >= 0 ? "+" : "";
+        const chgColor = q.chg >= 0 ? "var(--g)" : "var(--r)";
+        return `
               <div class="events-day-card" style="border-left:3px solid #22c55e">
                 <div class="events-day-card-left">
                   <div style="display:flex;align-items:center;gap:6px">
@@ -14729,7 +14765,7 @@
                 </div>
               </div>
             `;
-          }).join("")}
+      }).join("")}
         </div>
       `;
     }
@@ -14742,8 +14778,8 @@
             <span>🎧</span> <span>Upcoming Earnings Concalls (${concs.length})</span>
           </div>
           ${concs.map(c => {
-            const q = getEventStockLiveQuote(c.symbol);
-            return `
+        const q = getEventStockLiveQuote(c.symbol);
+        return `
               <div class="events-day-card" style="border-left:3px solid #a855f7">
                 <div class="events-day-card-left">
                   <div style="display:flex;align-items:center;gap:6px">
@@ -14766,7 +14802,7 @@
                 </div>
               </div>
             `;
-          }).join("")}
+      }).join("")}
         </div>
       `;
     }
@@ -14779,9 +14815,9 @@
             <span>💰</span> <span>Corporate Actions (${acts.length})</span>
           </div>
           ${acts.map(a => {
-            const q = getEventStockLiveQuote(a.symbol);
-            const isEx = (a.exDate === dateStr);
-            return `
+        const q = getEventStockLiveQuote(a.symbol);
+        const isEx = (a.exDate === dateStr);
+        return `
               <div class="events-day-card" style="border-left:3px solid #f59e0b">
                 <div class="events-day-card-left">
                   <div style="display:flex;align-items:center;gap:6px">
@@ -14804,7 +14840,7 @@
                 </div>
               </div>
             `;
-          }).join("")}
+      }).join("")}
         </div>
       `;
     }
@@ -15963,7 +15999,7 @@
             const data = await res.json();
             if (data && Array.isArray(data.news) && data.news.length > 0) newsItems = data.news;
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (newsItems.length === 0) {
@@ -16409,7 +16445,7 @@
     }
     // Sign out from Supabase if connected
     if (window.MOMENTUM_SUPABASE) {
-      window.MOMENTUM_SUPABASE.signOut().catch(() => {});
+      window.MOMENTUM_SUPABASE.signOut().catch(() => { });
     }
     // Close user profile modal
     const modal = document.getElementById("user-profile-modal");

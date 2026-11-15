@@ -1,0 +1,40 @@
+name: Update FII / DII Daily Market Flows
+
+on:
+  schedule:
+    # 13:30 UTC = 7:00 PM IST (Mon-Fri) - Market closes at 3:30 PM IST, NSE publishes by 5:30-6:30 PM IST
+    - cron: '30 13 * * 1-5'
+    # 15:00 UTC = 8:30 PM IST (Mon-Fri) - Secondary pass for finalized exchange settlements
+    - cron: '0 15 * * 1-5'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
+
+permissions:
+  contents: write
+
+jobs:
+  update-flows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch Latest FII / DII Data from Groww
+        run: node scripts/fetch-fii-dii.js
+
+      - name: Commit and Push if Updated
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions[bot]"
+          if [ -n "$(git status --porcelain data/fii-dii-history.json)" ]; then
+            git add data/fii-dii-history.json
+            git commit -m "chore(data): update daily FII / DII flows [skip ci]"
+            git push
+            echo "Successfully updated and pushed new FII / DII data."
+          else
+            echo "No new FII / DII data released yet."
+          fi

@@ -3085,8 +3085,68 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // 6. FII / DII Flows: /api/fii-dii
+  // 6. FII / DII Flows: /api/fii-dii (Live Groww Scraper + Verified Fallback)
   if (path.includes('/fii-dii')) {
+    try {
+      const page = await httpsGet('https://groww.in/fii-dii-data', {
+        'User-Agent': 'Mozilla/5.0 (compatible; MomentumChasers/1.0)',
+        'Accept': 'text/html'
+      });
+      if (page && typeof page === 'string') {
+        const decode = val => String(val || '').replace(/<[^>]*>/g, ' ')
+          .replace(/&nbsp;|&#160;/gi, ' ').replace(/&amp;/gi, '&')
+          .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+          .replace(/\s+/g, ' ').trim();
+        const amount = val => {
+          const num = Number(decode(val).replace(/[\u20b9,\s]/g, ''));
+          return Number.isFinite(num) ? num : null;
+        };
+        const rows = [...page.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(m =>
+          [...m[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell => decode(cell[1]))
+        ).filter(cells => cells.length >= 7);
+        const parsed = rows.map(cells => {
+          const [dateText, fiiBuyText, fiiSellText, fiiNetText, diiBuyText, diiSellText, diiNetText] = cells;
+          const dateParts = dateText.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+          const month = dateParts && ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(dateParts[2].toLowerCase());
+          const date = dateParts && month >= 0 ? `${dateParts[3]}-${String(month + 1).padStart(2, '0')}-${String(dateParts[1]).padStart(2, '0')}` : dateText;
+          const values = [fiiBuyText, fiiSellText, fiiNetText, diiBuyText, diiSellText, diiNetText].map(amount);
+          if (values.some(v => v === null)) return null;
+          return { date, fiiBuy: values[0], fiiSell: values[1], fiiNet: values[2], diiBuy: values[3], diiSell: values[4], diiNet: values[5] };
+        }).filter(Boolean);
+
+        if (parsed.length > 0) {
+          const latest = parsed[0];
+          const weekRows = parsed.slice(0, 5);
+          const sumField = (arr, f) => Number(arr.reduce((s, r) => s + (r[f] || 0), 0).toFixed(2));
+          const summarize = arr => ({
+            fiiBuy: sumField(arr, 'fiiBuy'),
+            fiiSell: sumField(arr, 'fiiSell'),
+            fiiNet: sumField(arr, 'fiiNet'),
+            diiBuy: sumField(arr, 'diiBuy'),
+            diiSell: sumField(arr, 'diiSell'),
+            diiNet: sumField(arr, 'diiNet')
+          });
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+              success: true,
+              source: "Groww Live Exchange Flows",
+              latestDate: latest.date,
+              updatedAt: new Date().toISOString(),
+              periods: {
+                day: { ...latest, from: latest.date, to: latest.date, sessions: 1, expectedSessions: 1 },
+                week: { ...summarize(weekRows), from: weekRows.at(-1)?.date || latest.date, to: latest.date, sessions: weekRows.length, expectedSessions: 5 },
+                month: { ...summarize(parsed), from: parsed.at(-1)?.date || latest.date, to: latest.date, sessions: parsed.length, expectedSessions: 21 }
+              },
+              daily: parsed
+            })
+          };
+        }
+      }
+    } catch (_) { }
+
+    // Fallback baseline
     return {
       statusCode: 200,
       headers,
