@@ -4426,6 +4426,8 @@
     selectedPresets: [],        // Active technical or financial preset keys
     presetsCollapsed: true,    // Toggle collapse for technical and financial presets section
     searchQuery: "",            // Text filter in screener
+    screenerPage: 1,            // Active screener page
+    screenerPageSize: 50,       // Items per page (25, 50, 100, "all")
     watchlist: ["INDUSINDBK", "BAJAJ-AUTO", "BSE", "SMSPHARMA"], // Default starred stocks
     tickerSpeed: "normal",      // "slow", "normal", "fast"
     tickerShowPriceChange: true, // boolean
@@ -5094,7 +5096,9 @@
       try {
         // 1. Collect all symbols: Catalog stocks + Benchmark indices + Heatmap constituents
         const symSet = new Set();
-        ST.forEach(s => symSet.add(this.getYahooSymbol(s[0])));
+        // Performance optimization: Sync top priority stocks (watchlist + top 25) instead of all 512
+        (State.watchlist || []).forEach(sym => symSet.add(this.getYahooSymbol(sym)));
+        ST.slice(0, 25).forEach(s => symSet.add(this.getYahooSymbol(s[0])));
         ["^NSEI", "^CNX100", "^NSEMDCP50", "^CNXSC", "^NSEBANK", "^CNXIT", "^CNXAUTO", "^CNXPHARMA", "^CNXFMCG", "^CNXENERGY", "^CNXMETAL", "^CNXREALTY", "^CNXMEDIA", "^CNXPSE", "^CNXPSUBANK", "^CNXINFRA", "^CNXCOMMODITIES", "^CNXCONSUMPTION", "^CNXCPSE", "^CNXMNC"].forEach(i => symSet.add(i));
         // Add sector indices only when on the sectors/heatmap view (perf: skip on auto-refresh)
         const _curView = (typeof State !== "undefined" && State.view) ? State.view : "";
@@ -6543,6 +6547,18 @@
         return;
       }
 
+
+      const pageBtn = e.target.closest("[data-action='set-screener-page']");
+      if (pageBtn && !pageBtn.disabled && !pageBtn.classList.contains("disabled")) {
+        const p = parseInt(pageBtn.dataset.page, 10);
+        if (!isNaN(p)) {
+          State.screenerPage = p;
+          renderActiveView();
+          const tableWrap = document.querySelector(".table-scroll-wrapper");
+          if (tableWrap) tableWrap.scrollTop = 0;
+        }
+        return;
+      }
       const removeBtn = e.target.closest(".ticker-remove-stock-btn, [data-action='remove-ticker-stock']");
       if (removeBtn) {
         const idx = parseInt(removeBtn.dataset.idx, 10);
@@ -6855,6 +6871,30 @@
     `;
   }
 
+
+  function buildPaginationPills(curPage, totalPages) {
+    if (totalPages <= 1) return '';
+    const pills = [];
+    const maxButtons = 5;
+    let startPage = Math.max(1, curPage - 2);
+    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+    if (endPage - startPage < maxButtons - 1) {
+      startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+    if (startPage > 1) {
+      pills.push(`<button class="pagination-btn" data-action="set-screener-page" data-page="1">1</button>`);
+      if (startPage > 2) pills.push(`<span style="color:var(--mu);padding:0 2px">…</span>`);
+    }
+    for (let p = startPage; p <= endPage; p++) {
+      pills.push(`<button class="pagination-btn ${p === curPage ? 'active' : ''}" data-action="set-screener-page" data-page="${p}">${p}</button>`);
+    }
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) pills.push(`<span style="color:var(--mu);padding:0 2px">…</span>`);
+      pills.push(`<button class="pagination-btn" data-action="set-screener-page" data-page="${totalPages}">${totalPages}</button>`);
+    }
+    return pills.join('');
+  }
+
   function renderScreenerView() {
     const sectors = [...new Set(ST.map(s => s[2]))].sort();
 
@@ -6943,6 +6983,17 @@
       }
       return activeSortDir === "desc" ? -diff : diff;
     });
+
+    // High-performance pagination calculation (prevents DOM freezing with 500+ rows)
+    const pageSize = State.screenerPageSize || 50;
+    const totalMatching = filteredStocks.length;
+    const totalPages = pageSize === "all" ? 1 : Math.max(1, Math.ceil(totalMatching / (Number(pageSize) || 50)));
+    const curPage = Math.min(Math.max(1, State.screenerPage || 1), totalPages);
+    State.screenerPage = curPage;
+
+    const startIdx = pageSize === "all" ? 0 : (curPage - 1) * (Number(pageSize) || 50);
+    const endIdx = pageSize === "all" ? totalMatching : Math.min(startIdx + (Number(pageSize) || 50), totalMatching);
+    const visibleStocks = pageSize === "all" ? filteredStocks : filteredStocks.slice(startIdx, endIdx);
 
     // Descriptive sort label
     let activeSortSummary = "Momentum Strength (Default)";
@@ -7113,11 +7164,18 @@
         <div class="table-summary-bar" style="flex-wrap:wrap;gap:12px;">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <span class="match-counter-text">
-              Showing <strong>${filteredStocks.length}</strong> of ${ST.length} stocks matching criteria
+              Showing <strong>${totalMatching > 0 ? (startIdx + 1) : 0}–${endIdx}</strong> of ${totalMatching} stocks matching criteria
             </span>
             <span style="font-size:11px;color:var(--mu);display:inline-flex;align-items:center;gap:4px;">
               <span>•</span> Sorted by <strong>${activeSortSummary}</strong> · ${State.timeframe === "15m" ? "15min" : State.timeframe === "d" ? "Daily" : "Weekly"} timeframe
             </span>
+            ${totalPages > 1 ? `
+            <div style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;">
+              <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Previous page">«</button>
+              <span style="font-size:11px;font-weight:700;color:var(--ink);padding:0 3px;">Page ${curPage} / ${totalPages}</span>
+              <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Next page">»</button>
+            </div>
+            ` : ''}
           </div>
 
           <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
@@ -7220,7 +7278,7 @@
               </tr>
             </thead>
             <tbody>
-              ${filteredStocks.map(s => {
+              ${visibleStocks.map(s => {
       const isStarred = State.watchlist.includes(s[0]);
       const tagsStr = s[State.timeframe === "w" ? 6 : 5] || "";
       const isGolden = s[7] <= 5 || (s[5] && s[5].includes("a"));
@@ -7300,6 +7358,28 @@
               ` : ""}
             </tbody>
           </table>
+          </div>
+          <!-- Screener Pagination Bar -->
+          <div class="screener-pagination-bar">
+            <div style="font-size:12px;color:var(--mu);font-weight:600;">
+              Page ${curPage} of ${totalPages} (${totalMatching} stocks)
+            </div>
+            ${totalPages > 1 ? `
+            <div style="display:flex;align-items:center;gap:4px;">
+              <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''}>« Prev</button>
+              ${buildPaginationPills(curPage, totalPages)}
+              <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''}>Next »</button>
+            </div>
+            ` : ''}
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:11px;color:var(--mu);">Per page:</span>
+              <select id="screener-page-size-select" class="styled-select-input" data-action="select-screener-page-size" style="height:28px;padding:2px 8px;font-size:11px;">
+                <option value="25" ${pageSize == 25 ? 'selected' : ''}>25</option>
+                <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+                <option value="100" ${pageSize == 100 ? 'selected' : ''}>100</option>
+                <option value="all" ${pageSize === 'all' ? 'selected' : ''}>All (${totalMatching})</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -13744,6 +13824,9 @@
 
     if (STOCK_TYPO_ALIASES[clean]) return STOCK_TYPO_ALIASES[clean];
 
+    // O(1) Check exact symbol match in ST catalog and fast lookup map!
+    if (typeof ST_MAP !== "undefined" && ST_MAP[clean]) return clean;
+
     // Check exact symbol match in master catalogs
     const exactEarnings = MASTER_EVENTS_EARNINGS.find(e => e.symbol === clean);
     if (exactEarnings) return exactEarnings.symbol;
@@ -18299,8 +18382,16 @@
         return;
       }
 
+
+      if (e.target.id === "screener-page-size-select" || (e.target.dataset && e.target.dataset.action === "select-screener-page-size")) {
+        State.screenerPageSize = e.target.value === "all" ? "all" : parseInt(e.target.value, 10);
+        State.screenerPage = 1;
+        renderActiveView();
+        return;
+      }
       if (e.target.id === "screener-sector-select") {
         State.sector = e.target.value;
+        State.screenerPage = 1;
         renderActiveView();
       } else if (e.target.id === "screener-tech-preset-select") {
         const val = e.target.value;
@@ -18381,13 +18472,18 @@
     // Real-time Sector Indices Search input
     document.addEventListener("input", e => {
     if (e.target && e.target.id === "screener-search-input") {
-      State.searchQuery = e.target.value;
-      renderActiveView();
-      const inp = document.getElementById("screener-search-input");
-      if (inp) {
-        inp.focus();
-        inp.setSelectionRange(inp.value.length, inp.value.length);
-      }
+      const val = e.target.value;
+      State.searchQuery = val;
+      State.screenerPage = 1;
+      clearTimeout(window._screenerSearchTimer);
+      window._screenerSearchTimer = setTimeout(() => {
+        renderActiveView();
+        const inp = document.getElementById("screener-search-input");
+        if (inp) {
+          inp.focus();
+          inp.setSelectionRange(inp.value.length, inp.value.length);
+        }
+      }, 100);
       return;
     }
       if (e.target.id === "ipo-search-box") {
@@ -18869,6 +18965,8 @@
 
   // Dynamic fetch of repository-synced Nifty 500 catalog for GitHub Pages and static deployments
   async function syncNifty500Catalog() {
+    // Zero lag: Skip redundant network fetch if full catalog already loaded
+    if (ST.length >= 500) return;
     try {
       const jsonResp = await fetch('./data/stocks-nifty500.json', { cache: 'no-store' });
       if (jsonResp.ok) {

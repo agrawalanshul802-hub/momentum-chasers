@@ -12130,3 +12130,43 @@ body.theme-white .cal-more-chip {
     font-size: 10px !important;
 }
 
+
+
+/* ==========================================================================
+   Screener High-Performance Pagination Bar
+   ========================================================================== */
+.screener-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--sf);
+  border-top: 1px solid var(--ln);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pagination-btn {
+  background: var(--sf2);
+  color: var(--ink);
+  border: 1px solid var(--ln);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pagination-btn:hover:not(:disabled):not(.disabled) {
+  background: var(--ln);
+  color: #38bdf8;
+}
+.pagination-btn.active {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #38bdf8;
+  font-weight: 700;
+}
+.pagination-btn:disabled, .pagination-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
