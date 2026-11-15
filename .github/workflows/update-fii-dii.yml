@@ -1,8 +1,8 @@
-name: Update FII / DII Daily Market Flows
+name: Update Daily Market Intelligence (FII/DII & Nifty 500)
 
 on:
   schedule:
-    # 13:30 UTC = 7:00 PM IST (Mon-Fri) - Market closes at 3:30 PM IST, NSE publishes by 5:30-6:30 PM IST
+    # 13:30 UTC = 7:00 PM IST (Mon-Fri) - Market closes at 3:30 PM IST, NSE publishes after market close
     - cron: '30 13 * * 1-5'
     # 15:00 UTC = 8:30 PM IST (Mon-Fri) - Secondary pass for finalized exchange settlements
     - cron: '0 15 * * 1-5'
@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  update-flows:
+  update-market-data:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -26,15 +26,21 @@ jobs:
       - name: Fetch Latest FII / DII Data from Groww
         run: node scripts/fetch-fii-dii.js
 
+      - name: Start Market Proxy & Sync Nifty 500 Universe
+        run: |
+          node server.js &
+          sleep 3
+          node scripts/build-nifty500-universe.js
+
       - name: Commit and Push if Updated
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions[bot]"
-          if [ -n "$(git status --porcelain data/fii-dii-history.json)" ]; then
-            git add data/fii-dii-history.json
-            git commit -m "chore(data): update daily FII / DII flows [skip ci]"
+          if [ -n "$(git status --porcelain data/)" ]; then
+            git add data/
+            git commit -m "chore(data): daily post-market market sync (FII/DII & Nifty 500) [skip ci]"
             git push
-            echo "Successfully updated and pushed new FII / DII data."
+            echo "Successfully updated and pushed new market data."
           else
-            echo "No new FII / DII data released yet."
+            echo "No new market data released yet."
           fi
