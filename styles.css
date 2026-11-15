@@ -2729,6 +2729,9 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .table-summary-bar {
@@ -2739,8 +2742,9 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     border-bottom: 1px solid var(--ln);
     background: var(--sf);
     flex-shrink: 0;
-    position: relative;
-    z-index: 20;
+    position: sticky;
+    top: 0;
+    z-index: 25;
 }
 
 .sector-sort-toolbar {
@@ -2789,9 +2793,19 @@ body.theme-white .ticker-inline-suggestion-row:hover {
 .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: auto;
+    max-height: calc(100vh - 280px);
+    min-height: 360px;
     position: relative;
-    overscroll-behavior: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .table-scroll-wrapper {
+        max-height: calc(100dvh - 220px);
+        min-height: 280px;
+    }
 }
 
 /* Custom sleek scrollbar for table scroll wrapper */
