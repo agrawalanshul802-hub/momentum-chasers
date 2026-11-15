@@ -10824,17 +10824,21 @@ body.theme-white .turnover-floating-tooltip {
     align-items: center;
     justify-content: space-between;
     padding: 12px 18px;
-    border-top: 1px solid var(--ln);
+    border-bottom: 1px solid var(--ln);
+    border-top: none;
     background: var(--sf2);
     font-size: 11px;
     color: var(--mu);
     flex-wrap: wrap;
     gap: 10px;
+    position: relative;
+    z-index: 10;
 }
 
 body.theme-white .turnover-legend-bar {
     background: #f8fafc;
-    border-color: #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    border-top: none;
 }
 
 .legend-items-list {

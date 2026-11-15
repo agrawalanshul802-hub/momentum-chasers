@@ -7347,11 +7347,7 @@
 
         <!-- Heatmap Grid Container -->
         <div class="turnover-heatmap-card">
-          <div class="turnover-table-wrapper" id="sector-turnover-table-container">
-            ${buildTurnoverTableHTML(data)}
-          </div>
-
-          <!-- Color Legend Bar -->
+          <!-- Color Legend Bar (Ratio Scale moved to top) -->
           <div class="turnover-legend-bar">
             <div class="legend-items-list">
               <span style="font-weight:700;color:var(--ink);margin-right:4px;">Ratio Scale:</span>
@@ -7365,6 +7361,10 @@
             <div style="font-size:11px;color:var(--mu);display:inline-flex;align-items:center;gap:6px;">
               <span>Source: Official NSE Bhavcopy &amp; Index Trade Summary Archives</span>
             </div>
+          </div>
+
+          <div class="turnover-table-wrapper" id="sector-turnover-table-container">
+            ${buildTurnoverTableHTML(data)}
           </div>
         </div>
 
