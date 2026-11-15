@@ -16321,11 +16321,10 @@
       modal.style.display = "none";
       modal.classList.remove("show");
     }
-    State.view = "login";
-    history.replaceState(null, "", "#login");
-    renderActiveView();
-    renderSidebarUser();
     showToast("Signed out successfully.", "👋");
+    setTimeout(function () {
+      window.location.href = "login.html";
+    }, 250);
   }
 
   function escapeHtml(str) {
@@ -16469,12 +16468,9 @@
       }
     }
 
-    // If in login view, apply full-screen view-login body class and render login portal
+    // If in login view, redirect to modern login page
     if (State.view === "login") {
-      document.body.classList.add("view-login");
-      document.body.classList.remove("view-home");
-      container.innerHTML = renderLoginView();
-      setupLoginEvents();
+      window.location.href = "login.html";
       return;
     } else {
       if (State.loginRaf) {
