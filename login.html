@@ -3481,7 +3481,7 @@
 
   <!-- Supabase Auth Client Library & Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
+  <script src="supabase-config.js?v=4.6.1"></script>
 
 </head>
 
@@ -4639,9 +4639,86 @@
         });
       });
 
-      // Helper to get initialized auth provider
+      // Robust Helper to get initialized auth provider (with instant self-bootstrap fallback)
       function getAuth() {
-        return window.MomentumAuth || window.MOMENTUM_SUPABASE;
+        if (window.MomentumAuth && typeof window.MomentumAuth.signInWithGoogle === "function") {
+          return window.MomentumAuth;
+        }
+        if (window.MOMENTUM_SUPABASE && typeof window.MOMENTUM_SUPABASE.signInWithGoogle === "function") {
+          window.MomentumAuth = window.MOMENTUM_SUPABASE;
+          return window.MomentumAuth;
+        }
+        // Self-bootstrap fallback directly using Supabase CDN SDK if config script was delayed
+        if (window.supabase && typeof window.supabase.createClient === "function") {
+          try {
+            const fallbackClient = window.supabase.createClient(
+              'https://jxrvdlduhhcfbwjfqvog.supabase.co',
+              'sb_publishable_e8oMJgGwxyXf0YomGTXYRg_wL2uxY12',
+              { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: window.localStorage, flowType: 'pkce' } }
+            );
+            window.MomentumAuth = {
+              client: fallbackClient,
+              async signInWithGoogle() {
+                try {
+                  const target = window.location.origin + window.location.pathname.replace('login.html', 'index.html');
+                  const { data, error } = await fallbackClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: target, queryParams: { access_type: 'offline', prompt: 'consent' } }
+                  });
+                  if (error) return { success: false, error: error.message };
+                  return { success: true, data };
+                } catch (e) {
+                  return { success: false, error: e.message || 'Google OAuth failed' };
+                }
+              },
+              async signInWithPassword(email, password) {
+                try {
+                  const { data, error } = await fallbackClient.auth.signInWithPassword({ email: email.trim(), password });
+                  if (error) return { success: false, error: error.message };
+                  if (data && data.user) {
+                    const u = { id: data.user.id, email: data.user.email, name: data.user.email.split('@')[0], plan: 'PRO Terminal' };
+                    localStorage.setItem('momentum_user', JSON.stringify(u));
+                  }
+                  return { success: true, data };
+                } catch (e) {
+                  return { success: false, error: e.message };
+                }
+              },
+              async signUp(email, password, name) {
+                try {
+                  const { data, error } = await fallbackClient.auth.signUp({
+                    email: email.trim(),
+                    password,
+                    options: { data: { full_name: name || email.split('@')[0] } }
+                  });
+                  if (error) return { success: false, error: error.message };
+                  if (data && data.user) {
+                    const u = { id: data.user.id, email: data.user.email, name: name || data.user.email.split('@')[0], plan: 'PRO Terminal' };
+                    localStorage.setItem('momentum_user', JSON.stringify(u));
+                  }
+                  return { success: true, data };
+                } catch (e) {
+                  return { success: false, error: e.message };
+                }
+              },
+              async resetPassword(email) {
+                try {
+                  const target = window.location.origin + window.location.pathname;
+                  const { data, error } = await fallbackClient.auth.resetPasswordForEmail(email.trim(), { redirectTo: target });
+                  if (error) return { success: false, error: error.message };
+                  return { success: true, data };
+                } catch (e) {
+                  return { success: false, error: e.message };
+                }
+              }
+            };
+            window.MOMENTUM_SUPABASE = window.MomentumAuth;
+            return window.MomentumAuth;
+          } catch (bootErr) {
+            console.warn('Fallback bootstrap failed:', bootErr);
+          }
+        }
+        return null;
       }
 
       // Google OAuth
@@ -4649,9 +4726,10 @@
         clearMsg();
         const auth = getAuth();
         if (!auth) {
-          showMsg("Authentication service loading... please try again in a moment.", false);
+          showMsg("Connecting to Supabase... Please check your internet connection or refresh.", false);
           return;
         }
+        showMsg("Opening Google Sign-In...", true);
         const res = await auth.signInWithGoogle();
         if (!res.success) {
           showMsg(res.error || "Google sign-in could not be initiated.", false);
@@ -4673,7 +4751,7 @@
 
         const auth = getAuth();
         if (!auth) {
-          showMsg("Authentication service not ready. Please try again.", false);
+          showMsg("Connecting to Supabase... Please check your internet connection or refresh.", false);
           return;
         }
 
@@ -4694,6 +4772,7 @@
         }
 
         if (currentMode === "signin") {
+          showMsg("Authenticating...", true);
           const res = await auth.signInWithPassword(email, pass);
           if (res.success) {
             showMsg("Signed in successfully! Redirecting to dashboard...", true);
@@ -4701,9 +4780,15 @@
               window.location.href = "index.html#screener";
             }, 600);
           } else {
-            showMsg(res.error || "Invalid email or password.", false);
+            const err = res.error || "";
+            if (err.toLowerCase().includes("invalid login credentials")) {
+              showMsg("Account not found or password incorrect. Click 'Create Account' above to sign up!", false);
+            } else {
+              showMsg(err || "Invalid email or password.", false);
+            }
           }
         } else if (currentMode === "signup") {
+          showMsg("Creating account...", true);
           const res = await auth.signUp(email, pass, name);
           if (res.success) {
             showMsg("Account created! Redirecting to dashboard...", true);
@@ -4711,7 +4796,12 @@
               window.location.href = "index.html#screener";
             }, 700);
           } else {
-            showMsg(res.error || "Failed to create account.", false);
+            const err = res.error || "";
+            if (err.toLowerCase().includes("already registered") || err.toLowerCase().includes("user already")) {
+              showMsg("Account already exists! Please click 'Sign In' above.", false);
+            } else {
+              showMsg(err || "Failed to create account.", false);
+            }
           }
         }
       });
