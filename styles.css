@@ -243,7 +243,7 @@ a {
     align-items: center;
     background: var(--hd);
     border-bottom: 1px solid var(--ln);
-    overflow: hidden;
+    overflow: visible;
     user-select: none;
 }
 
@@ -574,32 +574,58 @@ body.theme-white .ticker-pause-btn:hover {
     transform: scale(1.15) rotate(-6deg);
 }
 
-/* Header User Capsule (When Logged In) */
-.header-user-pill {
+
+/* ==========================================================================
+   HEADER AUTH & USER PROFILE CAPSULE + DROPDOWN
+   ========================================================================== */
+.ticker-container {
+    overflow: visible !important;
+}
+
+.header-auth-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    flex-shrink: 0;
+    z-index: 1000;
+    border-left: 1px solid var(--ln);
+    background: var(--sf);
+    position: relative;
+    overflow: visible;
+}
+
+.header-user-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* User Pill Button (When active/logged in) */
+.header-user-pill-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     height: 100%;
-    padding: 0 10px 0 12px;
-}
-
-.header-user-profile-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    padding: 0 12px;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    padding: 4px 6px;
-    border-radius: var(--radius-sm);
-    transition: background 0.15s ease;
+    color: var(--ink);
+    font-family: inherit;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
 }
 
-.header-user-profile-trigger:hover {
+.header-user-pill-btn:hover,
+.header-user-pill-btn.active {
     background: rgba(255, 255, 255, 0.06);
 }
 
 .header-avatar-circle {
-    width: 24px;
-    height: 24px;
+    position: relative;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: linear-gradient(135deg, #10b981, #059669);
     display: flex;
@@ -608,8 +634,20 @@ body.theme-white .ticker-pause-btn:hover {
     font-size: 11px;
     font-weight: 800;
     color: #ffffff;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
     flex-shrink: 0;
+}
+
+.header-avatar-online-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid var(--hd);
+    box-shadow: 0 0 6px #10b981;
 }
 
 .header-user-details {
@@ -622,7 +660,7 @@ body.theme-white .ticker-pause-btn:hover {
     font-size: 12px;
     font-weight: 600;
     color: var(--ink);
-    max-width: 120px;
+    max-width: 130px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -640,44 +678,420 @@ body.theme-white .ticker-pause-btn:hover {
     line-height: 1;
 }
 
-/* Header Sign Out Button */
-.header-logout-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.22);
-    color: #f87171;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
+.header-user-chevron {
+    color: var(--mu);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
-.header-logout-btn:hover {
+.header-user-pill-btn.active .header-user-chevron,
+.header-login-btn.active .header-user-chevron {
+    transform: rotate(180deg);
+}
+
+/* Header Login / Sign In Button */
+.header-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 14px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(16, 185, 129, 0.04));
+    border: none;
+    color: var(--g);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-login-btn .header-login-icon {
+    font-size: 13px;
+    transition: transform 0.2s ease;
+}
+
+.header-login-btn:hover,
+.header-login-btn.active {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), rgba(16, 185, 129, 0.14));
+    color: #ffffff;
+    box-shadow: inset 0 -2px 0 var(--g), 0 0 14px rgba(34, 197, 94, 0.25);
+}
+
+/* Floating Dropdown Menu */
+.header-user-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 4px;
+    min-width: 310px;
+    max-width: 350px;
+    background: #0b111e;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 10000;
+    padding: 14px;
+    text-align: left;
+}
+
+.header-user-dropdown-menu.show {
+    display: block;
+    animation: hudFadeSlideIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes hudFadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Dropdown Header */
+.hud-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 2px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hud-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.hud-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #047857);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.hud-status-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid #0b111e;
+    box-shadow: 0 0 6px #10b981;
+}
+
+.hud-user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.hud-user-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hud-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hud-badge {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(16, 185, 129, 0.16);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    letter-spacing: 0.5px;
+}
+
+.hud-email {
+    font-size: 11px;
+    color: var(--mu);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Detail Cards Grid */
+.hud-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.hud-detail-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.hud-detail-label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mu);
+}
+
+.hud-detail-val {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hud-detail-val.hud-plan {
+    color: #fbbf24;
+}
+
+.hud-detail-val.hud-broker {
+    color: #38bdf8;
+}
+
+.hud-detail-val.hud-live {
+    color: #10b981;
+}
+
+/* Action Links */
+.hud-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+    margin-bottom: 8px;
+}
+
+.hud-action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--ink-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+}
+
+.hud-action-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--ink);
+}
+
+/* Sign Out Button in Dropdown Footer */
+.hud-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+
+.hud-signout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.28);
+    color: #f87171;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hud-signout-btn:hover {
     background: #ef4444;
     color: #ffffff;
     border-color: #ef4444;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
     transform: translateY(-1px);
+}
+
+/* Sign In Dropdown */
+.hud-signin-header {
+    padding: 4px 2px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hud-signin-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.hud-signin-sub {
+    font-size: 11px;
+    color: var(--mu);
+    margin-top: 2px;
+}
+
+.hud-signin-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hud-signin-quick-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+}
+
+.hud-signin-quick-btn:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    transform: translateY(-1px);
+}
+
+.hud-avatar-circle.sm {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+}
+
+.hud-signin-btn-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.hud-signin-main {
+    font-size: 12px;
+    color: var(--ink);
+}
+
+.hud-signin-meta {
+    font-size: 10px;
+    color: var(--mu);
+    margin-top: 1px;
+}
+
+.hud-signin-arrow {
+    font-size: 14px;
+    color: #10b981;
+    font-weight: 700;
+}
+
+.hud-signin-portal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--ink-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.hud-signin-portal-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* White Theme Support */
+body.theme-white .header-user-dropdown-menu {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14), 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-white .hud-header {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-white .hud-status-dot {
+    border-color: #ffffff;
+}
+
+body.theme-white .hud-detail-card {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+body.theme-white .hud-actions-list,
+body.theme-white .hud-footer,
+body.theme-white .hud-signin-header {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-white .hud-action-item:hover {
+    background: #f1f5f9;
+}
+
+body.theme-white .hud-signin-portal-btn {
+    background: #f8fafc;
+    border-color: #e2e8f0;
 }
 
 @media (max-width: 680px) {
     .header-user-name {
         display: none;
     }
-
-    .header-logout-label {
-        display: none;
-    }
-
-    .header-logout-btn {
-        padding: 4px 7px;
+    .header-user-dropdown-menu {
+        right: 0;
+        min-width: 280px;
+        max-width: calc(100vw - 16px);
     }
 }
+
 
 .ticker-item-manager-row {
     display: flex;

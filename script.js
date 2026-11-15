@@ -4408,11 +4408,26 @@
   // 2. APPLICATION STATE
   // ==========================================================================
 
+    const DEFAULT_USER_PROFILE = {
+    name: "Anshul Agrawal",
+    email: "agrawalanshul802@gmail.com",
+    plan: "PRO Terminal",
+    avatar: "A",
+    broker: "Dhan Connected",
+    provider: "terminal"
+  };
+
   let savedUser = null;
   try {
     savedUser = JSON.parse(localStorage.getItem("momentum_user") || "null");
   } catch (e) {
     savedUser = null;
+  }
+  if (!savedUser && localStorage.getItem("momentum_signed_out") !== "true") {
+    savedUser = Object.assign({}, DEFAULT_USER_PROFILE);
+    try {
+      localStorage.setItem("momentum_user", JSON.stringify(savedUser));
+    } catch (e) {}
   }
 
   let State = {
@@ -17053,6 +17068,7 @@
     savedUser = null;
     try {
       localStorage.removeItem("momentum_user");
+      localStorage.setItem("momentum_signed_out", "true");
     } catch (e) {
       console.warn("Could not remove momentum_user from localStorage", e);
     }
@@ -17066,10 +17082,9 @@
       modal.style.display = "none";
       modal.classList.remove("show");
     }
-    showToast("Signed out successfully.", "👋");
-    setTimeout(function () {
-      window.location.href = "login.html";
-    }, 250);
+    closeUserDropdown();
+    renderUserAuthUI();
+    showToast("Signed out successfully. Click 'Sign In' anytime to reconnect.", "👋");
   }
 
   function escapeHtml(str) {
@@ -17163,33 +17178,162 @@
     renderUserAuthUI();
   }
 
+  function closeUserDropdown() {
+    const d1 = document.getElementById("header-user-dropdown-menu");
+    const d2 = document.getElementById("header-signin-dropdown-menu");
+    const btn1 = document.getElementById("header-user-dropdown-btn");
+    const btn2 = document.getElementById("header-login-btn");
+    if (d1) d1.classList.remove("show");
+    if (d2) d2.classList.remove("show");
+    if (btn1) {
+      btn1.classList.remove("active");
+      btn1.setAttribute("aria-expanded", "false");
+    }
+    if (btn2) {
+      btn2.classList.remove("active");
+      btn2.setAttribute("aria-expanded", "false");
+    }
+  }
+
   function renderUserAuthUI() {
-    // 1. Header Auth Container (Top-Right of Ticker Bar)
     const headerAuth = document.getElementById("header-auth-container");
-    if (headerAuth) {
-      if (State.user) {
-        const rawName = State.user.name || "Trader";
-        const initial = rawName.trim().charAt(0).toUpperCase() || "U";
-        const avatar = State.user.avatar && State.user.avatar.length <= 3 ? State.user.avatar : initial;
-        headerAuth.innerHTML = `
-          <div class="header-user-pill">
-            <div class="header-user-profile-trigger" data-action="open-user-profile-modal" title="View Account Profile: ${escapeHtml(rawName)}">
-              <div class="header-avatar-circle">${escapeHtml(avatar)}</div>
-              <div class="header-user-details">
-                <span class="header-user-name">${escapeHtml(rawName)}</span>
-                <span class="header-pro-badge">PRO</span>
+    if (!headerAuth) return;
+
+    if (State.user) {
+      const rawName = State.user.name || "Trader";
+      const email = State.user.email || "trader@momentumchasers.com";
+      const plan = State.user.plan || "PRO Terminal";
+      const broker = State.user.broker || "Dhan Connected";
+      const initial = rawName.trim().charAt(0).toUpperCase() || "A";
+      const avatar = State.user.avatar && State.user.avatar.length <= 3 ? State.user.avatar : initial;
+
+      headerAuth.innerHTML = `
+        <div class="header-user-wrapper" id="header-user-wrapper">
+          <button class="header-user-pill-btn" id="header-user-dropdown-btn" data-action="toggle-user-dropdown" title="Account: ${escapeHtml(rawName)} (${escapeHtml(email)})" aria-expanded="false" aria-haspopup="true">
+            <div class="header-avatar-circle">
+              ${escapeHtml(avatar)}
+              <span class="header-avatar-online-dot"></span>
+            </div>
+            <div class="header-user-details">
+              <span class="header-user-name">${escapeHtml(rawName)}</span>
+              <span class="header-pro-badge">PRO</span>
+            </div>
+            <svg class="header-user-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- Floating User Details Dropdown with Sign Out Inside -->
+          <div class="header-user-dropdown-menu" id="header-user-dropdown-menu" role="menu">
+            <div class="hud-header">
+              <div class="hud-avatar-wrap">
+                <div class="hud-avatar">${escapeHtml(avatar)}</div>
+                <span class="hud-status-dot"></span>
+              </div>
+              <div class="hud-user-info">
+                <div class="hud-user-name-row">
+                  <span class="hud-name">${escapeHtml(rawName)}</span>
+                  <span class="hud-badge">PRO</span>
+                </div>
+                <div class="hud-email">${escapeHtml(email)}</div>
               </div>
             </div>
+
+            <div class="hud-details-grid">
+              <div class="hud-detail-card">
+                <span class="hud-detail-label">Subscription</span>
+                <span class="hud-detail-val hud-plan">⭐ ${escapeHtml(plan)}</span>
+              </div>
+              <div class="hud-detail-card">
+                <span class="hud-detail-label">Broker Link</span>
+                <span class="hud-detail-val hud-broker">⚡ ${escapeHtml(broker)}</span>
+              </div>
+              <div class="hud-detail-card">
+                <span class="hud-detail-label">Market Feed</span>
+                <span class="hud-detail-val hud-live">● Live Stream (NSE/BSE)</span>
+              </div>
+              <div class="hud-detail-card">
+                <span class="hud-detail-label">Terminal Tier</span>
+                <span class="hud-detail-val">Ultra-Low Latency</span>
+              </div>
+            </div>
+
+            <div class="hud-actions-list">
+              <button type="button" class="hud-action-item" data-action="open-user-profile-modal">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Profile &amp; Broker Settings</span>
+              </button>
+              <button type="button" class="hud-action-item" data-action="toggle-theme-hud">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span>Toggle Theme (White / Midnight)</span>
+              </button>
+            </div>
+
+            <div class="hud-footer">
+              <button type="button" class="hud-signout-btn" data-action="header-signout" title="Sign out of Momentum Chasers">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out</span>
+              </button>
+            </div>
           </div>
-        `;
-      } else {
-        headerAuth.innerHTML = `
-          <button class="header-login-btn" data-view="login" title="Sign In to Momentum Chasers">
+        </div>
+      `;
+    } else {
+      headerAuth.innerHTML = `
+        <div class="header-user-wrapper" id="header-user-wrapper">
+          <button class="header-login-btn" id="header-login-btn" data-action="toggle-login-dropdown" title="Sign In to Momentum Chasers" aria-expanded="false" aria-haspopup="true">
             <span class="header-login-icon">🔐</span>
             <span class="header-login-text">Sign In</span>
+            <svg class="header-user-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </button>
-        `;
-      }
+
+          <!-- Floating Quick Sign-In Dropdown -->
+          <div class="header-user-dropdown-menu header-signin-dropdown" id="header-signin-dropdown-menu" role="menu">
+            <div class="hud-signin-header">
+              <div class="hud-signin-title">Terminal Sign In</div>
+              <div class="hud-signin-sub">Access live momentum algorithms &amp; Nifty 500 feeds</div>
+            </div>
+            <div class="hud-signin-options">
+              <button type="button" class="hud-signin-quick-btn" data-action="restore-user" title="Instant restore PRO profile">
+                <div class="hud-avatar-circle sm">A</div>
+                <div class="hud-signin-btn-text">
+                  <div class="hud-signin-main">Continue as <strong>Anshul Agrawal</strong></div>
+                  <div class="hud-signin-meta">PRO Terminal • agrawalanshul802@gmail.com</div>
+                </div>
+                <span class="hud-signin-arrow">→</span>
+              </button>
+
+              <a href="login.html" class="hud-signin-portal-btn">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+                <span>Open Login Portal (Email / Google)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
     }
   }
 
@@ -17666,193 +17810,72 @@
         return;
       }
 
-      // 4. User Profile Modal Trigger (Header profile pill)
-      if (e.target.closest(".header-user-profile-trigger, .header-user-pill, [data-action='open-user-profile-modal']")) {
+      // 4. User Profile Dropdown & Modal Triggers
+      if (e.target.closest("#header-user-dropdown-btn, [data-action='toggle-user-dropdown']")) {
+        const dropdown = document.getElementById("header-user-dropdown-menu");
+        const btn = document.getElementById("header-user-dropdown-btn");
+        if (dropdown) {
+          const isOpen = dropdown.classList.toggle("show");
+          if (btn) {
+            btn.classList.toggle("active", isOpen);
+            btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          }
+        }
+        return;
+      }
+
+      if (e.target.closest("#header-login-btn, [data-action='toggle-login-dropdown']")) {
+        const dropdown = document.getElementById("header-signin-dropdown-menu");
+        const btn = document.getElementById("header-login-btn");
+        if (dropdown) {
+          const isOpen = dropdown.classList.toggle("show");
+          if (btn) {
+            btn.classList.toggle("active", isOpen);
+            btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          }
+        }
+        return;
+      }
+
+      if (e.target.closest("[data-action='header-signout']")) {
+        logoutUser();
+        return;
+      }
+
+      if (e.target.closest("[data-action='restore-user']")) {
+        State.user = Object.assign({}, DEFAULT_USER_PROFILE);
+        savedUser = State.user;
+        try {
+          localStorage.setItem("momentum_user", JSON.stringify(State.user));
+          localStorage.removeItem("momentum_signed_out");
+        } catch (e) {}
+        closeUserDropdown();
+        renderUserAuthUI();
+        showToast("Welcome back, Anshul Agrawal! Terminal connected.", "🚀");
+        return;
+      }
+
+      if (e.target.closest("[data-action='toggle-theme-hud']")) {
+        const nextTheme = State.theme === "midnight" ? "white" : "midnight";
+        applyTheme(nextTheme);
+        showToast(
+          nextTheme === "white" ? "Switched to White Theme ☀️" : "Switched to Midnight Theme 🌙",
+          nextTheme === "white" ? "☀️" : "🌙"
+        );
+        return;
+      }
+
+      if (e.target.closest("[data-action='open-user-profile-modal']")) {
+        closeUserDropdown();
         renderUserProfileModal();
         const modal = document.getElementById("user-profile-modal");
         if (modal) { modal.style.display = "flex"; modal.classList.add("show"); }
         return;
       }
 
-      // 5. User Profile Modal Close
-      if (e.target.closest("#user-profile-modal-close-btn, #user-profile-modal-done-btn") || e.target.id === "user-profile-modal") {
-        const modal = document.getElementById("user-profile-modal");
-        if (modal) { modal.style.display = "none"; modal.classList.remove("show"); }
-        return;
-      }
-
-      // 5b. User Sign Out Trigger
-      if (e.target.closest("#user-profile-signout-btn, [data-action='logout']")) {
-        logoutUser();
-        return;
-      }
-
-      // 5c. Events Day Inspector Modal Close
-      if (e.target.closest("#events-day-modal-close-btn, [data-action='events-close-day-modal']") || e.target.id === "events-day-modal") {
-        closeEventsDayModal();
-        return;
-      }
-
-      // 6. Symbol Search Modal Triggers
-      if (e.target.closest(".tv-symbol-selector, [data-action='open-symbol-search']")) {
-        openSymbolSearchModal();
-        return;
-      }
-      if (e.target.closest("#symbol-search-close-btn") || e.target.id === "symbol-search-modal") {
-        closeSymbolSearchModal();
-        return;
-      }
-      const sItem = e.target.closest(".symbol-search-item");
-      if (sItem) {
-        const sym = sItem.dataset.symbol;
-        if (sym) {
-          closeSymbolSearchModal();
-          State.activeStock = sym;
-          State.view = "stock";
-          window.location.hash = "stock";
-          renderActiveView();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          showToast(`Switched chart to ${sym} 📈`, "🔍");
-        }
-        return;
-      }
-      const sFilterPill = e.target.closest(".symbol-filter-pill");
-      if (sFilterPill) {
-        document.querySelectorAll(".symbol-filter-pill").forEach(p => p.classList.remove("active"));
-        sFilterPill.classList.add("active");
-        activeSymbolSearchFilter = sFilterPill.dataset.symbolFilter || "all";
-        const input = document.getElementById("symbol-search-input");
-        renderSymbolSearchResults(input ? input.value : "", activeSymbolSearchFilter);
-        return;
-      }
-
-      const target = e.target.closest("[data-action], [data-view], [data-target]");
-      if (!target) return;
-
-      const view = target.dataset.view || target.dataset.target;
-      const action = target.dataset.action;
-
-      if (action === "set-sector-subtab") {
-        const tab = target.dataset.tab || "indices";
-        State.sectorSubTab = tab;
-        State.view = tab === "turnover" ? "sector-turnover" : "sectors";
-        window.location.hash = State.view;
-        renderActiveView();
-        return;
-      }
-
-      if (action === "set-earnings-range") {
-        const range = target.dataset.range || "day";
-        State.earningsRange = range;
-        renderActiveView();
-        const dateInput = document.getElementById("earnings-date-input");
-        const activeDate = dateInput ? dateInput.value : (State.earningsDate || "2026-11-12");
-        showToast(`Filtered earnings for ${range.toUpperCase()} (${activeDate}) 📅`, "⚡");
-        return;
-      }
-
-      // Back button click
-      if (action === "go-back") {
-        navigateBack();
-        return;
-      }
-
-      // Go to screener from index card click
-      if (action === "go-screener") {
-        State.previousView = State.view;
-        State.view = "screener";
-        history.replaceState(null, "", "#screener");
-        renderActiveView();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
-      }
-
-      // View switching from nav or buttons (also handles data-action="nav")
-      if ((view && !action) || action === "switch-view" || action === "nav") {
-        if (view === "ipo" && target.dataset.tab) {
-          State.ipoTab = target.dataset.tab;
-        }
-        if (view === "sector-turnover") {
-          State.sectorSubTab = "turnover";
-        }
-        if (State.view !== view && State.view !== "login") {
-          State.previousView = State.view;
-        }
-        State.view = view;
-        window.location.hash = view;
-        renderActiveView();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        // Close mobile sidebar if open
-        const sidebar = $("#sidebar");
-        if (sidebar) sidebar.classList.remove("mobile-open");
-        return;
-      }
-
-      // Actions
-      if (action === "toggle-nav-group") {
-        const groupEl = target.closest(".nav-accordion-group");
-        if (!groupEl) return;
-        const willOpen = !groupEl.classList.contains("open");
-        groupEl.classList.toggle("open", willOpen);
-        const headerBtn = groupEl.querySelector(".nav-section-header");
-        if (headerBtn) {
-          headerBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
-        }
-        try {
-          const groupId = groupEl.dataset.group;
-          const savedStates = JSON.parse(localStorage.getItem("momentum_nav_accordion_state") || "{}");
-          savedStates[groupId] = willOpen;
-          localStorage.setItem("momentum_nav_accordion_state", JSON.stringify(savedStates));
-        } catch (e) { }
-        return;
-      }
-      else if (action === "toggle-watchlist-accordion") {
-        if (e.target.closest("#sidebar-watchlist-add-btn")) return;
-        const box = document.getElementById("sidebar-watchlist-box");
-        if (box) {
-          box.classList.toggle("collapsed");
-        }
-        return;
-      }
-      else if (action === "events-tab") {
-        State.eventsTab = target.dataset.tab;
-        State.eventsSearch = "";
-        renderActiveView();
-      }
-      else if (action === "events-view-mode") {
-        State.eventsViewMode = target.dataset.mode;
-        renderActiveView();
-      }
-      else if (action === "events-prev-month") {
-        State.eventsMonth--;
-        if (State.eventsMonth < 0) {
-          State.eventsMonth = 11;
-          State.eventsYear--;
-        }
-        renderActiveView();
-      }
-      else if (action === "events-next-month") {
-        State.eventsMonth++;
-        if (State.eventsMonth > 11) {
-          State.eventsMonth = 0;
-          State.eventsYear++;
-        }
-        renderActiveView();
-      }
-      else if (action === "events-reset-today") {
-        State.eventsMonth = 10;
-        State.eventsYear = 2026;
-        renderActiveView();
-        showToast("Reset to current month: Nov 2026", "📅");
-      }
-      else if (action === "events-export") {
-        exportEventsToCSV();
-      }
-      else if (action === "events-cal-day-select") {
-        const selectedDay = target.dataset.day || target.closest("[data-day]")?.dataset.day;
-        if (selectedDay) {
-          openEventsDayModal(selectedDay);
-        }
+      // Close user dropdown if clicking outside header-user-wrapper
+      if (!e.target.closest("#header-user-wrapper")) {
+        closeUserDropdown();
       }
       else if (action === "events-close-day-modal") {
         closeEventsDayModal();
