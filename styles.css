@@ -5349,6 +5349,12 @@ body.theme-white .portfolio-sec-badge-count {
     padding: 24px;
     max-width: 520px;
     width: 100%;
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
     box-shadow: var(--shadow-md);
     position: relative;
 }

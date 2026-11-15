@@ -4158,9 +4158,9 @@
       position: fixed;
       inset: 0;
       z-index: 10000;
-      background: rgba(7, 11, 23, 0.82);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(7, 11, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -4168,6 +4168,9 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.25s ease, visibility 0.25s ease;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .auth-backdrop.active {
@@ -4179,15 +4182,38 @@
       position: relative;
       width: 100%;
       max-width: 440px;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
       background: #0d1424;
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 20px;
-      padding: 32px 28px 26px;
-      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      padding: 32px 28px 24px;
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
       transform: translateY(20px) scale(0.97);
       transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       color: #e8ecf6;
       font-family: Manrope, system-ui, -apple-system, sans-serif;
+    }
+
+    .auth-card::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .auth-card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .auth-card::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+    }
+
+    .auth-card::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .auth-backdrop.active .auth-card {
@@ -4496,6 +4522,232 @@
 
     .supabase-pill:hover {
       text-decoration: underline;
+    }
+
+    /* -----------------------------------------------------------
+       COMPREHENSIVE RESPONSIVE DESIGN (ALL DEVICES & ORIENTATIONS)
+       ----------------------------------------------------------- */
+
+    /* Mobile Phones (Portrait <= 480px) */
+    @media (max-width: 480px) {
+      .auth-backdrop {
+        padding: 10px;
+        align-items: center;
+      }
+
+      .auth-card {
+        padding: 24px 16px 20px;
+        border-radius: 16px;
+        max-height: calc(100vh - 20px);
+        max-height: calc(100dvh - 20px);
+      }
+
+      .auth-header {
+        margin-bottom: 16px;
+      }
+
+      .auth-logo-badge {
+        font-size: 12px;
+        padding: 4px 10px;
+        margin-bottom: 8px;
+      }
+
+      .auth-title {
+        font-size: 19px;
+      }
+
+      .auth-sub {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .auth-tabs {
+        margin-bottom: 14px;
+        padding: 3px;
+      }
+
+      .auth-tab-btn {
+        padding: 8px 10px;
+        font-size: 12.5px;
+      }
+
+      .google-btn {
+        padding: 11px 12px;
+        font-size: 13.5px;
+        min-height: 44px;
+      }
+
+      .auth-divider {
+        margin: 14px 0;
+        font-size: 10px;
+      }
+
+      .auth-form {
+        gap: 12px;
+      }
+
+      /* 16px font-size prevents iOS Safari from automatically zooming into the field */
+      .auth-input {
+        font-size: 16px;
+        padding: 11px 12px;
+        border-radius: 8px;
+      }
+
+      .auth-submit-btn {
+        padding: 12px 14px;
+        font-size: 14px;
+        min-height: 44px;
+      }
+
+      .auth-back-btn {
+        padding: 10px 14px;
+        font-size: 12.5px;
+        min-height: 42px;
+        margin-top: 8px;
+      }
+
+      .auth-close,
+      .auth-back-arrow {
+        top: 12px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+
+      .auth-close {
+        right: 12px;
+      }
+
+      .auth-back-arrow {
+        left: 12px;
+      }
+
+      .auth-footer-bar {
+        margin-top: 14px;
+        padding-top: 10px;
+        font-size: 10px;
+      }
+    }
+
+    /* Extra Small Phones (320px - 360px: e.g. iPhone SE 1st gen, Galaxy Fold) */
+    @media (max-width: 360px) {
+      .auth-card {
+        padding: 20px 12px 16px;
+        border-radius: 14px;
+      }
+
+      .auth-title {
+        font-size: 17.5px;
+      }
+
+      .auth-sub {
+        font-size: 11px;
+      }
+
+      .google-btn span {
+        font-size: 12.5px;
+      }
+
+      .auth-label {
+        font-size: 11px;
+      }
+    }
+
+    /* Landscape Mode & Short Viewports (height <= 640px) */
+    @media (max-height: 640px) {
+      .auth-backdrop {
+        align-items: flex-start;
+        padding: 8px;
+      }
+
+      .auth-card {
+        margin: auto;
+        padding: 18px 18px 14px;
+        border-radius: 14px;
+        max-height: calc(100vh - 16px);
+        max-height: calc(100dvh - 16px);
+      }
+
+      .auth-header {
+        margin-bottom: 10px;
+      }
+
+      .auth-logo-badge {
+        font-size: 11px;
+        padding: 3px 8px;
+        margin-bottom: 5px;
+      }
+
+      .auth-title {
+        font-size: 17px;
+        margin-bottom: 2px;
+      }
+
+      .auth-sub {
+        font-size: 11.5px;
+      }
+
+      .auth-tabs {
+        margin-bottom: 10px;
+        padding: 2px;
+      }
+
+      .auth-tab-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+
+      .google-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 38px;
+      }
+
+      .auth-divider {
+        margin: 8px 0;
+        font-size: 9.5px;
+      }
+
+      .auth-form {
+        gap: 8px;
+      }
+
+      .auth-field {
+        gap: 3px;
+      }
+
+      .auth-input {
+        padding: 8px 12px;
+      }
+
+      .auth-submit-btn {
+        padding: 9px 12px;
+        font-size: 13px;
+        min-height: 38px;
+      }
+
+      .auth-back-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        margin-top: 6px;
+      }
+
+      .auth-footer-bar {
+        margin-top: 10px;
+        padding-top: 8px;
+        font-size: 10px;
+      }
+
+      .auth-close,
+      .auth-back-arrow {
+        top: 10px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+      }
+
+      .auth-close { right: 10px; }
+      .auth-back-arrow { left: 10px; }
     }
   </style>
 
