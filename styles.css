@@ -2789,8 +2789,7 @@ body.theme-white .ticker-inline-suggestion-row:hover {
 .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: calc(100vh - 270px);
+    overflow-y: visible;
     position: relative;
     overscroll-behavior: auto;
 }
@@ -6962,13 +6961,14 @@ body.theme-white .ipo-live-status-pill {
 }
 
 .cal-event {
-    font-size: 9px;
-    font-weight: 600;
-    padding: 3px 5px;
-    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.35;
 }
 
 .cal-event.cal-listed {
@@ -7014,10 +7014,108 @@ body.theme-white .ipo-calendar-grid {
     border-color: #e2e8f0;
 }
 
-body.theme-white .ipo-card-grid,
-body.theme-white .cal-day-cell {
+body.theme-white .ipo-card-grid {
     background: #f8fafc;
     border-color: #e2e8f0;
+}
+
+/* High-Contrast Calendar Event Pills & Day Grid for White Theme */
+body.theme-white .cal-day-cell {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.theme-white .cal-day-cell:hover {
+    background: #f8fafc !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08) !important;
+}
+
+body.theme-white .cal-day-cell.today {
+    background: #f0fdf4 !important;
+    border-color: #16a34a !important;
+}
+
+body.theme-white .cal-day-num {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .cal-header-cell {
+    color: #475569 !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .cal-event {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.theme-white .cal-event.cal-holiday {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-left: 3px solid #dc2626 !important;
+}
+
+body.theme-white .cal-event.cal-economic {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    border-left: 3px solid #2563eb !important;
+}
+
+body.theme-white .cal-event.cal-earnings {
+    background: #dcfce7 !important;
+    color: #14532d !important;
+    border-left: 3px solid #16a34a !important;
+}
+
+body.theme-white .cal-event.cal-concall {
+    background: #f3e8ff !important;
+    color: #581c87 !important;
+    border-left: 3px solid #9333ea !important;
+}
+
+body.theme-white .cal-event.cal-action {
+    background: #fef3c7 !important;
+    color: #78350f !important;
+    border-left: 3px solid #d97706 !important;
+}
+
+body.theme-white .cal-event.cal-listed {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    border-left: 3px solid #2563eb !important;
+}
+
+body.theme-white .cal-event.cal-open {
+    background: #dcfce7 !important;
+    color: #14532d !important;
+    border-left: 3px solid #16a34a !important;
+}
+
+body.theme-white .cal-event.cal-upcoming {
+    background: #fef3c7 !important;
+    color: #78350f !important;
+    border-left: 3px solid #d97706 !important;
+}
+
+body.theme-white .cal-more-chip {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    border: 1px dashed #94a3b8 !important;
+    font-weight: 700 !important;
+    font-size: 9.5px !important;
+}
+
+body.theme-white .cal-more-chip:hover {
+    background: #e2e8f0 !important;
+    border-color: #64748b !important;
+    color: #0f172a !important;
 }
 
 body.theme-white .table-filter-row th {

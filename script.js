@@ -3934,6 +3934,7 @@
     marketCap: "all",           // "all", "LC", "MC", "SC"
     sector: "all",              // "all" or specific sector
     selectedPresets: [],        // Active technical or financial preset keys
+    presetsCollapsed: false,    // Toggle collapse for technical and financial presets section
     searchQuery: "",            // Text filter in screener
     watchlist: ["INDUSINDBK", "BAJAJ-AUTO", "BSE", "SMSPHARMA"], // Default starred stocks
     tickerSpeed: "normal",      // "slow", "normal", "fast"
@@ -6509,35 +6510,40 @@
           </div>
 
           <button class="clear-all-filters-btn" id="screener-clear-all" style="margin-left:auto">Clear All Filters</button>
+          <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle presets section">
+            <span>${State.presetsCollapsed ? "Show Presets ▾" : "Hide Presets ▴"}</span>
+          </button>
         </div>
 
-        <!-- Technical Presets Row -->
-        <div class="preset-section-divider">
-          <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
-            Technical Presets (Price & Momentum Setups)
+        <div id="screener-presets-wrap" style="${State.presetsCollapsed ? 'display:none;' : ''}">
+          <!-- Technical Presets Row -->
+          <div class="preset-section-divider">
+            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
+              Technical Presets (Price & Momentum Setups)
+            </div>
+            <div class="chips-wrap-group">
+              ${PR.map(p => `
+                <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
+                  <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
+                  <span>${p[1]}</span>
+                </button>
+              `).join("")}
+            </div>
           </div>
-          <div class="chips-wrap-group">
-            ${PR.map(p => `
-              <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
-                <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
-                <span>${p[1]}</span>
-              </button>
-            `).join("")}
-          </div>
-        </div>
 
-        <!-- Financial Results Presets Row -->
-        <div class="preset-section-divider">
-          <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
-            Financial & Results Presets (Earnings Growth)
-          </div>
-          <div class="chips-wrap-group">
-            ${RS.map(p => `
-              <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
-                <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
-                <span>${p[1]}</span>
-              </button>
-            `).join("")}
+          <!-- Financial Results Presets Row -->
+          <div class="preset-section-divider">
+            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
+              Financial & Results Presets (Earnings Growth)
+            </div>
+            <div class="chips-wrap-group">
+              ${RS.map(p => `
+                <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
+                  <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
+                  <span>${p[1]}</span>
+                </button>
+              `).join("")}
+            </div>
           </div>
         </div>
 
@@ -17336,6 +17342,10 @@
       else if (action === "set-tf") {
         State.timeframe = target.dataset.val;
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
+        renderActiveView();
+      }
+      else if (action === "toggle-screener-presets") {
+        State.presetsCollapsed = !State.presetsCollapsed;
         renderActiveView();
       }
       else if (action === "toggle-preset") {
