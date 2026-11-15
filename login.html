@@ -4217,6 +4217,57 @@
       color: #ffffff;
     }
 
+    .auth-back-arrow {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      color: #94a3b8;
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      z-index: 2;
+    }
+
+    .auth-back-arrow:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #f5b544;
+      border-color: rgba(245, 181, 68, 0.4);
+      transform: translateX(-2px);
+    }
+
+    .auth-back-btn {
+      background: transparent;
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9px;
+      padding: 11px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .auth-back-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #f1f5f9;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
     .auth-header {
       text-align: center;
       margin-bottom: 22px;
@@ -4450,6 +4501,7 @@
 
   <div class="auth-backdrop" id="auth-modal" aria-hidden="true">
     <div class="auth-card" role="dialog" aria-labelledby="auth-card-title">
+      <button class="auth-back-arrow" id="auth-back-arrow" type="button" aria-label="Back to sign in">&#8592;</button>
       <button class="auth-close" id="auth-close-btn" aria-label="Close dialog">&times;</button>
 
       <div class="auth-header">
@@ -4512,6 +4564,10 @@
         <button class="auth-submit-btn" id="auth-submit-btn" type="submit">
           Sign in to Momentum Chasers &rarr;
         </button>
+
+        <button class="auth-back-btn" id="auth-back-btn" type="button">
+          &larr; Back to Sign In
+        </button>
       </form>
 
       <div class="auth-footer-bar">
@@ -4543,6 +4599,8 @@
       const passInput = document.getElementById("auth-password-input");
       const nameInput = document.getElementById("auth-name-input");
       const cfgBtn = document.getElementById("auth-supabase-config-btn");
+      const backBtn = document.getElementById("auth-back-btn");
+      const backArrow = document.getElementById("auth-back-arrow");
 
       let currentMode = "signin"; // 'signin', 'signup', 'forgot'
 
@@ -4569,6 +4627,8 @@
           passWrap.style.display = "flex";
           submitBtn.textContent = "Sign in to Momentum Chasers →";
           document.getElementById("auth-tabs-bar").style.display = "grid";
+          if (backBtn) backBtn.style.display = "none";
+          if (backArrow) backArrow.style.display = "none";
         } else if (mode === "signup") {
           title.textContent = "Create free account";
           sub.textContent = "Get instant access to live screeners, momentum courses & alerts.";
@@ -4578,6 +4638,8 @@
           passWrap.style.display = "flex";
           submitBtn.textContent = "Create Free Account →";
           document.getElementById("auth-tabs-bar").style.display = "grid";
+          if (backBtn) backBtn.style.display = "none";
+          if (backArrow) backArrow.style.display = "none";
         } else if (mode === "forgot") {
           title.textContent = "Reset your password";
           sub.textContent = "Enter your email and we'll send you a password recovery link.";
@@ -4587,6 +4649,8 @@
           passWrap.style.display = "none";
           submitBtn.textContent = "Send Recovery Email →";
           document.getElementById("auth-tabs-bar").style.display = "none";
+          if (backBtn) backBtn.style.display = "flex";
+          if (backArrow) backArrow.style.display = "flex";
         }
       }
 
@@ -4613,6 +4677,8 @@
 
       tabSignin.addEventListener("click", () => setMode("signin"));
       tabSignup.addEventListener("click", () => setMode("signup"));
+      if (backBtn) backBtn.addEventListener("click", () => setMode("signin"));
+      if (backArrow) backArrow.addEventListener("click", () => setMode("signin"));
       forgotLink.addEventListener("click", (e) => {
         e.preventDefault();
         setMode("forgot");
