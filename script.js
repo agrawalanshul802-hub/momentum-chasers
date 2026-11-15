@@ -16685,9 +16685,17 @@
         <div class="home-hero-wrap">
           <!-- Hero Center -->
           <div class="home-hero-center">
-            <div class="home-hero-eyebrow">
-              <img src="logo-icon.png" alt="Momentum Chasers" class="home-hero-logo-img" />
-              <span>MOMENTUM CHASERS</span>
+            <div class="home-hero-badges-row">
+              <div class="home-hero-eyebrow">
+                <img src="logo-icon.png" alt="Momentum Chasers" class="home-hero-logo-img" />
+                <span>MOMENTUM CHASERS</span>
+              </div>
+              <div class="dashboard-market-status-pill" title="Indian Market Feeds: Real-time NSE/BSE delayed by 15 mins for standard terminal feeds">
+                <span class="dms-live-dot"></span>
+                <span class="dms-title">NSE / BSE Live</span>
+                <span class="dms-sep">•</span>
+                <span class="dms-delay">15m Delay</span>
+              </div>
             </div>
             <h1 class="home-hero-title">
               <span class="home-hero-accent">Stock Screener</span> for Indian Markets

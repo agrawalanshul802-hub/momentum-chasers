@@ -12584,3 +12584,119 @@ body.theme-white .cal-more-chip {
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+
+
+/* ==========================================================================
+   DASHBOARD HERO BADGES & LIVE 15M DELAY STATUS
+   ========================================================================== */
+.home-hero-badges-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.home-hero-badges-row .home-hero-eyebrow {
+    margin-bottom: 0;
+}
+
+.dashboard-market-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.32);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.15);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--g);
+    letter-spacing: 0.02em;
+    user-select: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-market-status-pill:hover {
+    background: rgba(34, 197, 94, 0.14);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+    border-color: rgba(34, 197, 94, 0.5);
+    transform: translateY(-1px);
+}
+
+.dms-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: dmsPulse 2s infinite ease-in-out;
+    flex-shrink: 0;
+}
+
+@keyframes dmsPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.45;
+        transform: scale(0.85);
+    }
+}
+
+.dms-title {
+    font-weight: 700;
+    color: var(--g);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 10.5px;
+}
+
+.dms-sep {
+    color: rgba(34, 197, 94, 0.5);
+    font-size: 10px;
+}
+
+.dms-delay {
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(34, 197, 94, 0.32);
+    color: #4ade80;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+}
+
+/* White Theme Support */
+body.theme-white .dashboard-market-status-pill {
+    background: rgba(22, 163, 74, 0.08);
+    border-color: rgba(22, 163, 74, 0.35);
+    color: #15803d;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.1);
+}
+
+body.theme-white .dms-title {
+    color: #15803d;
+}
+
+body.theme-white .dms-sep {
+    color: rgba(22, 163, 74, 0.5);
+}
+
+body.theme-white .dms-delay {
+    background: rgba(22, 163, 74, 0.12);
+    border-color: rgba(22, 163, 74, 0.28);
+    color: #166534;
+}
+
+@media (max-width: 680px) {
+    .home-hero-badges-row {
+        gap: 8px;
+    }
+}
