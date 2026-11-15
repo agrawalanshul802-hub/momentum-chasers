@@ -10414,7 +10414,7 @@
     { symbol: "ULTRACEMCO", name: "UltraTech Cement", sector: "Cement", price: 12450.00, chg: 1.63, mcap: 360000, volume: "12.4 L", logoBg: "#fef08a", logoColor: "#1e293b", logoText: "UTC" },
     { symbol: "BEL", name: "Bharat Electronics", sector: "Aerospace & Defence", price: 396.00, chg: 0.25, mcap: 290000, volume: "95.0 L", logoBg: "#ffffff", logoColor: "#0284c7", logoText: "BEL" },
     { symbol: "HINDALCO", name: "Hindalco Industries", sector: "Metals & Mining", price: 968.40, chg: 2.10, mcap: 185000, volume: "62.5 L", logoBg: "#b91c1c", logoColor: "#ffffff", logoText: "HI" },
-    { symbol: "EICHERMOT", name: "Eicher Motors", sector: "Automobiles", price: 7669.50, chg: -2.40, mcap: 140000, volume: "22.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "EM" },
+    { symbol: "EICHERMOT", name: "Eicher Motors", sector: "Automobiles", price: 7650.00, chg: 1.34, mcap: 140000, volume: "22.0 L", logoBg: "#dc2626", logoColor: "#ffffff", logoText: "EM" },
     { symbol: "TECHM", name: "Tech Mahindra", sector: "Information Technology", price: 1831.00, chg: 1.15, mcap: 175000, volume: "35.8 L", logoBg: "#b91c1c", logoColor: "#ffffff", logoText: "m" },
     { symbol: "SBILIFE", name: "SBI Life Insurance", sector: "Insurance", price: 1784.00, chg: 2.05, mcap: 178000, volume: "26.1 L", logoBg: "#0284c7", logoColor: "#ffffff", logoText: "SL" },
     { symbol: "TRENT", name: "Trent Limited", sector: "Retail", price: 3079.00, chg: 1.85, mcap: 240000, volume: "31.4 L", logoBg: "#ffffff", logoColor: "#15803d", logoText: "T" },
