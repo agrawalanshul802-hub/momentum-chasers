@@ -1,6 +1,6 @@
 /**
  * Momentum Chasers · Authentication & Session Module (auth.js)
- * High-performance, zero-dependency auth controller for login.html
+ * Fully connected with Supabase Auth, Google OAuth, and Local Session Management
  */
 
 (function () {
@@ -61,7 +61,7 @@
     return 'index.html#screener';
   }
 
-  // Smart back link: if referrer is landing.html, return to landing.html
+  // Smart back link
   if (bkLink) {
     if (document.referrer && document.referrer.includes('landing.html')) {
       bkLink.href = 'landing.html';
@@ -118,7 +118,7 @@
     root.querySelectorAll('.vs').forEach(el => {
       el.classList.remove('vs-anim');
       if (el.getAttribute('data-v') === viewName || (viewName === 'done' && el.getAttribute('data-v') === 'signin')) {
-        void el.offsetWidth; // force reflow
+        void el.offsetWidth;
         el.classList.add('vs-anim');
       }
     });
@@ -158,7 +158,6 @@
         dnBox.insertBefore(launchBtn, dnBox.querySelector('[data-f="out"]'));
       }
     } else {
-      // Determine initial tab from hash
       const hash = (window.location.hash || '').replace('#', '').toLowerCase();
       if (hash === 'signup') {
         setView('signup', false);
@@ -170,7 +169,145 @@
     }
   }
 
-  // --- 8. Event Handlers ---
+  // --- 8. Supabase Connection Status Badge & Setup Modal ---
+  function renderSupabaseStatusUI() {
+    const sb = window.MOMENTUM_SUPABASE;
+    const isConfigured = sb && sb.isConfigured;
+
+    let badge = document.getElementById('supabase-auth-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'supabase-auth-badge';
+      badge.style.cssText = `
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-top: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+      `;
+      const formCard = root.querySelector('.st');
+      if (formCard) {
+        formCard.appendChild(badge);
+      }
+    }
+
+    if (isConfigured) {
+      badge.style.background = 'rgba(79, 209, 161, 0.12)';
+      badge.style.border = '1px solid rgba(79, 209, 161, 0.35)';
+      badge.style.color = '#4fd1a1';
+      badge.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#4fd1a1;box-shadow:0 0 6px #4fd1a1;"></span> Supabase & Google Auth Live`;
+      badge.title = 'Supabase Auth is configured and active. Click to view credentials.';
+    } else {
+      badge.style.background = 'rgba(245, 181, 68, 0.12)';
+      badge.style.border = '1px solid rgba(245, 181, 68, 0.35)';
+      badge.style.color = '#ffd37a';
+      badge.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#f5b544;"></span> Connect Supabase & Google Auth &rarr;`;
+      badge.title = 'Click to connect your Supabase project URL and Anon key.';
+    }
+
+    badge.onclick = () => openSupabaseSetupModal();
+  }
+
+  // Supabase Setup Modal
+  function openSupabaseSetupModal() {
+    let modal = document.getElementById('supabase-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'supabase-modal';
+      modal.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(7, 11, 23, 0.85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      `;
+      modal.innerHTML = `
+        <div style="background:#0c1328; border:1px solid #222f55; border-radius:18px; width:min(520px, 100%); padding:28px; box-shadow:0 24px 60px rgba(0,0,0,0.7); position:relative;">
+          <button id="sb-modal-close" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#8c97b3;font-size:1.4rem;cursor:pointer;">&times;</button>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13.2 2L3 14.4h8.4L9.6 22 21 9.6h-8.4L13.2 2z" fill="#4fd1a1"/></svg>
+            <h2 style="margin:0;font-size:1.3rem;letter-spacing:-0.02em;">Connect Supabase & Google Auth</h2>
+          </div>
+          <p style="margin:0 0 18px;color:#8c97b3;font-size:0.88rem;line-height:1.5;">
+            Paste your project credentials from <b>Supabase Dashboard &rarr; Project Settings &rarr; API</b>.
+          </p>
+
+          <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:0.8rem;font-weight:700;color:#c3cbe0;margin-bottom:6px;">Project URL</label>
+            <input id="sb-input-url" type="text" placeholder="https://your-project-ref.supabase.co" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#fff;font:500 0.9rem monospace;outline:none;" />
+          </div>
+
+          <div style="margin-bottom:18px;">
+            <label style="display:block;font-size:0.8rem;font-weight:700;color:#c3cbe0;margin-bottom:6px;">Anon Public Key (anon/public)</label>
+            <input id="sb-input-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#fff;font:500 0.9rem monospace;outline:none;" />
+          </div>
+
+          <div id="sb-modal-status" style="font-size:0.82rem;margin-bottom:14px;display:none;"></div>
+
+          <div style="display:flex;gap:10px;">
+            <button id="sb-modal-save" style="flex:1;padding:12px;border-radius:10px;background:#4fd1a1;color:#070b17;border:none;font-weight:800;font-size:0.95rem;cursor:pointer;">Save & Connect</button>
+            <button id="sb-modal-demo" style="padding:12px 18px;border-radius:10px;background:rgba(255,255,255,0.08);color:#c3cbe0;border:1px solid rgba(255,255,255,0.15);font-weight:700;font-size:0.9rem;cursor:pointer;">Use Demo</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      document.getElementById('sb-modal-close').onclick = () => {
+        modal.style.display = 'none';
+      };
+
+      document.getElementById('sb-modal-demo').onclick = () => {
+        modal.style.display = 'none';
+        showMsg('Using demo preview mode.', 'info');
+      };
+
+      document.getElementById('sb-modal-save').onclick = () => {
+        const url = document.getElementById('sb-input-url').value.trim();
+        const key = document.getElementById('sb-input-key').value.trim();
+        const statusEl = document.getElementById('sb-modal-status');
+
+        if (!url || !key) {
+          statusEl.style.display = 'block';
+          statusEl.style.color = '#f2788f';
+          statusEl.textContent = 'Please provide both Project URL and Anon Key.';
+          return;
+        }
+
+        const res = window.MOMENTUM_SUPABASE.configure(url, key);
+        if (res.success) {
+          statusEl.style.display = 'block';
+          statusEl.style.color = '#4fd1a1';
+          statusEl.textContent = '✅ Connected! Reloading auth engine...';
+          renderSupabaseStatusUI();
+          setTimeout(() => {
+            modal.style.display = 'none';
+            showMsg('Supabase connected! You can now use Google & Email authentication.', 'ok');
+          }, 600);
+        } else {
+          statusEl.style.display = 'block';
+          statusEl.style.color = '#f2788f';
+          statusEl.textContent = res.error || 'Failed to connect. Please check URL format.';
+        }
+      };
+    }
+
+    const cur = window.MOMENTUM_SUPABASE ? window.MOMENTUM_SUPABASE.getConfig() : {};
+    document.getElementById('sb-input-url').value = cur.url || '';
+    document.getElementById('sb-input-key').value = cur.anonKey || '';
+    modal.style.display = 'flex';
+  }
+
+  // --- 9. Event Handlers ---
 
   // Navigation Links: data-go="signin|signup|reset"
   root.addEventListener('click', e => {
@@ -185,7 +322,7 @@
     }
   });
 
-  // Password Visibility Toggle (Show / Hide)
+  // Password Visibility Toggle
   if (eyeBtn && pwInput) {
     eyeBtn.addEventListener('click', () => {
       const isPw = pwInput.type === 'password';
@@ -196,13 +333,32 @@
     });
   }
 
-  // Sign In with Google
+  // 1-Click Google Sign-In via Supabase
   if (googleBtn) {
-    googleBtn.addEventListener('click', () => {
+    googleBtn.addEventListener('click', async () => {
       googleBtn.disabled = true;
       googleBtn.style.opacity = '0.75';
-      showMsg('Connecting to Google Account...', 'info');
 
+      const sb = window.MOMENTUM_SUPABASE;
+
+      // Case A: Supabase is configured -> initiate real Google OAuth redirect
+      if (sb && sb.isConfigured) {
+        showMsg('Connecting to Google via Supabase...', 'info');
+        try {
+          const redirectTo = window.location.origin + window.location.pathname.replace('login.html', 'index.html');
+          await sb.signInWithGoogle({ redirectTo });
+          return;
+        } catch (err) {
+          googleBtn.disabled = false;
+          googleBtn.style.opacity = '1';
+          console.error('Google OAuth error:', err);
+          showMsg(err.message || 'Failed to start Google sign-in. Check Supabase Provider settings.', 'err');
+          return;
+        }
+      }
+
+      // Case B: Supabase credentials not set -> provide setup option or fast preview
+      showMsg('Supabase not yet configured. Connecting with Trader demo profile...', 'info');
       setTimeout(() => {
         const googleUser = {
           name: 'Trader (Google)',
@@ -230,7 +386,10 @@
 
   // Sign Out Button
   if (outBtn) {
-    outBtn.addEventListener('click', () => {
+    outBtn.addEventListener('click', async () => {
+      if (window.MOMENTUM_SUPABASE) {
+        await window.MOMENTUM_SUPABASE.signOut().catch(() => {});
+      }
       try {
         localStorage.removeItem('momentum_user');
       } catch (_) {}
@@ -243,11 +402,12 @@
 
   // Form Submission (Email + Password / Reset)
   if (formEl) {
-    formEl.addEventListener('submit', e => {
+    formEl.addEventListener('submit', async e => {
       e.preventDefault();
       const currentView = root.getAttribute('data-view') || 'signin';
       const email = (emInput ? emInput.value : '').trim();
       const password = pwInput ? pwInput.value : '';
+      const sb = window.MOMENTUM_SUPABASE;
 
       // 1. Reset Password Flow
       if (currentView === 'reset') {
@@ -256,8 +416,23 @@
           if (emInput) emInput.focus();
           return;
         }
+
         goBtn.disabled = true;
         showMsg('Sending recovery instructions...', 'info');
+
+        if (sb && sb.isConfigured) {
+          try {
+            await sb.resetPassword(email);
+            goBtn.disabled = false;
+            showMsg(`✓ Supabase password reset link dispatched to ${email}. Check your inbox!`, 'ok');
+            return;
+          } catch (err) {
+            goBtn.disabled = false;
+            showMsg(err.message || 'Failed to send reset email.', 'err');
+            return;
+          }
+        }
+
         setTimeout(() => {
           goBtn.disabled = false;
           showMsg(`✓ Password reset link has been dispatched to ${email}. Please check your inbox!`, 'ok');
@@ -265,7 +440,7 @@
         return;
       }
 
-      // 2. Sign In & Sign Up Flows
+      // 2. Sign In & Sign Up Validations
       if (!email || !email.includes('@') || !email.includes('.')) {
         showMsg('Please enter a valid email address.', 'err');
         if (emInput) emInput.focus();
@@ -284,11 +459,52 @@
         return;
       }
 
-      // Process authentication
       goBtn.disabled = true;
       goBtn.style.opacity = '0.75';
-      showMsg('Verifying credentials...', 'info');
 
+      // 3. Process via Supabase if configured
+      if (sb && sb.isConfigured) {
+        if (currentView === 'signin') {
+          showMsg('Verifying credentials with Supabase...', 'info');
+          try {
+            const res = await sb.signInWithPassword(email, password);
+            showMsg(`✓ Welcome back, ${res.user.name}! Connecting...`, 'ok');
+            setTimeout(() => {
+              window.location.href = getRedirectTarget();
+            }, 350);
+            return;
+          } catch (err) {
+            goBtn.disabled = false;
+            goBtn.style.opacity = '1';
+            showMsg(err.message || 'Invalid email or password.', 'err');
+            return;
+          }
+        } else if (currentView === 'signup') {
+          showMsg('Creating account in Supabase...', 'info');
+          try {
+            const res = await sb.signUp(email, password, { full_name: nameFromEmail(email) });
+            if (res.confirmationRequired) {
+              goBtn.disabled = false;
+              goBtn.style.opacity = '1';
+              showMsg('✓ Account registered! Please check your email to confirm registration.', 'ok');
+              return;
+            }
+            showMsg('✓ Account created successfully! Setting up your workspace...', 'ok');
+            setTimeout(() => {
+              window.location.href = getRedirectTarget();
+            }, 350);
+            return;
+          } catch (err) {
+            goBtn.disabled = false;
+            goBtn.style.opacity = '1';
+            showMsg(err.message || 'Sign up failed.', 'err');
+            return;
+          }
+        }
+      }
+
+      // Fallback: Local Session Processing
+      showMsg('Verifying credentials...', 'info');
       setTimeout(() => {
         const userObj = {
           name: nameFromEmail(email),
@@ -319,7 +535,7 @@
     });
   }
 
-  // Handle Hash Changes dynamically (e.g. browser back/forward)
+  // Handle Hash Changes dynamically
   window.addEventListener('hashchange', () => {
     if (root.getAttribute('data-view') === 'done') return;
     const hash = (window.location.hash || '').replace('#', '').toLowerCase();
@@ -328,6 +544,19 @@
     }
   });
 
+  // Check for OAuth Callback tokens in URL (in case OAuth landed on login.html)
+  if (window.MOMENTUM_SUPABASE) {
+    window.MOMENTUM_SUPABASE.handleOAuthCallback().then(user => {
+      if (user) {
+        showMsg('✓ Google OAuth authenticated! Redirecting...', 'ok');
+        setTimeout(() => {
+          window.location.href = getRedirectTarget();
+        }, 300);
+      }
+    });
+  }
+
   // Initialize
   renderSessionState();
+  renderSupabaseStatusUI();
 })();

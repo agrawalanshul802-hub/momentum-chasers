@@ -6328,6 +6328,17 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Supabase Auth Public Configuration Endpoint
+  if (pathname === '/api/auth/config') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      supabaseUrl: SUPABASE_URL || '',
+      supabaseAnonKey: SUPABASE_ANON_KEY || '',
+      configured: !!(SUPABASE_URL && SUPABASE_ANON_KEY)
+    }));
+    return;
+  }
+
   // 1. Health & Multi-Key Pool Status Endpoint
   if (pathname === '/api/keys/status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });

@@ -2789,6 +2789,19 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: '' };
   }
 
+  // Supabase Auth Public Configuration Endpoint
+  if (path.includes('/auth/config')) {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        supabaseUrl: process.env.SUPABASE_URL || '',
+        supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
+        configured: !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
+      })
+    };
+  }
+
   // 1. MMI Endpoint: /api/mmi
   if (path.includes('/mmi')) {
     try {

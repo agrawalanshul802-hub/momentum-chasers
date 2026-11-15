@@ -16315,6 +16315,10 @@
     } catch (e) {
       console.warn("Could not remove momentum_user from localStorage", e);
     }
+    // Sign out from Supabase if connected
+    if (window.MOMENTUM_SUPABASE) {
+      window.MOMENTUM_SUPABASE.signOut().catch(() => {});
+    }
     // Close user profile modal
     const modal = document.getElementById("user-profile-modal");
     if (modal) {
@@ -18174,6 +18178,18 @@
   // ==========================================================================
 
   function init() {
+    // 0. Detect and process Supabase Google OAuth callback tokens
+    if (window.MOMENTUM_SUPABASE) {
+      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(oauthUser => {
+        if (oauthUser) {
+          State.user = oauthUser;
+          savedUser = oauthUser;
+          renderUserAuthUI();
+          showToast(`Welcome, ${oauthUser.name}! Signed in with Google.`, "🚀");
+        }
+      });
+    }
+
     // Load persisted theme preference (White or Midnight)
     let savedTheme = "midnight";
     try {
