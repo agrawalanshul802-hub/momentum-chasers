@@ -6481,25 +6481,31 @@
         
         <!-- Segregation Row 1: Cap, Sector, Timeframe, Search -->
         <div class="screener-seg-row">
-          <span class="screener-label">Market Cap</span>
-          <div class="pill-segmented-control" role="group" aria-label="Market Cap">
-            <button class="pill-segment-btn ${State.marketCap === "all" ? "active" : ""}" data-action="set-cap" data-val="all">All</button>
-            <button class="pill-segment-btn ${State.marketCap === "LC" ? "active" : ""}" data-action="set-cap" data-val="LC">Large Cap</button>
-            <button class="pill-segment-btn ${State.marketCap === "MC" ? "active" : ""}" data-action="set-cap" data-val="MC">Mid Cap</button>
-            <button class="pill-segment-btn ${State.marketCap === "SC" ? "active" : ""}" data-action="set-cap" data-val="SC">Small Cap</button>
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <span class="screener-label">Market Cap</span>
+            <select class="styled-select-input" id="screener-cap-select" aria-label="Market Cap Filter">
+              <option value="all" ${State.marketCap === "all" ? "selected" : ""}>All Market Caps</option>
+              <option value="LC" ${State.marketCap === "LC" ? "selected" : ""}>Large Cap</option>
+              <option value="MC" ${State.marketCap === "MC" ? "selected" : ""}>Mid Cap</option>
+              <option value="SC" ${State.marketCap === "SC" ? "selected" : ""}>Small Cap</option>
+            </select>
           </div>
 
-          <span class="screener-label" style="margin-left:10px">Sector</span>
-          <select class="styled-select-input" id="screener-sector-select">
-            <option value="all" ${State.sector === "all" ? "selected" : ""}>All Sectors (${sectors.length})</option>
-            ${sectors.map(sec => `<option value="${sec}" ${State.sector === sec ? "selected" : ""}>${sec}</option>`).join("")}
-          </select>
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <span class="screener-label">Sector</span>
+            <select class="styled-select-input" id="screener-sector-select" aria-label="Sector Filter">
+              <option value="all" ${State.sector === "all" ? "selected" : ""}>All Sectors (${sectors.length})</option>
+              ${sectors.map(sec => `<option value="${sec}" ${State.sector === sec ? "selected" : ""}>${sec}</option>`).join("")}
+            </select>
+          </div>
 
-          <span class="screener-label" style="margin-left:10px">Timeframe</span>
-          <div class="pill-segmented-control" role="group" aria-label="Timeframe">
-            <button class="pill-segment-btn ${State.timeframe === "15m" ? "active" : ""}" data-action="set-tf" data-val="15m">15m</button>
-            <button class="pill-segment-btn ${State.timeframe === "d" ? "active" : ""}" data-action="set-tf" data-val="d">Daily</button>
-            <button class="pill-segment-btn ${State.timeframe === "w" ? "active" : ""}" data-action="set-tf" data-val="w">Weekly</button>
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <span class="screener-label">Timeframe</span>
+            <select class="styled-select-input" id="screener-tf-select" aria-label="Timeframe Filter">
+              <option value="15m" ${State.timeframe === "15m" ? "selected" : ""}>15m</option>
+              <option value="d" ${State.timeframe === "d" ? "selected" : ""}>Daily</option>
+              <option value="w" ${State.timeframe === "w" ? "selected" : ""}>Weekly</option>
+            </select>
           </div>
 
           <button class="clear-all-filters-btn" id="screener-clear-all" style="margin-left:auto">Clear All Filters</button>
@@ -17625,8 +17631,15 @@
         return;
       }
 
-      if (e.target.id === "screener-sector-select") {
+      if (e.target.id === "screener-cap-select") {
+        State.marketCap = e.target.value;
+        renderActiveView();
+      } else if (e.target.id === "screener-sector-select") {
         State.sector = e.target.value;
+        renderActiveView();
+      } else if (e.target.id === "screener-tf-select") {
+        State.timeframe = e.target.value;
+        $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
       } else if (e.target.id === "screener-sort-select" || (e.target.dataset && e.target.dataset.action === "select-screener-sort-col")) {
         const newCol = e.target.value;
