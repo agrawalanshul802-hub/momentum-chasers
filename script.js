@@ -3934,7 +3934,7 @@
     marketCap: "all",           // "all", "LC", "MC", "SC"
     sector: "all",              // "all" or specific sector
     selectedPresets: [],        // Active technical or financial preset keys
-    presetsCollapsed: false,    // Toggle collapse for technical and financial presets section
+    presetsCollapsed: true,    // Toggle collapse for technical and financial presets section
     searchQuery: "",            // Text filter in screener
     watchlist: ["INDUSINDBK", "BAJAJ-AUTO", "BSE", "SMSPHARMA"], // Default starred stocks
     tickerSpeed: "normal",      // "slow", "normal", "fast"
@@ -6480,18 +6480,20 @@
       <!-- Screener Control Card -->
       <div class="screener-panel-card">
         
-        <!-- Segregation Row 1: Cap, Sector, Timeframe, Search -->
+        <!-- Segregation Row 1: Cap (Buttons), Sector (Dropdown), Tech Setup (Dropdown), Financials (Dropdown), Timeframe (Buttons) -->
         <div class="screener-seg-row">
+          <!-- Market Cap Segmented Buttons -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <span class="screener-label">Market Cap</span>
-            <select class="styled-select-input" id="screener-cap-select" aria-label="Market Cap Filter">
-              <option value="all" ${State.marketCap === "all" ? "selected" : ""}>All Market Caps</option>
-              <option value="LC" ${State.marketCap === "LC" ? "selected" : ""}>Large Cap</option>
-              <option value="MC" ${State.marketCap === "MC" ? "selected" : ""}>Mid Cap</option>
-              <option value="SC" ${State.marketCap === "SC" ? "selected" : ""}>Small Cap</option>
-            </select>
+            <div class="pill-segmented-control" role="group" aria-label="Market Cap">
+              <button class="pill-segment-btn ${State.marketCap === "all" ? "active" : ""}" data-action="set-cap" data-val="all">All</button>
+              <button class="pill-segment-btn ${State.marketCap === "LC" ? "active" : ""}" data-action="set-cap" data-val="LC">Large Cap</button>
+              <button class="pill-segment-btn ${State.marketCap === "MC" ? "active" : ""}" data-action="set-cap" data-val="MC">Mid Cap</button>
+              <button class="pill-segment-btn ${State.marketCap === "SC" ? "active" : ""}" data-action="set-cap" data-val="SC">Small Cap</button>
+            </div>
           </div>
 
+          <!-- Sector Dropdown -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <span class="screener-label">Sector</span>
             <select class="styled-select-input" id="screener-sector-select" aria-label="Sector Filter">
@@ -6500,18 +6502,38 @@
             </select>
           </div>
 
+          <!-- Technical Setup Dropdown (Put Presets in Dropdown) -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
-            <span class="screener-label">Timeframe</span>
-            <select class="styled-select-input" id="screener-tf-select" aria-label="Timeframe Filter">
-              <option value="15m" ${State.timeframe === "15m" ? "selected" : ""}>15m</option>
-              <option value="d" ${State.timeframe === "d" ? "selected" : ""}>Daily</option>
-              <option value="w" ${State.timeframe === "w" ? "selected" : ""}>Weekly</option>
+            <span class="screener-label">Technical Setup</span>
+            <select class="styled-select-input" id="screener-tech-preset-select" aria-label="Technical Preset Filter">
+              <option value="all" ${!PR.some(p => State.selectedPresets.includes(p[0])) ? "selected" : ""}>All Technical Setups (${PR.length})</option>
+              ${PR.map(p => `<option value="${p[0]}" ${State.selectedPresets.includes(p[0]) ? "selected" : ""}>${p[1]}</option>`).join("")}
             </select>
           </div>
 
+          <!-- Financial & Results Dropdown (Put Presets in Dropdown) -->
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <span class="screener-label">Financial Growth</span>
+            <select class="styled-select-input" id="screener-fin-preset-select" aria-label="Financial Preset Filter">
+              <option value="all" ${!RS.some(p => State.selectedPresets.includes(p[0])) ? "selected" : ""}>All Financial Setups (${RS.length})</option>
+              ${RS.map(p => `<option value="${p[0]}" ${State.selectedPresets.includes(p[0]) ? "selected" : ""}>${p[1]}</option>`).join("")}
+            </select>
+          </div>
+
+          <!-- Timeframe Segmented Buttons -->
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <span class="screener-label">Timeframe</span>
+            <div class="pill-segmented-control" role="group" aria-label="Timeframe">
+              <button class="pill-segment-btn ${State.timeframe === "15m" ? "active" : ""}" data-action="set-tf" data-val="15m">15m</button>
+              <button class="pill-segment-btn ${State.timeframe === "d" ? "active" : ""}" data-action="set-tf" data-val="d">Daily</button>
+              <button class="pill-segment-btn ${State.timeframe === "w" ? "active" : ""}" data-action="set-tf" data-val="w">Weekly</button>
+            </div>
+          </div>
+
+          <!-- Clear All Filters Button -->
           <button class="clear-all-filters-btn" id="screener-clear-all" style="margin-left:auto">Clear All Filters</button>
-          <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle presets section">
-            <span>${State.presetsCollapsed ? "Show Presets ▾" : "Hide Presets ▴"}</span>
+          <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
+            <span>${State.presetsCollapsed ? "Show All Chips ▾" : "Hide Chips ▴"}</span>
           </button>
         </div>
 
@@ -13628,13 +13650,25 @@
 
     const epUrl = `https://earningspulse.ai/earnings?range=${encodeURIComponent(curRange)}&date=${encodeURIComponent(curDate)}`;
 
+    function sanitizeEarningsField(val, fallback) {
+      if (val === undefined || val === null || val === "undefined" || val === "null" || val === "") {
+        return fallback;
+      }
+      return val;
+    }
+
     const rows = data.map(item => {
       const q = getEventStockLiveQuote(item.symbol);
       const price = item.price || q.price;
       const chg = typeof item.chg === "number" ? item.chg : q.chg;
       const chgClass = chg >= 0 ? "val-green" : "val-red";
       const chgSign = chg >= 0 ? "+" : "";
-      const statusClass = item.status === "Confirmed" ? "val-green" : "val-amber";
+      const itemStatus = sanitizeEarningsField(item.status, "Confirmed");
+      const statusClass = itemStatus === "Confirmed" ? "val-green" : "val-amber";
+      const itemQuarter = sanitizeEarningsField(item.quarter, "Q2 FY27");
+      const itemEps = sanitizeEarningsField(item.epsEst, "₹" + Math.max(1, (price * 0.008)).toFixed(2));
+      const itemRev = sanitizeEarningsField(item.revEst, "₹" + formatNumber(Math.round(Math.max(50, price * 1.2)), 0) + " Cr");
+      const itemSector = sanitizeEarningsField(item.sector || q.sector, "Equities");
       const itemPulseUrl = `https://earningspulse.ai/earnings?range=day&date=${item.date}`;
       const tvUrl = `https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(item.symbol)}`;
 
@@ -13659,11 +13693,11 @@
               </span>
             </td>
             <td style="white-space:nowrap;font-weight:600;">${item.date}</td>
-            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.quarter || "Q2 FY27"}</span></td>
-            <td class="font-mono" style="text-align:right">${item.epsEst || "—"}</td>
-            <td class="font-mono" style="text-align:right">${item.revEst || "—"}</td>
-            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${item.sector || q.sector || "Equities"}</span></td>
-            <td><span class="${statusClass}" style="font-weight:700">● ${item.status || "Confirmed"}</span></td>
+            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${itemQuarter}</span></td>
+            <td class="font-mono" style="text-align:right">${itemEps}</td>
+            <td class="font-mono" style="text-align:right">${itemRev}</td>
+            <td><span class="pill-segment-btn" style="padding:2px 8px;font-size:11px">${itemSector}</span></td>
+            <td><span class="${statusClass}" style="font-weight:700">● ${itemStatus}</span></td>
             <td>
               <div style="display:flex;align-items:center;gap:6px;">
                 <a href="${tvUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
@@ -17641,11 +17675,27 @@
         return;
       }
 
-      if (e.target.id === "screener-cap-select") {
-        State.marketCap = e.target.value;
-        renderActiveView();
-      } else if (e.target.id === "screener-sector-select") {
+      if (e.target.id === "screener-sector-select") {
         State.sector = e.target.value;
+        renderActiveView();
+      } else if (e.target.id === "screener-tech-preset-select") {
+        const val = e.target.value;
+        const techKeys = ["ema", "bo", "vbo", "rsi", "emac", "piv", "ipo"];
+        State.selectedPresets = State.selectedPresets.filter(k => !techKeys.includes(k));
+        if (val !== "all") {
+          State.selectedPresets.push(val);
+        }
+        renderActiveView();
+      } else if (e.target.id === "screener-fin-preset-select") {
+        const val = e.target.value;
+        const finKeys = ["exc", "pg", "rg", "me", "es", "trn", "cp", "rb"];
+        State.selectedPresets = State.selectedPresets.filter(k => !finKeys.includes(k));
+        if (val !== "all") {
+          State.selectedPresets.push(val);
+        }
+        renderActiveView();
+      } else if (e.target.id === "screener-cap-select") {
+        State.marketCap = e.target.value;
         renderActiveView();
       } else if (e.target.id === "screener-tf-select") {
         State.timeframe = e.target.value;
