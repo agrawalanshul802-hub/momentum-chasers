@@ -130,7 +130,7 @@
   }
 
   // 6. Public API Object
-  window.MOMENTUM_SUPABASE = {
+  const MOMENTUM_SUPABASE = {
     get client() {
       if (!supabaseClient && isValidConfig(config.url, config.anonKey) && window.supabase) {
         initClient(config.url, config.anonKey);
@@ -165,99 +165,124 @@
      * 1-Click Google OAuth Sign-In via Supabase
      */
     async signInWithGoogle(options = {}) {
-      const client = this.client;
-      if (!client) {
-        throw new Error('SUPABASE_NOT_CONFIGURED');
-      }
-
-      const redirectTo = options.redirectTo || getOAuthRedirectUrl();
-      const { data, error } = await client.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectTo,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
+      try {
+        const client = this.client;
+        if (!client) {
+          return { success: false, error: 'Supabase client not initialized. Check your credentials.' };
         }
-      });
 
-      if (error) throw error;
-      return data;
+        const redirectTo = options.redirectTo || getOAuthRedirectUrl();
+        const { data, error } = await client.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectTo,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent'
+            }
+          }
+        });
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message || 'Google OAuth failed' };
+      }
     },
 
     /**
      * Email & Password Sign In
      */
     async signInWithPassword(email, password) {
-      const client = this.client;
-      if (!client) {
-        throw new Error('SUPABASE_NOT_CONFIGURED');
+      try {
+        const client = this.client;
+        if (!client) {
+          return { success: false, error: 'Supabase client not initialized.' };
+        }
+
+        const { data, error } = await client.auth.signInWithPassword({
+          email: email.trim(),
+          password: password
+        });
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+
+        if (data && data.user) {
+          const profile = mapSupabaseUser(data.user, data.session);
+          localStorage.setItem('momentum_user', JSON.stringify(profile));
+          return { success: true, user: profile, session: data.session };
+        }
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message };
       }
-
-      const { data, error } = await client.auth.signInWithPassword({
-        email: email.trim(),
-        password: password
-      });
-
-      if (error) throw error;
-
-      if (data && data.user) {
-        const profile = mapSupabaseUser(data.user, data.session);
-        localStorage.setItem('momentum_user', JSON.stringify(profile));
-        return { user: profile, session: data.session };
-      }
-      return data;
     },
 
     /**
      * Email & Password Sign Up (Registration)
      */
     async signUp(email, password, metadata = {}) {
-      const client = this.client;
-      if (!client) {
-        throw new Error('SUPABASE_NOT_CONFIGURED');
-      }
+      try {
+        const client = this.client;
+        if (!client) {
+          return { success: false, error: 'Supabase client not initialized.' };
+        }
 
-      const { data, error } = await client.auth.signUp({
-        email: email.trim(),
-        password: password,
-        options: {
-          data: {
-            full_name: metadata.full_name || email.split('@')[0],
-            ...metadata
+        const metaObj = typeof metadata === 'string' ? { full_name: metadata } : (metadata || {});
+        const { data, error } = await client.auth.signUp({
+          email: email.trim(),
+          password: password,
+          options: {
+            data: {
+              full_name: metaObj.full_name || email.split('@')[0],
+              ...metaObj
+            }
           }
-        }
-      });
+        });
 
-      if (error) throw error;
-
-      if (data && data.user) {
-        const profile = mapSupabaseUser(data.user, data.session);
-        if (data.session) {
-          localStorage.setItem('momentum_user', JSON.stringify(profile));
+        if (error) {
+          return { success: false, error: error.message };
         }
-        return { user: profile, session: data.session, confirmationRequired: !data.session };
+
+        if (data && data.user) {
+          const profile = mapSupabaseUser(data.user, data.session);
+          if (data.session) {
+            localStorage.setItem('momentum_user', JSON.stringify(profile));
+          }
+          return { success: true, user: profile, session: data.session, confirmationRequired: !data.session };
+        }
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message };
       }
-      return data;
     },
 
     /**
      * Password Reset Request
      */
     async resetPassword(email) {
-      const client = this.client;
-      if (!client) {
-        throw new Error('SUPABASE_NOT_CONFIGURED');
+      try {
+        const client = this.client;
+        if (!client) {
+          return { success: false, error: 'Supabase client not initialized.' };
+        }
+
+        const redirectTo = window.location.origin + window.location.pathname.replace('index.html', 'login.html') + '#reset';
+        const { data, error } = await client.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: redirectTo
+        });
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message };
       }
-
-      const redirectTo = window.location.origin + window.location.pathname.replace('index.html', 'login.html') + '#reset';
-      const { data, error } = await client.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: redirectTo
-      });
-
-      if (error) throw error;
-      return data;
     },
 
     /**
@@ -334,4 +359,7 @@
       return null;
     }
   };
+
+  window.MOMENTUM_SUPABASE = MOMENTUM_SUPABASE;
+  window.MomentumAuth = MOMENTUM_SUPABASE;
 })();

@@ -4639,14 +4639,20 @@
         });
       });
 
+      // Helper to get initialized auth provider
+      function getAuth() {
+        return window.MomentumAuth || window.MOMENTUM_SUPABASE;
+      }
+
       // Google OAuth
       googleBtn.addEventListener("click", async () => {
         clearMsg();
-        if (!window.MomentumAuth) {
+        const auth = getAuth();
+        if (!auth) {
           showMsg("Authentication service loading... please try again in a moment.", false);
           return;
         }
-        const res = await window.MomentumAuth.signInWithGoogle();
+        const res = await auth.signInWithGoogle();
         if (!res.success) {
           showMsg(res.error || "Google sign-in could not be initiated.", false);
         }
@@ -4665,13 +4671,14 @@
           return;
         }
 
-        if (!window.MomentumAuth) {
+        const auth = getAuth();
+        if (!auth) {
           showMsg("Authentication service not ready. Please try again.", false);
           return;
         }
 
         if (currentMode === "forgot") {
-          const res = await window.MomentumAuth.resetPassword(email);
+          const res = await auth.resetPassword(email);
           if (res.success) {
             showMsg("Recovery link sent to your email! Check your inbox.", true);
             setTimeout(() => setMode("signin"), 3000);
@@ -4687,7 +4694,7 @@
         }
 
         if (currentMode === "signin") {
-          const res = await window.MomentumAuth.signInWithPassword(email, pass);
+          const res = await auth.signInWithPassword(email, pass);
           if (res.success) {
             showMsg("Signed in successfully! Redirecting to dashboard...", true);
             setTimeout(() => {
@@ -4697,7 +4704,7 @@
             showMsg(res.error || "Invalid email or password.", false);
           }
         } else if (currentMode === "signup") {
-          const res = await window.MomentumAuth.signUp(email, pass, name);
+          const res = await auth.signUp(email, pass, name);
           if (res.success) {
             showMsg("Account created! Redirecting to dashboard...", true);
             setTimeout(() => {
