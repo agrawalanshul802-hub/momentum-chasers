@@ -41,6 +41,7 @@
   const IDX = [
     ["NIFTY 50", 25221.40, 0.31, 77.20],
     ["Nifty Bank", 61363.95, 0.54, 329.80],
+    ["BSE Sensex", 82079.77, 0.60, 487.32],
     ["Nifty LargeCap 100", 24942.25, 0.82, 202.8],
     ["Nifty MidCap 150", 21868.85, 1.61, 346.5],
     ["Nifty SmallCap 250", 17406.95, 2.02, 345.1]
@@ -4343,18 +4344,31 @@
   // BananaPatterns Market Breadth Metric Data (Feature Breadth)
   let BREADTH = {
     nifty50: { ema10: 68, ema20: 54, ema50: 42, ema200: 71 },
+    banknifty: { ema10: 70, ema20: 62, ema50: 48, ema200: 74 },
+    sensex: { ema10: 66, ema20: 56, ema50: 44, ema200: 72 },
     midcap150: { ema10: 72, ema20: 61, ema50: 48, ema200: 65 },
     smallcap250: { ema10: 58, ema20: 44, ema50: 36, ema200: 52 }
   };
   let BREADTH_LAST_UPDATED = "Live Market Session";
 
+  function getEmaPillClass(val) {
+    const v = Number(val) || 0;
+    if (v >= 60) return "above";
+    if (v >= 40) return "amber";
+    return "below";
+  }
+
   function calculateLiveMarketBreadth() {
     try {
-      const n50Idx = IDX.find(i => i[0] === "NIFTY 50");
+      const n50Idx = IDX.find(i => i[0] === "NIFTY 50" || i[0] === "Nifty 50");
+      const bankIdx = IDX.find(i => i[0] === "Nifty Bank" || i[0] === "BANKNIFTY" || i[0] === "Bank Nifty");
+      const sensexIdx = IDX.find(i => i[0] === "BSE Sensex" || i[0] === "SENSEX" || i[0] === "Sensex");
       const midIdx = IDX.find(i => i[0] === "Nifty MidCap 150");
       const smIdx = IDX.find(i => i[0] === "Nifty SmallCap 250");
 
       const n50Chg = n50Idx ? (Number(n50Idx[2]) || 0) : 0;
+      const bankChg = bankIdx ? (Number(bankIdx[2]) || 0) : 0;
+      const sensexChg = sensexIdx ? (Number(sensexIdx[2]) || 0) : 0;
       const midChg = midIdx ? (Number(midIdx[2]) || 0) : 0;
       const smChg = smIdx ? (Number(smIdx[2]) || 0) : 0;
 
@@ -4368,6 +4382,16 @@
       BREADTH.nifty50.ema20 = Math.min(94, Math.max(16, Math.round(50 + n50Chg * 4 + (hmGreenRatio - 0.5) * 16)));
       BREADTH.nifty50.ema50 = Math.min(90, Math.max(20, Math.round(42 + n50Chg * 2.5)));
       BREADTH.nifty50.ema200 = Math.min(92, Math.max(30, Math.round(71 + n50Chg * 1.2)));
+
+      BREADTH.banknifty.ema10 = Math.min(98, Math.max(12, Math.round(58 + bankChg * 7.5)));
+      BREADTH.banknifty.ema20 = Math.min(94, Math.max(16, Math.round(54 + bankChg * 4.5)));
+      BREADTH.banknifty.ema50 = Math.min(92, Math.max(20, Math.round(46 + bankChg * 2.8)));
+      BREADTH.banknifty.ema200 = Math.min(95, Math.max(30, Math.round(74 + bankChg * 1.3)));
+
+      BREADTH.sensex.ema10 = Math.min(98, Math.max(12, Math.round(53 + sensexChg * 7 + (hmGreenRatio - 0.5) * 30)));
+      BREADTH.sensex.ema20 = Math.min(94, Math.max(16, Math.round(51 + sensexChg * 4 + (hmGreenRatio - 0.5) * 15)));
+      BREADTH.sensex.ema50 = Math.min(90, Math.max(20, Math.round(43 + sensexChg * 2.5)));
+      BREADTH.sensex.ema200 = Math.min(92, Math.max(30, Math.round(72 + sensexChg * 1.2)));
 
       BREADTH.midcap150.ema10 = Math.min(98, Math.max(12, Math.round(62 + midChg * 6)));
       BREADTH.midcap150.ema20 = Math.min(94, Math.max(18, Math.round(58 + midChg * 4)));
@@ -4540,6 +4564,12 @@
   const YAHOO_SYMBOLS = {
     // Benchmark Indices
     "Nifty 50": "^NSEI",
+    "Nifty Bank": "^NSEBANK",
+    "Bank Nifty": "^NSEBANK",
+    "BANKNIFTY": "^NSEBANK",
+    "Sensex": "^BSESN",
+    "SENSEX": "^BSESN",
+    "BSE Sensex": "^BSESN",
     "Nifty LargeCap 100": "^CNX100",
     "Nifty MidCap 150": "^NSEMDCP50",
     "Nifty SmallCap 250": "^CNXSC",
@@ -4918,6 +4948,8 @@
     async syncIndices() {
       const idxMap = [
         { name: "Nifty 50", symbol: "^NSEI" },
+        { name: "Nifty Bank", symbol: "^NSEBANK" },
+        { name: "BSE Sensex", symbol: "^BSESN" },
         { name: "Nifty LargeCap 100", symbol: "^CNX100" },
         { name: "Nifty MidCap 150", symbol: "^NSEMDCP50" },
         { name: "Nifty SmallCap 250", symbol: "^CNXSC" }
@@ -5106,7 +5138,8 @@
         const symSet = new Set();
         (State.tickerDisplayStocks || []).forEach(item => {
           if (item.type === "index" || item.id === "NIFTY") symSet.add("^NSEI");
-          else if (item.id === "BANKNIFTY") symSet.add("^NSEBANK");
+          else if (item.id === "BANKNIFTY" || item.id === "NIFTYBANK") symSet.add("^NSEBANK");
+          else if (item.id === "SENSEX" || item.id === "BSESN") symSet.add("^BSESN");
           else if (item.id === "FINNIFTY") symSet.add("^CNXFIN");
           else if (item.id === "MIDCPNIFTY") symSet.add("^NSEMDCP50");
           else if (item.id) symSet.add(this.getYahooSymbol(item.id));
@@ -5120,7 +5153,7 @@
           });
         }
         ST.slice(0, 100).forEach(s => symSet.add(this.getYahooSymbol(s[0])));
-        ["^NSEI", "^CNX100", "^NSEMDCP50", "^CNXSC", "^NSEBANK", "^CNXIT", "^CNXAUTO", "^CNXPHARMA", "^CNXFMCG", "^CNXENERGY", "^CNXMETAL", "^CNXREALTY", "^CNXMEDIA", "^CNXPSE", "^CNXPSUBANK", "^CNXINFRA", "^CNXCOMMODITIES", "^CNXCONSUMPTION", "^CNXCPSE", "^CNXMNC"].forEach(i => symSet.add(i));
+        ["^NSEI", "^BSESN", "^NSEBANK", "^CNX100", "^NSEMDCP50", "^CNXSC", "^CNXIT", "^CNXAUTO", "^CNXPHARMA", "^CNXFMCG", "^CNXENERGY", "^CNXMETAL", "^CNXREALTY", "^CNXMEDIA", "^CNXPSE", "^CNXPSUBANK", "^CNXINFRA", "^CNXCOMMODITIES", "^CNXCONSUMPTION", "^CNXCPSE", "^CNXMNC"].forEach(i => symSet.add(i));
         // Add sector indices only when on the sectors/heatmap view (perf: skip on auto-refresh)
         const _curView = (typeof State !== "undefined" && State.view) ? State.view : "";
         const _needsSectors = interactive || _curView === "sectors" || _curView === "sector-turnover" || _curView === "sector-stocks";
@@ -5237,19 +5270,26 @@
 
             // B. Update Benchmark Indices
             if (rawSym === "^NSEI") {
-              const idxItem = IDX.find(i => i[0] === "NIFTY 50");
+              const idxItem = IDX.find(i => i[0] === "NIFTY 50" || i[0] === "Nifty 50");
               if (idxItem && typeof q.regularMarketPrice === "number") {
                 idxItem[1] = Math.round(q.regularMarketPrice * 100) / 100;
                 idxItem[2] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
               }
               updateTickerLive("NIFTY", q.regularMarketPrice, q.regularMarketChangePercent || 0);
             } else if (rawSym === "^NSEBANK") {
-              const idxItem = IDX.find(i => i[0] === "Nifty Bank");
+              const idxItem = IDX.find(i => i[0] === "Nifty Bank" || i[0] === "BANKNIFTY" || i[0] === "Bank Nifty");
               if (idxItem && typeof q.regularMarketPrice === "number") {
                 idxItem[1] = Math.round(q.regularMarketPrice * 100) / 100;
                 idxItem[2] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
               }
               updateTickerLive("BANKNIFTY", q.regularMarketPrice, q.regularMarketChangePercent || 0);
+            } else if (rawSym === "^BSESN") {
+              const idxItem = IDX.find(i => i[0] === "BSE Sensex" || i[0] === "SENSEX" || i[0] === "Sensex");
+              if (idxItem && typeof q.regularMarketPrice === "number") {
+                idxItem[1] = Math.round(q.regularMarketPrice * 100) / 100;
+                idxItem[2] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
+              }
+              updateTickerLive("SENSEX", q.regularMarketPrice, q.regularMarketChangePercent || 0);
             } else if (rawSym === "^CNX100") {
               const idxItem = IDX.find(i => i[0] === "Nifty LargeCap 100");
               if (idxItem && typeof q.regularMarketPrice === "number") {
@@ -5282,6 +5322,12 @@
               } else if (rawSym === "^NSEBANK") {
                 HEATMAP_INDEX_STATS["Nifty Bank"] = {
                   price: (q.regularMarketPrice || 52140.80).toLocaleString("en-IN", { minimumFractionDigits: 2 }),
+                  chg: `${chgSign}${(q.regularMarketChange || 0).toFixed(2)} (${chgSign}${(q.regularMarketChangePercent || 0).toFixed(2)}%) ↗`,
+                  isUp: (q.regularMarketChangePercent || 0) >= 0
+                };
+              } else if (rawSym === "^BSESN") {
+                HEATMAP_INDEX_STATS["BSE Sensex"] = {
+                  price: (q.regularMarketPrice || 82079.77).toLocaleString("en-IN", { minimumFractionDigits: 2 }),
                   chg: `${chgSign}${(q.regularMarketChange || 0).toFixed(2)} (${chgSign}${(q.regularMarketChangePercent || 0).toFixed(2)}%) ↗`,
                   isUp: (q.regularMarketChangePercent || 0) >= 0
                 };
@@ -6224,6 +6270,8 @@
     const aliasMap = {
       "NSEI": ["NIFTY", "NSEI", "^NSEI"],
       "NSEBANK": ["BANKNIFTY", "NSEBANK", "^NSEBANK"],
+      "BSESN": ["SENSEX", "BSESN", "^BSESN", "BSE SENSEX"],
+      "SENSEX": ["SENSEX", "BSESN", "^BSESN", "BSE SENSEX"],
       "CNXFIN": ["FINNIFTY", "CNXFIN", "^CNXFIN"],
       "NSEMDCP50": ["MIDCPNIFTY", "NSEMDCP50", "^NSEMDCP50"],
       "NIFTY": ["NIFTY", "NSEI", "^NSEI"],
@@ -6845,24 +6893,38 @@
             <tbody>
               <tr>
                 <td><strong>Nifty 50</strong></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.nifty50.ema10 >= 60 ? "above" : "below"}">${BREADTH.nifty50.ema10}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.nifty50.ema20 >= 60 ? "above" : "below"}">${BREADTH.nifty50.ema20}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.nifty50.ema50 >= 60 ? "above" : "below"}">${BREADTH.nifty50.ema50}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.nifty50.ema200 >= 60 ? "above" : "below"}">${BREADTH.nifty50.ema200}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.nifty50.ema10)}">${BREADTH.nifty50.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.nifty50.ema20)}">${BREADTH.nifty50.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.nifty50.ema50)}">${BREADTH.nifty50.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.nifty50.ema200)}">${BREADTH.nifty50.ema200}%</span></td>
+              </tr>
+              <tr>
+                <td><strong>Bank Nifty</strong></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema10)}">${BREADTH.banknifty.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema20)}">${BREADTH.banknifty.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema50)}">${BREADTH.banknifty.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema200)}">${BREADTH.banknifty.ema200}%</span></td>
+              </tr>
+              <tr>
+                <td><strong>Sensex</strong></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema10)}">${BREADTH.sensex.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema20)}">${BREADTH.sensex.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema50)}">${BREADTH.sensex.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema200)}">${BREADTH.sensex.ema200}%</span></td>
               </tr>
               <tr>
                 <td><strong>Nifty MidCap 150</strong></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.midcap150.ema10 >= 60 ? "above" : "below"}">${BREADTH.midcap150.ema10}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.midcap150.ema20 >= 60 ? "above" : "below"}">${BREADTH.midcap150.ema20}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.midcap150.ema50 >= 60 ? "above" : "below"}">${BREADTH.midcap150.ema50}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.midcap150.ema200 >= 60 ? "above" : "below"}">${BREADTH.midcap150.ema200}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.midcap150.ema10)}">${BREADTH.midcap150.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.midcap150.ema20)}">${BREADTH.midcap150.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.midcap150.ema50)}">${BREADTH.midcap150.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.midcap150.ema200)}">${BREADTH.midcap150.ema200}%</span></td>
               </tr>
               <tr>
                 <td><strong>Nifty SmallCap 250</strong></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.smallcap250.ema10 >= 60 ? "above" : "below"}">${BREADTH.smallcap250.ema10}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.smallcap250.ema20 >= 60 ? "above" : "below"}">${BREADTH.smallcap250.ema20}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.smallcap250.ema50 >= 60 ? "above" : "below"}">${BREADTH.smallcap250.ema50}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${BREADTH.smallcap250.ema200 >= 60 ? "above" : "below"}">${BREADTH.smallcap250.ema200}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.smallcap250.ema10)}">${BREADTH.smallcap250.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.smallcap250.ema20)}">${BREADTH.smallcap250.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.smallcap250.ema50)}">${BREADTH.smallcap250.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.smallcap250.ema200)}">${BREADTH.smallcap250.ema200}%</span></td>
               </tr>
             </tbody>
           </table>

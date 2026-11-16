@@ -458,6 +458,8 @@ class QuantEngine {
   constructor() {
     this.tickers = {
       'NIFTY 50': { symbol: '^NSEI', price: 23960.60, chg: 0.63, ema10: 23820, ema20: 23740, ema50: 23510, ema200: 22890, rsi: 54.2 },
+      'BANK NIFTY': { symbol: '^NSEBANK', price: 61580.05, chg: 0.89, ema10: 61200, ema20: 60800, ema50: 59500, ema200: 56650, rsi: 62.5 },
+      'SENSEX': { symbol: '^BSESN', price: 82079.77, chg: 0.60, ema10: 81800, ema20: 81200, ema50: 79800, ema200: 77060, rsi: 58.4 },
       'NIFTY MIDCAP 150': { symbol: '^CRSMID', price: 18450.20, chg: 1.15, ema10: 18280, ema20: 18150, ema50: 17920, ema200: 17200, rsi: 61.4 },
       'BSE': { symbol: 'BSE.NS', price: 5120.00, chg: 2.70, ema10: 4980, ema20: 4890, ema50: 4720, ema200: 4410, rsi: 68.5, goldenCross: true },
       'BAJAJ-AUTO': { symbol: 'BAJAJ-AUTO.NS', price: 10410.00, chg: -0.72, ema10: 10480, ema20: 10520, ema50: 10390, ema200: 9980, rsi: 48.1 },

@@ -3593,10 +3593,22 @@ body.theme-white .cap-floating-tooltip {
     border: 1px solid rgba(34, 197, 94, 0.45);
 }
 
+.ema-status-pill.amber {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
 .ema-status-pill.below {
     background: rgba(239, 68, 68, 0.12);
     color: #ef4444;
     border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+body.theme-white .ema-status-pill.amber {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
 }
 
 .crossover-status-tag {
