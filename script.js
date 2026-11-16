@@ -17180,12 +17180,20 @@
     try {
       localStorage.removeItem("momentum_user");
       localStorage.setItem("momentum_signed_out", "true");
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("sb-") || key.includes("supabase")) {
+          localStorage.removeItem(key);
+        }
+      });
+      sessionStorage.clear();
     } catch (e) {
       console.warn("Could not remove momentum_user from localStorage", e);
     }
     // Sign out from Supabase if connected
     if (window.MOMENTUM_SUPABASE) {
-      window.MOMENTUM_SUPABASE.signOut().catch(() => { });
+      try {
+        window.MOMENTUM_SUPABASE.signOut().catch(() => { });
+      } catch (e) { }
     }
     // Close user profile modal
     const modal = document.getElementById("user-profile-modal");
@@ -17195,7 +17203,10 @@
     }
     closeUserDropdown();
     renderUserAuthUI();
-    showToast("Signed out successfully. Click 'Sign In' anytime to reconnect.", "👋");
+    showToast("Signed out successfully. Redirecting to login...", "👋");
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 150);
   }
 
   function escapeHtml(str) {
@@ -17409,40 +17420,10 @@
     } else {
       headerAuth.innerHTML = `
         <div class="header-user-wrapper" id="header-user-wrapper">
-          <button class="header-login-btn" id="header-login-btn" data-action="toggle-login-dropdown" title="Sign In to Momentum Chasers" aria-expanded="false" aria-haspopup="true">
+          <a href="login.html" class="header-login-btn" id="header-login-btn" title="Sign In to Momentum Chasers">
             <span class="header-login-icon">🔐</span>
             <span class="header-login-text">Sign In</span>
-            <svg class="header-user-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-
-          <!-- Floating Quick Sign-In Dropdown -->
-          <div class="header-user-dropdown-menu header-signin-dropdown" id="header-signin-dropdown-menu" role="menu">
-            <div class="hud-signin-header">
-              <div class="hud-signin-title">Terminal Sign In</div>
-              <div class="hud-signin-sub">Access live momentum algorithms &amp; Nifty 500 feeds</div>
-            </div>
-            <div class="hud-signin-options">
-              <button type="button" class="hud-signin-quick-btn" data-action="restore-user" title="Instant restore PRO profile">
-                <div class="hud-avatar-circle sm">A</div>
-                <div class="hud-signin-btn-text">
-                  <div class="hud-signin-main">Continue as <strong>Anshul Agrawal</strong></div>
-                  <div class="hud-signin-meta">PRO Terminal • agrawalanshul802@gmail.com</div>
-                </div>
-                <span class="hud-signin-arrow">→</span>
-              </button>
-
-              <a href="login.html" class="hud-signin-portal-btn">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                  <polyline points="10 17 15 12 10 7"></polyline>
-                  <line x1="15" y1="12" x2="3" y2="12"></line>
-                </svg>
-                <span>Open Login Portal (Email / Google)</span>
-              </a>
-            </div>
-          </div>
+          </a>
         </div>
       `;
     }

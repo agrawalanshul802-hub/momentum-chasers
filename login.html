@@ -5093,6 +5093,7 @@
           showMsg("Authenticating...", true);
           const res = await auth.signInWithPassword(email, pass);
           if (res.success) {
+            try { localStorage.removeItem("momentum_signed_out"); } catch (e) {}
             showMsg("Signed in successfully! Redirecting to dashboard...", true);
             setTimeout(() => {
               window.location.href = "index.html#screener";
@@ -5109,6 +5110,7 @@
           showMsg("Creating account...", true);
           const res = await auth.signUp(email, pass, name);
           if (res.success) {
+            try { localStorage.removeItem("momentum_signed_out"); } catch (e) {}
             showMsg("Account created! Redirecting to dashboard...", true);
             setTimeout(() => {
               window.location.href = "index.html#screener";
@@ -5129,6 +5131,7 @@
       // Check if already authenticated: if so, update top bar buttons to launch dashboard
       function checkExistingSession() {
         try {
+          if (localStorage.getItem("momentum_signed_out") === "true") return;
           const userStr = localStorage.getItem("momentum_user");
           if (userStr) {
             const u = JSON.parse(userStr);
