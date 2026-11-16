@@ -17953,7 +17953,123 @@
       const view = target.dataset.view || target.dataset.target;
       const action = target.dataset.action;
 
-      if (action === "events-close-day-modal") {
+      if (action === "set-sector-subtab") {
+        const tab = target.dataset.tab || "indices";
+        State.sectorSubTab = tab;
+        State.view = tab === "turnover" ? "sector-turnover" : "sectors";
+        window.location.hash = State.view;
+        renderActiveView();
+        return;
+      }
+
+      if (action === "set-earnings-range") {
+        const range = target.dataset.range || "day";
+        State.earningsRange = range;
+        renderActiveView();
+        const dateInput = document.getElementById("earnings-date-input");
+        const activeDate = dateInput ? dateInput.value : (State.earningsDate || "2026-11-12");
+        showToast(`Filtered earnings for ${range.toUpperCase()} (${activeDate}) 📅`, "⚡");
+        return;
+      }
+
+      // Back button click
+      if (action === "go-back") {
+        navigateBack();
+        return;
+      }
+
+      // Go to screener from index card click
+      if (action === "go-screener") {
+        State.previousView = State.view;
+        State.view = "screener";
+        history.replaceState(null, "", "#screener");
+        renderActiveView();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      // View switching from nav or buttons (also handles data-action="nav")
+      if ((view && !action) || action === "switch-view" || action === "nav") {
+        if (view === "ipo" && target.dataset.tab) {
+          State.ipoTab = target.dataset.tab;
+        }
+        if (view === "sector-turnover") {
+          State.sectorSubTab = "turnover";
+        }
+        if (State.view !== view && State.view !== "login") {
+          State.previousView = State.view;
+        }
+        State.view = view;
+        window.location.hash = view;
+        renderActiveView();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        // Close mobile sidebar if open
+        const sidebar = $("#sidebar");
+        if (sidebar) sidebar.classList.remove("mobile-open");
+        return;
+      }
+
+      // Actions
+      if (action === "toggle-nav-group") {
+        const groupEl = target.closest(".nav-accordion-group");
+        if (!groupEl) return;
+        const willOpen = !groupEl.classList.contains("open");
+        groupEl.classList.toggle("open", willOpen);
+        const headerBtn = groupEl.querySelector(".nav-section-header");
+        if (headerBtn) {
+          headerBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        }
+        try {
+          const groupId = groupEl.dataset.group;
+          const savedStates = JSON.parse(localStorage.getItem("momentum_nav_accordion_state") || "{}");
+          savedStates[groupId] = willOpen;
+          localStorage.setItem("momentum_nav_accordion_state", JSON.stringify(savedStates));
+        } catch (e) { }
+        return;
+      }
+      else if (action === "toggle-watchlist-accordion") {
+        if (e.target.closest("#sidebar-watchlist-add-btn")) return;
+        const box = document.getElementById("sidebar-watchlist-box");
+        if (box) {
+          box.classList.toggle("collapsed");
+        }
+        return;
+      }
+      else if (action === "events-tab") {
+        State.eventsTab = target.dataset.tab;
+        State.eventsSearch = "";
+        renderActiveView();
+      }
+      else if (action === "events-view-mode") {
+        State.eventsViewMode = target.dataset.mode;
+        renderActiveView();
+      }
+      else if (action === "events-prev-month") {
+        State.eventsMonth--;
+        if (State.eventsMonth < 0) {
+          State.eventsMonth = 11;
+          State.eventsYear--;
+        }
+        renderActiveView();
+      }
+      else if (action === "events-next-month") {
+        State.eventsMonth++;
+        if (State.eventsMonth > 11) {
+          State.eventsMonth = 0;
+          State.eventsYear++;
+        }
+        renderActiveView();
+      }
+      else if (action === "events-reset-today") {
+        State.eventsMonth = 10;
+        State.eventsYear = 2026;
+        renderActiveView();
+        showToast("Reset to current month: Nov 2026", "📅");
+      }
+      else if (action === "events-export") {
+        exportEventsToCSV();
+      }
+      else if (action === "events-close-day-modal") {
         closeEventsDayModal();
       }
       else if (action === "events-day-modal-to-list") {
