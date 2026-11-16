@@ -3481,7 +3481,7 @@
 
   <!-- Supabase Auth Client Library & Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=4.6.1"></script>
+  <script src="supabase-config.js?v=4.7.1"></script>
 
 </head>
 
@@ -5202,6 +5202,20 @@
           }
         }
       });
+
+      // Detect error from OAuth redirect callback in search or hash
+      function checkOAuthUrlParams() {
+        try {
+          const params = new URLSearchParams(window.location.search || window.location.hash.replace(/^#/, '?'));
+          const err = params.get('error_description') || params.get('error');
+          if (err) {
+            const cleanErr = decodeURIComponent(err).replace(/\+/g, ' ');
+            showMsg(`Google sign-in notice: ${cleanErr}`, false);
+            history.replaceState(null, '', window.location.pathname);
+          }
+        } catch (_) {}
+      }
+      checkOAuthUrlParams();
 
       // Check if already authenticated: if so, update top bar buttons to launch dashboard
       function checkExistingSession() {

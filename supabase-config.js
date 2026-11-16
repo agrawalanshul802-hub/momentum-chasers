@@ -355,9 +355,23 @@
         hash.includes('access_token=') ||
         hash.includes('refresh_token=') ||
         search.includes('code=') ||
-        hash.includes('error=');
+        hash.includes('error=') ||
+        search.includes('error=');
 
       if (!hasOAuthTokens) return null;
+
+      // Handle OAuth errors passed back in URL params
+      try {
+        const params = new URLSearchParams(search || hash.replace(/^#/, '?'));
+        const errDesc = params.get('error_description') || params.get('error');
+        if (errDesc) {
+          const cleanErr = decodeURIComponent(errDesc).replace(/\+/g, ' ');
+          console.warn('⚠️ OAuth redirect returned error:', cleanErr);
+          const cleanUrl = window.location.origin + window.location.pathname + '#screener';
+          history.replaceState(null, '', cleanUrl);
+          return { error: cleanErr };
+        }
+      } catch (_) {}
 
       console.log('🔄 Detecting Supabase OAuth callback tokens in URL...');
       const client = this.client;

@@ -19771,16 +19771,21 @@
   function init() {
     // 0. Detect and process Supabase Google OAuth callback tokens
     if (window.MOMENTUM_SUPABASE) {
-      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(oauthUser => {
-        if (oauthUser) {
-          State.user = oauthUser;
-          savedUser = oauthUser;
+      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
+        if (!result) return;
+        if (result.error) {
+          showToast(`Google Sign-In notice: ${result.error}`, "⚠️");
+          return;
+        }
+        if (result.email) {
+          State.user = result;
+          savedUser = result;
           renderUserAuthUI();
           loadTickerPreferences();
           if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
             PortfolioService.syncFromCloud();
           }
-          showToast(`Welcome, ${oauthUser.name}! Signed in with Google.`, "🚀");
+          showToast(`Welcome, ${result.name}! Signed in with Google.`, "🚀");
         }
       });
     }
