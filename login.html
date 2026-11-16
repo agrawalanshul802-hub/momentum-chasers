@@ -4856,9 +4856,13 @@
 
       let currentMode = "signin"; // 'signin', 'signup', 'forgot'
 
-      function showMsg(msg, isSuccess) {
+      function showMsg(msg, isSuccess, isHtml = false) {
         if (!statusMsg) return;
-        statusMsg.textContent = msg;
+        if (isHtml) {
+          statusMsg.innerHTML = msg;
+        } else {
+          statusMsg.textContent = msg;
+        }
         statusMsg.className = "auth-status-msg " + (isSuccess ? "success" : "error");
       }
       function clearMsg() {
@@ -5028,6 +5032,18 @@
                 } catch (e) {
                   return { success: false, error: e.message };
                 }
+              },
+              async resendConfirmation(email) {
+                try {
+                  const { data, error } = await fallbackClient.auth.resend({
+                    type: 'signup',
+                    email: email.trim()
+                  });
+                  if (error) return { success: false, error: error.message };
+                  return { success: true, data };
+                } catch (e) {
+                  return { success: false, error: e.message };
+                }
               }
             };
             window.MOMENTUM_SUPABASE = window.MomentumAuth;
@@ -5102,6 +5118,29 @@
             const err = res.error || "";
             if (err.toLowerCase().includes("invalid login credentials")) {
               showMsg("Account not found or password incorrect. Click 'Create Account' above to sign up!", false);
+            } else if (err.toLowerCase().includes("email not confirmed")) {
+              showMsg(
+                `<strong>Email not confirmed yet.</strong><br><span style="display:inline-block;margin-top:4px;font-size:12px;opacity:0.95;">Please check your inbox (and spam/junk) for the Supabase verification email, or sign in instantly with <strong>Continue with Google</strong>.</span><div style="margin-top:8px"><button type="button" id="resend-conf-btn" style="background:none;border:none;color:#6ee7b7;text-decoration:underline;cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📩 Resend confirmation email</button></div>`,
+                false,
+                true
+              );
+              const resendBtn = document.getElementById("resend-conf-btn");
+              if (resendBtn) {
+                resendBtn.addEventListener("click", async () => {
+                  resendBtn.disabled = true;
+                  resendBtn.textContent = "Sending verification email...";
+                  try {
+                    const r = await auth.resendConfirmation(email);
+                    if (r && r.success) {
+                      showMsg("Verification email resent! Please check your inbox and spam folder.", true);
+                    } else {
+                      showMsg("Could not resend: " + ((r && r.error) || "Please check your Supabase dashboard email settings."), false);
+                    }
+                  } catch (e) {
+                    showMsg("Failed to resend confirmation email.", false);
+                  }
+                });
+              }
             } else {
               showMsg(err || "Invalid email or password.", false);
             }
@@ -5111,10 +5150,18 @@
           const res = await auth.signUp(email, pass, name);
           if (res.success) {
             try { localStorage.removeItem("momentum_signed_out"); } catch (e) {}
-            showMsg("Account created! Redirecting to dashboard...", true);
-            setTimeout(() => {
-              window.location.href = "index.html#screener";
-            }, 700);
+            if (res.confirmationRequired) {
+              showMsg(
+                `<strong>Account created!</strong><br><span style="display:inline-block;margin-top:4px;font-size:12px;opacity:0.95;">Supabase has sent a confirmation email. Please check your inbox/spam folder to confirm your email before signing in, or use <strong>Continue with Google</strong> to sign in instantly.</span>`,
+                true,
+                true
+              );
+            } else {
+              showMsg("Account created! Redirecting to dashboard...", true);
+              setTimeout(() => {
+                window.location.href = "index.html#screener";
+              }, 700);
+            }
           } else {
             const err = res.error || "";
             if (err.toLowerCase().includes("already registered") || err.toLowerCase().includes("user already")) {

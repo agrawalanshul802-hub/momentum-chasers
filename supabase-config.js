@@ -262,6 +262,28 @@
     },
 
     /**
+     * Resend Signup Confirmation Email
+     */
+    async resendConfirmation(email) {
+      try {
+        const client = this.client;
+        if (!client) {
+          return { success: false, error: 'Supabase client not initialized.' };
+        }
+        const { data, error } = await client.auth.resend({
+          type: 'signup',
+          email: email.trim()
+        });
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    },
+
+    /**
      * Password Reset Request
      */
     async resetPassword(email) {
