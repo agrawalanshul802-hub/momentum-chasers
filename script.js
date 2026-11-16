@@ -645,12 +645,40 @@
   // Helper to format Previous and Next Earnings Dates
   function getStockEarningsDates(stock) {
     const meta = stock[8] || {};
-    const nextDateRaw = meta.results || "2026-11-20";
-    const nextDate = new Date(nextDateRaw);
+    const recordedDateRaw = meta.results || "2026-11-20";
+    const recordedDate = new Date(recordedDateRaw + "T00:00:00");
 
-    // Previous earnings is Q1 (approx 98 days prior, e.g. August 2026)
-    const prevDate = new Date(nextDate);
-    prevDate.setDate(prevDate.getDate() - 98);
+    // Reference today normalized to local YYYY-MM-DD
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    const localToday = `${y}-${m}-${d}`;
+    const todayStr = localToday < "2026-11-16" ? "2026-11-16" : localToday;
+    const today = new Date(todayStr + "T00:00:00");
+
+    // Any date <= today is in the past
+    const isPast = recordedDateRaw <= todayStr;
+
+    let nextDate, prevDate, status, quarterLabel;
+
+    if (isPast) {
+      // Put past dates into the Previous section
+      prevDate = recordedDate;
+      // Next earnings is the following quarter (Q3 FY27, approx 91 days later)
+      nextDate = new Date(recordedDate);
+      nextDate.setDate(nextDate.getDate() + 91);
+      status = "Tentative (Q3)";
+      quarterLabel = "Q3 FY27";
+    } else {
+      // Upcoming date stays in Next section
+      nextDate = recordedDate;
+      // Previous earnings was prior quarter (Q1 FY27, approx 91 days prior)
+      prevDate = new Date(recordedDate);
+      prevDate.setDate(prevDate.getDate() - 91);
+      status = meta.resultsStatus || "Confirmed";
+      quarterLabel = "Q2 FY27";
+    }
 
     const fmt = (d) => {
       const day = d.getDate();
@@ -659,11 +687,17 @@
       return `${day} ${month} ${year}`;
     };
 
+    const daysUntilNext = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+
     return {
       next: fmt(nextDate),
-      nextRaw: nextDateRaw,
+      nextRaw: nextDate.toISOString().slice(0, 10),
       prev: fmt(prevDate),
-      status: meta.resultsStatus || "Confirmed"
+      prevRaw: prevDate.toISOString().slice(0, 10),
+      isPast,
+      status,
+      quarterLabel,
+      daysToGo: Math.max(0, daysUntilNext)
     };
   }
 
@@ -7140,8 +7174,10 @@
         const distB = athB > 0 ? ((b[3] - athB) / athB) : -100;
         diff = distA - distB;
       } else if (activeSortCol === "earnings") {
-        const dateA = a[8].results ? new Date(a[8].results).getTime() : 0;
-        const dateB = b[8].results ? new Date(b[8].results).getTime() : 0;
+        const earnA = getStockEarningsDates(a);
+        const earnB = getStockEarningsDates(b);
+        const dateA = earnA.nextRaw ? new Date(earnA.nextRaw + "T00:00:00").getTime() : 0;
+        const dateB = earnB.nextRaw ? new Date(earnB.nextRaw + "T00:00:00").getTime() : 0;
         diff = dateA - dateB;
       } else {
         diff = (a._origIdx || 0) - (b._origIdx || 0);
@@ -10697,6 +10733,8 @@
     const w52High = meta.high52 || (s[3] * 1.25);
     const w52Pct = Math.min(100, Math.max(0, ((s[3] - w52Low) / (w52High - w52Low || 1)) * 100)).toFixed(1);
 
+    const earnInfo = getStockEarningsDates(s);
+
     // Watchlist HTML for the right sidebar (strictly deduplicated)
     const seenSymbols = new Set(["NIFTY 50"]);
     const watchlistStocks = [
@@ -11160,19 +11198,19 @@
         <div class="earnings-display-box">
           <div class="earnings-upcoming-card">
             <div class="countdown-flex-block">
-              <div class="countdown-big-number">7</div>
+              <div class="countdown-big-number">${earnInfo.daysToGo}</div>
               <div>
                 <div style="font-weight:700;font-size:16px;color:var(--ink)">
-                  Upcoming Q2 FY27 Earnings Release
+                  Upcoming ${earnInfo.quarterLabel} Earnings Release
                 </div>
                 <div style="font-size:12px;color:var(--mu);margin-top:2px">
-                  Scheduled for: <strong>${meta.results}</strong> · 7 days to go
+                  Next: <strong>${earnInfo.next}</strong> · ${earnInfo.daysToGo} days to go · <span style="color:var(--mu)">Prev: ${earnInfo.prev}</span>
                 </div>
               </div>
             </div>
 
             <div style="display:flex;align-items:center;gap:12px">
-              <span class="confirmed-status-badge">${meta.resultsStatus}</span>
+              <span class="confirmed-status-badge">${earnInfo.status}</span>
               <button class="earnings-alert-btn" id="earnings-alert-trigger" data-symbol="${s[0]}">
                 <span>🔔</span>
                 <span>Set Earnings Alert</span>
