@@ -12,28 +12,19 @@
     if (typeof window === "undefined" || !window.location) return false;
     const proto = window.location.protocol || "";
     const h = (window.location.hostname || "").toLowerCase();
-    const p = window.location.port || "";
     return proto === "file:" ||
       h.endsWith("github.io") ||
       h.endsWith("pages.dev") ||
-      h.endsWith("surge.sh") ||
-      h.endsWith("vercel.app") ||
-      h.endsWith("netlify.app") ||
-      (h !== "localhost" && h !== "127.0.0.1" && p !== "3000") ||
-      (p !== "" && p !== "3000");
+      h.endsWith("surge.sh");
   }
 
-  // Centralized API Base URL resolver for local Node server vs. static hosting
+  // Centralized API Base URL resolver for local Node server & full-stack cloud hosting vs. static hosting
   function getApiBase() {
     if (typeof window !== "undefined" && window.location) {
       if (isStaticHost()) {
         return null; // Return null on static hosts so callers cleanly skip non-existent /api/ endpoints
       }
-      if (window.location.port === "3000") return window.location.origin;
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        return `${window.location.protocol}//${window.location.hostname}:3000`;
-      }
-      return null;
+      return window.location.origin;
     }
     return null;
   }
