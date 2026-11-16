@@ -1024,6 +1024,10 @@
           if (raw) {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed) && parsed.length > 0) {
+              parsed.forEach((h, idx) => {
+                if (!h.id) h.id = "h_" + (h.symbol || "stock").toLowerCase() + "_" + idx;
+                if (!h.broker) h.broker = h.account || "Zerodha";
+              });
               if (parsed.length === 5 && !parsed.some(h => (h.cmp - h.buyPrice) < 0)) {
                 const def = this.getDefaultHoldings();
                 this.saveHoldings(def);
@@ -1085,16 +1089,26 @@
     },
     updateHolding(id, updated) {
       const list = this.getHoldings();
-      const idx = list.findIndex(h => h.id === id);
+      let idx = -1;
+      if (id) idx = list.findIndex(h => h.id === id);
+      if (idx === -1 && updated && updated.symbol) {
+        idx = list.findIndex(h => (h.symbol || "").toUpperCase() === updated.symbol.toUpperCase());
+      }
       if (idx !== -1) {
         list[idx] = { ...list[idx], ...updated };
         this.saveHoldings(list);
       }
       return list;
     },
-    deleteHolding(id) {
+    deleteHolding(id, symbol) {
       let list = this.getHoldings();
-      list = list.filter(h => h.id !== id);
+      const sTarget = symbol ? symbol.toUpperCase() : null;
+      list = list.filter(h => {
+        if (id && h.id && h.id === id) return false;
+        if (sTarget && h.symbol && h.symbol.toUpperCase() === sTarget) return false;
+        if (!id && !h.id && sTarget && h.symbol === symbol) return false;
+        return true;
+      });
       this.saveHoldings(list);
       return list;
     },
@@ -12857,7 +12871,7 @@
   // 12. FEATURE 12: MULTI-DEMAT PORTFOLIO TRACKER
   // ==========================================================================
 
-  function openHoldingModal(mode = "add", holdingId = null) {
+  function openHoldingModal(mode = "add", holdingId = null, holdingSymbol = null) {
     const modal = document.getElementById("holding-modal");
     if (!modal) return;
     const title = document.getElementById("modal-holding-title");
@@ -12877,21 +12891,26 @@
     if (autoBox) autoBox.style.display = "none";
     if (cmpIndicator) cmpIndicator.style.display = "none";
 
-    if (mode === "edit" && holdingId) {
+    if (mode === "edit" && (holdingId || holdingSymbol)) {
       const holdings = DematPortfolioService.getHoldings();
-      const h = holdings.find(item => item.id === holdingId);
+      const sTarget = holdingSymbol ? holdingSymbol.toUpperCase() : null;
+      const h = holdings.find(item => 
+        (holdingId && item.id === holdingId) || 
+        (sTarget && item.symbol && item.symbol.toUpperCase() === sTarget)
+      );
       if (h) {
-        if (title) title.textContent = "Edit holding";
+        if (title) title.textContent = `Edit ${h.symbol} holding`;
         if (submitBtn) submitBtn.textContent = "Save changes";
-        if (editIdInput) editIdInput.value = h.id;
+        if (editIdInput) editIdInput.value = h.id || "";
         if (symInput) symInput.value = h.symbol;
         if (exchInput) exchInput.value = h.exchange || "NSE";
         if (brokerInput) brokerInput.value = h.broker || "Zerodha";
-        if (nameInput) nameInput.value = h.name || "";
+        if (nameInput) nameInput.value = h.name || h.symbol;
         if (buyPriceInput) buyPriceInput.value = h.buyPrice;
         if (qtyInput) qtyInput.value = h.qty;
         if (yahooInput) yahooInput.value = h.yahooSymbol || "";
         modal.style.display = "flex";
+        modal.classList.add("show");
         return;
       }
     }
@@ -12907,12 +12926,16 @@
     if (qtyInput) qtyInput.value = "1";
     if (yahooInput) yahooInput.value = "";
     modal.style.display = "flex";
+    modal.classList.add("show");
     setTimeout(() => { if (symInput) symInput.focus(); }, 100);
   }
 
   function closeHoldingModal() {
     const modal = document.getElementById("holding-modal");
-    if (modal) modal.style.display = "none";
+    if (modal) {
+      modal.style.display = "none";
+      modal.classList.remove("show");
+    }
   }
 
   function renderPortfolioView() {
@@ -13073,8 +13096,8 @@
           <td style="text-align:center">
             <div class="holding-actions-cell" style="justify-content:center">
               <button class="holding-btn" data-action="open-holding-chart" data-symbol="${escapeHtml(h.symbol)}" title="Open ${escapeHtml(h.symbol)} Candlestick Chart">📈</button>
-              <button class="holding-btn" data-action="edit-holding" data-id="${escapeHtml(h.id)}" title="Edit holding">✏️</button>
-              <button class="holding-btn holding-btn-delete" data-action="delete-holding" data-id="${escapeHtml(h.id)}" data-symbol="${escapeHtml(h.symbol)}" title="Delete holding">🗑️</button>
+              <button class="holding-btn" data-action="edit-holding" data-id="${escapeHtml(h.id || '')}" data-symbol="${escapeHtml(h.symbol)}" title="Edit ${escapeHtml(h.symbol)} holding">✏️</button>
+              <button class="holding-btn holding-btn-delete" data-action="delete-holding" data-id="${escapeHtml(h.id || '')}" data-symbol="${escapeHtml(h.symbol)}" title="Delete ${escapeHtml(h.symbol)} holding">🗑️</button>
             </div>
           </td>
         </tr>`;
@@ -18305,6 +18328,16 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function openStockDetail(sym) {
+    if (!sym) return;
+    if (State.view !== "stock" && State.view !== "login") State.previousView = State.view;
+    State.activeStock = sym;
+    State.view = "stock";
+    window.location.hash = "stock";
+    renderActiveView();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function setupGlobalEventListeners() {
     // Instant Market Cap Hover Tooltips (MC -> Mid Cap, SC -> Small Cap, LC -> Large Cap)
     let capTooltipEl = null;
@@ -18993,20 +19026,23 @@
         openHoldingModal("add");
       }
       else if (action === "edit-holding") {
-        openHoldingModal("edit", target.dataset.id);
+        const hId = target.dataset.id;
+        const hSym = target.dataset.symbol;
+        openHoldingModal("edit", hId, hSym);
       }
       else if (action === "delete-holding") {
         const hId = target.dataset.id;
         const hSym = target.dataset.symbol || "stock";
-        if (confirm(`Remove ${hSym} from your Multi-Demat Portfolio?`)) {
-          DematPortfolioService.deleteHolding(hId);
-          showToast(`Removed ${hSym} from Portfolio`, "🗑️");
-          renderActiveView();
-        }
+        DematPortfolioService.deleteHolding(hId, hSym);
+        showToast(`Removed ${hSym} from Multi-Demat Portfolio`, "🗑️");
+        renderActiveView();
       }
       else if (action === "open-holding-chart") {
         const sym = target.dataset.symbol;
-        if (sym) openStockDetail(sym);
+        if (sym) {
+          openStockDetail(sym);
+          showToast(`Opening ${sym} Candlestick Chart Workstation`, "📈");
+        }
       }
       else if (action === "toggle-portfolio-privacy") {
         State.portfolioPrivacy = !State.portfolioPrivacy;
@@ -19667,8 +19703,15 @@
           DematPortfolioService.updateHolding(editId, { symbol, exchange, broker, name, buyPrice, qty, yahooSymbol, cmp });
           showToast(`Updated ${symbol} (${qty} shares @ ₹${formatNumber(buyPrice)}) in Portfolio`, "✅");
         } else {
-          DematPortfolioService.addHolding({ symbol, exchange, broker, name, buyPrice, qty, yahooSymbol, cmp, prevClose: cmp, dayChangePct: 0 });
-          showToast(`Added ${symbol} (${qty} shares @ ₹${formatNumber(buyPrice)}) to Demat Portfolio`, "🎉");
+          const existingList = DematPortfolioService.getHoldings();
+          const existing = existingList.find(h => (h.symbol || "").toUpperCase() === symbol.toUpperCase());
+          if (existing) {
+            DematPortfolioService.updateHolding(existing.id, { symbol, exchange, broker, name, buyPrice, qty, yahooSymbol, cmp });
+            showToast(`Updated ${symbol} (${qty} shares @ ₹${formatNumber(buyPrice)}) in Portfolio`, "✅");
+          } else {
+            DematPortfolioService.addHolding({ symbol, exchange, broker, name, buyPrice, qty, yahooSymbol, cmp, prevClose: cmp, dayChangePct: 0 });
+            showToast(`Added ${symbol} (${qty} shares @ ₹${formatNumber(buyPrice)}) to Demat Portfolio`, "🎉");
+          }
         }
 
         closeHoldingModal();

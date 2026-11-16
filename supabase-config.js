@@ -497,11 +497,16 @@
           .eq('user_id', session.user.id);
         if (!error && Array.isArray(data) && data.length > 0) {
           console.log('☁️ [CloudSync] Loaded portfolio from Supabase:', data.length, 'holdings');
-          return data.map(row => ({
+          return data.map((row, idx) => ({
+            id: row.id || `h_cloud_${idx}`,
             symbol: row.symbol,
-            account: row.account_label,
+            name: row.symbol,
+            broker: row.account_label || 'Zerodha',
+            account: row.account_label || 'Zerodha',
             qty: row.quantity,
-            buyPrice: parseFloat(row.avg_buy_price)
+            buyPrice: parseFloat(row.avg_buy_price),
+            cmp: parseFloat(row.avg_buy_price),
+            yahooSymbol: `${row.symbol}.NS`
           }));
         }
       } catch (e) {
