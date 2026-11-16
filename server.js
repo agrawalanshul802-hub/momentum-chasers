@@ -208,6 +208,81 @@ class KeyPoolManager {
 const keyPool = new KeyPoolManager();
 
 // ------------------------------------------------------------------------------
+// 1.05 YAHOO FINANCE CRUMB & SESSION MANAGER (Ultra-fast bulk quotes)
+// ------------------------------------------------------------------------------
+class YahooFinanceSession {
+  constructor() {
+    this.cookie = '';
+    this.crumb = '';
+    this.lastRefreshed = 0;
+    this.refreshPromise = null;
+  }
+
+  async getSession() {
+    const now = Date.now();
+    if (this.cookie && this.crumb && (now - this.lastRefreshed < 6 * 3600 * 1000)) {
+      return { cookie: this.cookie, crumb: this.crumb };
+    }
+    if (this.refreshPromise) return this.refreshPromise;
+
+    this.refreshPromise = (async () => {
+      try {
+        const cookie = await this.fetchCookie();
+        if (!cookie) throw new Error('No cookie');
+        const crumb = await this.fetchCrumb(cookie);
+        if (!crumb) throw new Error('No crumb');
+        this.cookie = cookie;
+        this.crumb = crumb;
+        this.lastRefreshed = Date.now();
+        console.log('✅ [YahooSession] Refreshed Yahoo Finance session crumb:', crumb);
+        return { cookie, crumb };
+      } catch (err) {
+        console.warn('⚠️ [YahooSession] Failed to refresh session:', err.message);
+        return { cookie: this.cookie, crumb: this.crumb };
+      } finally {
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
+  }
+
+  fetchCookie() {
+    return new Promise((resolve) => {
+      const req = https.get('https://fc.yahoo.com', {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+        timeout: 4000
+      }, res => {
+        const setCookie = res.headers['set-cookie'];
+        resolve(setCookie ? setCookie.map(c => c.split(';')[0]).join('; ') : '');
+      });
+      req.on('error', () => resolve(''));
+      req.on('timeout', function() { this.destroy(); resolve(''); });
+    });
+  }
+
+  fetchCrumb(cookie) {
+    return new Promise((resolve) => {
+      const req = https.get('https://query1.finance.yahoo.com/v1/test/getcrumb', {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'Cookie': cookie
+        },
+        timeout: 4000
+      }, res => {
+        let d = '';
+        res.on('data', c => d += c);
+        res.on('end', () => resolve(d.trim()));
+      });
+      req.on('error', () => resolve(''));
+      req.on('timeout', function() { this.destroy(); resolve(''); });
+    });
+  }
+}
+
+const yahooSession = new YahooFinanceSession();
+
+// ------------------------------------------------------------------------------
 // 1.1 DHAN AUTOMATED TOTP AUTHENTICATION ENGINE (Zero external dependencies)
 // ------------------------------------------------------------------------------
 class DhanAuthManager {
@@ -6386,6 +6461,67 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
+      // 1. Try ultra-fast bulk v7 quote fetch with Yahoo cookie/crumb in chunks of up to 100
+      let bulkResults = null;
+      try {
+        const session = await yahooSession.getSession();
+        if (session.cookie && session.crumb) {
+          const chunkSize = 100;
+          const chunkPromises = [];
+          for (let i = 0; i < symList.length; i += chunkSize) {
+            const chunk = symList.slice(i, i + chunkSize);
+            const chunkUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(chunk.join(','))}&crumb=${encodeURIComponent(session.crumb)}`;
+            chunkPromises.push(new Promise((resolve) => {
+              const req = https.get(chunkUrl, {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                  'Cookie': session.cookie
+                },
+                timeout: 5000
+              }, qRes => {
+                let body = '';
+                qRes.on('data', c => body += c);
+                qRes.on('end', () => {
+                  try {
+                    const j = JSON.parse(body);
+                    resolve(j?.quoteResponse?.result || []);
+                  } catch(e) { resolve([]); }
+                });
+              });
+              req.on('error', () => resolve([]));
+              req.on('timeout', function() { this.destroy(); resolve([]); });
+            }));
+          }
+
+          const chunkResults = await Promise.all(chunkPromises);
+          const combined = chunkResults.flat();
+          if (combined && combined.length > 0) {
+            bulkResults = combined;
+            combined.forEach(q => {
+              if (q && q.symbol) {
+                CACHE.set(`item_quote_${q.symbol}`, { time: Date.now(), quote: q });
+              }
+            });
+          }
+        }
+      } catch (e) {
+        // Crumb failed, continue to fallback
+      }
+
+      if (bulkResults && bulkResults.length > 0) {
+        const payload = JSON.stringify({
+          quoteResponse: {
+            result: bulkResults,
+            error: null
+          }
+        });
+        CACHE.set(cacheKey, { time: Date.now(), data: payload });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'MISS' });
+        res.end(payload);
+        return;
+      }
+
+      // 2. High-reliability fallback: per-symbol /v8 chart fallback
       const results = await Promise.all(symList.map(async (sym) => {
         const itemCacheKey = `item_quote_${sym}`;
         const itemCached = CACHE.get(itemCacheKey);

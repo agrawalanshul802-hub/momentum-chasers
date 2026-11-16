@@ -637,9 +637,10 @@
 
   // Helper to compute Distance from All-Time High / 52W High
   function getStockAthDistance(stock) {
-    const curPrice = Number(stock[3]) || 0;
-    const meta = stock[8] || {};
-    const ath = Number(meta.ath || meta.high52) || curPrice;
+    if (!stock) return { ath: 0, dist: 0, isNearAth: false };
+    const curPrice = Number(Array.isArray(stock) ? stock[3] : stock.price) || 0;
+    const meta = Array.isArray(stock) ? (stock[8] || {}) : (stock.meta || stock);
+    const ath = Number(meta.ath || meta.high52 || stock.high52) || curPrice;
     const dist = ath > 0 ? ((curPrice - ath) / ath) * 100 : 0;
     return {
       ath,
@@ -5101,8 +5102,8 @@
         State.liveSync.countdown = 60;
         if (beacon) beacon.className = "live-feed-beacon active";
         if (statusText) {
-          const timeStr = State.liveSync.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-          statusText.textContent = `Live: ${timeStr}`;
+          statusText.textContent = "NSE/BSE Daily Feed";
+          statusText.title = "Viewing daily market close catalog. For real-time 15m live streaming, launch node server.js on localhost:3000.";
         }
         this._isSyncing = false;
         if (syncBtn) syncBtn.classList.remove("spinning");
@@ -5119,9 +5120,15 @@
           else if (item.id === "MIDCPNIFTY") symSet.add("^NSEMDCP50");
           else if (item.id) symSet.add(this.getYahooSymbol(item.id));
         });
-        // Performance optimization: Sync top priority stocks (watchlist + top 25) instead of all 512
+        // High-priority stocks: Watchlist + Visible screener page rows + Top 100 Market Universe
         (State.watchlist || []).forEach(sym => symSet.add(this.getYahooSymbol(sym)));
-        ST.slice(0, 25).forEach(s => symSet.add(this.getYahooSymbol(s[0])));
+        if (typeof document !== "undefined") {
+          const visibleRows = document.querySelectorAll(".data-table-main tbody tr[data-symbol]");
+          visibleRows.forEach(row => {
+            if (row.dataset.symbol) symSet.add(this.getYahooSymbol(row.dataset.symbol));
+          });
+        }
+        ST.slice(0, 100).forEach(s => symSet.add(this.getYahooSymbol(s[0])));
         ["^NSEI", "^CNX100", "^NSEMDCP50", "^CNXSC", "^NSEBANK", "^CNXIT", "^CNXAUTO", "^CNXPHARMA", "^CNXFMCG", "^CNXENERGY", "^CNXMETAL", "^CNXREALTY", "^CNXMEDIA", "^CNXPSE", "^CNXPSUBANK", "^CNXINFRA", "^CNXCOMMODITIES", "^CNXCONSUMPTION", "^CNXCPSE", "^CNXMNC"].forEach(i => symSet.add(i));
         // Add sector indices only when on the sectors/heatmap view (perf: skip on auto-refresh)
         const _curView = (typeof State !== "undefined" && State.view) ? State.view : "";
@@ -5151,7 +5158,7 @@
         if (localBase) {
           try {
             const ctrl = new AbortController();
-            const tId = setTimeout(() => ctrl.abort(), 3500);
+            const tId = setTimeout(() => ctrl.abort(), 8000);
             const res = await fetch(`${localBase}${path}`, { cache: "no-store", signal: ctrl.signal });
             clearTimeout(tId);
             if (res.ok) json = await res.json();
@@ -5194,9 +5201,20 @@
             if (stItem && typeof q.regularMarketPrice === "number") {
               stItem[3] = Math.round(q.regularMarketPrice * 100) / 100;
               stItem[4] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
+              stItem._isLive = true;
+              if (typeof q.fiftyTwoWeekHigh === "number" && q.fiftyTwoWeekHigh > 0 && stItem[8]) {
+                stItem[8].high52 = q.fiftyTwoWeekHigh;
+              }
+              if (typeof q.fiftyTwoWeekLow === "number" && q.fiftyTwoWeekLow > 0 && stItem[8]) {
+                stItem[8].low52 = q.fiftyTwoWeekLow;
+              }
               if (ST_MAP[stItem[0]]) {
                 ST_MAP[stItem[0]].price = stItem[3];
                 ST_MAP[stItem[0]].chg = stItem[4];
+                if (stItem[8]) {
+                  ST_MAP[stItem[0]].high52 = stItem[8].high52;
+                  ST_MAP[stItem[0]].low52 = stItem[8].low52;
+                }
               }
             }
 
@@ -5330,6 +5348,7 @@
         if (statusText) {
           const timeStr = State.liveSync.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
           statusText.textContent = `Live: ${timeStr}`;
+          statusText.title = "Real-time 15-minute delayed market feed active from NSE & BSE.";
         }
 
         // Granular updates: Never destroy the entire page DOM!
@@ -5372,6 +5391,7 @@
         if (statusText) {
           const timeStr = State.liveSync.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
           statusText.textContent = `Live: ${timeStr}`;
+          statusText.title = "Real-time 15-minute delayed market feed active from NSE & BSE.";
         }
         const tickerTrack = $("#ticker-track");
         if (!tickerTrack || !tickerTrack.children.length) {
@@ -6239,21 +6259,30 @@
   function updateScreenerLiveQuotes(sym) {
     const tbody = document.querySelector(".data-table-main tbody");
     if (!tbody) return;
+    const updateRow = (row, s) => {
+      const price = Array.isArray(s) ? s[3] : s.price;
+      const chg = Array.isArray(s) ? s[4] : s.chg;
+      const priceCell = row.querySelector(".stock-price-cell");
+      const chgCell = row.querySelector(".stock-chg-cell");
+      if (priceCell) priceCell.textContent = `₹${formatNumber(price)}`;
+      if (chgCell) {
+        chgCell.className = `font-mono ${getColorClass(chg)} stock-chg-cell`;
+        chgCell.textContent = formatPercent(chg);
+      }
+      const athCell = row.querySelector(".stock-ath-cell");
+      if (athCell && typeof getStockAthDistance === "function") {
+        const ath = getStockAthDistance(s);
+        const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
+        athCell.className = `font-mono ${cls} stock-ath-cell`;
+        athCell.innerHTML = `${ath.dist.toFixed(2)}%<div style="font-size:10px;color:var(--mu);font-weight:400">ATH ₹${formatNumber(ath.ath, 0)}</div>`;
+      }
+    };
+
     if (sym) {
       const row = tbody.querySelector(`tr[data-symbol="${sym}"]`);
       if (row) {
         const s = (typeof ST_MAP !== 'undefined' && ST_MAP[sym]) || ST.find(x => x[0] === sym);
-        if (s) {
-          const price = Array.isArray(s) ? s[3] : s.price;
-          const chg = Array.isArray(s) ? s[4] : s.chg;
-          const priceCell = row.querySelector(".stock-price-cell");
-          const chgCell = row.querySelector(".stock-chg-cell");
-          if (priceCell) priceCell.textContent = `₹${formatNumber(price)}`;
-          if (chgCell) {
-            chgCell.className = `font-mono ${getColorClass(chg)} stock-chg-cell`;
-            chgCell.textContent = formatPercent(chg);
-          }
-        }
+        if (s) updateRow(row, s);
       }
       return;
     }
@@ -6263,17 +6292,7 @@
       rows.forEach(row => {
         const sSym = row.dataset.symbol;
         const s = (typeof ST_MAP !== 'undefined' && ST_MAP[sSym]) || ST.find(x => x[0] === sSym);
-        if (s) {
-          const price = Array.isArray(s) ? s[3] : s.price;
-          const chg = Array.isArray(s) ? s[4] : s.chg;
-          const priceCell = row.querySelector(".stock-price-cell");
-          const chgCell = row.querySelector(".stock-chg-cell");
-          if (priceCell) priceCell.textContent = `₹${formatNumber(price)}`;
-          if (chgCell) {
-            chgCell.className = `font-mono ${getColorClass(chg)} stock-chg-cell`;
-            chgCell.textContent = formatPercent(chg);
-          }
-        }
+        if (s) updateRow(row, s);
       });
     });
   }
@@ -7365,7 +7384,7 @@
                     ${State.screenerCols.athDist !== false ? (() => {
           const ath = getStockAthDistance(s);
           const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
-          return `<td class="font-mono ${cls}" style="text-align:right;font-weight:700">
+          return `<td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700">
                         ${ath.dist.toFixed(2)}%
                         <div style="font-size:10px;color:var(--mu);font-weight:400">ATH ₹${formatNumber(ath.ath, 0)}</div>
                       </td>`;
@@ -19226,8 +19245,8 @@
 
   // Dynamic fetch of repository-synced Nifty 500 catalog for GitHub Pages and static deployments
   async function syncNifty500Catalog() {
-    // Zero lag: Skip redundant network fetch if full catalog already loaded
-    if (ST.length >= 500) return;
+    // On local server with live backend, let YahooFinanceLiveService stream live quotes directly
+    if (!isStaticHost()) return;
     try {
       const jsonResp = await fetch('./data/stocks-nifty500.json', { cache: 'no-store' });
       if (jsonResp.ok) {
@@ -19248,8 +19267,11 @@
               ...(s[8] || {})
             };
           }
-          if (typeof State !== 'undefined' && State.view === 'screener') {
-            render();
+          if (typeof State !== 'undefined') {
+            if (State.view === 'screener') {
+              updateScreenerLiveQuotes();
+            }
+            renderTicker();
           }
         }
       }
