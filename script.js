@@ -7208,9 +7208,10 @@
           </div>
 
           <!-- Screener Stock Search Input -->
-          <div style="display:inline-flex;align-items:center;position:relative;">
-            <input type="text" id="screener-search-input" placeholder="Search 500+ stocks..." value="${escapeHtml(State.searchQuery || '')}" style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:6px 12px;font-size:12px;color:var(--ink);width:160px;outline:none;" />
-            ${State.searchQuery ? `<button id="screener-clear-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;">✕</button>` : ''}
+          <div style="display:inline-flex;align-items:center;position:relative;" class="screener-search-wrap">
+            <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;display:flex;align-items:center;" aria-hidden="true">🔍</span>
+            <input type="text" id="screener-search-input" placeholder="Search 500+ stocks..." value="${escapeHtml(State.searchQuery || '')}" style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:6px 26px 6px 30px;font-size:12px;color:var(--ink);width:175px;outline:none;transition:border-color 0.2s, box-shadow 0.2s;" />
+            ${State.searchQuery ? `<button id="screener-clear-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0 2px;display:flex;align-items:center;" title="Clear search">✕</button>` : ''}
           </div>
 
           <!-- Clear All Filters Button -->
@@ -16196,7 +16197,10 @@
             </select>
 
             <!-- Client or Keyword Search Input -->
-            <input type="text" class="screener-input" id="deals-search-input" placeholder="Search client or counterparty..." value="${State.dealsSearch}">
+            <div style="display:inline-flex;align-items:center;position:relative;">
+              <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;display:flex;align-items:center;" aria-hidden="true">🔍</span>
+              <input type="text" class="screener-input" id="deals-search-input" placeholder="Search client or counterparty..." value="${State.dealsSearch}" style="padding-left:28px;">
+            </div>
           </div>
         </div>
 
