@@ -21,6 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 const crypto = require('crypto');
+const orderFlowEngine = require('./orderflow-engine.js');
 
 // Global process resilience guards against unhandled socket/network aborts
 process.on('uncaughtException', (err) => {
@@ -6405,6 +6406,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Order Flow Engine API & Static Routers
+  if (orderFlowEngine.handleApi(req, res, pathname, parsedUrl.query)) return;
+  if (orderFlowEngine.handleStatic(req, res, pathname)) return;
+
   // Supabase Auth Public Configuration Endpoint
   if (pathname === '/api/auth/config') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -7350,7 +7355,11 @@ server.listen(PORT, async () => {
   console.log(`🔐 Dhan Auth Status:     http://localhost:${PORT}/api/dhan/status`);
   console.log(`🗄️ Supabase Status:      ${SUPABASE_URL ? 'Configured (' + SUPABASE_URL + ')' : 'Not configured (Local memory fallback active)'}`);
   console.log(`📈 15m 50x200 EMA Engine: Active`);
+  console.log(`🌊 Order Flow F&O Engine: Active (http://localhost:${PORT}/order-flow/)`);
   console.log(`================================================================\n`);
+
+  // Initialize Order Flow Engine
+  orderFlowEngine.initOrderFlow();
 
   // Start automated Dhan TOTP renewal if credentials exist
   await dhanAuth.startAutoRefresh();

@@ -16114,6 +16114,45 @@
     }
   }
 
+  function renderOrderFlowView() {
+    return `
+      <div class="orderflow-view-wrapper" style="display:flex;flex-direction:column;height:calc(100vh - 54px);margin:-16px -24px -24px -24px;background:#0d1117;">
+        <!-- Order Flow Top Toolbar -->
+        <div class="orderflow-nav-toolbar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--sf);border-bottom:1px solid var(--ln);flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="section-back-btn" data-action="go-back" title="Back to previous page" style="background:var(--sf2);border:1px solid var(--ln);color:var(--ink);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
+              <span class="back-arrow">←</span> <span>Back</span>
+            </button>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-0.2px;display:flex;align-items:center;gap:6px;">
+                🌪️ F&O Order Flow
+              </span>
+              <span style="background:rgba(34,197,94,0.16);color:#22c55e;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid rgba(34,197,94,0.3);">
+                LIVE F&O
+              </span>
+              <span style="font-size:12px;color:var(--mu);display:inline-block;" class="hide-mobile">
+                • 217 NSE & BSE Underlyings · Futures Money Flow · Strike OI Distribution · Sentiment & Conviction
+              </span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button id="orderflow-refresh-btn" onclick="const iframe=document.getElementById('orderflow-iframe'); if (iframe) iframe.src = iframe.src;" style="display:inline-flex;align-items:center;gap:5px;background:var(--sf2);border:1px solid var(--ln);color:var(--ink);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s ease;" title="Reload Order Flow Board">
+              <span>↻ Reload</span>
+            </button>
+            <a href="/order-flow/" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;background:var(--gp);border:1px solid var(--g);color:#000;font-weight:600;padding:5px 12px;border-radius:6px;text-decoration:none;font-size:12px;box-shadow:0 0 10px rgba(34,197,94,0.25);" title="Open Order Flow in Standalone Fullscreen Tab">
+              <span>Fullscreen Tab ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Embedded Order Flow React Application Frame -->
+        <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
+          <iframe id="orderflow-iframe" src="/order-flow/" style="width:100%;height:100%;border:none;display:block;" title="Order Flow by Mr. Chartist"></iframe>
+        </div>
+      </div>
+    `;
+  }
+
   function renderDealsView() {
     const deals = getFilteredDeals();
 
@@ -17935,6 +17974,9 @@
           DealsLiveService.syncDeals();
         }
         break;
+      case "orderflow":
+        container.innerHTML = renderOrderFlowView();
+        break;
       default:
         container.innerHTML = renderScreenerView();
     }
@@ -19695,7 +19737,7 @@
 
     // Check initial hash for deep linking
     const hash = window.location.hash.slice(1);
-    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
+    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "orderflow", "login"];
     if (hash.startsWith("events-")) {
       State.eventsTab = hash.replace("events-", "");
       State.view = "events";
