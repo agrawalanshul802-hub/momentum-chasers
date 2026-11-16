@@ -4817,6 +4817,12 @@
           Sign in to Momentum Chasers &rarr;
         </button>
 
+        <div style="text-align:center;margin-top:12px;">
+          <button type="button" id="auth-guest-btn" style="background:none;border:none;color:#94a3b8;font-size:12.5px;cursor:pointer;text-decoration:underline;padding:4px;font-family:inherit;transition:color 0.2s;" onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='#94a3b8'" title="Instant access without signing in">
+            ⚡ Skip login &amp; explore terminal as Guest &rarr;
+          </button>
+        </div>
+
         <button class="auth-back-btn" id="auth-back-btn" type="button">
           &larr; Back to Sign In
         </button>
@@ -5069,6 +5075,28 @@
           showMsg(res.error || "Google sign-in could not be initiated.", false);
         }
       });
+
+      // Guest / Demo Terminal Access Bypass
+      const guestBtn = document.getElementById("auth-guest-btn");
+      if (guestBtn) {
+        guestBtn.addEventListener("click", () => {
+          try {
+            localStorage.setItem("momentum_user", JSON.stringify({
+              id: "guest_" + Date.now(),
+              name: "Trader",
+              email: "trader@momentumchasers.com",
+              plan: "PRO Terminal",
+              avatar: "T",
+              broker: "Demat Linked"
+            }));
+            localStorage.removeItem("momentum_signed_out");
+          } catch (e) {}
+          showMsg("Entering PRO Terminal as Guest...", true);
+          setTimeout(() => {
+            window.location.href = "index.html#screener";
+          }, 300);
+        });
+      }
 
       // Email & Password Submit
       emailForm.addEventListener("submit", async (e) => {
