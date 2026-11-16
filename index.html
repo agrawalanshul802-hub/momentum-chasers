@@ -81,14 +81,14 @@
                 <!-- Navigation Links -->
                 <nav class="sidebar-nav" id="sidebar-nav">
                     <!-- Primary Dashboard Link -->
-                    <button class="nav-link active" data-view="home" style="margin-bottom: 6px;">
+                    <button class="nav-link" data-view="home" style="margin-bottom: 6px;">
                         <span class="nav-icon">🏠</span>
                         <span>Dashboard</span>
                     </button>
 
                     <!-- Category: Analytics & Screening -->
-                    <div class="nav-accordion-group" data-group="analytics">
-                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="analytics" aria-expanded="false">
+                    <div class="nav-accordion-group open" data-group="analytics">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="analytics" aria-expanded="true">
                             <span class="nav-section-header-left">
                                 <span class="nav-section-title-text">Analytics & Screening</span>
                             </span>
@@ -105,7 +105,7 @@
                                 <span>Market Breadth</span>
                                 <span class="nav-badge-pill" style="background:var(--gs);color:var(--g)">New</span>
                             </button>
-                            <button class="nav-link" data-view="screener">
+                            <button class="nav-link active" data-view="screener">
                                 <span class="nav-icon">⚡</span>
                                 <span>Smart Screener</span>
                                 <span class="nav-badge-pill" id="screener-count-badge">15</span>
@@ -544,7 +544,7 @@
     <script src="supabase-config.js?v=4.6.1"></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=5.5.7"></script>
+    <script src="script.js?v=5.5.8"></script>
 </body>
 
 </html>
