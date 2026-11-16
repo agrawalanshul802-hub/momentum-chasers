@@ -17881,11 +17881,79 @@
         return;
       }
 
-      // Close user dropdown if clicking outside header-user-wrapper
+      // Close dropdowns if clicking outside
       if (!e.target.closest("#header-user-wrapper")) {
         closeUserDropdown();
       }
-      else if (action === "events-close-day-modal") {
+      if (!e.target.closest(".screener-cols-menu-container")) {
+        const colsDropdown = document.getElementById("screener-cols-dropdown");
+        const colsBtn = document.getElementById("screener-cols-toggle-btn");
+        if (colsDropdown && colsDropdown.classList.contains("show")) {
+          colsDropdown.classList.remove("show");
+          State.screenerColsOpen = false;
+        }
+        if (colsBtn) colsBtn.classList.remove("active");
+      }
+
+      // 5. User Profile Modal Close
+      if (e.target.closest("#user-profile-modal-close-btn, #user-profile-modal-done-btn") || e.target.id === "user-profile-modal") {
+        const modal = document.getElementById("user-profile-modal");
+        if (modal) { modal.style.display = "none"; modal.classList.remove("show"); }
+        return;
+      }
+
+      // 5b. User Sign Out Trigger
+      if (e.target.closest("#user-profile-signout-btn, [data-action='logout']")) {
+        logoutUser();
+        return;
+      }
+
+      // 5c. Events Day Inspector Modal Close
+      if (e.target.closest("#events-day-modal-close-btn, [data-action='events-close-day-modal']") || e.target.id === "events-day-modal") {
+        closeEventsDayModal();
+        return;
+      }
+
+      // 6. Symbol Search Modal Triggers
+      if (e.target.closest(".tv-symbol-selector, [data-action='open-symbol-search']")) {
+        openSymbolSearchModal();
+        return;
+      }
+      if (e.target.closest("#symbol-search-close-btn") || e.target.id === "symbol-search-modal") {
+        closeSymbolSearchModal();
+        return;
+      }
+      const sItem = e.target.closest(".symbol-search-item");
+      if (sItem) {
+        const sym = sItem.dataset.symbol;
+        if (sym) {
+          closeSymbolSearchModal();
+          State.activeStock = sym;
+          State.view = "stock";
+          window.location.hash = "stock";
+          renderActiveView();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          showToast(`Switched chart to ${sym} 📈`, "🔍");
+        }
+        return;
+      }
+      const sFilterPill = e.target.closest(".symbol-filter-pill");
+      if (sFilterPill) {
+        document.querySelectorAll(".symbol-filter-pill").forEach(p => p.classList.remove("active"));
+        sFilterPill.classList.add("active");
+        activeSymbolSearchFilter = sFilterPill.dataset.symbolFilter || "all";
+        const input = document.getElementById("symbol-search-input");
+        renderSymbolSearchResults(input ? input.value : "", activeSymbolSearchFilter);
+        return;
+      }
+
+      const target = e.target.closest("[data-action], [data-view], [data-target]");
+      if (!target) return;
+
+      const view = target.dataset.view || target.dataset.target;
+      const action = target.dataset.action;
+
+      if (action === "events-close-day-modal") {
         closeEventsDayModal();
       }
       else if (action === "events-day-modal-to-list") {
@@ -18298,6 +18366,21 @@
         const btn = document.getElementById("screener-cols-toggle-btn");
         if (dropdown) dropdown.classList.toggle("show", State.screenerColsOpen);
         if (btn) btn.classList.toggle("active", State.screenerColsOpen);
+        return;
+      }
+      else if (action === "set-screener-sort-dir") {
+        const dir = target.dataset.dir || (target.closest("[data-dir]")?.dataset.dir) || "desc";
+        State.screenerSortDir = dir;
+        renderActiveView();
+        showToast(`Sorting screener: ${dir === "asc" ? "Low to High ▲" : "High to Low ▼"}`, "🔃");
+        return;
+      }
+      else if (action === "reset-screener-sort") {
+        State.screenerSortCol = "default";
+        State.screenerSortDir = "desc";
+        renderActiveView();
+        showToast("Reset screener to default momentum ranking", "↺");
+        return;
       }
       else if (action === "toggle-screener-col-check") {
         const col = target.dataset.col;
