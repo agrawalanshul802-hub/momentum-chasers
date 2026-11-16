@@ -29,9 +29,9 @@
       if (isStaticHost()) {
         return null; // Return null on static hosts so callers cleanly skip non-existent /api/ endpoints
       }
-      if (window.location.port === "3000") return "";
+      if (window.location.port === "3000") return window.location.origin;
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        return "http://localhost:3000";
+        return `${window.location.protocol}//${window.location.hostname}:3000`;
       }
       return null;
     }
@@ -48,7 +48,8 @@
 
   // Benchmark Indices for Ticker & Breadth
   const IDX = [
-    ["NIFTY 50", 25030.35, 2.01, 493.75],
+    ["NIFTY 50", 25221.40, 0.31, 77.20],
+    ["Nifty Bank", 61363.95, 0.54, 329.80],
     ["Nifty LargeCap 100", 24942.25, 0.82, 202.8],
     ["Nifty MidCap 150", 21868.85, 1.61, 346.5],
     ["Nifty SmallCap 250", 17406.95, 2.02, 345.1]
@@ -5109,8 +5110,15 @@
       }
 
       try {
-        // 1. Collect all symbols: Catalog stocks + Benchmark indices + Heatmap constituents
+        // 1. Collect all symbols: Catalog stocks + Benchmark indices + Heatmap constituents + Ticker Tape
         const symSet = new Set();
+        (State.tickerDisplayStocks || []).forEach(item => {
+          if (item.type === "index" || item.id === "NIFTY") symSet.add("^NSEI");
+          else if (item.id === "BANKNIFTY") symSet.add("^NSEBANK");
+          else if (item.id === "FINNIFTY") symSet.add("^CNXFIN");
+          else if (item.id === "MIDCPNIFTY") symSet.add("^NSEMDCP50");
+          else if (item.id) symSet.add(this.getYahooSymbol(item.id));
+        });
         // Performance optimization: Sync top priority stocks (watchlist + top 25) instead of all 512
         (State.watchlist || []).forEach(sym => symSet.add(this.getYahooSymbol(sym)));
         ST.slice(0, 25).forEach(s => symSet.add(this.getYahooSymbol(s[0])));
@@ -5225,6 +5233,14 @@
                 idxItem[1] = Math.round(q.regularMarketPrice * 100) / 100;
                 idxItem[2] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
               }
+              updateTickerLive("NIFTY", q.regularMarketPrice, q.regularMarketChangePercent || 0);
+            } else if (rawSym === "^NSEBANK") {
+              const idxItem = IDX.find(i => i[0] === "Nifty Bank");
+              if (idxItem && typeof q.regularMarketPrice === "number") {
+                idxItem[1] = Math.round(q.regularMarketPrice * 100) / 100;
+                idxItem[2] = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
+              }
+              updateTickerLive("BANKNIFTY", q.regularMarketPrice, q.regularMarketChangePercent || 0);
             } else if (rawSym === "^CNX100") {
               const idxItem = IDX.find(i => i[0] === "Nifty LargeCap 100");
               if (idxItem && typeof q.regularMarketPrice === "number") {
@@ -6136,9 +6152,14 @@
     const items = [];
     displayList.forEach(disp => {
       if (disp.type === "index" || disp.id === "NIFTY" || disp.id === "BANKNIFTY" || disp.id === "FINNIFTY" || disp.id === "MIDCPNIFTY") {
-        const found = IDX.find(i => i[0] === disp.id || i[0] === disp.name);
-        const price = found ? found[1] : 24148;
-        const chg = found ? found[2] : 0.85;
+        const normId = (disp.id || "").toUpperCase();
+        const normName = (disp.name || "").toUpperCase();
+        const found = IDX.find(i => {
+          const iname = (i[0] || "").toUpperCase();
+          return iname === normId || iname === normName || iname.includes(normId) || (normId === "NIFTY" && iname.includes("NIFTY 50")) || (normId === "BANKNIFTY" && iname.includes("BANK"));
+        });
+        const price = found ? found[1] : (normId === "BANKNIFTY" ? 61363.95 : 25221.40);
+        const chg = found ? found[2] : (normId === "BANKNIFTY" ? 0.54 : 0.31);
         items.push({
           id: disp.id,
           name: disp.name || disp.id,
@@ -6189,7 +6210,17 @@
       return;
     }
     const cleanSym = String(sym || "").toUpperCase();
-    const items = track.querySelectorAll(`.ticker-item[data-symbol="${cleanSym}"]`);
+    const aliasMap = {
+      "NSEI": ["NIFTY", "NSEI", "^NSEI"],
+      "NSEBANK": ["BANKNIFTY", "NSEBANK", "^NSEBANK"],
+      "CNXFIN": ["FINNIFTY", "CNXFIN", "^CNXFIN"],
+      "NSEMDCP50": ["MIDCPNIFTY", "NSEMDCP50", "^NSEMDCP50"],
+      "NIFTY": ["NIFTY", "NSEI", "^NSEI"],
+      "BANKNIFTY": ["BANKNIFTY", "NSEBANK", "^NSEBANK"]
+    };
+    const targetSyms = aliasMap[cleanSym] || [cleanSym];
+    const selector = targetSyms.map(s => `.ticker-item[data-symbol="${s}"]`).join(",");
+    const items = track.querySelectorAll(selector);
     if (items.length === 0) return;
     items.forEach(item => {
       const priceEl = item.querySelector(".ticker-price");
