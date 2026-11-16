@@ -4425,12 +4425,12 @@
   // 2. APPLICATION STATE
   // ==========================================================================
 
-    const DEFAULT_USER_PROFILE = {
-    name: "Anshul Agrawal",
-    email: "agrawalanshul802@gmail.com",
+  const DEFAULT_USER_PROFILE = {
+    name: "Trader",
+    email: "trader@momentumchasers.com",
     plan: "PRO Terminal",
-    avatar: "A",
-    broker: "Dhan Connected",
+    avatar: "T",
+    broker: "Demat Linked",
     provider: "terminal"
   };
 
@@ -4439,12 +4439,6 @@
     savedUser = JSON.parse(localStorage.getItem("momentum_user") || "null");
   } catch (e) {
     savedUser = null;
-  }
-  if (!savedUser && localStorage.getItem("momentum_signed_out") !== "true") {
-    savedUser = Object.assign({}, DEFAULT_USER_PROFILE);
-    try {
-      localStorage.setItem("momentum_user", JSON.stringify(savedUser));
-    } catch (e) {}
   }
 
   let State = {
@@ -17931,19 +17925,6 @@
 
       if (e.target.closest("[data-action='header-signout']")) {
         logoutUser();
-        return;
-      }
-
-      if (e.target.closest("[data-action='restore-user']")) {
-        State.user = Object.assign({}, DEFAULT_USER_PROFILE);
-        savedUser = State.user;
-        try {
-          localStorage.setItem("momentum_user", JSON.stringify(State.user));
-          localStorage.removeItem("momentum_signed_out");
-        } catch (e) {}
-        closeUserDropdown();
-        renderUserAuthUI();
-        showToast("Welcome back, Anshul Agrawal! Terminal connected.", "🚀");
         return;
       }
 
