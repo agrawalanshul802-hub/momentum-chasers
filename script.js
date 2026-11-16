@@ -16239,7 +16239,7 @@
             <button id="orderflow-refresh-btn" onclick="const iframe=document.getElementById('orderflow-iframe'); if (iframe) iframe.src = iframe.src;" style="display:inline-flex;align-items:center;gap:5px;background:var(--sf2);border:1px solid var(--ln);color:var(--ink);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s ease;" title="Reload Order Flow Board">
               <span>↻ Reload</span>
             </button>
-            <a href="/order-flow/" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;background:var(--gp);border:1px solid var(--g);color:#000;font-weight:600;padding:5px 12px;border-radius:6px;text-decoration:none;font-size:12px;box-shadow:0 0 10px rgba(34,197,94,0.25);" title="Open Order Flow in Standalone Fullscreen Tab">
+            <a href="/order-flow/" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;background:var(--g);border:1px solid var(--g);color:#050d08;font-weight:700;padding:5px 14px;border-radius:6px;text-decoration:none;font-size:12px;box-shadow:0 0 12px rgba(34,197,94,0.35);transition:opacity 0.15s ease;" title="Open Order Flow in Standalone Fullscreen Tab">
               <span>Fullscreen Tab ↗</span>
             </a>
           </div>
