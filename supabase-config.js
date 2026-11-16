@@ -214,6 +214,9 @@
         if (data && data.user) {
           const profile = mapSupabaseUser(data.user, data.session);
           localStorage.setItem('momentum_user', JSON.stringify(profile));
+          if (window.MomentumCloudSync) {
+            window.MomentumCloudSync.syncProfile(profile);
+          }
           return { success: true, user: profile, session: data.session };
         }
         return { success: true, data };
@@ -252,6 +255,9 @@
           const profile = mapSupabaseUser(data.user, data.session);
           if (data.session) {
             localStorage.setItem('momentum_user', JSON.stringify(profile));
+          }
+          if (window.MomentumCloudSync) {
+            window.MomentumCloudSync.syncProfile(profile);
           }
           return { success: true, user: profile, session: data.session, confirmationRequired: !data.session };
         }
@@ -373,6 +379,9 @@
           history.replaceState(null, '', cleanUrl);
 
           console.log('🎉 Google OAuth sign-in verified via Supabase:', profile.email);
+          if (window.MomentumCloudSync) {
+            window.MomentumCloudSync.syncProfile(profile);
+          }
           return profile;
         }
       } catch (err) {
@@ -382,6 +391,113 @@
     }
   };
 
+  // 7. Cloud Data Sync Service for Profiles, Watchlists & Portfolio Holdings
+  const MomentumCloudSync = {
+    async syncProfile(user) {
+      if (!user || !user.id || !MOMENTUM_SUPABASE.client) return;
+      try {
+        const client = MOMENTUM_SUPABASE.client;
+        await client.from('profiles').upsert({
+          id: user.id,
+          email: user.email,
+          full_name: user.name || (user.email ? user.email.split('@')[0] : 'Trader'),
+          avatar_url: user.avatar || '👤',
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+        console.log('☁️ [CloudSync] User profile synced to Supabase:', user.email);
+      } catch (e) {
+        console.warn('⚠️ [CloudSync] Profile sync notice:', e?.message || e);
+      }
+    },
+
+    async saveWatchlist(symbols) {
+      if (!Array.isArray(symbols) || !MOMENTUM_SUPABASE.client) return;
+      try {
+        const session = await MOMENTUM_SUPABASE.getSession();
+        if (!session || !session.user) return;
+        const client = MOMENTUM_SUPABASE.client;
+        await client.from('user_watchlists').upsert({
+          user_id: session.user.id,
+          symbols: symbols,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+        console.log('☁️ [CloudSync] Watchlist synced to Supabase:', symbols.length, 'stocks');
+      } catch (e) {
+        console.warn('⚠️ [CloudSync] Watchlist save error:', e?.message || e);
+      }
+    },
+
+    async loadWatchlist() {
+      if (!MOMENTUM_SUPABASE.client) return null;
+      try {
+        const session = await MOMENTUM_SUPABASE.getSession();
+        if (!session || !session.user) return null;
+        const client = MOMENTUM_SUPABASE.client;
+        const { data, error } = await client
+          .from('user_watchlists')
+          .select('symbols')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        if (!error && data && Array.isArray(data.symbols)) {
+          console.log('☁️ [CloudSync] Loaded watchlist from Supabase:', data.symbols);
+          return data.symbols;
+        }
+      } catch (e) {
+        console.warn('⚠️ [CloudSync] Watchlist load error:', e?.message || e);
+      }
+      return null;
+    },
+
+    async savePortfolio(holdings) {
+      if (!Array.isArray(holdings) || !MOMENTUM_SUPABASE.client) return;
+      try {
+        const session = await MOMENTUM_SUPABASE.getSession();
+        if (!session || !session.user) return;
+        const client = MOMENTUM_SUPABASE.client;
+        await client.from('portfolio_holdings').delete().eq('user_id', session.user.id);
+        if (holdings.length > 0) {
+          const rows = holdings.map(h => ({
+            user_id: session.user.id,
+            account_label: h.account || h.broker || 'Account A (Zerodha)',
+            symbol: h.symbol,
+            quantity: Math.max(1, parseInt(h.qty || h.quantity, 10) || 1),
+            avg_buy_price: parseFloat(h.buyPrice || h.avgPrice || h.price) || 0
+          }));
+          await client.from('portfolio_holdings').insert(rows);
+          console.log('☁️ [CloudSync] Portfolio holdings synced to Supabase:', rows.length, 'holdings');
+        }
+      } catch (e) {
+        console.warn('⚠️ [CloudSync] Portfolio save error:', e?.message || e);
+      }
+    },
+
+    async loadPortfolio() {
+      if (!MOMENTUM_SUPABASE.client) return null;
+      try {
+        const session = await MOMENTUM_SUPABASE.getSession();
+        if (!session || !session.user) return null;
+        const client = MOMENTUM_SUPABASE.client;
+        const { data, error } = await client
+          .from('portfolio_holdings')
+          .select('*')
+          .eq('user_id', session.user.id);
+        if (!error && Array.isArray(data) && data.length > 0) {
+          console.log('☁️ [CloudSync] Loaded portfolio from Supabase:', data.length, 'holdings');
+          return data.map(row => ({
+            symbol: row.symbol,
+            account: row.account_label,
+            qty: row.quantity,
+            buyPrice: parseFloat(row.avg_buy_price)
+          }));
+        }
+      } catch (e) {
+        console.warn('⚠️ [CloudSync] Portfolio load error:', e?.message || e);
+      }
+      return null;
+    }
+  };
+
   window.MOMENTUM_SUPABASE = MOMENTUM_SUPABASE;
   window.MomentumAuth = MOMENTUM_SUPABASE;
+  window.MomentumCloudSync = MomentumCloudSync;
 })();

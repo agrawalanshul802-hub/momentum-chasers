@@ -1045,6 +1045,27 @@
         }
       } catch (e) { }
       this.syncLegacyPF(list);
+      try {
+        if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.savePortfolio) {
+          window.MomentumCloudSync.savePortfolio(list);
+        }
+      } catch (e) { }
+    },
+    async syncFromCloud() {
+      try {
+        if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.loadPortfolio) {
+          const cloudHoldings = await window.MomentumCloudSync.loadPortfolio();
+          if (Array.isArray(cloudHoldings) && cloudHoldings.length > 0) {
+            if (typeof window !== "undefined" && window.localStorage) {
+              localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cloudHoldings));
+            }
+            this.syncLegacyPF(cloudHoldings);
+            if (typeof State !== "undefined" && State.view === "portfolio") {
+              if (typeof renderActiveView === "function") renderActiveView();
+            }
+          }
+        }
+      } catch (e) { }
     },
     syncLegacyPF(list) {
       if (typeof PF !== "undefined" && Array.isArray(PF)) {
@@ -6143,6 +6164,19 @@
     } catch (e) {
       console.warn("Could not load ticker prefs", e);
     }
+    // Attempt cloud watchlist sync if user is logged in
+    try {
+      if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.loadWatchlist) {
+        window.MomentumCloudSync.loadWatchlist().then(cloudWatchlist => {
+          if (Array.isArray(cloudWatchlist) && cloudWatchlist.length > 0) {
+            State.watchlist = cloudWatchlist;
+            renderTicker();
+            renderSidebarWatchlist();
+            if (State.view === 'screener') renderActiveView();
+          }
+        }).catch(() => {});
+      }
+    } catch (e) { }
   }
 
   function saveTickerPreferences() {
@@ -6158,6 +6192,11 @@
     } catch (e) {
       // LocalStorage disabled or quota exceeded
     }
+    try {
+      if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.saveWatchlist) {
+        window.MomentumCloudSync.saveWatchlist(State.watchlist);
+      }
+    } catch (e) { }
   }
 
   // Update top bar Pause / Live button state & ticker animation play-state
@@ -17568,6 +17607,23 @@
     } catch (e) {
       console.warn("Could not save to localStorage", e);
     }
+    // Cloud sync profile, watchlist, and portfolio holdings
+    if (typeof window !== "undefined" && window.MomentumCloudSync) {
+      if (window.MomentumCloudSync.syncProfile) window.MomentumCloudSync.syncProfile(userObj);
+      if (window.MomentumCloudSync.loadWatchlist) {
+        window.MomentumCloudSync.loadWatchlist().then(cloudWatchlist => {
+          if (Array.isArray(cloudWatchlist) && cloudWatchlist.length > 0) {
+            State.watchlist = cloudWatchlist;
+            renderTicker();
+            renderSidebarWatchlist();
+            if (State.view === "screener") renderActiveView();
+          }
+        }).catch(() => {});
+      }
+    }
+    if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+      PortfolioService.syncFromCloud();
+    }
     State.view = "home";
     // Remove all login-specific body classes before rendering
     document.body.classList.remove("view-login");
@@ -17727,6 +17783,9 @@
     if (!headerAuth) return;
 
     if (State.user) {
+      if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.syncProfile) {
+        window.MomentumCloudSync.syncProfile(State.user);
+      }
       const rawName = State.user.name || "Trader";
       const email = State.user.email || "trader@momentumchasers.com";
       const plan = State.user.plan || "PRO Terminal";
@@ -19717,6 +19776,10 @@
           State.user = oauthUser;
           savedUser = oauthUser;
           renderUserAuthUI();
+          loadTickerPreferences();
+          if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+            PortfolioService.syncFromCloud();
+          }
           showToast(`Welcome, ${oauthUser.name}! Signed in with Google.`, "🚀");
         }
       });
@@ -19732,8 +19795,11 @@
     } catch (e) { }
     applyTheme(savedTheme);
 
-    // Load persisted ticker & watchlist preferences from localStorage
+    // Load persisted ticker & watchlist preferences from localStorage & Supabase
     loadTickerPreferences();
+    if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+      PortfolioService.syncFromCloud();
+    }
 
     // Check initial hash for deep linking
     const hash = window.location.hash.slice(1);

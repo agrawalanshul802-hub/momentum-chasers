@@ -1,7 +1,10 @@
-
 -- ==============================================================================
 -- MOMENTUM CHASERS — SUPABASE PRODUCTION DATABASE SCHEMA
--- Execute this script directly in your Supabase SQL Editor (SQL Editor -> New Query)
+-- ==============================================================================
+-- Execute this script directly in your Supabase SQL Editor:
+-- 1. Go to https://supabase.com/dashboard/project/jxrvdlduhhcfbwjfqvog/sql
+-- 2. Click "New Query" (or SQL Editor in the left sidebar > '+')
+-- 3. Paste this entire script and click "Run" (Ctrl+Enter)
 -- ==============================================================================
 
 -- Enable UUID extension
@@ -24,13 +27,22 @@ create table if not exists public.profiles (
 -- Enable Row Level Security (RLS)
 alter table public.profiles enable row level security;
 
+-- Policies for public.profiles
+drop policy if exists "Users can view their own profile" on public.profiles;
 create policy "Users can view their own profile"
     on public.profiles for select
     using (auth.uid() = id);
 
+drop policy if exists "Users can insert their own profile" on public.profiles;
+create policy "Users can insert their own profile"
+    on public.profiles for insert
+    with check (auth.uid() = id);
+
+drop policy if exists "Users can update their own profile" on public.profiles;
 create policy "Users can update their own profile"
     on public.profiles for update
-    using (auth.uid() = id);
+    using (auth.uid() = id)
+    with check (auth.uid() = id);
 
 -- Auto-create profile trigger on auth signup
 create or replace function public.handle_new_user()
@@ -42,7 +54,10 @@ begin
         new.email,
         coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
         coalesce(new.raw_user_meta_data->>'avatar_url', '👤')
-    );
+    )
+    on conflict (id) do update set
+        email = excluded.email,
+        full_name = coalesce(public.profiles.full_name, excluded.full_name);
     return new;
 end;
 $$ language plpgsql security definer;
@@ -52,34 +67,43 @@ create trigger on_auth_user_created
     after insert on auth.users
     for each row execute procedure public.handle_new_user();
 
+-- Backfill all existing auth.users into public.profiles immediately
+insert into public.profiles (id, email, full_name, avatar_url)
+select 
+    id, 
+    email, 
+    coalesce(raw_user_meta_data->>'full_name', split_part(email, '@', 1)),
+    coalesce(raw_user_meta_data->>'avatar_url', '👤')
+from auth.users
+on conflict (id) do update set
+    email = excluded.email,
+    full_name = coalesce(public.profiles.full_name, excluded.full_name);
+
 -- ------------------------------------------------------------------------------
 -- 2. STARRED WATCHLISTS TABLE
 -- ------------------------------------------------------------------------------
 create table if not exists public.user_watchlists (
-    id uuid default uuid_generate_v4() primary key,
-    user_id uuid references public.profiles(id) on delete cascade not null,
-    symbols jsonb default '["BAJAJ-AUTO", "BSE", "SMSPHARMA"]'::jsonb not null,
+    id uuid default gen_random_uuid() primary key,
+    user_id uuid references auth.users(id) on delete cascade not null unique,
+    symbols jsonb default '["INDUSINDBK", "BAJAJ-AUTO", "BSE", "SMSPHARMA"]'::jsonb not null,
     ticker_mode text default 'combined',
-    updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
-    constraint unique_user_watchlist unique(user_id)
+    updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 alter table public.user_watchlists enable row level security;
 
-create policy "Users can view own watchlist"
-    on public.user_watchlists for select
-    using (auth.uid() = user_id);
-
-create policy "Users can update own watchlist"
+drop policy if exists "Users can manage own watchlist" on public.user_watchlists;
+create policy "Users can manage own watchlist"
     on public.user_watchlists for all
-    using (auth.uid() = user_id);
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
 
 -- ------------------------------------------------------------------------------
 -- 3. MULTI-DEMAT PORTFOLIO HOLDINGS
 -- ------------------------------------------------------------------------------
 create table if not exists public.portfolio_holdings (
-    id uuid default uuid_generate_v4() primary key,
-    user_id uuid references public.profiles(id) on delete cascade not null,
+    id uuid default gen_random_uuid() primary key,
+    user_id uuid references auth.users(id) on delete cascade not null,
     account_label text default 'Account A (Zerodha)' not null,
     symbol text not null,
     quantity integer not null check (quantity > 0),
@@ -89,15 +113,17 @@ create table if not exists public.portfolio_holdings (
 
 alter table public.portfolio_holdings enable row level security;
 
+drop policy if exists "Users can manage own portfolio holdings" on public.portfolio_holdings;
 create policy "Users can manage own portfolio holdings"
     on public.portfolio_holdings for all
-    using (auth.uid() = user_id);
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
 
 -- ------------------------------------------------------------------------------
 -- 4. 3-YEAR MAINBOARD IPO HUB TABLE
 -- ------------------------------------------------------------------------------
 create table if not exists public.ipo_listings (
-    id uuid default uuid_generate_v4() primary key,
+    id uuid default gen_random_uuid() primary key,
     company_name text not null,
     symbol text not null,
     issue_year integer not null,
@@ -119,12 +145,16 @@ create table if not exists public.ipo_listings (
 
 alter table public.ipo_listings enable row level security;
 
--- Public can read IPO listings
+drop policy if exists "Public can read IPO listings" on public.ipo_listings;
 create policy "Public can read IPO listings"
     on public.ipo_listings for select
     using (true);
 
--- Indexes for lightning fast year & symbol queries
+drop policy if exists "Authenticated users can insert IPO listings" on public.ipo_listings;
+create policy "Authenticated users can insert IPO listings"
+    on public.ipo_listings for insert
+    with check (true);
+
 create index if not exists idx_ipo_year on public.ipo_listings(issue_year);
 create index if not exists idx_ipo_symbol on public.ipo_listings(symbol);
 
@@ -132,7 +162,7 @@ create index if not exists idx_ipo_symbol on public.ipo_listings(symbol);
 -- 5. CORPORATE & MACRO EVENTS CALENDAR
 -- ------------------------------------------------------------------------------
 create table if not exists public.events_calendar (
-    id uuid default uuid_generate_v4() primary key,
+    id uuid default gen_random_uuid() primary key,
     event_type text not null, -- 'economic', 'earnings', 'concall', 'actions', 'holidays'
     symbol text,
     company_name text,
@@ -148,6 +178,7 @@ create table if not exists public.events_calendar (
 
 alter table public.events_calendar enable row level security;
 
+drop policy if exists "Public can read events calendar" on public.events_calendar;
 create policy "Public can read events calendar"
     on public.events_calendar for select
     using (true);
@@ -159,7 +190,7 @@ create index if not exists idx_events_type on public.events_calendar(event_type)
 -- 6. LIVE 50x200 EMA CROSSOVER ALERTS HISTORY
 -- ------------------------------------------------------------------------------
 create table if not exists public.crossover_alerts (
-    id uuid default uuid_generate_v4() primary key,
+    id uuid default gen_random_uuid() primary key,
     symbol text not null,
     timeframe text default '15m' not null,
     cross_type text not null, -- 'golden_cross_50_200' or 'death_cross_50_200'
@@ -171,6 +202,7 @@ create table if not exists public.crossover_alerts (
 
 alter table public.crossover_alerts enable row level security;
 
+drop policy if exists "Public can read crossover alerts" on public.crossover_alerts;
 create policy "Public can read crossover alerts"
     on public.crossover_alerts for select
     using (true);
@@ -189,4 +221,3 @@ values
 ('NTPC Green Energy Limited', 'NTPCGREEN', 2025, 108.00, '2025-01-14', 111.50, 118.20, 134.60, 9.44, 24.63, 14.80, 8.50, 'Listed'),
 ('Tata Passenger Electric Mobility', 'TATAPEV', 2026, 540.00, '2026-03-24', 680.00, 715.00, 782.40, 32.41, 44.89, 48.20, 145.00, 'Listed')
 on conflict do nothing;
-
