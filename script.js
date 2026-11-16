@@ -8229,21 +8229,21 @@
               </select>
             </div>
 
-            <!-- Direction Segmented Buttons: High to Low (Desc) vs Low to High (Asc) -->
+            <!-- Direction Segmented Buttons: Descending (High) vs Ascending (Low) -->
             <div class="pill-segmented-control" role="group" aria-label="Sort Direction" style="height:32px;display:inline-flex;align-items:center;padding:2px;">
-              <button class="pill-segment-btn ${!isLowMode ? "active" : ""}" 
+              <button class="pill-segment-btn ${activeDir === "desc" ? "active" : ""}" 
                       data-action="set-sector-sort-dir" 
                       data-dir="desc" 
-                      title="Sort High: High to Low / All Time High"
+                      title="Sort Descending (▼ High to Low / Z to A)"
                       style="padding:4px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
-                <span>▼</span> High → Low
+                <span>▼</span> Descending (High)
               </button>
-              <button class="pill-segment-btn ${isLowMode ? "active" : ""}" 
+              <button class="pill-segment-btn ${activeDir === "asc" ? "active" : ""}" 
                       data-action="set-sector-sort-dir" 
                       data-dir="asc" 
-                      title="Sort Low: Low to High / All Time Low"
+                      title="Sort Ascending (▲ Low to High / A to Z)"
                       style="padding:4px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
-                <span>▲</span> Low → High
+                <span>▲</span> Ascending (Low)
               </button>
             </div>
 
@@ -18860,8 +18860,33 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       else if (action === "sort-sectors") {
-        State.sectorSortCol = Number(target.dataset.col);
-        renderActiveView();
+        const th = target.closest("th");
+        const col = (th && th.dataset.col) || target.dataset.col;
+        if (col) {
+          const colMap = { "0": "default", "1": "chg", "2": "rsi", "3": "ath", "4": "price", "5": "name", "6": "cross" };
+          const normalizedCol = colMap[col] || col;
+          const currentCol = colMap[State.sectorSortCol] || State.sectorSortCol || "ath";
+
+          if (currentCol === normalizedCol) {
+            // Toggle direction if already active column
+            State.sectorSortDir = State.sectorSortDir === "desc" ? "asc" : "desc";
+          } else {
+            State.sectorSortCol = normalizedCol;
+            State.sectorSortDir = (normalizedCol === "name" || normalizedCol === "default") ? "asc" : "desc";
+          }
+          const colNames = {
+            ath: "All Time High / Low",
+            chg: "% Change",
+            rsi: "RSI(14)",
+            price: "Current Level",
+            name: "Index Benchmark",
+            cross: "50×200 Crossover",
+            default: "Default Sequence"
+          };
+          const dirLabel = State.sectorSortDir === "asc" ? "Ascending (▲ Low → High)" : "Descending (▼ High → Low)";
+          showToast(`Sorted by ${colNames[normalizedCol] || normalizedCol} · ${dirLabel}`, "↕");
+          renderActiveView();
+        }
       }
       else if (action === "select-sector-sort-col") {
         const colKey = target.dataset.col;
@@ -18885,6 +18910,8 @@
         if (State.sectorSortCol === "default" || State.sectorSortCol === 0) {
           State.sectorSortCol = "ath";
         }
+        const dirLabel = State.sectorSortDir === "asc" ? "Ascending (▲ Low → High)" : "Descending (▼ High → Low)";
+        showToast(`Sort Direction: ${dirLabel}`, "↕");
         renderActiveView();
       }
       else if (action === "reset-sector-sort") {
