@@ -15793,8 +15793,42 @@
     }
   };
 
+  function getUniqueStocksInDeals() {
+    const stockMap = new Map();
+    liveDealsData.forEach(d => {
+      const key = d.stock || d.symbol;
+      if (!key) return;
+      if (!stockMap.has(key)) {
+        stockMap.set(key, {
+          stock: d.stock,
+          symbol: d.symbol,
+          count: 0,
+          totalValueCr: 0,
+          buyCount: 0,
+          sellCount: 0
+        });
+      }
+      const item = stockMap.get(key);
+      item.count++;
+      item.totalValueCr += (d.valueCr || 0);
+      if ((d.action || "").toLowerCase() === "buy") item.buyCount++;
+      else item.sellCount++;
+    });
+    return Array.from(stockMap.values()).sort((a, b) => b.totalValueCr - a.totalValueCr);
+  }
+
   function getFilteredDeals() {
     let list = [...liveDealsData];
+
+    // Selected Stock Filter
+    if (State.dealsSelectedStock && State.dealsSelectedStock !== "all") {
+      const sel = State.dealsSelectedStock.toLowerCase().trim();
+      list = list.filter(d =>
+        (d.stock && d.stock.toLowerCase() === sel) ||
+        (d.symbol && d.symbol.toLowerCase() === sel) ||
+        (d.stock && d.stock.toLowerCase().includes(sel))
+      );
+    }
 
     // Action filter (all, buy, sell)
     if (State.dealsActionFilter && State.dealsActionFilter !== "all") {
@@ -15826,6 +15860,23 @@
 
   function renderDealsHighlightCards() {
     let cardsData = [...liveDealsData];
+
+    // If a stock is selected, highlight cards focus on that stock
+    if (State.dealsSelectedStock && State.dealsSelectedStock !== "all") {
+      const sel = State.dealsSelectedStock.toLowerCase().trim();
+      cardsData = cardsData.filter(d =>
+        (d.stock && d.stock.toLowerCase() === sel) ||
+        (d.symbol && d.symbol.toLowerCase() === sel) ||
+        (d.stock && d.stock.toLowerCase().includes(sel))
+      );
+    } else if (State.dealsSearch && State.dealsSearch.trim() !== "") {
+      const q = State.dealsSearch.trim().toLowerCase();
+      cardsData = cardsData.filter(d =>
+        (d.stock && d.stock.toLowerCase().includes(q)) ||
+        (d.symbol && d.symbol.toLowerCase().includes(q))
+      );
+    }
+
     if (State.dealsActionFilter && State.dealsActionFilter !== "all") {
       cardsData = cardsData.filter(d => d.action.toLowerCase() === State.dealsActionFilter.toLowerCase());
     }
@@ -15834,7 +15885,7 @@
     const topDeals = cardsData.slice(0, 10);
 
     if (topDeals.length === 0) {
-      return `<div style="padding:16px;color:var(--mu);font-size:13px;">No highlight deals match current action filter.</div>`;
+      return `<div style="padding:16px;color:var(--mu);font-size:13px;">No highlight deals match current filter.</div>`;
     }
 
     return topDeals.map(d => {
@@ -15865,7 +15916,7 @@
           <td colspan="7" style="text-align:center;padding:36px;color:var(--mu);">
             <div style="font-size:24px;margin-bottom:8px;">🔍</div>
             <div style="font-weight:600;">No bulk or block deals found matching your criteria.</div>
-            <div style="font-size:12px;margin-top:4px;">Try clearing search or selecting "All" action filter.</div>
+            <div style="font-size:12px;margin-top:4px;">Try clearing search or selecting "All Stocks".</div>
           </td>
         </tr>
       `;
@@ -15875,11 +15926,14 @@
       const actionClass = d.action.toLowerCase() === "buy" ? "buy" : "sell";
       const typeClass = d.type.toLowerCase();
       return `
-        <tr class="deals-table-row" data-action="deal-row-click" data-symbol="${d.symbol}" style="cursor:pointer;" title="Click to inspect ${d.stock}">
+        <tr class="deals-table-row" data-action="deal-row-click" data-symbol="${d.symbol}" style="cursor:pointer;" title="Click row to open chart for ${d.stock}">
           <td>
-            <div style="display:flex;align-items:center;gap:6px;">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
               <span style="font-weight:700;color:var(--ink);">${d.stock}</span>
               <span class="deal-type-badge ${typeClass}">${d.type}</span>
+              <button class="deal-stock-filter-btn" data-action="filter-deal-stock" data-stock="${d.stock}" title="Filter all deals for ${d.stock}" style="background:rgba(255,255,255,0.05);border:1px solid var(--ln);border-radius:4px;color:var(--mu);padding:2px 6px;font-size:10px;cursor:pointer;display:inline-flex;align-items:center;gap:3px;margin-left:auto;transition:all 0.15s;">
+                🔍 Filter
+              </button>
             </div>
           </td>
           <td style="color:var(--mu);white-space:nowrap;">${d.date}</td>
@@ -15901,6 +15955,106 @@
     }).join("");
   }
 
+  function renderDealsQuickChipsHtml() {
+    const uniqueStocks = getUniqueStocksInDeals();
+    const activeStock = (State.dealsSelectedStock && State.dealsSelectedStock !== "all") ? State.dealsSelectedStock : "";
+    const searchVal = (State.dealsSearch || "").trim().toLowerCase();
+
+    return `
+      <span style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;margin-right:2px;">⚡ Active:</span>
+      <button class="deals-stock-chip ${!activeStock && !searchVal ? 'active' : ''}" data-deals-stock-chip="all">
+        All Stocks (${liveDealsData.length})
+      </button>
+      ${uniqueStocks.slice(0, 14).map(s => {
+        const isSelected = (activeStock && activeStock.toLowerCase() === s.stock.toLowerCase()) || 
+                           (searchVal && searchVal === s.stock.toLowerCase());
+        return `
+          <button class="deals-stock-chip ${isSelected ? 'active' : ''}" data-deals-stock-chip="${s.stock}" title="${s.stock} (${s.count} deals · ₹${formatIndianCurrency(s.totalValueCr)} Cr)">
+            <span>${s.stock}</span>
+            <span style="font-size:10px;padding:1px 5px;border-radius:8px;background:rgba(255,255,255,0.08);color:${isSelected ? 'var(--g)' : 'var(--mu)'};">${s.count}</span>
+          </button>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function renderDealsStockSelectOptionsHtml() {
+    const uniqueStocks = getUniqueStocksInDeals();
+    const activeStock = (State.dealsSelectedStock && State.dealsSelectedStock !== "all") ? State.dealsSelectedStock : "";
+
+    return `
+      <option value="all" ${!activeStock ? 'selected' : ''}>🔍 All Companies (${uniqueStocks.length})</option>
+      ${uniqueStocks.map(s => `
+        <option value="${s.stock}" ${(activeStock && activeStock.toLowerCase() === s.stock.toLowerCase()) ? 'selected' : ''}>${s.stock} (${s.count} deals · ₹${formatIndianCurrency(s.totalValueCr)} Cr)</option>
+      `).join('')}
+    `;
+  }
+
+  function renderDealsStockSearchPanel() {
+    const uniqueStocks = getUniqueStocksInDeals();
+    const activeStock = (State.dealsSelectedStock && State.dealsSelectedStock !== "all") ? State.dealsSelectedStock : (State.dealsSearch ? State.dealsSearch.trim() : "");
+    const filteredDeals = getFilteredDeals();
+
+    return `
+      <div class="deals-stock-search-panel" id="deals-stock-search-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">🔎</span>
+            <span style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:0.2px;">Search Particular Stock</span>
+            <span class="nav-badge-pill" id="deals-companies-count" style="font-size:11px;background:rgba(255,255,255,0.06);color:var(--mu);">${uniqueStocks.length} Companies in Feed</span>
+          </div>
+          ${activeStock ? `
+            <button id="deals-clear-all-stock-filter-btn" class="row-action-btn" style="padding:4px 12px;font-size:12px;color:var(--r);border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);cursor:pointer;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:5px;">
+              <span>✕</span> <span>Reset Stock Filter</span>
+            </button>
+          ` : ''}
+        </div>
+
+        <!-- Search Input with Live Autocomplete Suggestions -->
+        <div class="deals-search-input-wrap">
+          <span style="color:var(--mu);font-size:15px;">🔍</span>
+          <input 
+            type="text" 
+            id="deals-stock-search-input" 
+            placeholder="Search stock name or symbol (e.g. Kaynes, Marsons, MV Electro, BLS, Baazar)..." 
+            value="${activeStock}"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          ${activeStock ? `
+            <button id="deals-search-clear-icon" style="background:transparent;border:none;color:var(--mu);cursor:pointer;padding:4px 6px;font-size:14px;display:flex;align-items:center;" title="Clear search">✕</button>
+          ` : ''}
+          
+          <!-- Dropdown suggestions popover panel -->
+          <div id="deals-stock-suggestions" class="deals-stock-suggestions" style="display:none;"></div>
+        </div>
+
+        <!-- Quick Pick Stock Chips (Top active companies with deal counts) -->
+        <div class="deals-quick-chips-scroll" id="deals-quick-chips-scroll">
+          ${renderDealsQuickChipsHtml()}
+        </div>
+
+        <!-- Active Stock Filter Indicator Banner Container -->
+        <div id="deals-active-filter-banner-wrap">
+          ${activeStock ? `
+            <div id="deals-active-filter-banner" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:var(--radius-sm);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="color:var(--g);font-weight:700;display:inline-flex;align-items:center;gap:5px;">
+                  <span>🎯</span> <span>Active Stock:</span>
+                </span>
+                <span style="font-weight:700;color:var(--ink);">${activeStock}</span>
+                <span style="color:var(--mu);font-size:12px;">• ${filteredDeals.length} bulk/block deals matching</span>
+              </div>
+              <button id="deals-reset-banner-btn" style="background:none;border:none;color:var(--g);cursor:pointer;text-decoration:underline;font-size:12px;font-weight:600;">
+                Show All Stocks
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
   function renderDealsContent() {
     const cardsScroll = document.getElementById("deals-cards-scroll");
     if (cardsScroll) {
@@ -15913,6 +16067,49 @@
     const countBadge = document.getElementById("deals-count-badge");
     if (countBadge) {
       countBadge.textContent = `${getFilteredDeals().length} Deals`;
+    }
+
+    // Update Quick Chips Scroll
+    const chipsWrap = document.getElementById("deals-quick-chips-scroll");
+    if (chipsWrap) {
+      chipsWrap.innerHTML = renderDealsQuickChipsHtml();
+    }
+
+    // Update Stock Select Dropdown
+    const stockSelect = document.getElementById("deals-stock-select");
+    if (stockSelect) {
+      stockSelect.innerHTML = renderDealsStockSelectOptionsHtml();
+    }
+
+    // Update Companies Count in Header
+    const compCount = document.getElementById("deals-companies-count");
+    if (compCount) {
+      compCount.textContent = `${getUniqueStocksInDeals().length} Companies in Feed`;
+    }
+
+    // Update Active Filter Banner
+    const bannerContainer = document.getElementById("deals-active-filter-banner-wrap");
+    if (bannerContainer) {
+      const activeStock = (State.dealsSelectedStock && State.dealsSelectedStock !== "all") ? State.dealsSelectedStock : (State.dealsSearch ? State.dealsSearch.trim() : "");
+      if (activeStock) {
+        const count = getFilteredDeals().length;
+        bannerContainer.innerHTML = `
+          <div id="deals-active-filter-banner" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:var(--radius-sm);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="color:var(--g);font-weight:700;display:inline-flex;align-items:center;gap:5px;">
+                <span>🎯</span> <span>Active Stock:</span>
+              </span>
+              <span style="font-weight:700;color:var(--ink);">${activeStock}</span>
+              <span style="color:var(--mu);font-size:12px;">• ${count} bulk/block deals matching</span>
+            </div>
+            <button id="deals-reset-banner-btn" style="background:none;border:none;color:var(--g);cursor:pointer;text-decoration:underline;font-size:12px;font-weight:600;">
+              Show All Stocks
+            </button>
+          </div>
+        `;
+      } else {
+        bannerContainer.innerHTML = "";
+      }
     }
   }
 
@@ -15954,7 +16151,10 @@
           ${renderDealsHighlightCards()}
         </div>
 
-        <!-- Filter Controls Toolbar (Matching Exact Screenshot) -->
+        <!-- Dedicated Stock Search Panel -->
+        ${renderDealsStockSearchPanel()}
+
+        <!-- Filter Controls Toolbar -->
         <div class="deals-filter-toolbar">
           <div class="deals-filter-left">
             <!-- Action Segmented Filter (All, Buy, Sell) -->
@@ -15964,15 +16164,20 @@
               <button class="pill-segment-btn ${State.dealsActionFilter === 'sell' ? 'active' : ''}" data-deals-action="sell">Sell</button>
             </div>
 
+            <!-- Stock Dropdown Selector -->
+            <select class="screener-select" id="deals-stock-select" style="min-width:170px;max-width:240px;">
+              ${renderDealsStockSelectOptionsHtml()}
+            </select>
+
             <!-- Deal Type Dropdown -->
-            <select class="screener-select" id="deals-type-select" style="min-width:130px;">
+            <select class="screener-select" id="deals-type-select" style="min-width:120px;">
               <option value="all" ${State.dealsTypeFilter === 'all' ? 'selected' : ''}>All Deal Types</option>
               <option value="Block" ${State.dealsTypeFilter === 'Block' ? 'selected' : ''}>Block Deals</option>
               <option value="Bulk" ${State.dealsTypeFilter === 'Bulk' ? 'selected' : ''}>Bulk Deals</option>
             </select>
 
             <!-- Min Deal Size Dropdown -->
-            <select class="screener-select" id="deals-min-size-select" style="min-width:130px;">
+            <select class="screener-select" id="deals-min-size-select" style="min-width:120px;">
               <option value="0" ${State.dealsMinSize === 0 ? 'selected' : ''}>All Deal Sizes</option>
               <option value="50" ${State.dealsMinSize === 50 ? 'selected' : ''}>> ₹50 Cr</option>
               <option value="100" ${State.dealsMinSize === 100 ? 'selected' : ''}>> ₹100 Cr</option>
@@ -15983,15 +16188,15 @@
 
           <div class="deals-filter-right">
             <!-- Duration Selector matching "Duration: Start Date - End Date v" -->
-            <select class="screener-select deals-duration-select" id="deals-duration-select" style="min-width:210px;">
+            <select class="screener-select deals-duration-select" id="deals-duration-select" style="min-width:190px;">
               <option value="all" ${State.dealsDuration === 'all' ? 'selected' : ''}>Duration: All Dates</option>
               <option value="today" ${State.dealsDuration === 'today' ? 'selected' : ''}>Duration: 06 Nov 2026 (Today)</option>
               <option value="week" ${State.dealsDuration === 'week' ? 'selected' : ''}>Duration: This Week</option>
               <option value="month" ${State.dealsDuration === 'month' ? 'selected' : ''}>Duration: Last 30 Days</option>
             </select>
 
-            <!-- Search Input -->
-            <input type="text" class="screener-input" id="deals-search-input" placeholder="Search stock or client..." value="${State.dealsSearch}">
+            <!-- Client or Keyword Search Input -->
+            <input type="text" class="screener-input" id="deals-search-input" placeholder="Search client or counterparty..." value="${State.dealsSearch}">
           </div>
         </div>
 
@@ -16049,6 +16254,18 @@
       });
     }
 
+    // Stock Dropdown Select
+    const stockSelect = document.getElementById("deals-stock-select");
+    if (stockSelect) {
+      stockSelect.addEventListener("change", e => {
+        State.dealsSelectedStock = e.target.value;
+        State.dealsSearch = "";
+        const searchInput = document.getElementById("deals-stock-search-input");
+        if (searchInput) searchInput.value = e.target.value === "all" ? "" : e.target.value;
+        renderDealsContent();
+      });
+    }
+
     // Duration Select
     const durationSelect = document.getElementById("deals-duration-select");
     if (durationSelect) {
@@ -16058,7 +16275,7 @@
       });
     }
 
-    // Search Input
+    // Client/Counterparty Search Input
     const searchInput = document.getElementById("deals-search-input");
     if (searchInput) {
       searchInput.addEventListener("input", e => {
@@ -16066,6 +16283,149 @@
         renderDealsContent();
       });
     }
+
+    // Stock Search Input & Autocomplete Popover
+    const stockSearchInput = document.getElementById("deals-stock-search-input");
+    const suggestionsPanel = document.getElementById("deals-stock-suggestions");
+
+    if (stockSearchInput) {
+      const showSuggestions = (query) => {
+        if (!suggestionsPanel) return;
+        const q = (query || "").trim().toLowerCase();
+        if (!q) {
+          suggestionsPanel.style.display = "none";
+          suggestionsPanel.innerHTML = "";
+          return;
+        }
+
+        const uniqueStocks = getUniqueStocksInDeals();
+        const matches = uniqueStocks.filter(s =>
+          s.stock.toLowerCase().includes(q) ||
+          (s.symbol && s.symbol.toLowerCase().includes(q))
+        );
+
+        if (matches.length === 0) {
+          suggestionsPanel.innerHTML = `
+            <div style="padding:12px 16px;color:var(--mu);font-size:12.5px;text-align:center;">
+              No companies in current deals feed match "<strong>${query}</strong>"
+            </div>
+          `;
+          suggestionsPanel.style.display = "block";
+          return;
+        }
+
+        suggestionsPanel.innerHTML = matches.map(s => `
+          <div class="deals-suggestion-item" data-select-stock="${s.stock}">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <div style="width:28px;height:28px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--ink);">
+                ${s.stock.charAt(0)}
+              </div>
+              <div style="min-width:0;">
+                <div style="font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  ${s.stock}
+                </div>
+                <div style="font-size:11px;color:var(--mu);display:flex;align-items:center;gap:6px;">
+                  <span>${s.symbol || ''}</span>
+                  <span>•</span>
+                  <span>${s.count} Deals</span>
+                  ${s.buyCount > 0 ? `<span style="color:var(--g);">Buy: ${s.buyCount}</span>` : ''}
+                  ${s.sellCount > 0 ? `<span style="color:var(--r);">Sell: ${s.sellCount}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div style="text-align:right;white-space:nowrap;">
+              <div style="font-size:12px;font-weight:700;color:var(--ink);">₹${formatIndianCurrency(s.totalValueCr)} Cr</div>
+              <div style="font-size:10px;color:var(--mu);">Total Value</div>
+            </div>
+          </div>
+        `).join("");
+        suggestionsPanel.style.display = "block";
+      };
+
+      stockSearchInput.addEventListener("input", e => {
+        const val = e.target.value;
+        State.dealsSearch = val;
+        State.dealsSelectedStock = "all";
+        showSuggestions(val);
+        renderDealsContent();
+      });
+
+      stockSearchInput.addEventListener("focus", () => {
+        if (stockSearchInput.value.trim()) {
+          showSuggestions(stockSearchInput.value);
+        }
+      });
+    }
+
+    // Click outside closes suggestion popover
+    document.addEventListener("click", e => {
+      if (!e.target.closest(".deals-search-input-wrap")) {
+        const p = document.getElementById("deals-stock-suggestions");
+        if (p) p.style.display = "none";
+      }
+
+      // Suggestion item selection
+      const suggestionItem = e.target.closest("[data-select-stock]");
+      if (suggestionItem) {
+        const stk = suggestionItem.getAttribute("data-select-stock");
+        State.dealsSelectedStock = stk;
+        State.dealsSearch = "";
+        const input = document.getElementById("deals-stock-search-input");
+        if (input) input.value = stk;
+        const p = document.getElementById("deals-stock-suggestions");
+        if (p) p.style.display = "none";
+        renderDealsContent();
+        return;
+      }
+
+      // Quick Stock Chip click
+      const chip = e.target.closest("[data-deals-stock-chip]");
+      if (chip) {
+        const stk = chip.getAttribute("data-deals-stock-chip");
+        State.dealsSelectedStock = stk;
+        State.dealsSearch = "";
+        const input = document.getElementById("deals-stock-search-input");
+        if (input) input.value = stk === "all" ? "" : stk;
+        const p = document.getElementById("deals-stock-suggestions");
+        if (p) p.style.display = "none";
+        renderDealsContent();
+        return;
+      }
+
+      // Clear / Reset buttons
+      if (e.target.closest("#deals-clear-all-stock-filter-btn, #deals-search-clear-icon, #deals-reset-banner-btn")) {
+        State.dealsSelectedStock = "all";
+        State.dealsSearch = "";
+        const input = document.getElementById("deals-stock-search-input");
+        if (input) input.value = "";
+        const input2 = document.getElementById("deals-search-input");
+        if (input2) input2.value = "";
+        const sel = document.getElementById("deals-stock-select");
+        if (sel) sel.value = "all";
+        const p = document.getElementById("deals-stock-suggestions");
+        if (p) p.style.display = "none";
+        renderDealsContent();
+        return;
+      }
+
+      // Stock row filter click from table
+      const filterBtn = e.target.closest("[data-action='filter-deal-stock']");
+      if (filterBtn) {
+        e.stopPropagation();
+        const stk = filterBtn.getAttribute("data-stock");
+        if (stk) {
+          State.dealsSelectedStock = stk;
+          State.dealsSearch = "";
+          const input = document.getElementById("deals-stock-search-input");
+          if (input) input.value = stk;
+          const p = document.getElementById("deals-stock-suggestions");
+          if (p) p.style.display = "none";
+          renderDealsContent();
+          showToast(`Filtered deals for ${stk}`, "🎯");
+        }
+        return;
+      }
+    });
 
     // Sync Button
     const syncBtn = document.getElementById("deals-sync-btn");
@@ -16087,6 +16447,9 @@
     const container = document.querySelector(".deals-container");
     if (container) {
       container.addEventListener("click", e => {
+        // If clicking filter button, don't trigger chart navigation
+        if (e.target.closest("[data-action='filter-deal-stock']")) return;
+
         const target = e.target.closest("[data-action='deal-card-click'], [data-action='deal-row-click']");
         if (target) {
           const sym = target.getAttribute("data-symbol");

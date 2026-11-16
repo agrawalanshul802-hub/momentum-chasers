@@ -12707,3 +12707,133 @@ body.theme-white .dms-delay {
         gap: 8px;
     }
 }
+
+
+/* --- Bulk/Block Deals Dedicated Stock Search Panel --- */
+.deals-stock-search-panel {
+    background: var(--sf);
+    border: 1px solid var(--ln);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.deals-search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--ln);
+    border-radius: var(--radius-sm);
+    padding: 0 14px;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.deals-search-input-wrap:focus-within {
+    border-color: var(--g);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
+}
+
+.deals-search-input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    padding: 11px 0;
+    font-size: 13.5px;
+    font-family: inherit;
+}
+
+.deals-search-input-wrap input::placeholder {
+    color: var(--mu);
+}
+
+.deals-stock-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--sf);
+    border: 1px solid var(--ln);
+    border-radius: var(--radius-sm);
+    max-height: 290px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+}
+
+.deals-suggestion-item {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.15s ease;
+}
+
+.deals-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.deals-suggestion-item:hover {
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.deals-quick-chips-scroll {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+}
+
+.deals-quick-chips-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.deals-quick-chips-scroll::-webkit-scrollbar-thumb {
+    background: var(--ln);
+    border-radius: 4px;
+}
+
+.deals-stock-chip {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mu);
+    background: var(--bg);
+    border: 1px solid var(--ln);
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.deals-stock-chip:hover {
+    color: var(--ink);
+    border-color: rgba(34, 197, 94, 0.4);
+}
+
+.deals-stock-chip.active {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--g);
+    border-color: var(--g);
+    font-weight: 700;
+}
+
+.deal-stock-filter-btn:hover {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+    color: var(--g) !important;
+}
