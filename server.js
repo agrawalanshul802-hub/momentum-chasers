@@ -470,10 +470,10 @@ class QuantEngine {
       'BANK NIFTY': { symbol: '^NSEBANK', price: 61580.05, chg: 0.89, ema10: 61200, ema20: 60800, ema50: 59500, ema200: 56650, rsi: 62.5 },
       'SENSEX': { symbol: '^BSESN', price: 82079.77, chg: 0.60, ema10: 81800, ema20: 81200, ema50: 79800, ema200: 77060, rsi: 58.4 },
       'NIFTY MIDCAP 150': { symbol: '^CRSMID', price: 18450.20, chg: 1.15, ema10: 18280, ema20: 18150, ema50: 17920, ema200: 17200, rsi: 61.4 },
-      'BSE': { symbol: 'BSE.NS', price: 5120.00, chg: 2.70, ema10: 4980, ema20: 4890, ema50: 4720, ema200: 4410, rsi: 68.5, goldenCross: true },
-      'BAJAJ-AUTO': { symbol: 'BAJAJ-AUTO.NS', price: 10410.00, chg: -0.72, ema10: 10480, ema20: 10520, ema50: 10390, ema200: 9980, rsi: 48.1 },
-      'SMSPHARMA': { symbol: 'SMSPHARMA.NS', price: 274.90, chg: 3.10, ema10: 265, ema20: 258, ema50: 242, ema200: 215, rsi: 66.8, goldenCross: true },
-      'RELIANCE': { symbol: 'RELIANCE.NS', price: 1900.00, chg: 0.80, ema10: 1888, ema20: 1875, ema50: 1860, ema200: 1820, rsi: 52.6 }
+      'BSE': { symbol: 'BSE.NS', price: 3887.40, chg: 0.73, ema10: 3820, ema20: 3750, ema50: 3620, ema200: 3450, rsi: 58.5, goldenCross: true, fiftyTwoWeekHigh: 4446.8, fiftyTwoWeekLow: 2377.4 },
+      'BAJAJ-AUTO': { symbol: 'BAJAJ-AUTO.NS', price: 10410.00, chg: -0.72, ema10: 10480, ema20: 10520, ema50: 10390, ema200: 9980, rsi: 48.1, fiftyTwoWeekHigh: 12470.0, fiftyTwoWeekLow: 8624.0 },
+      'SMSPHARMA': { symbol: 'SMSPHARMA.NS', price: 274.90, chg: 3.10, ema10: 265, ema20: 258, ema50: 242, ema200: 215, rsi: 66.8, goldenCross: true, fiftyTwoWeekHigh: 298.5, fiftyTwoWeekLow: 180.0 },
+      'RELIANCE': { symbol: 'RELIANCE.NS', price: 1344.80, chg: 0.80, ema10: 1335, ema20: 1320, ema50: 1300, ema200: 1280, rsi: 52.6, fiftyTwoWeekHigh: 1611.8, fiftyTwoWeekLow: 1152.2 }
     };
     this.subscribers = new Set();
     this.startSimulationLoop();
@@ -490,6 +490,9 @@ class QuantEngine {
       const deltaPct = (Math.random() - 0.48) * 0.15;
       item.price = Number((item.price * (1 + deltaPct / 100)).toFixed(2));
       item.chg = Number((item.chg + deltaPct * 0.5).toFixed(2));
+      if (item.fiftyTwoWeekHigh && item.price > item.fiftyTwoWeekHigh) {
+        item.fiftyTwoWeekHigh = item.price;
+      }
 
       // Rolling recalculation of EMAs
       const k10 = 2 / (10 + 1);

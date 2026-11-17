@@ -640,12 +640,20 @@
     if (!stock) return { ath: 0, dist: 0, isNearAth: false };
     const curPrice = Number(Array.isArray(stock) ? stock[3] : stock.price) || 0;
     const meta = Array.isArray(stock) ? (stock[8] || {}) : (stock.meta || stock);
-    const ath = Number(meta.ath || meta.high52 || stock.high52) || curPrice;
+    let ath = Number(meta.ath || meta.high52 || stock.high52) || curPrice;
+    // A stock price can never logically exceed its All-Time / 52W High.
+    // If CMP exceeds recorded historical high, CMP is the new high.
+    if (curPrice > ath) {
+      ath = curPrice;
+      if (meta && typeof meta === "object") meta.high52 = curPrice;
+    }
     const dist = ath > 0 ? ((curPrice - ath) / ath) * 100 : 0;
+    // Distance from ATH is strictly non-positive (<= 0.00%)
+    const clampedDist = Math.min(0, dist);
     return {
       ath,
-      dist: Math.round(dist * 100) / 100,
-      isNearAth: dist >= -3.0
+      dist: Math.round(clampedDist * 100) / 100,
+      isNearAth: clampedDist >= -3.0
     };
   }
 
@@ -5308,6 +5316,9 @@
               if (typeof q.fiftyTwoWeekHigh === "number" && q.fiftyTwoWeekHigh > 0 && stItem[8]) {
                 stItem[8].high52 = q.fiftyTwoWeekHigh;
               }
+              if (stItem[8] && stItem[8].high52 && stItem[3] > stItem[8].high52) {
+                stItem[8].high52 = stItem[3];
+              }
               if (typeof q.fiftyTwoWeekLow === "number" && q.fiftyTwoWeekLow > 0 && stItem[8]) {
                 stItem[8].low52 = q.fiftyTwoWeekLow;
               }
@@ -5826,9 +5837,18 @@
               if (stock) {
                 stock[3] = data.price;
                 stock[4] = data.chg;
+                if (data.fiftyTwoWeekHigh && stock[8]) {
+                  stock[8].high52 = data.fiftyTwoWeekHigh;
+                }
+                if (stock[8] && stock[8].high52 && stock[3] > stock[8].high52) {
+                  stock[8].high52 = stock[3];
+                }
                 if (ST_MAP[stock[0]]) {
                   ST_MAP[stock[0]].price = data.price;
                   ST_MAP[stock[0]].chg = data.chg;
+                  if (stock[8]) {
+                    ST_MAP[stock[0]].high52 = stock[8].high52;
+                  }
                 }
               }
               const idxItem = IDX.find(i => i[0].toUpperCase() === sym.toUpperCase());
@@ -6410,7 +6430,8 @@
         const ath = getStockAthDistance(s);
         const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
         athCell.className = `font-mono ${cls} stock-ath-cell`;
-        athCell.innerHTML = `${ath.dist.toFixed(2)}%<div style="font-size:10px;color:var(--mu);font-weight:400">ATH ₹${formatNumber(ath.ath, 0)}</div>`;
+        athCell.title = `All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}`;
+        athCell.textContent = `${ath.dist.toFixed(2)}%`;
       }
     };
 
@@ -7179,10 +7200,8 @@
         const isGoldenB = (b[7] <= 5 || (b[5] && b[5].includes("a"))) ? 1 : 0;
         diff = isGoldenA - isGoldenB;
       } else if (activeSortCol === "athDist") {
-        const athA = a[8].high52 || a[3];
-        const distA = athA > 0 ? ((a[3] - athA) / athA) : -100;
-        const athB = b[8].high52 || b[3];
-        const distB = athB > 0 ? ((b[3] - athB) / athB) : -100;
+        const distA = getStockAthDistance(a).dist;
+        const distB = getStockAthDistance(b).dist;
         diff = distA - distB;
       } else if (activeSortCol === "earnings") {
         const earnA = getStockEarningsDates(a);
@@ -7537,9 +7556,8 @@
                     ${State.screenerCols.athDist !== false ? (() => {
           const ath = getStockAthDistance(s);
           const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
-          return `<td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700">
+          return `<td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
                         ${ath.dist.toFixed(2)}%
-                        <div style="font-size:10px;color:var(--mu);font-weight:400">ATH ₹${formatNumber(ath.ath, 0)}</div>
                       </td>`;
         })() : ''}
                     ${State.screenerCols.earnings !== false ? (() => {
