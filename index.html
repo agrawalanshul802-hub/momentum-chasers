@@ -19,7 +19,7 @@
     <!-- Main Stylesheet & Favicon -->
     <link rel="icon" type="image/png" href="logo-icon.png">
     <link rel="apple-touch-icon" href="logo-icon.png">
-    <link rel="stylesheet" href="styles.css?v=5.7.9">
+    <link rel="stylesheet" href="styles.css?v=5.8.0">
 
     <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
     <script src="lightweight-charts.js"></script>
@@ -40,15 +40,23 @@
 
         <!-- Modern Glassmorphic Ticker Action Controls -->
         <div class="ticker-controls-group" role="group" aria-label="Ticker Tape Controls">
-            <button class="ticker-ctrl-btn ticker-customise-btn" id="open-ticker-modal-btn" data-action="open-ticker-modal" title="Configure Ticker Tape &amp; Watchlist" aria-label="Ticker Settings">
-                <svg class="ticker-btn-icon ticker-gear-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button class="ticker-ctrl-btn ticker-customise-btn" id="open-ticker-modal-btn"
+                data-action="open-ticker-modal" title="Configure Ticker Tape &amp; Watchlist"
+                aria-label="Ticker Settings">
+                <svg class="ticker-btn-icon ticker-gear-icon" viewBox="0 0 24 24" width="14" height="14" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
                 </svg>
             </button>
-            <button class="ticker-ctrl-btn ticker-pause-btn is-live" id="ticker-pause-btn" data-action="toggle-ticker-pause" title="Ticker Tape is Live (Click to Pause)" aria-label="Toggle Ticker Tape">
+            <button class="ticker-ctrl-btn ticker-pause-btn is-live" id="ticker-pause-btn"
+                data-action="toggle-ticker-pause" title="Ticker Tape is Live (Click to Pause)"
+                aria-label="Toggle Ticker Tape">
                 <span class="ticker-live-dot"></span>
-                <svg class="ticker-btn-icon ticker-pause-svg" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                <svg class="ticker-btn-icon ticker-pause-svg" viewBox="0 0 24 24" width="12" height="12"
+                    fill="currentColor">
                     <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
                     <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
                 </svg>
@@ -88,13 +96,16 @@
 
                     <!-- Category: Analytics & Screening -->
                     <div class="nav-accordion-group open" data-group="analytics">
-                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="analytics" aria-expanded="true">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group"
+                            data-target-group="analytics" aria-expanded="true">
                             <span class="nav-section-header-left">
                                 <span class="nav-section-title-text">Analytics & Screening</span>
                             </span>
                             <span class="nav-section-header-right">
                                 <span class="nav-section-badge">8</span>
-                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </span>
@@ -103,7 +114,8 @@
                             <button class="nav-link" data-view="orderflow">
                                 <span class="nav-icon">🌪️</span>
                                 <span>F&O Order Flow</span>
-                                <span class="nav-badge-pill" style="background:rgba(16,185,129,0.18);color:#10b981">Pro</span>
+                                <span class="nav-badge-pill"
+                                    style="background:rgba(16,185,129,0.18);color:#10b981">Pro</span>
                             </button>
                             <button class="nav-link" data-view="breadth">
                                 <span class="nav-icon">📊</span>
@@ -123,7 +135,8 @@
                             <button class="nav-link" data-view="sector-turnover">
                                 <span class="nav-icon">💵</span>
                                 <span>Sector Turnover</span>
-                                <span class="nav-badge-pill" style="background:rgba(45,212,191,0.18);color:#2dd4bf">Flow</span>
+                                <span class="nav-badge-pill"
+                                    style="background:rgba(45,212,191,0.18);color:#2dd4bf">Flow</span>
                             </button>
                             <button class="nav-link" data-view="mmi">
                                 <span class="nav-icon">🧭</span>
@@ -144,13 +157,16 @@
 
                     <!-- Category: Market Intel & Demat -->
                     <div class="nav-accordion-group" data-group="intel">
-                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="intel" aria-expanded="false">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group"
+                            data-target-group="intel" aria-expanded="false">
                             <span class="nav-section-header-left">
                                 <span class="nav-section-title-text">Market Intel & Demat</span>
                             </span>
                             <span class="nav-section-header-right">
                                 <span class="nav-section-badge">6</span>
-                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </span>
@@ -164,12 +180,14 @@
                             <button class="nav-link" data-view="deals">
                                 <span class="nav-icon">🤝</span>
                                 <span>Bulk / Block Deals</span>
-                                <span class="nav-badge-pill" style="background:rgba(245,158,11,0.18);color:#f59e0b">Live</span>
+                                <span class="nav-badge-pill"
+                                    style="background:rgba(245,158,11,0.18);color:#f59e0b">Live</span>
                             </button>
                             <button class="nav-link" data-view="news">
                                 <span class="nav-icon">📰</span>
                                 <span>Market News</span>
-                                <span class="nav-badge-pill" style="background:rgba(34,197,94,0.18);color:#22c55e">Live</span>
+                                <span class="nav-badge-pill"
+                                    style="background:rgba(34,197,94,0.18);color:#22c55e">Live</span>
                             </button>
                             <button class="nav-link" data-view="heatmap">
                                 <span class="nav-icon">🗺️</span>
@@ -188,13 +206,16 @@
 
                     <!-- Category: Mainboard IPO Info -->
                     <div class="nav-accordion-group" data-group="ipo">
-                        <button type="button" class="nav-section-header" data-action="toggle-nav-group" data-target-group="ipo" aria-expanded="false">
+                        <button type="button" class="nav-section-header" data-action="toggle-nav-group"
+                            data-target-group="ipo" aria-expanded="false">
                             <span class="nav-section-header-left">
                                 <span class="nav-section-title-text">Mainboard IPO Info</span>
                             </span>
                             <span class="nav-section-header-right">
                                 <span class="nav-section-badge">2</span>
-                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="nav-section-chevron" viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </span>
@@ -215,14 +236,18 @@
 
                 <!-- Sidebar Watchlist Box -->
                 <div class="sidebar-watchlist-box" id="sidebar-watchlist-box">
-                    <div class="sidebar-watchlist-title" data-action="toggle-watchlist-accordion" style="cursor:pointer" title="Click to collapse / expand watchlist">
+                    <div class="sidebar-watchlist-title" data-action="toggle-watchlist-accordion" style="cursor:pointer"
+                        title="Click to collapse / expand watchlist">
                         <div style="display:flex;align-items:center;gap:6px">
                             <span>Starred Watchlist</span>
                             <span id="watchlist-count" style="color:var(--g);font-family:var(--font-mono)">3</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px">
-                            <button class="sidebar-watchlist-add-trigger" id="sidebar-watchlist-add-btn" title="Add / manage watchlist stocks">＋</button>
-                            <svg class="watchlist-section-chevron" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <button class="sidebar-watchlist-add-trigger" id="sidebar-watchlist-add-btn"
+                                title="Add / manage watchlist stocks">＋</button>
+                            <svg class="watchlist-section-chevron" viewBox="0 0 24 24" width="12" height="12"
+                                stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </div>
@@ -230,7 +255,8 @@
                     <div class="sidebar-watchlist-collapsible" id="sidebar-watchlist-collapsible">
                         <!-- Quick Add Dropdown / Search Box (collapsible) -->
                         <div class="sidebar-watchlist-quick-add" id="sidebar-watchlist-quick-add" style="display:none">
-                            <input type="text" id="sidebar-watchlist-search-input" placeholder="Add stock (e.g. TCS)..." autocomplete="off">
+                            <input type="text" id="sidebar-watchlist-search-input" placeholder="Add stock (e.g. TCS)..."
+                                autocomplete="off">
                             <div class="watchlist-quick-dropdown" id="sidebar-watchlist-dropdown"></div>
                         </div>
                         <div class="sidebar-watchlist-list" id="sidebar-watchlist">
@@ -293,15 +319,19 @@
                 <h3 id="modal-ticker-title" style="font-size:16px;font-weight:600;color:var(--ink);margin:0;">
                     Ticker Settings
                 </h3>
-                <button class="modal-close-trigger" id="ticker-modal-close-btn" style="background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;line-height:1;padding:4px;" aria-label="Close">&times;</button>
+                <button class="modal-close-trigger" id="ticker-modal-close-btn"
+                    style="background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;line-height:1;padding:4px;"
+                    aria-label="Close">&times;</button>
             </div>
 
             <!-- Setting Row: Speed -->
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
                 <span style="font-size:14px;color:var(--mu);font-weight:500;">Speed</span>
                 <div style="width:160px;display:flex;flex-direction:column;align-items:center;">
-                    <div id="ticker-speed-label" style="font-size:12px;color:var(--ink);font-weight:600;margin-bottom:2px;">Normal</div>
-                    <input type="range" id="ticker-speed-range" min="1" max="3" step="1" value="2" class="ticker-range-slider" />
+                    <div id="ticker-speed-label"
+                        style="font-size:12px;color:var(--ink);font-weight:600;margin-bottom:2px;">Normal</div>
+                    <input type="range" id="ticker-speed-range" min="1" max="3" step="1" value="2"
+                        class="ticker-range-slider" />
                 </div>
             </div>
 
@@ -328,7 +358,8 @@
                 <div style="font-size:14px;font-weight:500;color:var(--mu);margin-bottom:10px;">Display Stocks</div>
                 <div class="ticker-stocks-card" id="ticker-stocks-card">
                     <!-- Items List -->
-                    <div id="ticker-stocks-list-items" style="display:flex;flex-direction:column;max-height:240px;overflow-y:auto;">
+                    <div id="ticker-stocks-list-items"
+                        style="display:flex;flex-direction:column;max-height:240px;overflow-y:auto;">
                         <!-- Rendered dynamically -->
                     </div>
 
@@ -340,10 +371,15 @@
                     <!-- Inline Add Search Form (Expands when clicking + Add Stock) -->
                     <div id="ticker-inline-search-wrap" class="ticker-inline-search-wrap" style="display:none;">
                         <div style="display:flex;gap:8px;align-items:center;">
-                            <input type="text" id="ticker-inline-search-input" placeholder="Search stock or index (e.g. RELIANCE, TCS, ZOMATO)..." class="screener-input" style="flex:1;font-size:12px;padding:6px 10px;" autocomplete="off" />
-                            <button id="ticker-inline-cancel-btn" type="button" style="background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:4px;">✕</button>
+                            <input type="text" id="ticker-inline-search-input"
+                                placeholder="Search stock or index (e.g. RELIANCE, TCS, ZOMATO)..."
+                                class="screener-input" style="flex:1;font-size:12px;padding:6px 10px;"
+                                autocomplete="off" />
+                            <button id="ticker-inline-cancel-btn" type="button"
+                                style="background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:4px;">✕</button>
                         </div>
-                        <div id="ticker-inline-search-results" style="max-height:140px;overflow-y:auto;margin-top:8px;display:none;flex-direction:column;gap:2px;">
+                        <div id="ticker-inline-search-results"
+                            style="max-height:140px;overflow-y:auto;margin-top:8px;display:none;flex-direction:column;gap:2px;">
                         </div>
                     </div>
                 </div>
@@ -383,27 +419,39 @@
         aria-labelledby="modal-holding-title" style="display:none;">
         <div class="modal-content-window" style="max-width: 480px;">
             <div class="modal-header-row">
-                <h3 id="modal-holding-title" style="font-size:18px;font-weight:700;color:var(--ink);margin:0;">Add holding</h3>
+                <h3 id="modal-holding-title" style="font-size:18px;font-weight:700;color:var(--ink);margin:0;">Add
+                    holding</h3>
                 <button class="modal-close-trigger" id="holding-modal-close-btn" aria-label="Close">&times;</button>
             </div>
-            
+
             <form id="holding-modal-form" style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
                 <input type="hidden" id="holding-edit-id" value="">
-                
+
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div style="position:relative;">
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Symbol <span style="color:var(--r)">*</span></label>
-                        <input type="text" id="holding-symbol-input" required placeholder="e.g. NTPC" autocomplete="off" style="width:100%;text-transform:uppercase;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
-                        <div id="holding-cmp-indicator" style="display:none;font-size:11px;font-weight:600;color:var(--g);margin-top:5px;align-items:center;gap:6px;">
-                            <span style="display:inline-block;width:6px;height:6px;background:var(--g);border-radius:50%;"></span>
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Symbol
+                            <span style="color:var(--r)">*</span></label>
+                        <input type="text" id="holding-symbol-input" required placeholder="e.g. NTPC" autocomplete="off"
+                            style="width:100%;text-transform:uppercase;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
+                        <div id="holding-cmp-indicator"
+                            style="display:none;font-size:11px;font-weight:600;color:var(--g);margin-top:5px;align-items:center;gap:6px;">
+                            <span
+                                style="display:inline-block;width:6px;height:6px;background:var(--g);border-radius:50%;"></span>
                             <span id="holding-cmp-text">Live CMP: ₹0.00</span>
-                            <button type="button" id="holding-use-cmp-btn" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--g);border-radius:4px;font-size:10px;font-weight:700;padding:1px 6px;cursor:pointer;">Use as Buy Price</button>
+                            <button type="button" id="holding-use-cmp-btn"
+                                style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--g);border-radius:4px;font-size:10px;font-weight:700;padding:1px 6px;cursor:pointer;">Use
+                                as Buy Price</button>
                         </div>
-                        <div id="holding-symbol-autocomplete" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--bdr);border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);"></div>
+                        <div id="holding-symbol-autocomplete"
+                            style="display:none;position:absolute;top:100%;left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--bdr);border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                        </div>
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Exchange</label>
-                        <select id="holding-exchange-input" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Exchange</label>
+                        <select id="holding-exchange-input"
+                            style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
                             <option value="NSE">NSE (Equities / ETFs)</option>
                             <option value="BSE">BSE (Equities)</option>
                         </select>
@@ -412,8 +460,11 @@
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div>
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Demat / Broker Account</label>
-                        <select id="holding-broker-input" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Demat
+                            / Broker Account</label>
+                        <select id="holding-broker-input"
+                            style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
                             <option value="Zerodha">Zerodha (Kite)</option>
                             <option value="Groww">Groww</option>
                             <option value="Angel One">Angel One</option>
@@ -426,31 +477,49 @@
                         </select>
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Name (optional)</label>
-                        <input type="text" id="holding-name-input" placeholder="e.g. NTPC Ltd" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Name
+                            (optional)</label>
+                        <input type="text" id="holding-name-input" placeholder="e.g. NTPC Ltd"
+                            style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
                     </div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div>
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Buy price <span style="color:var(--r)">*</span></label>
-                        <input type="number" step="any" min="0" required id="holding-buyprice-input" placeholder="e.g. 330" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Buy
+                            price <span style="color:var(--r)">*</span></label>
+                        <input type="number" step="any" min="0" required id="holding-buyprice-input"
+                            placeholder="e.g. 330"
+                            style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Quantity <span style="color:var(--r)">*</span></label>
-                        <input type="number" step="any" min="0.0001" required id="holding-qty-input" placeholder="e.g. 1" value="1" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
+                        <label
+                            style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Quantity
+                            <span style="color:var(--r)">*</span></label>
+                        <input type="number" step="any" min="0.0001" required id="holding-qty-input"
+                            placeholder="e.g. 1" value="1"
+                            style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-family:var(--font-mono);font-weight:600;box-sizing:border-box;">
                     </div>
                 </div>
 
                 <div>
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Yahoo symbol (optional override)</label>
-                    <input type="text" id="holding-yahoo-input" placeholder="Auto: NTPC.NS" style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--mu);font-size:12px;font-family:var(--font-mono);box-sizing:border-box;">
-                    <div style="font-size:11px;color:var(--mu);margin-top:4px;line-height:1.4;">Leave blank to auto-build from symbol + exchange. Live CMP updates automatically via exchange feeds.</div>
+                    <label
+                        style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Yahoo
+                        symbol (optional override)</label>
+                    <input type="text" id="holding-yahoo-input" placeholder="Auto: NTPC.NS"
+                        style="width:100%;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--mu);font-size:12px;font-family:var(--font-mono);box-sizing:border-box;">
+                    <div style="font-size:11px;color:var(--mu);margin-top:4px;line-height:1.4;">Leave blank to
+                        auto-build from symbol + exchange. Live CMP updates automatically via exchange feeds.</div>
                 </div>
 
                 <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px;">
-                    <button type="button" class="pill-segment-btn" id="holding-modal-cancel-btn" style="padding:8px 18px;font-size:13px;">Cancel</button>
-                    <button type="submit" id="holding-modal-submit-btn" style="background:var(--g);color:#060d09;border:none;border-radius:20px;padding:8px 22px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(34,197,94,0.35);">Add holding</button>
+                    <button type="button" class="pill-segment-btn" id="holding-modal-cancel-btn"
+                        style="padding:8px 18px;font-size:13px;">Cancel</button>
+                    <button type="submit" id="holding-modal-submit-btn"
+                        style="background:var(--g);color:#060d09;border:none;border-radius:20px;padding:8px 22px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(34,197,94,0.35);">Add
+                        holding</button>
                 </div>
             </form>
         </div>
@@ -481,8 +550,8 @@
             <div class="symbol-search-topbar">
                 <span class="symbol-search-icon">🔍</span>
                 <input type="text" id="symbol-search-input" class="symbol-search-input"
-                    placeholder="Search symbol or company name... (e.g. RELIANCE, TCS, IRFC)"
-                    autocomplete="off" spellcheck="false">
+                    placeholder="Search symbol or company name... (e.g. RELIANCE, TCS, IRFC)" autocomplete="off"
+                    spellcheck="false">
                 <button type="button" class="modal-close-trigger" id="symbol-search-close-btn"
                     style="background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1;padding:4px;"
                     aria-label="Close">&times;</button>
@@ -498,7 +567,15 @@
                 <!-- Populated dynamically -->
             </div>
             <div class="symbol-search-bottom-bar">
-                <span>Tip: <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↑</kbd> <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↓</kbd> navigate &bull; <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Enter</kbd> select &bull; <kbd style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Esc</kbd> close</span>
+                <span>Tip: <kbd
+                        style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↑</kbd>
+                    <kbd
+                        style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">↓</kbd>
+                    navigate &bull; <kbd
+                        style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Enter</kbd>
+                    select &bull; <kbd
+                        style="background:var(--sf2);padding:1px 5px;border-radius:3px;border:1px solid var(--ln);">Esc</kbd>
+                    close</span>
                 <span id="symbol-search-count-label">0 stocks</span>
             </div>
         </div>
@@ -507,12 +584,15 @@
     <!-- Modal Dialog: Economic & Corporate Events Day Inspector -->
     <div class="modal-overlay-backdrop" id="events-day-modal" role="dialog" aria-modal="true"
         aria-labelledby="events-day-modal-title" style="display:none;">
-        <div class="modal-content-window" style="max-width: 660px; max-height: 85vh; display: flex; flex-direction: column;">
-            <div class="modal-header-row" style="padding-bottom: 12px; border-bottom: 1px solid var(--ln); display: flex; justify-content: space-between; align-items: flex-start;">
+        <div class="modal-content-window"
+            style="max-width: 660px; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header-row"
+                style="padding-bottom: 12px; border-bottom: 1px solid var(--ln); display: flex; justify-content: space-between; align-items: flex-start;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 22px;">📅</span>
                     <div>
-                        <h3 id="events-day-modal-title" style="font-size: 17px; font-weight: 700; color: var(--ink); margin: 0;">
+                        <h3 id="events-day-modal-title"
+                            style="font-size: 17px; font-weight: 700; color: var(--ink); margin: 0;">
                             Scheduled Events
                         </h3>
                         <div id="events-day-modal-sub" style="font-size: 12px; color: var(--mu); margin-top: 2px;">
@@ -528,7 +608,8 @@
             <div id="events-day-modal-body" style="padding: 16px 0; overflow-y: auto; flex: 1;">
                 <!-- Populated dynamically via openEventsDayModal(dateStr) -->
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--ln); margin-top: 8px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--ln); margin-top: 8px;">
                 <button type="button" class="pill-segment-btn" id="events-day-switch-list-btn"
                     data-action="events-day-modal-to-list" style="padding: 6px 14px; font-size: 12px;">
                     📋 Open in List View
@@ -549,7 +630,7 @@
     <script src="supabase-config.js?v=4.7.2"></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=5.7.9"></script>
+    <script src="script.js?v=5.8.0"></script>
 </body>
 
 </html>

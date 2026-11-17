@@ -378,6 +378,14 @@ class DhanAuthManager {
               this.lastError = null;
               process.env.DHAN_KEY = token;
               this.keyPool.updateKeyToken('dhan', token);
+              try {
+                const envFile = path.join(__dirname, '.env');
+                if (fs.existsSync(envFile)) {
+                  let envText = fs.readFileSync(envFile, 'utf8');
+                  envText = envText.replace(/^DHAN_KEY=.*$/m, `DHAN_KEY=${token}`);
+                  fs.writeFileSync(envFile, envText, 'utf8');
+                }
+              } catch (eEnv) { /* ignore */ }
               console.log('✅ [Dhan Auth] Successfully authenticated via TOTP! Fresh 24-hr token active.');
               resolve({ success: true, token, expiresAt: new Date(Date.now() + 24 * 3600 * 1000).toISOString() });
             } else {
@@ -7360,8 +7368,16 @@ server.listen(PORT, async () => {
   console.log(`🌊 Order Flow F&O Engine: Active (http://localhost:${PORT}/order-flow/)`);
   console.log(`================================================================\n`);
 
-  // Initialize Order Flow Engine
-  orderFlowEngine.initOrderFlow();
+  // Initialize Order Flow Engine with live market price feed
+  orderFlowEngine.initOrderFlow({
+    getLivePrice: (sym) => {
+      const q = CACHE.get(`item_quote_${sym}.NS`) || CACHE.get(`item_quote_${sym}`);
+      if (q && q.quote && typeof q.quote.regularMarketPrice === 'number' && q.quote.regularMarketPrice > 0) {
+        return q.quote.regularMarketPrice;
+      }
+      return null;
+    }
+  });
 
   // Start automated Dhan TOTP renewal if credentials exist
   await dhanAuth.startAutoRefresh();

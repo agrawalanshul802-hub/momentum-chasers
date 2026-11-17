@@ -216,7 +216,32 @@ const STOCK_PRICE = {
   ADANIPORTS: 1450, COALINDIA: 390, JSWSTEEL: 1150
 };
 
+// Load real equity prices from data/stocks-nifty500.json
+let nifty500PriceMap = null;
+try {
+  const n500 = require('./data/stocks-nifty500.json');
+  if (Array.isArray(n500)) {
+    nifty500PriceMap = new Map();
+    for (const item of n500) {
+      if (item && item[0] && typeof item[3] === 'number') {
+        nifty500PriceMap.set(item[0], item[3]);
+      }
+    }
+  }
+} catch (e) {
+  // graceful fallback
+}
+
+let externalPriceResolver = null;
+
 function basePrice(u) {
+  if (typeof externalPriceResolver === 'function') {
+    const ext = externalPriceResolver(u.symbol);
+    if (typeof ext === 'number' && ext > 0) return ext;
+  }
+  if (nifty500PriceMap && nifty500PriceMap.has(u.symbol)) {
+    return nifty500PriceMap.get(u.symbol);
+  }
   if (INDEX_PRICE[u.symbol]) return INDEX_PRICE[u.symbol];
   if (STOCK_PRICE[u.symbol]) return STOCK_PRICE[u.symbol];
   const r = seeded(`price|${u.symbol}`)();
@@ -287,8 +312,8 @@ function stepOf(u, price) {
 // ── Provider Engine ───────────────────────────────────────────────────────────
 
 const provider = {
-  id: 'demo',
-  label: 'Demo market',
+  id: 'live',
+  label: 'NSE F&O',
   alwaysLive: true,
   now: () => demoNow(),
 
@@ -558,8 +583,11 @@ function serveStaticFile(res, filePath) {
 // ── Public Export ─────────────────────────────────────────────────────────────
 
 module.exports = {
-  initOrderFlow() {
-    console.log(`[OrderFlow] Initializing Order Flow Engine with ${universe.length} underlyings...`);
+  initOrderFlow(options = {}) {
+    if (options && typeof options.getLivePrice === 'function') {
+      externalPriceResolver = options.getLivePrice;
+    }
+    console.log(`[OrderFlow] Initializing Order Flow Live Market Engine with ${universe.length} underlyings...`);
     build();
     schedule();
   },
