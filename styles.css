@@ -10765,6 +10765,7 @@ body.theme-white .stock-tv-pill:hover {
 }
 
 .tv-launchpad-card {
+    display: none !important;
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.92));
     border: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: var(--radius-md);

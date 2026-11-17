@@ -10903,8 +10903,8 @@
               <div class="chart-watermark-symbol" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:72px;font-weight:900;color:rgba(255,255,255,0.035);pointer-events:none;user-select:none;font-family:var(--font-mono);letter-spacing:2px;">${s[0]}</div>
             </div>
 
-            <!-- TradingView Live Bridge Bar -->
-            <div class="tv-launchpad-card" style="padding:12px 18px;margin:0;">
+            <!-- TradingView Live Bridge Bar (Hidden) -->
+            <div class="tv-launchpad-card" style="display:none !important;padding:12px 18px;margin:0;">
               <div class="tv-launchpad-left">
                 <div class="tv-launchpad-badge">
                   <span class="dot-green"></span>
