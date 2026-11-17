@@ -15111,8 +15111,16 @@
         title: h.holiday,
         company: "NSE / BSE Trading Holiday",
         details: `${h.segments || "Capital Markets & F&O"} — Exchanges Closed`,
-        cmpHtml: `<span class="event-impact-badge high">Markets Closed</span>`,
-        actionsHtml: `<span style="font-size:11px;color:var(--mu)">Holiday</span>`,
+        cmpHtml: `
+          <div style="display:flex;justify-content:flex-end">
+            <span class="event-impact-badge high" style="margin:0;font-size:10.5px">Markets Closed</span>
+          </div>
+        `,
+        actionsHtml: `
+          <div style="display:flex;align-items:center;justify-content:flex-end">
+            <span style="font-size:11px;color:var(--mu);font-weight:600">Trading Holiday</span>
+          </div>
+        `,
         raw: h
       });
     });
@@ -15128,14 +15136,18 @@
         symbol: "",
         title: e.event,
         company: e.country,
-        details: `Period: ${e.period} • Impact: ${e.impact.toUpperCase()}`,
+        details: `Period: ${e.period}`,
         cmpHtml: `
-          <div style="font-family:var(--font-mono);font-size:11px">
-            <div>Fcst: <strong>${escapeHtml(e.forecast)}</strong></div>
-            <div style="color:var(--mu)">Prior: ${escapeHtml(e.prior)}</div>
+          <div style="text-align:right;font-family:var(--font-mono);font-size:12px">
+            <div style="color:var(--ink);font-weight:700">Fcst: ${escapeHtml(e.forecast)}</div>
+            <div style="font-size:11px;color:var(--mu);margin-top:2px">Prior: ${escapeHtml(e.prior)}</div>
           </div>
         `,
-        actionsHtml: `<span class="event-impact-badge ${escapeHtml(e.impact)}">${escapeHtml(e.impact)}</span>`,
+        actionsHtml: `
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <span class="event-impact-badge ${escapeHtml(e.impact)}" style="text-transform:uppercase;margin:0">${escapeHtml(e.impact)}</span>
+          </div>
+        `,
         raw: e
       });
     });
@@ -15157,8 +15169,8 @@
         details: `${e.quarter || "Q2 FY27"} Results (${e.status || "Confirmed"}) • EPS: ₹${e.epsEst || "—"} • Rev: ${e.revEst || "—"}`,
         cmpHtml: `
           <div style="text-align:right;font-family:var(--font-mono)">
-            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
-            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+            <div style="font-weight:700;color:var(--ink);font-size:13px">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor};margin-top:2px">${chgSign}${qQuote.chg}%</div>
           </div>
         `,
         actionsHtml: `
@@ -15185,17 +15197,17 @@
         symbol: c.symbol,
         title: c.symbol,
         company: c.company,
-        details: `${c.topic} (Attendees: ${c.attendees || "Leadership"})`,
+        details: `${c.topic}${c.attendees ? ` (Attendees: ${c.attendees})` : ""}`,
         cmpHtml: `
           <div style="text-align:right;font-family:var(--font-mono)">
-            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
-            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+            <div style="font-weight:700;color:var(--ink);font-size:13px">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor};margin-top:2px">${chgSign}${qQuote.chg}%</div>
           </div>
         `,
         actionsHtml: `
           <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
             <button class="row-action-btn" data-action="copy-dial-in" data-dial="${escapeHtml(c.dialIn)}" style="padding:4px 8px;font-size:11px">📞 Dial-In</button>
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(c.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈</a>
+            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(c.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="TradingView Chart" style="padding:4px 8px;font-size:11px">📈 Chart</a>
           </div>
         `,
         raw: c
@@ -15219,8 +15231,8 @@
         details: `${a.type}: ${a.details} ${a.yield ? `• Yield: ${a.yield}` : ""}`,
         cmpHtml: `
           <div style="text-align:right;font-family:var(--font-mono)">
-            <div style="font-weight:700;color:var(--ink)">₹${formatNumber(qQuote.price, 2)}</div>
-            <div style="font-size:11px;font-weight:700;color:${chgColor}">${chgSign}${qQuote.chg}%</div>
+            <div style="font-weight:700;color:var(--ink);font-size:13px">₹${formatNumber(qQuote.price, 2)}</div>
+            <div style="font-size:11px;font-weight:700;color:${chgColor};margin-top:2px">${chgSign}${qQuote.chg}%</div>
           </div>
         `,
         actionsHtml: `
@@ -15247,55 +15259,57 @@
 
     const rows = filtered.map(item => `
       <tr class="events-table-row">
-        <td>
+        <td class="col-category">
           <span class="cal-event ${item.badgeClass}" style="display:inline-flex;align-items:center;gap:4px">
             ${item.icon} ${item.catLabel}
           </span>
         </td>
-        <td>
+        <td class="col-datetime">
           <div style="font-weight:700;color:var(--ink);font-family:var(--font-mono);font-size:12px">${item.date}</div>
-          <div style="font-size:11px;color:var(--mu)">${item.time}</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:2px">${item.time}</div>
         </td>
-        <td>
-          <div style="display:flex;align-items:center;gap:6px">
-            ${item.symbol ? `
-              <strong style="color:var(--ink);cursor:pointer;font-size:13px" data-action="open-stock" data-symbol="${escapeHtml(item.symbol)}">
-                ${escapeHtml(item.symbol)}
-              </strong>
-            ` : `<strong style="color:var(--ink);font-size:13px">${escapeHtml(item.title)}</strong>`}
+        <td class="col-company">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-weight:700;color:var(--ink);font-size:13px;line-height:1.35">
+              ${item.symbol ? `
+                <span style="cursor:pointer" data-action="open-stock" data-symbol="${escapeHtml(item.symbol)}">
+                  ${escapeHtml(item.symbol)}
+                </span>
+              ` : `<span>${escapeHtml(item.title)}</span>`}
+            </div>
+            <div style="font-size:11.5px;color:var(--mu);line-height:1.35">${escapeHtml(item.company)}</div>
           </div>
-          <div style="font-size:11px;color:var(--mu);margin-top:2px">${escapeHtml(item.company)}</div>
         </td>
-        <td style="max-width:320px;font-size:12px;color:var(--ink)">
-          ${escapeHtml(item.details)}
+        <td class="col-details">
+          <div style="font-size:12.5px;color:var(--ink);line-height:1.45">${escapeHtml(item.details)}</div>
         </td>
-        <td>
+        <td class="col-cmp">
           ${item.cmpHtml}
         </td>
-        <td style="text-align:right">
+        <td class="col-actions">
           ${item.actionsHtml}
         </td>
       </tr>
     `).join("");
 
     return `
-      <div class="events-table-container">
-        <div class="events-sub-bar" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:13px;color:var(--mu);font-weight:600">
+      <div class="table-card-container" style="margin-top:0">
+        <div class="table-summary-bar">
+          <span class="match-counter-text">
             ${q ? `Search for "${escapeHtml(State.eventsSearch)}" — ` : ""}${filtered.length} Scheduled Events in ${monthLabel}
           </span>
           <span style="font-size:11px;color:var(--g);font-weight:600">● Live NSE/BSE Feeds Connected</span>
         </div>
-        <div class="table-responsive">
-          <table class="data-table events-table">
+        <div class="table-scroll-wrapper">
+          <table class="data-table-main events-table">
             <thead>
               <tr>
-                <th>Category</th>
-                <th>Date &amp; Time</th>
-                <th>Company / Release</th>
-                <th>Details &amp; Agenda</th>
-                <th style="text-align:right">CMP / Forecast</th>
-                <th style="text-align:right">Actions</th>
+                <th class="col-category">Category</th>
+                <th class="col-datetime">Date &amp; Time</th>
+                <th class="col-company">Company / Release</th>
+                <th class="col-details">Details &amp; Agenda</th>
+                <th class="col-cmp">CMP / Forecast</th>
+                <th class="col-actions">Actions</th>
               </tr>
             </thead>
             <tbody>
