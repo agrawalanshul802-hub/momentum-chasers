@@ -603,6 +603,13 @@
     "WAAREE": "WAAREEENER",
     "WAARE": "WAAREEENER",
     "PREMIER": "PREMIERENE",
+    "SOLARA": "SOLARA",
+    "SOLARAPHARMA": "SOLARA",
+    "SOLARA ACTIVE": "SOLARA",
+    "SOLARA ACTIVE PHARMA": "SOLARA",
+    "SOLAR": "SOLARA",
+    "SOLARINDS": "SOLARINDS",
+    "SOLAR INDUSTRIES": "SOLARINDS",
     "SUZLO": "SUZLON",
     "ONE97": "PAYTM",
     "LALPATH": "LALPATHLAB",
@@ -4037,6 +4044,8 @@
   const INDIAN_POPULAR_STOCKS = [
     // Healthcare & Diagnostics
     { symbol: "SURAKSHA", name: "Suraksha Diagnostic Ltd.", sector: "Healthcare / Diagnostics", price: 435.00, chg: -1.36, isIpo: true },
+    { symbol: "SOLARA", name: "Solara Active Pharma Sciences Ltd.", sector: "Pharmaceuticals", price: 663.90, chg: 4.44 },
+    { symbol: "SOLARINDS", name: "Solar Industries India Ltd.", sector: "Chemicals & Explosives", price: 18820.00, chg: 1.25 },
     { symbol: "METROPOLIS", name: "Metropolis Healthcare Ltd.", sector: "Healthcare / Diagnostics", price: 2180.00, chg: 1.45 },
     { symbol: "LALPATHLAB", name: "Dr. Lal PathLabs Ltd.", sector: "Healthcare / Diagnostics", price: 3120.00, chg: 0.85 },
     { symbol: "VIJAYA", name: "Vijaya Diagnostic Centre Ltd.", sector: "Healthcare / Diagnostics", price: 920.00, chg: 2.10 },
@@ -4226,6 +4235,7 @@
     { symbol: "NDRAUTO", company: "NDR Auto Components Ltd.", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹18.60", revEst: "₹220 Cr", status: "Tentative", cap: "MC", sector: "Auto Parts" },
     { symbol: "APLLTD", company: "Alembic Pharmaceuticals Ltd.", date: "2026-11-27", quarter: "Q2 FY27", epsEst: "₹7.10", revEst: "₹1,620 Cr", status: "Tentative", cap: "SC", sector: "Pharma" },
     { symbol: "SURAKSHA", company: "Suraksha Diagnostic Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹3.80", revEst: "₹145 Cr", status: "Confirmed", cap: "SC", sector: "Healthcare / Diagnostics" },
+    { symbol: "SOLARA", company: "Solara Active Pharma Sciences Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹7.71", revEst: "₹410 Cr", status: "Confirmed", cap: "SC", sector: "Pharma" },
     { symbol: "SWIGGY", company: "Swiggy Ltd.", date: "2026-11-21", quarter: "Q2 FY27", epsEst: "-₹2.10", revEst: "₹3,900 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
     { symbol: "ZOMATO", company: "Eternal Ltd. (Zomato)", date: "2026-11-22", quarter: "Q2 FY27", epsEst: "₹1.40", revEst: "₹4,800 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
     { symbol: "WAAREEENER", company: "Waaree Energies Ltd.", date: "2026-11-23", quarter: "Q2 FY27", epsEst: "₹18.50", revEst: "₹3,400 Cr", status: "Confirmed", cap: "LC", sector: "Solar / Renewable" },
@@ -4243,6 +4253,7 @@
     { symbol: "GNRL", company: "Gujarat Natural Resources Ltd.", date: "2026-12-10", quarter: "Q2 FY27", epsEst: "₹1.55", revEst: "₹72 Cr", status: "Confirmed", cap: "MC", sector: "Oil & Gas" },
     { symbol: "ORICONENT", company: "Oricon Enterprises Ltd.", date: "2026-12-15", quarter: "Q2 FY27", epsEst: "₹1.05", revEst: "₹192 Cr", status: "Confirmed", cap: "MC", sector: "Packaging" },
     { symbol: "NDRAUTO", company: "NDR Auto Components Ltd.", date: "2026-12-18", quarter: "H1 FY27", epsEst: "₹19.20", revEst: "₹235 Cr", status: "Confirmed", cap: "MC", sector: "Auto Parts" },
+    { symbol: "SOLARINDS", company: "Solar Industries India Ltd.", date: "2026-12-21", quarter: "Q2 FY27", epsEst: "₹48.50", revEst: "₹2,150 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals & Explosives" },
     { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-12-22", quarter: "Mid-Term", epsEst: "₹2.95", revEst: "₹940 Cr", status: "Confirmed", cap: "SC", sector: "Textiles" },
     { symbol: "SHUKRAPHAR", company: "Shukra Pharmaceuticals Ltd.", date: "2026-12-28", quarter: "Q3 Guidance", epsEst: "₹3.10", revEst: "₹104 Cr", status: "Tentative", cap: "MC", sector: "Pharma" },
 
@@ -13974,6 +13985,8 @@
       "ZOMATO": { price: 268.50, chg: 1.85, cap: "LC", sector: "Consumer Tech", name: "Eternal Ltd. (Zomato)" },
       "WAAREEENER": { price: 2780.00, chg: 3.40, cap: "LC", sector: "Solar / Renewable", name: "Waaree Energies Ltd." },
       "PREMIERENE": { price: 1045.00, chg: 2.10, cap: "LC", sector: "Solar / Renewable", name: "Premier Energies Ltd." },
+      "SOLARA": { price: 663.90, chg: 4.44, cap: "SC", sector: "Pharmaceuticals", name: "Solara Active Pharma Sciences Ltd." },
+      "SOLARINDS": { price: 18820.00, chg: 1.25, cap: "LC", sector: "Chemicals & Explosives", name: "Solar Industries India Ltd." },
       "BAJAJHFL": { price: 128.50, chg: 0.90, cap: "LC", sector: "Housing Finance", name: "Bajaj Housing Finance Ltd." },
       "NTPCGREEN": { price: 112.40, chg: 1.20, cap: "LC", sector: "Renewable Energy", name: "NTPC Green Energy Ltd." },
       "PAYTM": { price: 890.00, chg: 1.65, cap: "MC", sector: "Fintech", name: "One97 Communications (Paytm)" },
@@ -14523,50 +14536,74 @@
         (resolvedSym && (s === resolvedSym || s.includes(resolvedSym)));
     });
 
-    // 1. If search is active and 0 matches in current range (day/week), search the entire month
-    if (q && data.length === 0) {
-      data = baseData.filter(item => {
+    if (q) {
+      // 1. Search across baseData and MASTER_EVENTS_EARNINGS across all dates to include all matching companies
+      const allMatchingFromMaster = MASTER_EVENTS_EARNINGS.filter(item => {
         const s = item.symbol.toUpperCase();
         const c = item.company.toLowerCase();
-        const sec = (item.sector || "").toLowerCase();
-        return s.includes(cleanQ) ||
-          c.includes(q) ||
-          sec.includes(q) ||
-          (resolvedSym && (s === resolvedSym || s.includes(resolvedSym)));
+        return s.includes(cleanQ) || c.includes(q) || (resolvedSym && s === resolvedSym);
       });
-    }
+      allMatchingFromMaster.forEach(em => {
+        if (!data.some(d => d.symbol === em.symbol && d.date === em.date)) {
+          data.push(em);
+        }
+      });
 
-    // 2. If still 0 matches, search MASTER_EVENTS_EARNINGS across all dates
-    if (q && data.length === 0) {
-      data = MASTER_EVENTS_EARNINGS.filter(item => {
+      // 2. If still no direct match, search broader stock universe (Suraksha, Solara, Swiggy, Zomato, etc.)
+      const stillNoDirectMatch = !data.some(item => {
         const s = item.symbol.toUpperCase();
         const c = item.company.toLowerCase();
-        const sec = (item.sector || "").toLowerCase();
-        return s.includes(cleanQ) ||
-          c.includes(q) ||
-          sec.includes(q) ||
-          (resolvedSym && (s === resolvedSym || s.includes(resolvedSym)));
+        return s.includes(cleanQ) || c.includes(q) || (resolvedSym && s === resolvedSym);
       });
-    }
 
-    // 3. If still 0 matches, search broader stock universe (Suraksha, Swiggy, Zomato, Rentomojo, etc.)
-    if (q && data.length === 0) {
-      const matched = findStockInUniverse(q);
-      if (matched) {
-        data = [{
-          symbol: matched.symbol,
-          company: matched.name,
-          date: matched.date || (curRange === "day" ? curDate : `${State.eventsYear}-${String(State.eventsMonth + 1).padStart(2, '0')}-12`),
-          quarter: "Q2 FY27",
-          epsEst: matched.epsEst || `₹${Math.max(1, (matched.price * 0.012)).toFixed(2)}`,
-          revEst: matched.revEst || `₹${formatNumber(Math.round(Math.max(50, matched.price * 1.4)), 0)} Cr`,
-          status: "Confirmed",
-          cap: matched.cap,
-          sector: matched.sector,
-          price: matched.price,
-          chg: matched.chg
-        }];
+      if (stillNoDirectMatch) {
+        const matched = findStockInUniverse(q);
+        if (matched && !data.some(d => d.symbol === matched.symbol)) {
+          data.unshift({
+            symbol: matched.symbol,
+            company: matched.name,
+            date: matched.date || (curRange === "day" ? curDate : `${State.eventsYear}-${String(State.eventsMonth + 1).padStart(2, '0')}-20`),
+            quarter: "Q2 FY27",
+            epsEst: matched.epsEst || `₹${Math.max(1, (matched.price * 0.012)).toFixed(2)}`,
+            revEst: matched.revEst || `₹${formatNumber(Math.round(Math.max(50, matched.price * 1.4)), 0)} Cr`,
+            status: "Confirmed",
+            cap: matched.cap,
+            sector: matched.sector,
+            price: matched.price,
+            chg: matched.chg
+          });
+        }
       }
+
+      // 3. Separate direct symbol & company name matches from pure sector matches
+      const directMatches = data.filter(item => {
+        const s = item.symbol.toUpperCase();
+        const c = item.company.toLowerCase();
+        return s.includes(cleanQ) || c.includes(q) || (resolvedSym && s === resolvedSym);
+      });
+
+      // If we have direct symbol/company matches, show only those to avoid cluttering with unrelated stocks in the same sector
+      if (directMatches.length > 0) {
+        data = directMatches;
+      }
+
+      // 4. Relevance ranking: Exact Symbol > Prefix Symbol > Company Starts With > Company Includes
+      data.sort((a, b) => {
+        const aSym = a.symbol.toUpperCase();
+        const bSym = b.symbol.toUpperCase();
+        const aName = (a.company || "").toLowerCase();
+        const bName = (b.company || "").toLowerCase();
+
+        const aExact = aSym === cleanQ ? 100 : (resolvedSym && aSym === resolvedSym ? 95 : (aSym.startsWith(cleanQ) ? 80 : (aSym.includes(cleanQ) ? 60 : 0)));
+        const bExact = bSym === cleanQ ? 100 : (resolvedSym && bSym === resolvedSym ? 95 : (bSym.startsWith(cleanQ) ? 80 : (bSym.includes(cleanQ) ? 60 : 0)));
+        if (aExact !== bExact) return bExact - aExact;
+
+        const aNameScore = aName.startsWith(q) ? 50 : (aName.includes(q) ? 30 : 0);
+        const bNameScore = bName.startsWith(q) ? 50 : (bName.includes(q) ? 30 : 0);
+        if (aNameScore !== bNameScore) return bNameScore - aNameScore;
+
+        return 0;
+      });
     }
 
     if (q) {
@@ -14694,7 +14731,7 @@
               </tr>
             </thead>
             <tbody>
-              ${rows || `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">No earnings results scheduled for this selection. <a href="${epUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--g);margin-left:8px;">Check EarningsPulse.ai ↗</a></td></tr>`}
+              ${rows || `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">No scheduled earnings results found matching "<strong>${escapeHtml(State.eventsSearch)}</strong>". <a href="${epUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--g);margin-left:8px;">Check live on EarningsPulse.ai ↗</a></td></tr>`}
             </tbody>
           </table>
         </div>
@@ -19407,6 +19444,64 @@
             }
           }
           container.innerHTML = contentHtml;
+        }
+
+        // Live broad-universe stock lookup for any Indian equity (debounced 350ms)
+        const qTerm = State.eventsSearch.trim();
+        clearTimeout(window._eventsLiveSearchTimer);
+        if (qTerm.length >= 2) {
+          window._eventsLiveSearchTimer = setTimeout(async () => {
+            try {
+              const res = await fetch(`${getApiBase()}/api/search?q=${encodeURIComponent(qTerm)}`);
+              if (res.ok) {
+                const sData = await res.json();
+                if (sData && sData.results && sData.results.length > 0) {
+                  let hasNewStock = false;
+                  for (const r of sData.results.slice(0, 3)) {
+                    if (!EVENT_QUOTES[r.symbol]) {
+                      const qRes = await fetch(`${getApiBase()}/api/quote?symbols=${encodeURIComponent(r.symbol + '.NS')}`);
+                      if (qRes.ok) {
+                        const qJson = await qRes.json();
+                        const qItem = qJson?.quoteResponse?.result?.[0];
+                        if (qItem) {
+                          hasNewStock = true;
+                          EVENT_QUOTES[r.symbol] = {
+                            price: qItem.regularMarketPrice || r.price || 0,
+                            chg: qItem.regularMarketChangePercent || r.change || 0,
+                            cap: (qItem.regularMarketPrice || 0) > 1000 ? "LC" : (qItem.regularMarketPrice || 0) > 200 ? "MC" : "SC",
+                            sector: r.sector || "Equities",
+                            name: qItem.longName || qItem.shortName || r.name
+                          };
+                          if (Array.isArray(EarningsLiveService.data) && !EarningsLiveService.data.some(d => d.symbol === r.symbol)) {
+                            EarningsLiveService.data.unshift({
+                              symbol: r.symbol,
+                              company: qItem.longName || qItem.shortName || r.name,
+                              date: `${State.eventsYear}-${String(State.eventsMonth + 1).padStart(2, '0')}-20`,
+                              quarter: "Q2 FY27",
+                              epsEst: qItem.epsTrailingTwelveMonths ? `₹${qItem.epsTrailingTwelveMonths.toFixed(2)}` : "—",
+                              revEst: "—",
+                              status: "Confirmed",
+                              cap: (qItem.regularMarketPrice || 0) > 1000 ? "LC" : (qItem.regularMarketPrice || 0) > 200 ? "MC" : "SC",
+                              sector: r.sector || "Equities",
+                              price: qItem.regularMarketPrice || 0,
+                              chg: qItem.regularMarketChangePercent || 0
+                            });
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if (hasNewStock && State.view === "events" && State.eventsSearch.trim() === qTerm) {
+                    const c = document.getElementById("events-content-area");
+                    if (c && State.eventsTab === "earnings") c.innerHTML = renderEventsEarningsTable();
+                    else if (c && State.eventsTab === "all") c.innerHTML = renderEventsAllTable();
+                  }
+                }
+              }
+            } catch (err) {
+              // Silently ignore live lookup network dropouts
+            }
+          }, 350);
         }
       }
     });
