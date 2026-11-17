@@ -3140,7 +3140,7 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     background: var(--sf);
     border: 1px solid var(--ln);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow: visible;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
@@ -3155,9 +3155,11 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     padding: 14px 20px;
     border-bottom: 1px solid var(--ln);
     background: var(--sf);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     flex-shrink: 0;
-    position: relative;
-    z-index: 5;
+    position: sticky;
+    top: -24px;
+    z-index: 30;
 }
 
 .sector-sort-toolbar {
@@ -3169,9 +3171,11 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     padding: 12px 20px;
     background: var(--sf);
     border-bottom: 1px solid var(--ln);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     flex-shrink: 0;
-    position: relative;
-    z-index: 20;
+    position: sticky;
+    top: -24px;
+    z-index: 30;
 }
 
 .sector-sort-controls {
@@ -3206,16 +3210,22 @@ body.theme-white .ticker-inline-suggestion-row:hover {
 .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
     position: relative;
     overscroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 @media (max-width: 768px) {
+    .table-summary-bar,
+    .sector-sort-toolbar {
+        top: -16px;
+        padding: 10px 14px;
+    }
     .table-scroll-wrapper {
-        overflow-x: auto;
-        overflow-y: visible;
+        max-height: calc(100vh - 170px);
     }
 }
 
