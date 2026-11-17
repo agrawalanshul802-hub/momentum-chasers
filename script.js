@@ -13717,9 +13717,7 @@
 
   function renderIPOTrackerRow(r) {
     const listGainCls = r[5] >= 0 ? "val-green" : "val-red";
-    const plCls = r[7] >= 0 ? "val-green" : "val-red";
     const listGainSign = r[5] >= 0 ? "+" : "";
-    const plSign = r[7] >= 0 ? "+" : "";
     const isLive = !!r[10];
     return `
         <tr data-action="open-stock" data-symbol="${escapeHtml(r[9] || "")}" data-ipo-performance-symbol="${escapeHtml(r[9] || "")}" title="Open quote and charts" style="cursor:pointer">
@@ -13736,7 +13734,6 @@
           <td class="font-mono" style="text-align:right">₹${formatNumber(r[4], 2)}</td>
           <td class="font-mono ${listGainCls}" style="text-align:right;font-weight:700">${listGainSign}${formatNumber(r[5], 2)}%</td>
           <td class="font-mono" style="text-align:right">₹${formatNumber(r[6], 2)}</td>
-          <td class="font-mono ${plCls}" style="text-align:right;font-weight:700">${plSign}${formatNumber(r[7], 2)}%</td>
         </tr>`;
   }
 
@@ -13784,8 +13781,8 @@
   function renderIPOTracker() {
     const filtered = getFilteredIPOTrackerRows();
 
-    const avgPL = filtered.reduce((s, r) => s + r[7], 0) / (filtered.length || 1);
-    const winners = filtered.filter(r => r[7] > 0).length;
+    const avgListingGain = filtered.reduce((s, r) => s + r[5], 0) / (filtered.length || 1);
+    const winners = filtered.filter(r => r[5] > 0).length;
 
     const rows = filtered.map(r => renderIPOTrackerRow(r)).join("");
 
@@ -13806,7 +13803,7 @@
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="match-counter-text">🗄️ Total Records: <strong>${filtered.length}</strong></span>
           <span style="font-size:11px;color:var(--mu)">
-            Avg P&amp;L: <span class="${avgPL >= 0 ? "val-green" : "val-red"}">${avgPL >= 0 ? "+" : ""}${formatNumber(avgPL, 1)}%</span>
+            Avg Listing Gain: <span class="${avgListingGain >= 0 ? "val-green" : "val-red"}">${avgListingGain >= 0 ? "+" : ""}${formatNumber(avgListingGain, 1)}%</span>
             &nbsp;|&nbsp; Winners: <span class="val-green">${winners}/${filtered.length}</span>
           </span>
           <span class="ipo-live-status-pill">Historical listing performance</span>
@@ -13835,11 +13832,10 @@
                 <th style="text-align:right">Listing Day Close (₹)</th>
                 <th style="text-align:right">Listing Day Gain (%)</th>
                 <th style="text-align:right">Current Price (₹)</th>
-                <th style="text-align:right">Profit / Loss (%)</th>
               </tr>
             </thead>
             <tbody>
-              ${rows || `<tr><td colspan="8" style="text-align:center;color:var(--mu);padding:32px">No results found.</td></tr>`}
+              ${rows || `<tr><td colspan="7" style="text-align:center;color:var(--mu);padding:32px">No results found.</td></tr>`}
             </tbody>
           </table>
         </div>
@@ -13850,7 +13846,7 @@
   // Export IPO Data to CSV
   function exportIPODataToCSV() {
     const data = getFilteredIPOTrackerRows();
-    const headers = ["Company", "NSE Symbol", "Listed On", "Issue Price (Rs)", "Issue Size (Cr)", "Listing Day Close (Rs)", "Listing Day Gain (%)", "Current Price (Rs)", "Profit Loss (%)", "Year"];
+    const headers = ["Company", "NSE Symbol", "Listed On", "Issue Price (Rs)", "Issue Size (Cr)", "Listing Day Close (Rs)", "Listing Day Gain (%)", "Current Price (Rs)", "Year"];
     const csvRows = [headers.join(",")];
     data.forEach(r => {
       const row = [
@@ -13862,7 +13858,6 @@
         r[4],
         r[5],
         r[6],
-        r[7],
         r[8]
       ];
       csvRows.push(row.join(","));
