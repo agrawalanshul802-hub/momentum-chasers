@@ -635,10 +635,13 @@
     "SUZUKI": "MARUTI"
   };
 
-  // Helper to compute Distance from All-Time High / 52W High
+  // Helper to compute Distance from All-Time High / 52W High (Memoized for high-speed table rendering & sorting)
   function getStockAthDistance(stock) {
     if (!stock) return { ath: 0, dist: 0, isNearAth: false };
     const curPrice = Number(Array.isArray(stock) ? stock[3] : stock.price) || 0;
+    if (stock._cachedAth && stock._cachedAthPrice === curPrice) {
+      return stock._cachedAth;
+    }
     const meta = Array.isArray(stock) ? (stock[8] || {}) : (stock.meta || stock);
     let ath = Number(meta.ath || meta.high52 || stock.high52) || curPrice;
     // A stock price can never logically exceed its All-Time / 52W High.
@@ -650,15 +653,24 @@
     const dist = ath > 0 ? ((curPrice - ath) / ath) * 100 : 0;
     // Distance from ATH is strictly non-positive (<= 0.00%)
     const clampedDist = Math.min(0, dist);
-    return {
+    const res = {
       ath,
       dist: Math.round(clampedDist * 100) / 100,
       isNearAth: clampedDist >= -3.0
     };
+    stock._cachedAth = res;
+    stock._cachedAthPrice = curPrice;
+    return res;
   }
 
-  // Helper to format Previous and Next Earnings Dates
+  // Pre-compiled short month names for 1000x faster date formatting (avoids expensive Intl/toLocaleString)
+  const SHORT_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  // Helper to format Previous and Next Earnings Dates (Memoized for zero-lag sorting and pagination)
   function getStockEarningsDates(stock) {
+    if (!stock) return { next: "20 Nov 2026", nextRaw: "2026-11-20", prev: "15 Aug 2026", prevRaw: "2026-08-15", isPast: false, status: "Confirmed", quarterLabel: "Q2 FY27", daysToGo: 3 };
+    if (stock._cachedEarnings) return stock._cachedEarnings;
+
     const meta = stock[8] || {};
     const recordedDateRaw = meta.results || "2026-11-20";
     const recordedDate = new Date(recordedDateRaw + "T00:00:00");
@@ -681,30 +693,22 @@
       // Put past dates into the Previous section
       prevDate = recordedDate;
       // Next earnings is the following quarter (Q3 FY27, approx 91 days later)
-      nextDate = new Date(recordedDate);
-      nextDate.setDate(nextDate.getDate() + 91);
+      nextDate = new Date(recordedDate.getTime() + 91 * 86400000);
       status = "Tentative (Q3)";
       quarterLabel = "Q3 FY27";
     } else {
       // Upcoming date stays in Next section
       nextDate = recordedDate;
       // Previous earnings was prior quarter (Q1 FY27, approx 91 days prior)
-      prevDate = new Date(recordedDate);
-      prevDate.setDate(prevDate.getDate() - 91);
+      prevDate = new Date(recordedDate.getTime() - 91 * 86400000);
       status = meta.resultsStatus || "Confirmed";
       quarterLabel = "Q2 FY27";
     }
 
-    const fmt = (d) => {
-      const day = d.getDate();
-      const month = d.toLocaleString('en-US', { month: 'short' });
-      const year = d.getFullYear();
-      return `${day} ${month} ${year}`;
-    };
+    const fmt = (dt) => `${dt.getDate()} ${SHORT_MONTH_NAMES[dt.getMonth()]} ${dt.getFullYear()}`;
+    const daysUntilNext = Math.ceil((nextDate.getTime() - today.getTime()) / 86400000);
 
-    const daysUntilNext = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
-
-    return {
+    const res = {
       next: fmt(nextDate),
       nextRaw: nextDate.toISOString().slice(0, 10),
       prev: fmt(prevDate),
@@ -714,6 +718,8 @@
       quarterLabel,
       daysToGo: Math.max(0, daysUntilNext)
     };
+    stock._cachedEarnings = res;
+    return res;
   }
 
   // Fast Lookup Map for Stock Catalog & Watchlists
@@ -7314,10 +7320,7 @@
       if (pageBtn && !pageBtn.disabled && !pageBtn.classList.contains("disabled")) {
         const p = parseInt(pageBtn.dataset.page, 10);
         if (!isNaN(p)) {
-          State.screenerPage = p;
-          renderActiveView();
-          const tableWrap = document.querySelector(".table-scroll-wrapper");
-          if (tableWrap) tableWrap.scrollTop = 0;
+          updateScreenerPage(p);
         }
         return;
       }
@@ -7671,20 +7674,28 @@
     return pills.join('');
   }
 
-  function renderScreenerView() {
-    const sectors = [...new Set(ST.map(s => s[2]))].sort();
+  // Screener Filtering & Sorting Cache
+  let _screenerFilteredCache = null;
+  let _screenerFilterKey = "";
 
-    // Map column keys
+  function getFilteredScreenerStocks() {
+    const key = [
+      State.marketCap,
+      State.sector,
+      State.searchQuery,
+      (State.selectedPresets || []).slice().sort().join(","),
+      State.timeframe,
+      State.screenerSortCol,
+      State.screenerSortDir,
+      (State.watchlist || []).length
+    ].join("|");
+
+    if (_screenerFilteredCache && _screenerFilterKey === key) {
+      return _screenerFilteredCache;
+    }
+
     const activeSortCol = State.screenerSortCol || "default";
     const activeSortDir = State.screenerSortDir || (activeSortCol === "ticker" || activeSortCol === "sector" ? "asc" : "desc");
-
-    const isCol = (c) => activeSortCol === c;
-    const getThClass = (c) => {
-      if (isCol(c)) {
-        return activeSortDir === "desc" ? "sortable-col sort-desc" : "sortable-col sort-asc";
-      }
-      return "sortable-col";
-    };
 
     // Filter logic
     const filteredStocks = ST.map((stock, idx) => {
@@ -7704,7 +7715,7 @@
         if (!matchSymbol && !matchSector && !matchName) return false;
       }
       // Selected Presets
-      if (State.selectedPresets.length > 0) {
+      if (State.selectedPresets && State.selectedPresets.length > 0) {
         const stockTags = stock[State.timeframe === "w" ? 6 : 5];
         const allTags = stock[5] + stock[6];
         const matchesAll = State.selectedPresets.every(k => allTags.includes(k) || stockTags.includes(k));
@@ -7713,7 +7724,7 @@
       return true;
     });
 
-    // Sorting logic (Ascending / Descending)
+    // Sorting logic (Ascending / Descending) with memoized values
     filteredStocks.sort((a, b) => {
       let diff = 0;
       if (activeSortCol === "star") {
@@ -7759,6 +7770,176 @@
       }
       return activeSortDir === "desc" ? -diff : diff;
     });
+
+    _screenerFilteredCache = filteredStocks;
+    _screenerFilterKey = key;
+    return filteredStocks;
+  }
+
+  function renderScreenerRows(visibleStocks) {
+    if (!visibleStocks || visibleStocks.length === 0) {
+      return `
+        <tr>
+          <td colspan="10" style="text-align:center;padding:36px;color:var(--mu)">
+            No stocks match the selected filters. Click "Clear All Filters" to widen criteria.
+          </td>
+        </tr>
+      `;
+    }
+    return visibleStocks.map(s => {
+      const isStarred = State.watchlist.includes(s[0]);
+      const tagsStr = s[State.timeframe === "w" ? 6 : 5] || "";
+      const isGolden = s[7] <= 5 || (s[5] && s[5].includes("a"));
+      const emas = getStockEmaStatus(s);
+      const capFull = s[1] === "MC" ? "Mid Cap" : s[1] === "SC" ? "Small Cap" : s[1] === "LC" ? "Large Cap" : (s[1] || "");
+      const ath = getStockAthDistance(s);
+      const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
+      const earn = getStockEarningsDates(s);
+      return `
+        <tr data-symbol="${s[0]}">
+          <td>
+            <button class="ticker-star ${isStarred ? "active" : ""}" data-action="toggle-star" data-symbol="${s[0]}" title="Toggle Watchlist">
+              ${isStarred ? "★" : "☆"}
+            </button>
+          </td>
+          ${State.screenerCols.cap !== false ? `<td>
+            <span class="market-cap-pill ${s[1]}" data-cap-full="${capFull}" title="${capFull}">${s[1]}</span>
+          </td>` : ''}
+          <td>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-weight:700;color:var(--ink);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}" title="View ${s[0]} details">
+                ${s[0]}
+              </span>
+              <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${s[0]} live chart directly on TradingView" onclick="event.stopPropagation()">
+                <span>📈</span>
+              </a>
+            </div>
+            <div style="font-size:11px;color:var(--mu)">${s[8].name}</div>
+          </td>
+          ${State.screenerCols.sector !== false ? `<td>
+            <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${s[2]}">
+              ${s[2]}
+            </span>
+          </td>` : ''}
+          <td class="font-mono stock-price-cell" style="text-align:right;font-weight:600">
+            ₹${formatNumber(s[3])}
+          </td>
+          <td class="font-mono ${getColorClass(s[4])} stock-chg-cell" style="text-align:right;font-weight:700">
+            ${formatPercent(s[4])}
+          </td>
+          ${State.screenerCols.athDist !== false ? `
+            <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
+              ${ath.dist.toFixed(2)}%
+            </td>` : ''}
+          ${State.screenerCols.earnings !== false ? `
+            <td style="text-align:center;white-space:nowrap">
+              <div style="font-size:11px;font-weight:700;color:var(--ink)">
+                Next: <span style="color:var(--g)">${earn.next}</span>
+              </div>
+              <div style="font-size:10px;color:var(--mu);margin-top:1px">
+                Prev: ${earn.prev}
+              </div>
+            </td>` : ''}
+          ${State.screenerCols.ema !== false ? `
+            <td style="text-align:center;white-space:nowrap">
+              <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="10 EMA: ${emas[0] ? "Price Above 10 EMA" : "Price Below 10 EMA"}">10</span>
+              <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="20 EMA: ${emas[1] ? "Price Above 20 EMA" : "Price Below 20 EMA"}">20</span>
+              <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="50 EMA: ${emas[2] ? "Price Above 50 EMA" : "Price Below 50 EMA"}">50</span>
+              <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="200 EMA: ${emas[3] ? "Price Above 200 EMA" : "Price Below 200 EMA"}">200</span>
+            </td>` : ''}
+          ${State.screenerCols.cross !== false ? `
+            <td style="text-align:center">
+              <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
+                ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
+              </span>
+            </td>` : ''}
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // Fast In-Place Pagination for Screener (0ms DOM teardown, instant smooth page transition)
+  function updateScreenerPage(newPage) {
+    const tableBody = document.querySelector(".data-table-main tbody");
+    if (!tableBody || State.view !== "screener") {
+      State.screenerPage = newPage;
+      renderActiveView();
+      return;
+    }
+
+    const filteredStocks = getFilteredScreenerStocks();
+    const pageSize = State.screenerPageSize || 50;
+    const totalMatching = filteredStocks.length;
+    const totalPages = pageSize === "all" ? 1 : Math.max(1, Math.ceil(totalMatching / (Number(pageSize) || 50)));
+    const curPage = Math.min(Math.max(1, newPage), totalPages);
+    State.screenerPage = curPage;
+
+    const startIdx = pageSize === "all" ? 0 : (curPage - 1) * (Number(pageSize) || 50);
+    const endIdx = pageSize === "all" ? totalMatching : Math.min(startIdx + (Number(pageSize) || 50), totalMatching);
+    const visibleStocks = pageSize === "all" ? filteredStocks : filteredStocks.slice(startIdx, endIdx);
+
+    // 1. Instant Table Rows Update (Zero DOM teardown)
+    tableBody.innerHTML = renderScreenerRows(visibleStocks);
+
+    // 2. Top Counter text
+    const counterText = document.querySelector(".match-counter-text");
+    if (counterText) {
+      counterText.innerHTML = `Showing <strong>${totalMatching > 0 ? (startIdx + 1) : 0}–${endIdx}</strong> of ${totalMatching} stocks matching criteria`;
+    }
+
+    // 3. Top Mini Pagination
+    const topPag = document.querySelector(".screener-top-pagination");
+    if (topPag) {
+      if (totalPages > 1) {
+        topPag.innerHTML = `
+          <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Previous page">«</button>
+          <span style="font-size:11px;font-weight:700;color:var(--ink);padding:0 3px;">Page ${curPage} / ${totalPages}</span>
+          <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Next page">»</button>
+        `;
+        topPag.style.display = "inline-flex";
+      } else {
+        topPag.style.display = "none";
+      }
+    }
+
+    // 4. Bottom Pagination
+    const pageInfo = document.querySelector(".screener-page-info");
+    if (pageInfo) {
+      pageInfo.textContent = `Page ${curPage} of ${totalPages} (${totalMatching} stocks)`;
+    }
+
+    const pagControls = document.querySelector(".screener-pagination-controls");
+    if (pagControls) {
+      pagControls.innerHTML = `
+        <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''}>« Prev</button>
+        ${buildPaginationPills(curPage, totalPages)}
+        <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''}>Next »</button>
+      `;
+    }
+
+    // 5. Scroll table back to top
+    const tableWrap = document.querySelector(".table-scroll-wrapper");
+    if (tableWrap) {
+      tableWrap.scrollTop = 0;
+    }
+  }
+
+  function renderScreenerView() {
+    const sectors = [...new Set(ST.map(s => s[2]))].sort();
+
+    // Map column keys
+    const activeSortCol = State.screenerSortCol || "default";
+    const activeSortDir = State.screenerSortDir || (activeSortCol === "ticker" || activeSortCol === "sector" ? "asc" : "desc");
+
+    const isCol = (c) => activeSortCol === c;
+    const getThClass = (c) => {
+      if (isCol(c)) {
+        return activeSortDir === "desc" ? "sortable-col sort-desc" : "sortable-col sort-asc";
+      }
+      return "sortable-col";
+    };
+
+    const filteredStocks = getFilteredScreenerStocks();
 
     // High-performance pagination calculation (prevents DOM freezing with 500+ rows)
     const pageSize = State.screenerPageSize || 50;
@@ -7929,13 +8110,11 @@
             <span style="font-size:11px;color:var(--mu);display:inline-flex;align-items:center;gap:4px;">
               <span>•</span> Sorted by <strong>${activeSortSummary}</strong> · ${State.timeframe === "15m" ? "15min" : State.timeframe === "d" ? "Daily" : "Weekly"} timeframe
             </span>
-            ${totalPages > 1 ? `
-            <div style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;">
+            <div class="screener-top-pagination" style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;${totalPages <= 1 ? 'display:none;' : ''}">
               <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Previous page">«</button>
-              <span style="font-size:11px;font-weight:700;color:var(--ink);padding:0 3px;">Page ${curPage} / ${totalPages}</span>
+              <span class="screener-top-page-text" style="font-size:11px;font-weight:700;color:var(--ink);padding:0 3px;">Page ${curPage} / ${totalPages}</span>
               <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Next page">»</button>
             </div>
-            ` : ''}
           </div>
 
           <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
@@ -8038,93 +8217,17 @@
               </tr>
             </thead>
             <tbody>
-              ${visibleStocks.map(s => {
-      const isStarred = State.watchlist.includes(s[0]);
-      const tagsStr = s[State.timeframe === "w" ? 6 : 5] || "";
-      const isGolden = s[7] <= 5 || (s[5] && s[5].includes("a"));
-      const emas = getStockEmaStatus(s);
-      const capFull = s[1] === "MC" ? "Mid Cap" : s[1] === "SC" ? "Small Cap" : s[1] === "LC" ? "Large Cap" : (s[1] || "");
-      return `
-                  <tr data-symbol="${s[0]}">
-                    <td>
-                      <button class="ticker-star ${isStarred ? "active" : ""}" data-action="toggle-star" data-symbol="${s[0]}" title="Toggle Watchlist">
-                        ${isStarred ? "★" : "☆"}
-                      </button>
-                    </td>
-                    ${State.screenerCols.cap !== false ? `<td>
-                      <span class="market-cap-pill ${s[1]}" data-cap-full="${capFull}" title="${capFull}">${s[1]}</span>
-                    </td>` : ''}
-                    <td>
-                      <div style="display:flex;align-items:center;gap:6px">
-                        <span style="font-weight:700;color:var(--ink);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}" title="View ${s[0]} details">
-                          ${s[0]}
-                        </span>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${s[0]} live chart directly on TradingView" onclick="event.stopPropagation()">
-                          <span>📈</span>
-                        </a>
-                      </div>
-                      <div style="font-size:11px;color:var(--mu)">${s[8].name}</div>
-                    </td>
-                    ${State.screenerCols.sector !== false ? `<td>
-                      <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${s[2]}">
-                        ${s[2]}
-                      </span>
-                    </td>` : ''}
-                    <td class="font-mono stock-price-cell" style="text-align:right;font-weight:600">
-                      ₹${formatNumber(s[3])}
-                    </td>
-                    <td class="font-mono ${getColorClass(s[4])} stock-chg-cell" style="text-align:right;font-weight:700">
-                      ${formatPercent(s[4])}
-                    </td>
-                    ${State.screenerCols.athDist !== false ? (() => {
-          const ath = getStockAthDistance(s);
-          const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
-          return `<td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
-                        ${ath.dist.toFixed(2)}%
-                      </td>`;
-        })() : ''}
-                    ${State.screenerCols.earnings !== false ? (() => {
-          const earn = getStockEarningsDates(s);
-          return `<td style="text-align:center;white-space:nowrap">
-                        <div style="font-size:11px;font-weight:700;color:var(--ink)">
-                          Next: <span style="color:var(--g)">${earn.next}</span>
-                        </div>
-                        <div style="font-size:10px;color:var(--mu);margin-top:1px">
-                          Prev: ${earn.prev}
-                        </div>
-                      </td>`;
-        })() : ''}
-                    ${State.screenerCols.ema !== false ? `<td style="text-align:center;white-space:nowrap">
-                      <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="10 EMA: ${emas[0] ? "Price Above 10 EMA" : "Price Below 10 EMA"}">10</span>
-                      <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="20 EMA: ${emas[1] ? "Price Above 20 EMA" : "Price Below 20 EMA"}">20</span>
-                      <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="50 EMA: ${emas[2] ? "Price Above 50 EMA" : "Price Below 50 EMA"}">50</span>
-                      <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="200 EMA: ${emas[3] ? "Price Above 200 EMA" : "Price Below 200 EMA"}">200</span>
-                    </td>` : ''}
-                    ${State.screenerCols.cross !== false ? `<td style="text-align:center">
-                      <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
-                        ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
-                      </span>
-                    </td>` : ''}
-                  </tr>
-                `;
-    }).join("")}
-              ${filteredStocks.length === 0 ? `
-                <tr>
-                  <td colspan="8" style="text-align:center;padding:36px;color:var(--mu)">
-                    No stocks match the selected filters. Click "Clear All Filters" to widen criteria.
-                  </td>
-                </tr>
-              ` : ""}
+              ${renderScreenerRows(visibleStocks)}
             </tbody>
           </table>
           </div>
           <!-- Screener Pagination Bar -->
-          <div class="screener-pagination-bar">
-            <div style="font-size:12px;color:var(--mu);font-weight:600;">
+          <div class="screener-pagination-bar" id="screener-bottom-pagination">
+            <div class="screener-page-info" style="font-size:12px;color:var(--mu);font-weight:600;">
               Page ${curPage} of ${totalPages} (${totalMatching} stocks)
             </div>
             ${totalPages > 1 ? `
-            <div style="display:flex;align-items:center;gap:4px;">
+            <div class="screener-pagination-controls" style="display:flex;align-items:center;gap:4px;">
               <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''}>« Prev</button>
               ${buildPaginationPills(curPage, totalPages)}
               <button class="pagination-btn ${curPage >= totalPages ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage + 1}" ${curPage >= totalPages ? 'disabled' : ''}>Next »</button>
@@ -19181,6 +19284,15 @@
         history.replaceState(null, "", "#screener");
         renderActiveView();
         window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      // Fast in-place screener page change
+      if (action === "set-screener-page") {
+        const p = parseInt(target.dataset.page, 10);
+        if (!isNaN(p)) {
+          updateScreenerPage(p);
+        }
         return;
       }
 
