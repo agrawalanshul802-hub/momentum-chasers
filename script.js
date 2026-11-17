@@ -7838,23 +7838,6 @@
             </select>
           </div>
 
-          <!-- Technical Setup Dropdown (Put Presets in Dropdown) -->
-          <div style="display:inline-flex;align-items:center;gap:8px;">
-            <span class="screener-label">Technical Setup</span>
-            <select class="styled-select-input" id="screener-tech-preset-select" aria-label="Technical Preset Filter">
-              <option value="all" ${!PR.some(p => State.selectedPresets.includes(p[0])) ? "selected" : ""}>All Technical Setups (${PR.length})</option>
-              ${PR.map(p => `<option value="${p[0]}" ${State.selectedPresets.includes(p[0]) ? "selected" : ""}>${p[1]}</option>`).join("")}
-            </select>
-          </div>
-
-          <!-- Financial & Results Dropdown (Put Presets in Dropdown) -->
-          <div style="display:inline-flex;align-items:center;gap:8px;">
-            <span class="screener-label">Financial Growth</span>
-            <select class="styled-select-input" id="screener-fin-preset-select" aria-label="Financial Preset Filter">
-              <option value="all" ${!RS.some(p => State.selectedPresets.includes(p[0])) ? "selected" : ""}>All Financial Setups (${RS.length})</option>
-              ${RS.map(p => `<option value="${p[0]}" ${State.selectedPresets.includes(p[0]) ? "selected" : ""}>${p[1]}</option>`).join("")}
-            </select>
-          </div>
 
           <!-- Timeframe Segmented Buttons -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
@@ -19865,22 +19848,6 @@
       if (e.target.id === "screener-sector-select") {
         State.sector = e.target.value;
         State.screenerPage = 1;
-        renderActiveView();
-      } else if (e.target.id === "screener-tech-preset-select") {
-        const val = e.target.value;
-        const techKeys = PR.map(p => p[0]);
-        State.selectedPresets = State.selectedPresets.filter(k => !techKeys.includes(k));
-        if (val !== "all") {
-          State.selectedPresets.push(val);
-        }
-        renderActiveView();
-      } else if (e.target.id === "screener-fin-preset-select") {
-        const val = e.target.value;
-        const finKeys = RS.map(p => p[0]);
-        State.selectedPresets = State.selectedPresets.filter(k => !finKeys.includes(k));
-        if (val !== "all") {
-          State.selectedPresets.push(val);
-        }
         renderActiveView();
       } else if (e.target.id === "screener-cap-select") {
         State.marketCap = e.target.value;
