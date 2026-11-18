@@ -8343,9 +8343,6 @@
                 <button class="owner-panel-link-btn" data-action="refresh-owner-ideas" title="Refresh live published ideas" style="cursor:pointer;background:transparent;">
                   <span>↻ Refresh</span>
                 </button>
-                <a href="/owner" class="owner-panel-link-btn" title="Open separate Owner Panel to publish & manage ideas" target="_blank">
-                  <span>⚙️ Owner Studio</span>
-                </a>
               </div>
             </div>
             <div class="chips-wrap-group" id="owner-ideas-chips-container">
@@ -8796,9 +8793,8 @@
     const ideas = source.filter(i => i.active !== false);
     if (!ideas || ideas.length === 0) {
       return `
-        <div style="font-size:12px;color:var(--mu);padding:4px 0;display:flex;align-items:center;gap:8px;">
-          <span>No active published ideas yet.</span>
-          <a href="/owner" class="owner-panel-link-btn" target="_blank" style="padding:2px 7px;">+ Publish First Idea</a>
+        <div style="font-size:12px;color:var(--mu);padding:4px 0;">
+          <span>No active published ideas currently.</span>
         </div>
       `;
     }
@@ -17690,7 +17686,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=6.0.3" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=6.0.4" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
