@@ -7696,6 +7696,104 @@
     return pills.join('');
   }
 
+  // ---------------------------------------------------------------------------
+  // Master 44 Nifty Sectoral & Thematic Indices Definition (Feature 03 & Screener)
+  // ---------------------------------------------------------------------------
+  const MASTER_44_SECTORS = [
+    { key: "NIFTY AUTO", label: "Automobiles & Auto (NIFTY AUTO)", broad: "Automobiles & Auto", extraSyms: ["TMPV", "M&M", "MARUTI", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF", "JBMA", "OLAELEC", "OLECTRA", "EXIDEIND", "ARE&M", "CRAFTSMAN", "CEATLTD", "GABRIEL", "JKTYRE", "MINDACORP", "MSUMI", "RKFORGE", "SANSERA", "SONACOMS", "TENNIND", "ZFCVINDIA", "NDRAUTO", "SHRIPISTON"] },
+    { key: "NIFTY BANK", label: "Banking & Finance (NIFTY BANK)", broad: "Banking & Finance", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "YESBANK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB", "BANDHANBNK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK"] },
+    { key: "NIFTY PVT BANK", label: "Private Sector Banks (NIFTY PVT BANK)", broad: null, extraSyms: ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK", "CSBBANK"] },
+    { key: "NIFTY PSU BANK", label: "Public Sector Banks (NIFTY PSU BANK)", broad: null, extraSyms: ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB"] },
+    { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: "Banking & Finance", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
+    { key: "NIFTY MS FIN SERV", label: "MidSmall Financials (NIFTY MS FIN SERV)", broad: null, extraSyms: ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHLDNG", "CHOLAHLDNG", "HUDCO", "BAJAJHFL", "CANFINHOME", "PNBHOUSING", "IIFL", "KFINTECH"] },
+    { key: "NIFTY CAPITAL MKT", label: "Capital Markets & Exchanges (NIFTY CAPITAL MKT)", broad: null, extraSyms: ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC", "KFINTECH", "ANANDRATHI"] },
+    { key: "NIFTY IT", label: "Information Technology (NIFTY IT)", broad: "Information Technology", extraSyms: ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS", "LTTS", "TATAELXSI", "KPITTECH", "CYIENT", "SONATSOFTW", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "TATACOMM", "RATEGAIN", "ROUTE", "NETWEB"] },
+    { key: "NIFTY MS IT TELCM", label: "MidSmall IT & Telecom (NIFTY MS IT TELCM)", broad: null, extraSyms: ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "NETWEB", "INDUSTOWER", "TATACOMM"] },
+    { key: "NIFTY PHARMA", label: "Pharmaceuticals (NIFTY PHARMA)", broad: "Pharmaceuticals & Healthcare", extraSyms: ["SUNPHARMA", "CIPLA", "DRREDDY", "DIVISLAB", "LUPIN", "ZYDUSLIFE", "TORNTPHARM", "MANKIND", "AUROPHARMA", "ALKEM", "BIOCON", "GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "IPCALAB", "NATCOPHARM", "PFIZER", "SANOFI", "GLAXO", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "APLLTD"] },
+    { key: "NIFTY HEALTHCARE", label: "Healthcare & Diagnostics (NIFTY HEALTHCARE)", broad: "Pharmaceuticals & Healthcare", extraSyms: ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE", "ASTERDM", "KIMS", "NH", "METROPOLIS", "RAINBOW", "VIJAYA", "POLYMED"] },
+    { key: "NIFTY MIDSML HLTH", label: "MidSmall Healthcare (NIFTY MIDSML HLTH)", broad: null, extraSyms: ["GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "SUVENPHAR", "ERIS", "VIJAYA", "KIMS", "ASTERDM", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "POLYMED", "CAPLIPOI", "CONCORDBIO"] },
+    { key: "NIFTY FMCG", label: "FMCG & Consumer Goods (NIFTY FMCG)", broad: "FMCG & Consumer", extraSyms: ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "COLPAL", "EMAMILTD", "RADICO", "UBL", "PGHH", "HONASA", "BIKAJI", "JYOTHYLAB", "PATANJALI", "ABDL"] },
+    { key: "NIFTY CONSUMPTION", label: "India Consumption (NIFTY CONSUMPTION)", broad: null, extraSyms: ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI", "TRENT", "PAGEIND", "METROBRAND", "BATAINDIA", "KALYANKJIL", "SAPPHIRE", "WESTLIFE", "MANYAVAR", "SHRINGARMS", "RENTOMOJO"] },
+    { key: "NIFTY MS IND CONS", label: "MidSmall Consumption (NIFTY MS IND CONS)", broad: null, extraSyms: ["TITAN", "TRENT", "PAGEIND", "METROBRAND", "DEVYANI", "SAPPHIRE", "BIKAJI", "KALYANKJIL", "CENTURYPLY", "BATAINDIA", "SHRINGARMS", "RENTOMOJO", "WESTLIFE", "CAMPUS", "CERA", "HONASA"] },
+    { key: "NIFTY CONSR DURBL", label: "Consumer Durables (NIFTY CONSR DURBL)", broad: "Consumer Durables", extraSyms: ["TITAN", "HAVELLS", "VOLTAS", "DIXON", "CROMPTON", "WHIRLPOOL", "BLUESTARCO", "KAJARIACER", "BATAINDIA", "AMBER", "KALYANKJIL", "RAJESHEXPO", "SYRMA", "CENTURYPLY", "VGUARD", "SYMPHONY"] },
+    { key: "NIFTY METAL", label: "Metals & Mining (NIFTY METAL)", broad: "Metals & Mining", extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "JINDALSTEL", "VEDL", "NMDC", "SAIL", "NATIONALUM", "HINDZINC", "APLLTD", "JSL", "RATNAMANI", "WELCORP", "GPIL", "KIOCL"] },
+    { key: "NIFTY REALTY", label: "Real Estate & Realty (NIFTY REALTY)", broad: "Realty & Infrastructure", extraSyms: ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PRESTIGE", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "SUNTECK", "MAHLIFE", "DBREALTY", "KOLTEPATIL", "ANANTRAJ"] },
+    { key: "NIFTY HOUSING", label: "Housing & Materials (NIFTY HOUSING)", broad: null, extraSyms: ["DLF", "GODREJPROP", "ULTRACEMCO", "ASIANPAINT", "BERGERPAINT", "HAVELLS", "POLYCAB", "PIDILITIND", "VOLTAS", "AMBUJACEM", "KAJARIACER", "CERA", "ASTRAL", "SHREECEM", "DALBHARAT", "SUPREMEIND"] },
+    { key: "NIFTY CORE HOUSING", label: "Core Housing Ecosystem (NIFTY CORE HOUSING)", broad: null, extraSyms: ["DLF", "GODREJPROP", "OBEROIRLTY", "LODHA", "PRESTIGE", "ULTRACEMCO", "AMBUJACEM", "SHREECEM", "DALBHARAT", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "ASTRAL", "POLYCAB"] },
+    { key: "NIFTY ENERGY", label: "Energy, Oil & Power (NIFTY ENERGY)", broad: null, extraSyms: ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON", "NHPC", "SJVN", "TORNTPOWER", "CESC", "JSWENERGY", "IREDA", "ACMESOLAR"] },
+    { key: "NIFTY OIL AND GAS", label: "Oil & Gas Exploration (NIFTY OIL AND GAS)", broad: "Oil & Gas & Energy", extraSyms: ["RELIANCE", "ONGC", "IOC", "BPCL", "GAIL", "PETRONET", "OIL", "HINDPETRO", "GUJGASLTD", "IGL", "MGL", "AEGISLOG", "GNRL", "DEEPAKNTR", "ATUL"] },
+    { key: "NIFTY INFRA", label: "Infrastructure (NIFTY INFRA)", broad: null, extraSyms: ["LT", "ADANIPORTS", "POWERGRID", "NTPC", "ULTRACEMCO", "BHARTIARTL", "ONGC", "IOC", "GAIL", "GRASIM", "GMRINFRA", "IRB", "KNRCON", "PNCINFRA", "NCC", "HGINFRA", "TECHNOE"] },
+    { key: "NIFTY COMMODITIES", label: "Commodities & Raw Materials (NIFTY COMMODITIES)", broad: null, extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "COALINDIA", "VEDL", "JINDALSTEL", "NMDC", "AMBUJACEM", "ACC", "SHREECEM", "GRASIM", "PIIND", "UPL", "COROMANDEL", "SRF"] },
+    { key: "NIFTY CHEMICALS", label: "Specialty Chemicals (NIFTY CHEMICALS)", broad: "Chemicals & Agro", extraSyms: ["PIDILITIND", "SRF", "GUJFLUORO", "DEEPAKNTR", "TATACHEM", "ATUL", "AARTIIND", "NAVINFLUOR", "VINATIORGA", "ALKYLAMINE", "COROMANDEL", "PIIND", "SOLARINDS", "CLEAN", "AETHER", "FINEORG", "SUMICHEM"] },
+    { key: "NIFTY IND DEFENCE", label: "Aerospace & Defence (NIFTY IND DEFENCE)", broad: null, extraSyms: ["BEL", "HAL", "MAZDOCK", "COCHINSHIP", "BDL", "BEML", "DATAPATTNS", "PARAS", "MTARTECH", "GRSE", "ZENTEC", "ASTRAZEN", "SOLARINDS"] },
+    { key: "NIFTY RAILWAYS PSU", label: "Railways PSU (NIFTY RAILWAYS PSU)", broad: null, extraSyms: ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JWL", "TEXRAIL", "BEML"] },
+    { key: "NIFTY IND TOURISM", label: "Tourism & Hospitality (NIFTY IND TOURISM)", broad: null, extraSyms: ["INDIGO", "IHCL", "INDHOTEL", "ITCHOTELS", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "VIPIND", "YATRA", "EASEMYTRIP"] },
+    { key: "NIFTY TRANS LOGIS", label: "Transportation & Logistics (NIFTY TRANS LOGIS)", broad: "Logistics & Services", extraSyms: ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY", "AEGISLOG"] },
+    { key: "NIFTY MOBILITY", label: "Mobility & Transport (NIFTY MOBILITY)", broad: null, extraSyms: ["MARUTI", "M&M", "TMPV", "BAJAJ-AUTO", "TVSMOTOR", "ASHOKLEY", "INDIGO", "MOTHERSON", "IRCTC", "BHARATFORG", "BOSCHLTD", "MRF", "EXIDEIND", "ARE&M"] },
+    { key: "NIFTY EV", label: "EV & Green Mobility (NIFTY EV)", broad: null, extraSyms: ["TMPV", "M&M", "TVSMOTOR", "BAJAJ-AUTO", "OLAELEC", "EXIDEIND", "ARE&M", "SONACOMS", "BHARATFORG", "JBMA", "OLECTRA", "SCHNEIDER"] },
+    { key: "NIFTY IND DIGITAL", label: "Digital Ecosystem (NIFTY IND DIGITAL)", broad: null, extraSyms: ["NAUKRI", "ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA", "INDIAMART", "ZOMATO"] },
+    { key: "NIFTY INTERNET", label: "Internet Technologies (NIFTY INTERNET)", broad: null, extraSyms: ["ETERNAL", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAGMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA", "ZOMATO"] },
+    { key: "NIFTY MEDIA", label: "Media & Entertainment (NIFTY MEDIA)", broad: "Media & Entertainment", extraSyms: ["ZEEL", "SUNTV", "SAREGAMA", "PVRINOX", "NETWORK18", "TV18BRDCST", "NDTV", "DISHTV", "HATHWAY", "DBREALTY"] },
+    { key: "NIFTY PSE", label: "Public Sector Enterprises (NIFTY PSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "HAL", "IOC", "BPCL", "GAIL", "RECLTD", "PFC", "NHPC", "OIL", "BHEL", "SAIL", "NMDC"] },
+    { key: "NIFTY CPSE", label: "Central Public Sector (NIFTY CPSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "OIL", "NHPC", "NATIONALUM", "NBCC", "SJVN", "COCHINSHIP", "MAZDOCK", "COALINDIA"] },
+    { key: "NIFTY MNC", label: "Multinational Corporations (NIFTY MNC)", broad: null, extraSyms: ["MARUTI", "HINDUNILVR", "NESTLEIND", "ABB", "SIEMENS", "CUMMINSIND", "HONAUT", "BOSCHLTD", "3MINDIA", "PFIZER", "SANOFI", "GLAXO"] },
+    { key: "NIFTY RURAL", label: "Rural Economy & Agri (NIFTY RURAL)", broad: null, extraSyms: ["M&M", "HEROMOTOCO", "ESCORTS", "DABUR", "MARICO", "UPL", "COROMANDEL", "PIIND", "DEEPAKNTR", "CHOLAFIN", "BAYERCROP", "DHANUKA"] },
+    { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ETERNAL", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
+    { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, extraSyms: ["ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "MEDANTA", "MANKIND", "IREDA", "TATACOMM", "DOMS", "JYOTICNC", "OLAELEC", "BAJAJHFL", "ACMESOLAR", "SWIGGY", "NTPCGREEN"] },
+    { key: "NIFTY 50", label: "NIFTY 50 Benchmark (50 LargeCap)", broad: null, isNifty50: true },
+    { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, cap: "LC" },
+    { key: "NIFTY MIDCAP 150", label: "NIFTY MidCap 150 Benchmark (MidCap 150)", broad: null, cap: "MC" },
+    { key: "NIFTY SMLCAP 250", label: "NIFTY SmallCap 250 Benchmark (SmallCap 250)", broad: null, cap: "SC" }
+  ];
+
+  function getScreener44Sectors() {
+    return [...MASTER_44_SECTORS].sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  function stockMatchesSector(stock, selectedSector) {
+    if (!selectedSector || selectedSector === "all" || selectedSector === "ALL SECTORS") return true;
+
+    // Direct match against stock[2] (broad sector name)
+    if (stock[2] === selectedSector) return true;
+
+    // Find sector definition in MASTER_44_SECTORS
+    const norm = selectedSector.toUpperCase().trim();
+    const secDef = MASTER_44_SECTORS.find(s => 
+      s.key === norm || 
+      s.broad === selectedSector || 
+      s.key.replace(/^NIFTY\s+/, "") === norm.replace(/^NIFTY\s+/, "")
+    );
+
+    if (secDef) {
+      if (secDef.isNifty50) {
+        if (typeof HEATMAP_NIFTY50_DATA !== "undefined" && Array.isArray(HEATMAP_NIFTY50_DATA)) {
+          if (HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0])) return true;
+        }
+        if (stock[1] === "LC") return true;
+      }
+      if (secDef.cap && stock[1] === secDef.cap) return true;
+      if (secDef.broad && stock[2] === secDef.broad) return true;
+      if (secDef.extraSyms && secDef.extraSyms.includes(stock[0])) return true;
+    }
+
+    // Direct match via HEATMAP_SECTOR_SYMBOLS_MAP if available
+    if (typeof HEATMAP_SECTOR_SYMBOLS_MAP !== "undefined") {
+      const syms = HEATMAP_SECTOR_SYMBOLS_MAP[norm] || HEATMAP_SECTOR_SYMBOLS_MAP[selectedSector];
+      if (syms && syms.includes(stock[0])) return true;
+    }
+
+    return false;
+  }
+
+  // Expose on window for runtime and test access
+  if (typeof window !== "undefined") {
+    window.MASTER_44_SECTORS = MASTER_44_SECTORS;
+    window.getScreener44Sectors = getScreener44Sectors;
+    window.stockMatchesSector = stockMatchesSector;
+    window.getFilteredScreenerStocks = getFilteredScreenerStocks;
+    window.renderScreenerView = renderScreenerView;
+  }
+
   // Screener Filtering & Sorting Cache
   let _screenerFilteredCache = null;
   let _screenerFilterKey = "";
@@ -7726,8 +7824,8 @@
     }).filter(stock => {
       // Market Cap filter
       if (State.marketCap !== "all" && stock[1] !== State.marketCap) return false;
-      // Sector filter
-      if (State.sector !== "all" && stock[2] !== State.sector) return false;
+      // Sector filter (Supports all 44 Nifty Sectoral Indices + broad sector aliases)
+      if (State.sector !== "all" && !stockMatchesSector(stock, State.sector)) return false;
       // Text query
       if (State.searchQuery) {
         const q = State.searchQuery.toLowerCase();
@@ -7947,7 +8045,7 @@
   }
 
   function renderScreenerView() {
-    const sectors = [...new Set(ST.map(s => s[2]))].sort();
+    const screenerSectors = getScreener44Sectors();
 
     // Map column keys
     const activeSortCol = State.screenerSortCol || "default";
@@ -8032,12 +8130,15 @@
             </div>
           </div>
 
-          <!-- Sector Dropdown -->
+          <!-- Sector Dropdown (All 44 Nifty Sectoral & Thematic Indices) -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <span class="screener-label">Sector</span>
             <select class="styled-select-input" id="screener-sector-select" aria-label="Sector Filter">
-              <option value="all" ${State.sector === "all" ? "selected" : ""}>All Sectors (${sectors.length})</option>
-              ${sectors.map(sec => `<option value="${sec}" ${State.sector === sec ? "selected" : ""}>${sec}</option>`).join("")}
+              <option value="all" ${State.sector === "all" ? "selected" : ""}>All Sectors (${screenerSectors.length})</option>
+              ${screenerSectors.map(sec => {
+                const isSelected = State.sector === sec.key || State.sector === sec.broad;
+                return `<option value="${sec.key}" ${isSelected ? "selected" : ""}>${sec.label}</option>`;
+              }).join("")}
             </select>
           </div>
 
@@ -17160,7 +17261,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.2" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.3" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
