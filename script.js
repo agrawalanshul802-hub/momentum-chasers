@@ -81,7 +81,7 @@
     ["DIVISLAB", "LC", "Pharmaceuticals & Healthcare", 11442, -0.37, "b231478", "b", 3, { "pe": 16.5, "pb": 3.6, "rev": 24.6, "profit": 21.4, "name": "Divi's Laboratories Ltd", "high52": 11824, "low52": 5647.5, "results": "2026-11-08", "resultsStatus": "Confirmed" }],
     ["DRREDDY", "LC", "Pharmaceuticals & Healthcare", 1380, -0.48, "b", "b", 3, { "pe": 43.2, "pb": 6.3, "rev": 9.5, "profit": 9.4, "name": "Dr. Reddy's Laboratories Ltd", "high52": 1414.9, "low52": 1101, "results": "2026-11-04", "resultsStatus": "Tentative" }],
     ["EICHERMOT", "LC", "Automobiles & Auto", 7650, 1.34, "arp2", "a", 3, { "pe": 41.2, "pb": 4.9, "rev": 6.6, "profit": 31.1, "name": "Eicher Motors Ltd", "high52": 8230, "low52": 6442, "results": "2026-12-28", "resultsStatus": "Confirmed" }],
-    ["ETERNAL", "LC", "Consumer Services", 363.65, -0.19, "b3", "b", 3, { "pe": 16.8, "pb": 2.7, "rev": 22.5, "profit": -4.6, "name": "Eternal Ltd", "high52": 372.1, "low52": 212.6, "results": "2026-12-24", "resultsStatus": "Confirmed" }],
+    ["ZOMATO", "LC", "Consumer Services", 367.25, -2.08, "b3", "b", 3, { "pe": 16.8, "pb": 2.7, "rev": 22.5, "profit": -4.6, "name": "Zomato Ltd (Eternal)", "high52": 377.7, "low52": 212.6, "results": "2026-12-24", "resultsStatus": "Confirmed" }],
     ["GAIL", "LC", "Oil & Gas & Energy", 188, 0.05, "bar23178", "ba", 1, { "pe": 51.2, "pb": 4.4, "rev": 15.3, "profit": 27.3, "name": "GAIL (India) Ltd", "high52": 189.9, "low52": 134.36, "results": "2026-12-20", "resultsStatus": "Tentative" }],
     ["GODREJCP", "LC", "FMCG & Consumer", 870.75, -0.66, "3", "r", 8, { "pe": 18.9, "pb": 5.4, "rev": 25.4, "profit": 6.2, "name": "Godrej Consumer Products Ltd", "high52": 1273.9, "low52": 777.2, "results": "2026-11-13", "resultsStatus": "Tentative" }],
     ["GRASIM", "LC", "Cement & Materials", 3034, -2.6, "347", "r", 6, { "pe": 20.2, "pb": 2.6, "rev": 25.2, "profit": 12.2, "name": "Grasim Industries Ltd", "high52": 3411.1, "low52": 2502.5, "results": "2026-11-11", "resultsStatus": "Confirmed" }],
@@ -4628,8 +4628,7 @@
     // Landmark & Modern Indian IPOs
     { symbol: "RENTOMOJO", name: "Rentomojo Limited (Edunetwork)", sector: "Consumer Tech / Rental", price: 568.00, chg: 40.59, isIpo: true },
     { symbol: "SWIGGY", name: "Swiggy Ltd.", sector: "Consumer Tech / Quick Commerce", price: 410.00, chg: 5.13, isIpo: true },
-    { symbol: "ZOMATO", name: "Eternal Ltd. (Zomato)", sector: "Consumer Tech", price: 245.00, chg: 3.20 },
-    { symbol: "ETERNAL", name: "Eternal Ltd. (Zomato)", sector: "Consumer Tech", price: 245.00, chg: 3.20 },
+    { symbol: "ZOMATO", name: "Zomato Ltd (Eternal)", sector: "Consumer Tech", price: 245.00, chg: 3.20 },
     { symbol: "HYUNDAI", name: "Hyundai Motor India Ltd.", sector: "Automobiles", price: 1860.00, chg: -5.10, isIpo: true },
     { symbol: "WAAREEENER", name: "Waaree Energies Ltd.", sector: "Solar / Renewable", price: 2780.00, chg: 84.96, isIpo: true },
     { symbol: "PREMIERENE", name: "Premier Energies Ltd.", sector: "Solar / Renewable", price: 1120.00, chg: 148.89, isIpo: true },
@@ -5293,7 +5292,8 @@
     "NTPC": "NTPC.NS",
     "LT": "LT.NS",
     "ICICIBANK": "ICICIBANK.NS",
-    "ETERNAL": "ZOMATO.NS",
+    "ZOMATO": "ETERNAL.NS",
+    "ETERNAL": "ETERNAL.NS",
     "TMPV": "TATAMOTORS.NS",
     "M&M": "M&M.NS",
     "TTKPRESTIG": "TTKPRESTIG.NS",
@@ -7704,13 +7704,13 @@
     { key: "NIFTY BANK", label: "Banking & Finance (NIFTY BANK)", broad: "Banking & Finance", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "YESBANK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB", "BANDHANBNK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK"] },
     { key: "NIFTY PVT BANK", label: "Private Sector Banks (NIFTY PVT BANK)", broad: null, extraSyms: ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK", "CSBBANK"] },
     { key: "NIFTY PSU BANK", label: "Public Sector Banks (NIFTY PSU BANK)", broad: null, extraSyms: ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB"] },
-    { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: "Banking & Finance", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
+    { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: null, extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
     { key: "NIFTY MS FIN SERV", label: "MidSmall Financials (NIFTY MS FIN SERV)", broad: null, extraSyms: ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHLDNG", "CHOLAHLDNG", "HUDCO", "BAJAJHFL", "CANFINHOME", "PNBHOUSING", "IIFL", "KFINTECH"] },
     { key: "NIFTY CAPITAL MKT", label: "Capital Markets & Exchanges (NIFTY CAPITAL MKT)", broad: null, extraSyms: ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC", "KFINTECH", "ANANDRATHI"] },
     { key: "NIFTY IT", label: "Information Technology (NIFTY IT)", broad: "Information Technology", extraSyms: ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS", "LTTS", "TATAELXSI", "KPITTECH", "CYIENT", "SONATSOFTW", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "TATACOMM", "RATEGAIN", "ROUTE", "NETWEB"] },
     { key: "NIFTY MS IT TELCM", label: "MidSmall IT & Telecom (NIFTY MS IT TELCM)", broad: null, extraSyms: ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "NETWEB", "INDUSTOWER", "TATACOMM"] },
     { key: "NIFTY PHARMA", label: "Pharmaceuticals (NIFTY PHARMA)", broad: "Pharmaceuticals & Healthcare", extraSyms: ["SUNPHARMA", "CIPLA", "DRREDDY", "DIVISLAB", "LUPIN", "ZYDUSLIFE", "TORNTPHARM", "MANKIND", "AUROPHARMA", "ALKEM", "BIOCON", "GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "IPCALAB", "NATCOPHARM", "PFIZER", "SANOFI", "GLAXO", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "APLLTD"] },
-    { key: "NIFTY HEALTHCARE", label: "Healthcare & Diagnostics (NIFTY HEALTHCARE)", broad: "Pharmaceuticals & Healthcare", extraSyms: ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE", "ASTERDM", "KIMS", "NH", "METROPOLIS", "RAINBOW", "VIJAYA", "POLYMED"] },
+    { key: "NIFTY HEALTHCARE", label: "Healthcare & Diagnostics (NIFTY HEALTHCARE)", broad: null, extraSyms: ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE", "ASTERDM", "KIMS", "NH", "METROPOLIS", "RAINBOW", "VIJAYA", "POLYMED"] },
     { key: "NIFTY MIDSML HLTH", label: "MidSmall Healthcare (NIFTY MIDSML HLTH)", broad: null, extraSyms: ["GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "SUVENPHAR", "ERIS", "VIJAYA", "KIMS", "ASTERDM", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "POLYMED", "CAPLIPOI", "CONCORDBIO"] },
     { key: "NIFTY FMCG", label: "FMCG & Consumer Goods (NIFTY FMCG)", broad: "FMCG & Consumer", extraSyms: ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "COLPAL", "EMAMILTD", "RADICO", "UBL", "PGHH", "HONASA", "BIKAJI", "JYOTHYLAB", "PATANJALI", "ABDL"] },
     { key: "NIFTY CONSUMPTION", label: "India Consumption (NIFTY CONSUMPTION)", broad: null, extraSyms: ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI", "TRENT", "PAGEIND", "METROBRAND", "BATAINDIA", "KALYANKJIL", "SAPPHIRE", "WESTLIFE", "MANYAVAR", "SHRINGARMS", "RENTOMOJO"] },
@@ -7731,15 +7731,15 @@
     { key: "NIFTY TRANS LOGIS", label: "Transportation & Logistics (NIFTY TRANS LOGIS)", broad: "Logistics & Services", extraSyms: ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY", "AEGISLOG"] },
     { key: "NIFTY MOBILITY", label: "Mobility & Transport (NIFTY MOBILITY)", broad: null, extraSyms: ["MARUTI", "M&M", "TMPV", "BAJAJ-AUTO", "TVSMOTOR", "ASHOKLEY", "INDIGO", "MOTHERSON", "IRCTC", "BHARATFORG", "BOSCHLTD", "MRF", "EXIDEIND", "ARE&M"] },
     { key: "NIFTY EV", label: "EV & Green Mobility (NIFTY EV)", broad: null, extraSyms: ["TMPV", "M&M", "TVSMOTOR", "BAJAJ-AUTO", "OLAELEC", "EXIDEIND", "ARE&M", "SONACOMS", "BHARATFORG", "JBMA", "OLECTRA", "SCHNEIDER"] },
-    { key: "NIFTY IND DIGITAL", label: "Digital Ecosystem (NIFTY IND DIGITAL)", broad: null, extraSyms: ["NAUKRI", "ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA", "INDIAMART", "ZOMATO"] },
-    { key: "NIFTY INTERNET", label: "Internet Technologies (NIFTY INTERNET)", broad: null, extraSyms: ["ETERNAL", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAGMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA", "ZOMATO"] },
+    { key: "NIFTY IND DIGITAL", label: "Digital Ecosystem (NIFTY IND DIGITAL)", broad: null, extraSyms: ["NAUKRI", "ZOMATO", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA", "INDIAMART"] },
+    { key: "NIFTY INTERNET", label: "Internet Technologies (NIFTY INTERNET)", broad: null, extraSyms: ["ZOMATO", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA"] },
     { key: "NIFTY MEDIA", label: "Media & Entertainment (NIFTY MEDIA)", broad: "Media & Entertainment", extraSyms: ["ZEEL", "SUNTV", "SAREGAMA", "PVRINOX", "NETWORK18", "TV18BRDCST", "NDTV", "DISHTV", "HATHWAY", "DBREALTY"] },
     { key: "NIFTY PSE", label: "Public Sector Enterprises (NIFTY PSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "HAL", "IOC", "BPCL", "GAIL", "RECLTD", "PFC", "NHPC", "OIL", "BHEL", "SAIL", "NMDC"] },
     { key: "NIFTY CPSE", label: "Central Public Sector (NIFTY CPSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "OIL", "NHPC", "NATIONALUM", "NBCC", "SJVN", "COCHINSHIP", "MAZDOCK", "COALINDIA"] },
     { key: "NIFTY MNC", label: "Multinational Corporations (NIFTY MNC)", broad: null, extraSyms: ["MARUTI", "HINDUNILVR", "NESTLEIND", "ABB", "SIEMENS", "CUMMINSIND", "HONAUT", "BOSCHLTD", "3MINDIA", "PFIZER", "SANOFI", "GLAXO"] },
     { key: "NIFTY RURAL", label: "Rural Economy & Agri (NIFTY RURAL)", broad: null, extraSyms: ["M&M", "HEROMOTOCO", "ESCORTS", "DABUR", "MARICO", "UPL", "COROMANDEL", "PIIND", "DEEPAKNTR", "CHOLAFIN", "BAYERCROP", "DHANUKA"] },
-    { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ETERNAL", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
-    { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, extraSyms: ["ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "MEDANTA", "MANKIND", "IREDA", "TATACOMM", "DOMS", "JYOTICNC", "OLAELEC", "BAJAJHFL", "ACMESOLAR", "SWIGGY", "NTPCGREEN"] },
+    { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
+    { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, extraSyms: ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"] },
     { key: "NIFTY 50", label: "NIFTY 50 Benchmark (50 LargeCap)", broad: null, isNifty50: true },
     { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, cap: "LC" },
     { key: "NIFTY MIDCAP 150", label: "NIFTY MidCap 150 Benchmark (MidCap 150)", broad: null, cap: "MC" },
@@ -7766,10 +7766,10 @@
 
     if (secDef) {
       if (secDef.isNifty50) {
-        if (typeof HEATMAP_NIFTY50_DATA !== "undefined" && Array.isArray(HEATMAP_NIFTY50_DATA)) {
-          if (HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0])) return true;
+        if (typeof HEATMAP_NIFTY50_DATA !== "undefined" && Array.isArray(HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
+          return HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0]);
         }
-        if (stock[1] === "LC") return true;
+        return stock[1] === "LC";
       }
       if (secDef.cap && stock[1] === secDef.cap) return true;
       if (secDef.broad && stock[2] === secDef.broad) return true;
@@ -7896,6 +7896,23 @@
     return filteredStocks;
   }
 
+  function getStockThematicTag(symbol) {
+    if (typeof MASTER_44_SECTORS === "undefined") return null;
+    const ipo = MASTER_44_SECTORS.find(s => s.key === "NIFTY IPO");
+    if (ipo && ipo.extraSyms && ipo.extraSyms.includes(symbol)) return "🚀 Recent IPO";
+    const def = MASTER_44_SECTORS.find(s => s.key === "NIFTY IND DEFENCE");
+    if (def && def.extraSyms && def.extraSyms.includes(symbol)) return "🛡️ Defence";
+    const rly = MASTER_44_SECTORS.find(s => s.key === "NIFTY RAILWAYS PSU");
+    if (rly && rly.extraSyms && rly.extraSyms.includes(symbol)) return "🚆 Railways";
+    const ev = MASTER_44_SECTORS.find(s => s.key === "NIFTY EV");
+    if (ev && ev.extraSyms && ev.extraSyms.includes(symbol)) return "⚡ EV";
+    const psu = MASTER_44_SECTORS.find(s => s.key === "NIFTY PSU BANK");
+    if (psu && psu.extraSyms && psu.extraSyms.includes(symbol)) return "🏦 PSU Bank";
+    const dig = MASTER_44_SECTORS.find(s => s.key === "NIFTY IND DIGITAL");
+    if (dig && dig.extraSyms && dig.extraSyms.includes(symbol)) return "💻 Digital";
+    return null;
+  }
+
   function renderScreenerRows(visibleStocks) {
     if (!visibleStocks || visibleStocks.length === 0) {
       return `
@@ -7937,9 +7954,41 @@
             <div style="font-size:11px;color:var(--mu)">${s[8].name}</div>
           </td>
           ${State.screenerCols.sector !== false ? `<td>
-            <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${s[2]}">
-              ${s[2]}
-            </span>
+            ${(() => {
+              const activeSec = State.sector;
+              if (activeSec && activeSec !== "all") {
+                const secDef = (typeof MASTER_44_SECTORS !== "undefined") ? MASTER_44_SECTORS.find(sec => sec.key === activeSec || sec.broad === activeSec || sec.key.replace(/^NIFTY\s+/, "") === activeSec.replace(/^NIFTY\s+/, "")) : null;
+                const tagLabel = secDef ? secDef.label.replace(/\s*\(NIFTY[^)]*\)/i, "").trim() : activeSec;
+                return `
+                  <div>
+                    <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${activeSec}" style="font-weight:700;color:var(--g);background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;">
+                      ${escapeHtml(tagLabel)}
+                    </span>
+                    <div style="font-size:10px;color:var(--mu);margin-top:2px;" title="Industry: ${escapeHtml(s[2])}">${escapeHtml(s[2])}</div>
+                  </div>
+                `;
+              }
+              const thematicTag = getStockThematicTag(s[0]);
+              if (thematicTag) {
+                return `
+                  <div>
+                    <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${s[2]}">
+                      ${escapeHtml(s[2])}
+                    </span>
+                    <div style="margin-top:2px;">
+                      <span style="font-size:9px;font-weight:600;color:var(--g);background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);padding:1px 5px;border-radius:3px;display:inline-block;white-space:nowrap;">
+                        ${thematicTag}
+                      </span>
+                    </div>
+                  </div>
+                `;
+              }
+              return `
+                <span class="clickable-sector-badge" data-action="filter-sector" data-sec="${s[2]}">
+                  ${escapeHtml(s[2])}
+                </span>
+              `;
+            })()}
           </td>` : ''}
           <td class="font-mono stock-price-cell" style="text-align:right;font-weight:600">
             ₹${formatNumber(s[3])}
@@ -12128,7 +12177,7 @@
     { symbol: "INFY", name: "Infosys Limited", sector: "Information Technology", price: 1181.40, chg: 1.20, mcap: 780000, volume: "1.25 Cr", logoBg: "#ffffff", logoColor: "#0284c7", logoText: "Infosys" },
     { symbol: "HCLTECH", name: "HCL Technologies", sector: "Information Technology", price: 1440.00, chg: 0.66, mcap: 390000, volume: "41.6 L", logoBg: "#ffffff", logoColor: "#2563eb", logoText: "HCLTech" },
     { symbol: "ITC", name: "ITC Limited", sector: "FMCG", price: 283.15, chg: 1.54, mcap: 590000, volume: "1.92 Cr", logoBg: "#ffffff", logoColor: "#1e3a8a", logoText: "ITC" },
-    { symbol: "ETERNAL", name: "Eternal (Zomato)", sector: "Internet & Consumer", price: 363.15, chg: 1.35, mcap: 250000, volume: "2.40 Cr", logoBg: "#18181b", logoColor: "#ffffff", logoText: "E" },
+    { symbol: "ZOMATO", name: "Zomato Ltd (Eternal)", sector: "Internet & Consumer", price: 363.15, chg: 1.35, mcap: 250000, volume: "2.40 Cr", logoBg: "#e11d48", logoColor: "#ffffff", logoText: "Z" },
     { symbol: "JSWSTEEL", name: "JSW Steel", sector: "Iron & Steel Products", price: 1357.10, chg: 0.11, mcap: 240000, volume: "56.3 L", logoBg: "#ffffff", logoColor: "#dc2626", logoText: "JSW" },
     { symbol: "NTPC", name: "NTPC Limited", sector: "Power & Utilities", price: 323.45, chg: 3.11, mcap: 385000, volume: "1.45 Cr", logoBg: "#ffffff", logoColor: "#0284c7", logoText: "NTPC" },
     { symbol: "BAJAJ-AUTO", name: "Bajaj Auto", sector: "Automobiles", price: 10900.00, chg: 0.82, mcap: 310000, volume: "18.5 L", logoBg: "#ffffff", logoColor: "#0284c7", logoText: "BA" },
@@ -12827,7 +12876,7 @@
     "NIFTY MIDSMALL HEALTHCARE": ["GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "SUVENPHAR", "ERIS", "VIJAYA", "KIMS", "ASTERDM"],
     "NIFTY MIDSMALL IT & TELECOM": ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE"],
     "NIFTY INDIA CONSUMPTION": ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI"],
-    "NIFTY INDIA DIGITAL": ["NAUKRI", "ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA"],
+    "NIFTY INDIA DIGITAL": ["NAUKRI", "ZOMATO", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA"],
     "NIFTY INDIA DEFENCE": ["BEL", "HAL", "MAZDOCK", "COCHINSHIP", "BDL", "BEML", "DATAPATTNS", "PARAS", "MTARTECH", "GRSE", "ASTRAZEN"],
     "NIFTY DEFENCE": ["BEL", "HAL", "MAZDOCK", "COCHINSHIP", "BDL", "BEML", "DATAPATTNS", "PARAS", "MTARTECH", "GRSE", "ASTRAZEN"],
     "NIFTY OIL & GAS": ["RELIANCE", "ONGC", "IOC", "BPCL", "GAIL", "PETRONET", "OIL", "HINDPETRO", "GUJGASLTD", "IGL"],
@@ -12838,7 +12887,7 @@
     "NIFTY IND TOURISM": ["INDIGO", "IHCL", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "VIPIND", "YATRA", "EASEMYTRIP"],
     "NIFTY 50": HEATMAP_NIFTY50_DATA.map(s => s.symbol),
     "NIFTY FIN SERVICE": ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE"],
-    "NIFTY SERV SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ETERNAL", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART"],
+    "NIFTY SERV SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART"],
     "NIFTY AUTO": ["M&M", "MARUTI", "TMPV", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF"],
     "NIFTY CAPITAL MKT": ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC"],
     "NIFTY REALTY": ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PRESTIGE", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "SUNTECK"],
@@ -12858,7 +12907,7 @@
     "NIFTY PHARMA": ["SUNPHARMA", "CIPLA", "DRREDDY", "DIVISLAB", "LUPIN", "ZYDUSLIFE", "TORNTPHARM", "MANKIND", "AUROPHARMA", "ALKEM", "BIOCON"],
     "NIFTY CONSR DURBL": ["TITAN", "HAVELLS", "VOLTAS", "DIXON", "CROMPTON", "WHIRLPOOL", "BLUESTARCO", "KAJARIACER", "BATAINDIA", "AMBER"],
     "NIFTY HEALTHCARE": ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE"],
-    "NIFTY IND DIGITAL": ["NAUKRI", "ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA"],
+    "NIFTY IND DIGITAL": ["NAUKRI", "ZOMATO", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA"],
     "NIFTY EV": ["TMPV", "M&M", "TVSMOTOR", "BAJAJ-AUTO", "OLAELEC", "EXIDEIND", "AMARAJABAT", "SONACOMS", "BHARATFORG", "JBMMAUTO"],
     "NIFTY FMCG": ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "COLPAL", "EMAMILTD"],
     "NIFTY MS IND CONS": ["TITAN", "TRENT", "PAGEIND", "METROBRAND", "DEVYANI", "SAPPHIRE", "BIKAJI", "KALYANKJIL", "CENTURYPLY", "BATAINDIA"],
@@ -12867,7 +12916,7 @@
     "NIFTY METAL": ["TATASTEEL", "JSWSTEEL", "HINDALCO", "JINDALSTEL", "VEDL", "NMDC", "SAIL", "NATIONALUM", "HINDZINC", "APLLTD"],
     "NIFTY PSE": ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "HAL", "IOC", "BPCL", "GAIL", "RECLTD", "PFC", "NHPC", "OIL"],
     "NIFTY MS FIN SERV": ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS"],
-    "NIFTY INTERNET": ["ETERNAL", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAGMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA"],
+    "NIFTY INTERNET": ["ZOMATO", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA"],
     "NIFTY MIDCAP 150": NIFTY_MIDCAP_150_DATA.map(s => s.symbol),
     "NIFTY MIDCAP": NIFTY_MIDCAP_150_DATA.map(s => s.symbol),
     "MIDCAP 150": NIFTY_MIDCAP_150_DATA.map(s => s.symbol),
@@ -12876,7 +12925,7 @@
     "NIFTY MS IT TELCM": ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE"],
     "NIFTY RAILWAYS PSU": ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JUPITERIN", "TEXRAIL"],
     "NIFTY ENERGY": ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON"],
-    "NIFTY IPO": ["ETERNAL", "PAYTM", "NYKAA", "POLICYBZR", "MEDANTA", "MANKIND", "IREDA", "TATACOMM", "DOMS", "JYOTICNC"],
+    "NIFTY IPO": ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"],
     "NIFTY SMLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "NIFTY SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
@@ -13249,7 +13298,7 @@
       });
 
       // Row 3: top: 40%, height: 15%
-      const r3 = ["INFY", "HCLTECH", "ITC", "ETERNAL", "JSWSTEEL", "NTPC", "BAJAJ-AUTO", "BAJAJFINSV"];
+      const r3 = ["INFY", "HCLTECH", "ITC", "ZOMATO", "JSWSTEEL", "NTPC", "BAJAJ-AUTO", "BAJAJFINSV"];
       const r3W = 79.5 / r3.length;
       r3.forEach((sym, idx) => {
         const it = stockMap[sym];
@@ -16844,9 +16893,9 @@
     { id: "d13", stock: "HDFC Bank Limited", symbol: "HDFCBANK", type: "Block", date: "06 Nov 2026", client: "Life Insurance Corp of India", action: "Sell", qty: 1820000, avgPrice: 1300.00, valueCr: 236.60, avatar: "H", clientCategory: "DII" },
     { id: "d14", stock: "BSE Limited", symbol: "BSE", type: "Block", date: "06 Nov 2026", client: "Norges Bank on account of Govt Pension", action: "Buy", qty: 380000, avgPrice: 5120.00, valueCr: 194.56, avatar: "B", clientCategory: "FII" },
     { id: "d15", stock: "BSE Limited", symbol: "BSE", type: "Block", date: "06 Nov 2026", client: "Vanguard Emerging Markets Stock Index", action: "Sell", qty: 380000, avgPrice: 5120.00, valueCr: 194.56, avatar: "B", clientCategory: "FII" },
-    { id: "d16", stock: "Eternal (Zomato) Ltd", symbol: "ETERNAL", type: "Bulk", date: "06 Nov 2026", client: "Antfin Singapore Holding Pte", action: "Sell", qty: 42000000, avgPrice: 363.15, valueCr: 1525.23, avatar: "E", clientCategory: "FII" },
-    { id: "d17", stock: "Eternal (Zomato) Ltd", symbol: "ETERNAL", type: "Bulk", date: "06 Nov 2026", client: "ICICI Prudential Mutual Fund", action: "Buy", qty: 21000000, avgPrice: 363.15, valueCr: 762.61, avatar: "E", clientCategory: "DII" },
-    { id: "d18", stock: "Eternal (Zomato) Ltd", symbol: "ETERNAL", type: "Bulk", date: "06 Nov 2026", client: "SBI Mutual Fund Equity Arbitrage", action: "Buy", qty: 21000000, avgPrice: 363.15, valueCr: 762.61, avatar: "E", clientCategory: "DII" },
+    { id: "d16", stock: "Zomato Ltd (Eternal)", symbol: "ZOMATO", type: "Bulk", date: "06 Nov 2026", client: "Antfin Singapore Holding Pte", action: "Sell", qty: 42000000, avgPrice: 363.15, valueCr: 1525.23, avatar: "Z", clientCategory: "FII" },
+    { id: "d17", stock: "Zomato Ltd (Eternal)", symbol: "ZOMATO", type: "Bulk", date: "06 Nov 2026", client: "ICICI Prudential Mutual Fund", action: "Buy", qty: 21000000, avgPrice: 363.15, valueCr: 762.61, avatar: "Z", clientCategory: "DII" },
+    { id: "d18", stock: "Zomato Ltd (Eternal)", symbol: "ZOMATO", type: "Bulk", date: "06 Nov 2026", client: "SBI Mutual Fund Equity Arbitrage", action: "Buy", qty: 21000000, avgPrice: 363.15, valueCr: 762.61, avatar: "Z", clientCategory: "DII" },
     { id: "d19", stock: "Tata Consultancy Services", symbol: "TCS", type: "Block", date: "06 Nov 2026", client: "Tata Sons Private Limited", action: "Sell", qty: 450000, avgPrice: 3920.00, valueCr: 176.40, avatar: "T", clientCategory: "Promoter" },
     { id: "d20", stock: "Tata Consultancy Services", symbol: "TCS", type: "Block", date: "06 Nov 2026", client: "BlackRock Global Emerging Markets", action: "Buy", qty: 450000, avgPrice: 3920.00, valueCr: 176.40, avatar: "T", clientCategory: "FII" },
     { id: "d21", stock: "Bharti Airtel Limited", symbol: "BHARTIARTL", type: "Block", date: "06 Nov 2026", client: "Singtel Alpha Pte Ltd", action: "Sell", qty: 820000, avgPrice: 2107.20, valueCr: 172.79, avatar: "A", clientCategory: "Promoter" },
@@ -17261,7 +17310,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.4" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.5" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;

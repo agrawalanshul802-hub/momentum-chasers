@@ -1,95 +1,115 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Order Flow</title>
-    <meta name="description" content="Order Flow: where the money is flowing across Indian F&amp;O, live. Every underlying read from its future: bulls above the zero line, bears below, each on its own path." />
-    <meta name="author" content="Momentum Chasers" />
-    <link rel="icon" type="image/svg+xml" href="/order-flow/favicon.svg" />
-    <meta name="theme-color" content="#0d1117" />
-    <script type="module" crossorigin src="/order-flow/assets/index-C8_h8gaj.js?v=5.9.4"></script>
-    <link rel="stylesheet" crossorigin href="/order-flow/assets/index-Dw3beboT.css?v=5.9.4">
-    <style>
-      /* Hide fake macOS window traffic light dots (🔴 🟡 🟢) */
-      .ui-flow .ui-flow-pagebar.ui-pagebar:before {
-        display: none !important;
-      }
-      /* Hide third-party brand watermark and external author links */
-      .ui-flow .mf-brand,
-      .ui-flow .ui-flow-pagebar.ui-pagebar:after {
-        display: none !important;
-      }
-      /* Seamless integration with Momentum Chasers */
-      .ui-flow .ui-flow-pagebar.ui-pagebar {
-        padding: 6px 14px !important;
-        min-height: 38px !important;
-        border-radius: 8px 8px 0 0 !important;
-        background: transparent !important;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-        box-shadow: none !important;
-      }
-      .ui-flow[data-fit=true] .mf-board {
-        border-radius: 0 0 8px 8px !important;
-      }
-      /* Fix breakout cards layout and prevent text collision (HCLTECH, HINDUNILVR, JIOFIN, DRREDDY) */
-      .ui-flow .mf-dgcard__main {
-        padding: 7px 10px 7px 11px !important;
-        column-gap: 8px !important;
-        row-gap: 3px !important;
-      }
-      .ui-flow .mf-dgcard__left {
-        gap: 2px !important;
-        min-width: 0 !important;
-      }
-      .ui-flow .mf-dgcard__id {
-        gap: 5px !important;
-        margin-bottom: 1px !important;
-      }
-      .ui-flow .mf-dgcard__id b {
-        font-size: 13px !important;
-      }
-      .ui-flow .mf-dgcard__id small {
-        font-size: 10px !important;
-      }
-      .ui-flow .mf-dgcard__badges {
-        gap: 5px !important;
-      }
-      .ui-flow .mf-badge {
-        padding: 2px 6px !important;
-        font-size: 10px !important;
-      }
-      .ui-flow .mf-dgcard__pct {
-        font-size: 16px !important;
-        line-height: 1.15 !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.01em !important;
-        margin: 1px 0 !important;
-      }
-      .ui-flow .mf-dgcard__price {
-        font-size: 11px !important;
-        line-height: 1.1 !important;
-        margin-bottom: 2px !important;
-      }
-      .ui-flow .mf-dgcard__levels {
-        padding-top: 3px !important;
-        gap: 4px !important;
-        border-top: 1px solid var(--flow-hair) !important;
-      }
-      .ui-flow .mf-dgcard__levels i {
-        font-size: 9px !important;
-        letter-spacing: 0.03em !important;
-      }
-      .ui-flow .mf-dgcard__levels b {
-        font-size: 10.5px !important;
-      }
-      .ui-flow .mf-range {
-        height: 4px !important;
-        margin-top: 2px !important;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Order Flow</title>
+  <meta name="description"
+    content="Order Flow: where the money is flowing across Indian F&amp;O, live. Every underlying read from its future: bulls above the zero line, bears below, each on its own path." />
+  <meta name="author" content="Momentum Chasers" />
+  <link rel="icon" type="image/svg+xml" href="/order-flow/favicon.svg" />
+  <meta name="theme-color" content="#0d1117" />
+  <script type="module" crossorigin src="/order-flow/assets/index-C8_h8gaj.js?v=5.9.5"></script>
+  <link rel="stylesheet" crossorigin href="/order-flow/assets/index-Dw3beboT.css?v=5.9.5">
+  <style>
+    /* Hide fake macOS window traffic light dots (🔴 🟡 🟢) */
+    .ui-flow .ui-flow-pagebar.ui-pagebar:before {
+      display: none !important;
+    }
+
+    /* Hide third-party brand watermark and external author links */
+    .ui-flow .mf-brand,
+    .ui-flow .ui-flow-pagebar.ui-pagebar:after {
+      display: none !important;
+    }
+
+    /* Seamless integration with Momentum Chasers */
+    .ui-flow .ui-flow-pagebar.ui-pagebar {
+      padding: 6px 14px !important;
+      min-height: 38px !important;
+      border-radius: 8px 8px 0 0 !important;
+      background: transparent !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: none !important;
+    }
+
+    .ui-flow[data-fit=true] .mf-board {
+      border-radius: 0 0 8px 8px !important;
+    }
+
+    /* Fix breakout cards layout and prevent text collision (HCLTECH, HINDUNILVR, JIOFIN, DRREDDY) */
+    .ui-flow .mf-dgcard__main {
+      padding: 7px 10px 7px 11px !important;
+      column-gap: 8px !important;
+      row-gap: 3px !important;
+    }
+
+    .ui-flow .mf-dgcard__left {
+      gap: 2px !important;
+      min-width: 0 !important;
+    }
+
+    .ui-flow .mf-dgcard__id {
+      gap: 5px !important;
+      margin-bottom: 1px !important;
+    }
+
+    .ui-flow .mf-dgcard__id b {
+      font-size: 13px !important;
+    }
+
+    .ui-flow .mf-dgcard__id small {
+      font-size: 10px !important;
+    }
+
+    .ui-flow .mf-dgcard__badges {
+      gap: 5px !important;
+    }
+
+    .ui-flow .mf-badge {
+      padding: 2px 6px !important;
+      font-size: 10px !important;
+    }
+
+    .ui-flow .mf-dgcard__pct {
+      font-size: 16px !important;
+      line-height: 1.15 !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.01em !important;
+      margin: 1px 0 !important;
+    }
+
+    .ui-flow .mf-dgcard__price {
+      font-size: 11px !important;
+      line-height: 1.1 !important;
+      margin-bottom: 2px !important;
+    }
+
+    .ui-flow .mf-dgcard__levels {
+      padding-top: 3px !important;
+      gap: 4px !important;
+      border-top: 1px solid var(--flow-hair) !important;
+    }
+
+    .ui-flow .mf-dgcard__levels i {
+      font-size: 9px !important;
+      letter-spacing: 0.03em !important;
+    }
+
+    .ui-flow .mf-dgcard__levels b {
+      font-size: 10.5px !important;
+    }
+
+    .ui-flow .mf-range {
+      height: 4px !important;
+      margin-top: 2px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
 </html>
