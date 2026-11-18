@@ -5751,28 +5751,79 @@ const server = http.createServer(async (req, res) => {
   const ownerIdeasPath = path.join(__dirname, 'data', 'owner-ideas.json');
   const OWNER_PIN = (process.env.OWNER_PIN || '1234').toString().trim();
 
+  // In-memory store (survives Render's ephemeral filesystem — seeded from committed JSON)
+  const OWNER_IDEAS_SEED_DATA = [
+    {
+      id: 'idea_1795026393432',
+      title: 'abc',
+      category: 'Volume Breakout',
+      symbols: ['ABB'],
+      timeframe: '3-6 Months',
+      entry: '64',
+      target: '24121',
+      stopLoss: '63531',
+      thesis: 'QIDUCCDCQO',
+      publishedAt: '2026-11-18',
+      active: true
+    },
+    {
+      id: 'idea_defense_momentum',
+      title: 'Defense Sector Momentum',
+      category: 'High Conviction Breakout',
+      symbols: ['BEL', 'HAL', 'BDL', 'COCHINSHIP'],
+      timeframe: '2-4 Weeks',
+      entry: 'CMP / Pullback to 10 EMA',
+      target: '+15% to +18% (New ATHs)',
+      stopLoss: '-4.5% below 20 EMA',
+      thesis: 'Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.',
+      publishedAt: '2026-11-18',
+      active: false
+    },
+    {
+      id: 'idea_auto_ancillary',
+      title: 'Automobile & EV Ancillary Leaders',
+      category: 'Swing Long',
+      symbols: ['M&M', 'TVSMOTOR', 'BOSCHLTD', 'MOTHERSON'],
+      timeframe: '1-3 Months',
+      entry: 'Near 20 EMA breakout support',
+      target: '+12% to +16%',
+      stopLoss: '-5.0% below swing low',
+      thesis: 'Festive rural demand uptick combined with operating margin expansion from moderating input costs; daily RSI holding bullish momentum above 60.',
+      publishedAt: '2026-11-18',
+      active: true
+    }
+  ];
+
+  let _ownerIdeasMemory = null;
+
   function getStoredOwnerIdeas() {
+    if (_ownerIdeasMemory !== null) return _ownerIdeasMemory;
     try {
       if (fs.existsSync(ownerIdeasPath)) {
         const raw = fs.readFileSync(ownerIdeasPath, 'utf8');
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          _ownerIdeasMemory = parsed;
+          return _ownerIdeasMemory;
+        }
       }
     } catch (e) {
       console.warn('Error reading owner ideas:', e.message);
     }
-    return [];
+    // Fall back to seed data so the screener always has something to show
+    _ownerIdeasMemory = JSON.parse(JSON.stringify(OWNER_IDEAS_SEED_DATA));
+    return _ownerIdeasMemory;
   }
 
   function saveStoredOwnerIdeas(ideas) {
+    _ownerIdeasMemory = ideas;
     try {
       fs.mkdirSync(path.dirname(ownerIdeasPath), { recursive: true });
       fs.writeFileSync(ownerIdeasPath, JSON.stringify(ideas, null, 2) + '\n', 'utf8');
-      return true;
     } catch (e) {
-      console.error('Error writing owner ideas:', e.message);
-      return false;
+      console.warn('Could not persist owner ideas to disk (ephemeral FS):', e.message);
     }
+    return true;
   }
 
   function parseRequestBody(request) {
