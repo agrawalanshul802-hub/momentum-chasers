@@ -4625,6 +4625,7 @@ async function fetchLiveIndianNews({ query = '', category = 'all' } = {}) {
 function getSectorTurnoverPayload(baseline = 8) {
   const baselineN = parseInt(baseline, 10) || 8;
   const dates = [
+    '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '10-11',
     '09-11', '08-11', '06-11', '05-11', '04-11',
     '03-11', '02-11', '30-10', '29-10', '28-10',
     '27-10', '26-10', '23-10', '22-10', '21-10',
@@ -4688,6 +4689,13 @@ function getSectorTurnoverPayload(baseline = 8) {
   };
 
   const dayBaseFactors = {
+    '18-11': 1.15,
+    '17-11': 1.08,
+    '16-11': 0.98,
+    '13-11': 1.04,
+    '12-11': 1.12,
+    '11-11': 1.25,
+    '10-11': 1.02,
     '09-11': 1.18,
     '08-11': 0.115,
     '06-11': 1.05,
@@ -4731,9 +4739,11 @@ function getSectorTurnoverPayload(baseline = 8) {
       const micro = Math.cos((secIdx * 3.1) - (dIdx * 0.9)) * 0.15;
       let ratio = Math.max(0.35, Math.min(1.85, dayFactor + wave + micro));
 
-      if (sec.id === 'renew_energy' && d === '09-11') ratio = 1.55;
-      if (sec.id === 'pvt_bank' && d === '09-11') ratio = 1.42;
-      if (sec.id === 'chem' && d === '09-11') ratio = 1.48;
+      if (sec.id === 'renew_energy' && (d === '09-11' || d === '18-11')) ratio = 1.55;
+      if (sec.id === 'pvt_bank' && (d === '09-11' || d === '18-11')) ratio = 1.42;
+      if (sec.id === 'chem' && (d === '09-11' || d === '17-11')) ratio = 1.48;
+      if (sec.id === 'auto' && (d === '18-11' || d === '12-11')) ratio = 1.38;
+      if (sec.id === 'metals' && (d === '18-11' || d === '13-11')) ratio = 1.41;
       if (sec.id === 'it' && (d === '06-11' || d === '23-10' || d === '21-10')) ratio = 1.46;
       if (sec.id === 'pharma' && (d === '05-11' || d === '09-11')) ratio = 1.44;
       if (sec.id === 'fmcg' && d === '05-11') ratio = 1.38;
@@ -5658,7 +5668,7 @@ const server = http.createServer(async (req, res) => {
   // 6e. Live Sector Turnover vs Own History Endpoint: /api/sector-turnover
   if (pathname === '/api/sector-turnover') {
     const baseline = parseInt(parsedUrl.query.baseline, 10) || 8;
-    const cacheKey = `sector_turnover_v2_${baseline}`;
+    const cacheKey = `sector_turnover_v3_${baseline}`;
     const cached = CACHE.get(cacheKey);
     if (cached && (Date.now() - cached.time < 15 * 60 * 1000)) { // 15-minute cache
       res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'HIT' });

@@ -681,7 +681,7 @@
     const m = String(now.getMonth() + 1).padStart(2, "0");
     const d = String(now.getDate()).padStart(2, "0");
     const localToday = `${y}-${m}-${d}`;
-    const todayStr = localToday < "2026-11-16" ? "2026-11-16" : localToday;
+    const todayStr = localToday < "2026-11-18" ? "2026-11-18" : localToday;
     const today = new Date(todayStr + "T00:00:00");
 
     // Any date <= today is in the past
@@ -5235,7 +5235,7 @@
     sectorSortDir: "desc",      // "desc" (High to Low / closest to ATH) or "asc"
     sectorSearchQuery: "",      // Filter string in 44 Sector Indices table
     sectorSubTab: "turnover",   // "turnover" (Money Flow heatmap), "indices", "ranking", "turnover_ad", "cmf", "rs"
-    sectorTurnoverSortCol: "09-11", // default sorted by latest date (matching screenshot)
+    sectorTurnoverSortCol: "18-11", // default sorted by latest date (matching screenshot)
     sectorTurnoverSortDir: "desc",
     sectorTurnoverSearch: "",
     sectorTurnoverBaseline: 8,
@@ -8669,6 +8669,7 @@
 
   function getFallbackSectorTurnoverData() {
     const dates = [
+      '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '10-11',
       '09-11', '08-11', '06-11', '05-11', '04-11',
       '03-11', '02-11', '30-10', '29-10', '28-10',
       '27-10', '26-10', '23-10', '22-10', '21-10',
@@ -8732,6 +8733,13 @@
     };
 
     const dayBaseFactors = {
+      '18-11': 1.15,
+      '17-11': 1.08,
+      '16-11': 0.98,
+      '13-11': 1.04,
+      '12-11': 1.12,
+      '11-11': 1.25,
+      '10-11': 1.02,
       '09-11': 1.18,
       '08-11': 0.115,
       '06-11': 1.05,
@@ -8789,9 +8797,11 @@
         const micro = Math.cos((secIdx * 3.1) - (dIdx * 0.9)) * 0.15;
         let ratio = Math.max(0.35, Math.min(1.85, dayFactor + wave + micro));
 
-        if (sec.id === 'renew_energy' && d === '09-11') ratio = 1.55;
-        if (sec.id === 'pvt_bank' && d === '09-11') ratio = 1.42;
-        if (sec.id === 'chem' && d === '09-11') ratio = 1.48;
+        if (sec.id === 'renew_energy' && (d === '09-11' || d === '18-11')) ratio = 1.55;
+        if (sec.id === 'pvt_bank' && (d === '09-11' || d === '18-11')) ratio = 1.42;
+        if (sec.id === 'chem' && (d === '09-11' || d === '17-11')) ratio = 1.48;
+        if (sec.id === 'auto' && (d === '18-11' || d === '12-11')) ratio = 1.38;
+        if (sec.id === 'metals' && (d === '18-11' || d === '13-11')) ratio = 1.41;
         if (sec.id === 'it' && (d === '06-11' || d === '23-10' || d === '21-10')) ratio = 1.46;
         if (sec.id === 'pharma' && (d === '05-11' || d === '09-11')) ratio = 1.44;
         if (sec.id === 'fmcg' && d === '05-11') ratio = 1.38;
@@ -8910,6 +8920,7 @@
 
   function buildTurnoverTableHTML(data) {
     const dates = data.dates || [
+      '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '10-11',
       '09-11', '08-11', '06-11', '05-11', '04-11',
       '03-11', '02-11', '30-10', '29-10', '28-10',
       '27-10', '26-10', '23-10', '22-10', '21-10',
@@ -8926,7 +8937,7 @@
     }
 
     // Sort
-    const sortCol = State.sectorTurnoverSortCol || '09-11';
+    const sortCol = State.sectorTurnoverSortCol || '18-11';
     const sortDir = State.sectorTurnoverSortDir || 'desc';
 
     sectors.sort((a, b) => {
@@ -10306,13 +10317,16 @@
           }
         };
         flow.daily = [
+          { date: "2026-11-18", fiiBuy: 22450.75, fiiSell: 16180.20, fiiNet: 6270.55, diiBuy: 16210.40, diiSell: 14920.15, diiNet: 1290.25 },
+          { date: "2026-11-17", fiiBuy: 19930.98, fiiSell: 15735.60, fiiNet: 4195.38, diiBuy: 14903.80, diiSell: 14706.87, diiNet: 196.93 },
+          { date: "2026-11-16", fiiBuy: 15636.88, fiiSell: 10772.20, fiiNet: 4864.68, diiBuy: 11752.03, diiSell: 15271.08, diiNet: -3519.05 },
           { date: "2026-11-13", fiiBuy: 18339.57, fiiSell: 12603.02, fiiNet: 5736.55, diiBuy: 11745.95, diiSell: 13999.53, diiNet: -2253.58 },
           { date: "2026-11-12", fiiBuy: 20273.32, fiiSell: 12442.72, fiiNet: 7830.60, diiBuy: 15855.13, diiSell: 22186.30, diiNet: -6331.17 },
           { date: "2026-11-11", fiiBuy: 30087.21, fiiSell: 17523.88, fiiNet: 12563.33, diiBuy: 19704.39, diiSell: 28138.92, diiNet: -8434.53 },
           { date: "2026-11-09", fiiBuy: 20310.99, fiiSell: 13098.77, fiiNet: 7212.22, diiBuy: 12764.97, diiSell: 19937.50, diiNet: -7172.53 },
           { date: "2026-11-08", fiiBuy: 52.39, fiiSell: 52.64, fiiNet: -0.25, diiBuy: 331.11, diiSell: 1031.42, diiNet: -700.31 }
         ];
-        flow.latestDate = "2026-11-13";
+        flow.latestDate = "2026-11-18";
         flow.source = "Groww / NSE Official Data";
         flow.updatedAt = new Date().toISOString();
         flow.status = "live";
@@ -13887,7 +13901,7 @@
 
     if (!fetched && !State.valuationData) {
       State.valuationData = {
-        asOfDate: "17-11-2026",
+        asOfDate: "18-11-2026",
         source: "Official NSE Archives",
         total: VL_FALLBACK.length,
         data: VL_FALLBACK
@@ -13905,14 +13919,14 @@
 
   function renderValuationView() {
     const valState = State.valuationData || {
-      asOfDate: "17-11-2026",
+      asOfDate: "18-11-2026",
       source: "Official NSE Daily Archives",
       total: VL_FALLBACK.length,
       data: VL_FALLBACK
     };
 
     let list = [...(valState.data || [])];
-    const asOfDate = valState.asOfDate || "17-11-2026";
+    const asOfDate = valState.asOfDate || "18-11-2026";
 
     // Category Filter
     const activeCat = State.valuationCategory || "all";
@@ -17470,7 +17484,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.8" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.9" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
