@@ -13309,3 +13309,51 @@ body.theme-white .dms-delay {
     border-color: #38bdf8;
     transform: translateY(-1px);
 }
+
+
+/* Enhanced Screener Column Removal Button & Banner */
+.data-table-main th .col-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mu, #94a3b8);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  margin-left: 6px;
+  vertical-align: middle;
+  opacity: 0.65;
+}
+
+.data-table-main th:hover .col-close-btn,
+.data-table-main th .col-close-btn:hover {
+  opacity: 1;
+}
+
+.data-table-main th .col-close-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: rgba(239, 68, 68, 0.7);
+  color: #ff4d4f;
+  transform: scale(1.18);
+}
+
+body.theme-white .data-table-main th .col-close-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #64748b;
+}
+
+body.theme-white .data-table-main th .col-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #dc2626;
+}

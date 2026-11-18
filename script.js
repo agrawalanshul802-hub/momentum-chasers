@@ -9011,7 +9011,7 @@
         const saved = localStorage.getItem("momentum_screener_cols_v1");
         if (saved) return JSON.parse(saved);
       } catch (e) { }
-      return { athDist: true, earnings: true, cross: true, ema: true, sector: true, cap: true };
+      return { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
     })(),
     screenerColsOpen: false,
     sectorSortCol: "ath",       // "ath", "chg", "rsi", "price", "name", "cross", "default"
@@ -11443,15 +11443,61 @@
           <span class="match-counter-text">Index-wise Breadth Participation Breakdown (Threshold: >60% Green, 40-60% Amber, &lt;40% Red)</span>
           <span style="font-size:11px;color:var(--g);display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;"></span> ${escapeHtml(BREADTH_LAST_UPDATED)}</span>
         </div>
+        ${hasHiddenCols ? `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;margin:8px 0 10px;font-size:12px;color:var(--ink);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:14px;">✂️</span>
+              <span><strong>${hiddenColsList.length} column${hiddenColsList.length > 1 ? 's' : ''} removed</strong>: ${hiddenColsList.map(c => colLabels[c] || c).join(', ')}.</span>
+            </div>
+            <button data-action="restore-all-screener-cols" style="background:var(--g);color:#0a0e14;font-weight:700;font-size:11px;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+              <span>↺</span>
+              <span>Restore All Columns</span>
+            </button>
+          </div>
+        ` : ''}
         <div class="table-scroll-wrapper">
           <table class="data-table-main">
             <thead>
               <tr>
-                <th>Benchmark Universe</th>
-                <th style="text-align:right">% Above 10 EMA</th>
-                <th style="text-align:right">% Above 20 EMA</th>
-                <th style="text-align:right">% Above 50 EMA</th>
-                <th style="text-align:right">% Above 200 EMA</th>
+                <th class="${getThClass('star')}" style="width:36px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
+                ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
+                  <span>Cap</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                <th class="${getThClass('ticker')}" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
+                ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
+                  <span>Sector</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
+                  <span>Price (₹)</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
+                  <span>Day Chg</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
+                  <span>% From ATH 📈</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
+                  <span>Earnings 📅</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
+                  <span>EMA</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by 50×200 EMA Cross (Golden Cross first / Death Cross first)">
+                  <div style="display:inline-flex;align-items:center;gap:6px">
+                    <div>
+                      <div>50×200 EMA Cross</div>
+                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
+                    </div>
+                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="event.stopPropagation()">✕</button>
+                  </div>
+                </th>` : ''}
               </tr>
             </thead>
             <tbody>
@@ -11884,12 +11930,14 @@
               `;
             })()}
           </td>` : ''}
+          ${State.screenerCols.price !== false ? `
           <td class="font-mono stock-price-cell" style="text-align:right;font-weight:600">
             ₹${formatNumber(s[3])}
-          </td>
+          </td>` : ''}
+          ${State.screenerCols.chg !== false ? `
           <td class="font-mono ${getColorClass(s[4])} stock-chg-cell" style="text-align:right;font-weight:700">
             ${formatPercent(s[4])}
-          </td>
+          </td>` : ''}
           ${State.screenerCols.athDist !== false ? `
             <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
               ${ath.dist.toFixed(2)}%
@@ -11930,6 +11978,20 @@
       renderActiveView();
       return;
     }
+
+    const defaultColsList = ['cap', 'sector', 'price', 'chg', 'athDist', 'earnings', 'ema', 'cross'];
+    const colLabels = {
+      cap: "Cap",
+      sector: "Sector",
+      price: "Price",
+      chg: "Day Chg",
+      athDist: "% From ATH",
+      earnings: "Earnings",
+      ema: "EMA",
+      cross: "50×200 Cross"
+    };
+    const hiddenColsList = defaultColsList.filter(c => State.screenerCols && State.screenerCols[c] === false);
+    const hasHiddenCols = hiddenColsList.length > 0;
 
     const filteredStocks = getFilteredScreenerStocks();
     const pageSize = State.screenerPageSize || 50;
@@ -12230,35 +12292,53 @@
               </button>
               <div class="screener-cols-dropdown ${State.screenerColsOpen ? 'show' : ''}" id="screener-cols-dropdown">
                 <div class="screener-cols-dropdown-header">
-                  <span>Manage Columns & Filters</span>
-                  <button class="cols-reset-btn" data-action="restore-all-screener-cols" title="Restore all columns & filters">Restore All</button>
+                  <span>Manage Columns</span>
+                  <button class="cols-reset-btn" data-action="restore-all-screener-cols" title="Restore all columns & filters">↺ Reset All</button>
                 </div>
                 <label class="screener-col-item">
-                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="athDist" ${State.screenerCols.athDist !== false ? 'checked' : ''} />
-                  <span>Distance from ATH 📈</span>
-                </label>
-                <label class="screener-col-item">
-                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="earnings" ${State.screenerCols.earnings !== false ? 'checked' : ''} />
-                  <span>Earnings Dates (Prev & Next) 📅</span>
-                </label>
-                <label class="screener-col-item">
-                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="cross" ${State.screenerCols.cross !== false ? 'checked' : ''} />
-                  <span>50×200 EMA Cross</span>
-                </label>
-                <label class="screener-col-item">
-                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="ema" ${State.screenerCols.ema !== false ? 'checked' : ''} />
-                  <span>EMA Alignment (10/20/50/200)</span>
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="cap" ${State.screenerCols.cap !== false ? 'checked' : ''} />
+                  <span>Market Cap (Cap)</span>
                 </label>
                 <label class="screener-col-item">
                   <input type="checkbox" data-action="toggle-screener-col-check" data-col="sector" ${State.screenerCols.sector !== false ? 'checked' : ''} />
                   <span>Sector</span>
                 </label>
                 <label class="screener-col-item">
-                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="cap" ${State.screenerCols.cap !== false ? 'checked' : ''} />
-                  <span>Market Cap (LC/MC/SC)</span>
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="price" ${State.screenerCols.price !== false ? 'checked' : ''} />
+                  <span>Price (₹)</span>
+                </label>
+                <label class="screener-col-item">
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="chg" ${State.screenerCols.chg !== false ? 'checked' : ''} />
+                  <span>Day % Change</span>
+                </label>
+                <label class="screener-col-item">
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="athDist" ${State.screenerCols.athDist !== false ? 'checked' : ''} />
+                  <span>Distance from ATH 📈</span>
+                </label>
+                <label class="screener-col-item">
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="earnings" ${State.screenerCols.earnings !== false ? 'checked' : ''} />
+                  <span>Earnings 📅</span>
+                </label>
+                <label class="screener-col-item">
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="ema" ${State.screenerCols.ema !== false ? 'checked' : ''} />
+                  <span>EMA Alignment (10/20/50/200)</span>
+                </label>
+                <label class="screener-col-item">
+                  <input type="checkbox" data-action="toggle-screener-col-check" data-col="cross" ${State.screenerCols.cross !== false ? 'checked' : ''} />
+                  <span>50×200 EMA Cross</span>
                 </label>
               </div>
             </div>
+
+            <!-- Quick Reset Columns Button -->
+            <button class="pill-segment-btn reset-cols-top-btn" 
+                    data-action="restore-all-screener-cols" 
+                    title="Restore all removed columns" 
+                    style="height:30px;padding:3px 10px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;cursor:pointer;border-radius:4px;border:1px solid ${hasHiddenCols ? 'rgba(34,197,94,0.45)' : 'var(--ln)'};background:${hasHiddenCols ? 'rgba(34,197,94,0.14)' : 'transparent'};color:${hasHiddenCols ? 'var(--g)' : 'var(--mu)'};">
+              <span>↺</span>
+              <span>Reset Columns</span>
+              ${hasHiddenCols ? `<span style="font-size:10px;padding:1px 6px;background:rgba(34,197,94,0.25);border-radius:8px;font-weight:800;">${hiddenColsList.length} removed</span>` : ''}
+            </button></div>
 
             <div class="pill-segmented-control" role="group" aria-label="Sort Direction" style="height:30px;padding:2px;display:inline-flex;align-items:center;">
               <button class="pill-segment-btn ${activeSortDir === "desc" ? "active" : ""}" 
@@ -24424,14 +24504,16 @@
         renderActiveView();
       }
       else if (action === "hide-screener-col") {
+        if (e && e.stopPropagation) e.stopPropagation();
         const col = target.dataset.col;
         if (col && State.screenerCols) {
           State.screenerCols[col] = false;
-          try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (e) { }
+          try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
           renderActiveView();
-          const colNames = { athDist: "% From ATH", earnings: "Earnings Dates", cross: "50×200 EMA Cross", ema: "EMA Status", sector: "Sector", cap: "Market Cap" };
-          showToast(`Removed "${colNames[col] || col}" column. Restore anytime via 🎛 Columns button.`, "✂️");
+          const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "50×200 Cross", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
+          showToast(`Removed "${colNames[col] || col}" column. Click "↺ Reset Columns" to restore anytime.`, "✂️");
         }
+        return;
       }
       else if (action === "toggle-screener-cols") {
         State.screenerColsOpen = !State.screenerColsOpen;
@@ -24464,10 +24546,12 @@
         }
       }
       else if (action === "restore-all-screener-cols") {
-        State.screenerCols = { athDist: true, earnings: true, cross: true, ema: true, sector: true, cap: true };
-        try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (e) { }
+        if (e && e.stopPropagation) e.stopPropagation();
+        State.screenerCols = { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
+        try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
         renderActiveView();
         showToast("All table columns restored!", "🎛");
+        return;
       }
       else if (action === "toggle-ema-line") {
         const emaKey = target.dataset.ema;
@@ -25222,7 +25306,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.0.9', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.0', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
