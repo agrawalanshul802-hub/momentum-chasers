@@ -5776,19 +5776,25 @@ const server = http.createServer(async (req, res) => {
     }
 
     const isScriptOrStyle = ext === '.js' || ext === '.css';
+    const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname.startsWith('/order-flow');
+    const isNoCache = isScriptOrStyle || isHtml || ext === '.json';
     const etag = `W/"${stat.size.toString(16)}-${Math.trunc(stat.mtimeMs).toString(16)}"`;
     const headers = {
       'Content-Type': contentType,
-      'Cache-Control': isScriptOrStyle ? 'no-store, must-revalidate' : 'no-cache',
+      'Cache-Control': isNoCache ? 'no-cache, no-store, must-revalidate, max-age=0' : 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0',
       'Last-Modified': stat.mtime.toUTCString(),
-      'ETag': isScriptOrStyle ? '' : etag,
+      'ETag': isNoCache ? '' : etag,
       'Vary': 'Accept-Encoding'
     };
-    const etags = String(req.headers['if-none-match'] || '').split(',').map(value => value.trim());
-    if (etags.includes('*') || etags.includes(etag)) {
-      res.writeHead(304, headers);
-      res.end();
-      return;
+    if (!isNoCache) {
+      const etags = String(req.headers['if-none-match'] || '').split(',').map(value => value.trim());
+      if (etags.includes('*') || etags.includes(etag)) {
+        res.writeHead(304, headers);
+        res.end();
+        return;
+      }
     }
 
     fs.readFile(filePath, (err, content) => {

@@ -661,10 +661,13 @@ function serveStaticFile(res, filePath) {
   }
   const ext = path.extname(filePath).toLowerCase();
   const mime = MIME_TYPES[ext] || 'application/octet-stream';
+  const isNoCache = ext === '.html' || ext === '.js' || ext === '.css' || ext === '.json';
   res.writeHead(200, {
     ...SECURITY_HEADERS,
     'Content-Type': mime,
-    'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=86400'
+    'Cache-Control': isNoCache ? 'no-cache, no-store, must-revalidate, max-age=0' : 'public, max-age=3600',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   });
   fs.createReadStream(filePath).pipe(res);
 }
