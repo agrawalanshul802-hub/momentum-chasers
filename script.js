@@ -8166,17 +8166,17 @@
       <!-- Screener Control Card -->
       <div class="screener-panel-card">
         
-        <!-- Segregation Row 1: Cap (Buttons), Sector (Dropdown), Tech Setup (Dropdown), Financials (Dropdown), Timeframe (Buttons) -->
+        <!-- Segregation Row 1: Cap (Dropdown), Sector (Dropdown), Timeframe (Buttons) -->
         <div class="screener-seg-row">
-          <!-- Market Cap Segmented Buttons -->
+          <!-- Market Cap Dropdown -->
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <span class="screener-label">Market Cap</span>
-            <div class="pill-segmented-control" role="group" aria-label="Market Cap">
-              <button class="pill-segment-btn ${State.marketCap === "all" ? "active" : ""}" data-action="set-cap" data-val="all">All</button>
-              <button class="pill-segment-btn ${State.marketCap === "LC" ? "active" : ""}" data-action="set-cap" data-val="LC">Large Cap</button>
-              <button class="pill-segment-btn ${State.marketCap === "MC" ? "active" : ""}" data-action="set-cap" data-val="MC">Mid Cap</button>
-              <button class="pill-segment-btn ${State.marketCap === "SC" ? "active" : ""}" data-action="set-cap" data-val="SC">Small Cap</button>
-            </div>
+            <select class="styled-select-input" id="screener-cap-select" aria-label="Market Cap Filter">
+              <option value="all" ${State.marketCap === "all" ? "selected" : ""}>All Market Caps</option>
+              <option value="LC" ${State.marketCap === "LC" ? "selected" : ""}>Large Cap</option>
+              <option value="MC" ${State.marketCap === "MC" ? "selected" : ""}>Mid Cap</option>
+              <option value="SC" ${State.marketCap === "SC" ? "selected" : ""}>Small Cap</option>
+            </select>
           </div>
 
           <!-- Sector Dropdown (All 44 Nifty Sectoral & Thematic Indices) -->
@@ -17310,7 +17310,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.5" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.6" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
@@ -20394,6 +20394,7 @@
         renderActiveView();
       } else if (e.target.id === "screener-cap-select") {
         State.marketCap = e.target.value;
+        State.screenerPage = 1;
         renderActiveView();
       } else if (e.target.id === "screener-tf-select") {
         State.timeframe = e.target.value;
