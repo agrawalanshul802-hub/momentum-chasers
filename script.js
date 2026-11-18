@@ -8594,8 +8594,8 @@
   }
 
   function renderSectorTabsHeader() {
-    const isIndices = State.sectorSubTab === 'indices' || (!State.sectorSubTab && State.view === 'sectors');
-    const isTurnover = State.sectorSubTab === 'turnover' || State.view === 'sector-turnover';
+    const isTurnover = State.view === 'sector-turnover' || State.sectorSubTab === 'turnover';
+    const isIndices = !isTurnover;
     return `
       <div class="sector-tabs-header-bar">
         <div class="sector-subnav-pills">
@@ -8746,15 +8746,21 @@
     const data = State.sectorTurnoverData || getFallbackSectorTurnoverData();
 
     return `
+      ${renderSectorTabsHeader()}
       <div class="sector-turnover-view">
         <!-- Header Row Matching Image 1 & 2 -->
         <div class="turnover-header-row">
-          <div>
-            <div class="turnover-badge">
-              <span>💵</span> MONEY FLOW
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <button class="section-back-btn" data-action="go-back" title="Go back to previous page" style="margin-top:2px;">
+              <span class="back-arrow">← </span> <span>Back</span>
+            </button>
+            <div>
+              <div class="turnover-badge">
+                <span>💵</span> MONEY FLOW
+              </div>
+              <h2 class="turnover-title">Turnover vs own history</h2>
+              <p class="turnover-subtitle">Today's turnover vs the sector's own trailing ${State.sectorTurnoverBaseline || 8}-session average</p>
             </div>
-            <h2 class="turnover-title">Turnover vs own history</h2>
-            <p class="turnover-subtitle">Today's turnover vs the sector's own trailing ${State.sectorTurnoverBaseline || 8}-session average</p>
           </div>
 
           <div class="turnover-toolbar">
@@ -8887,6 +8893,7 @@
     else if (activeCol === "default") activeSortSummary = `Default Sequence (${activeDir === "desc" ? "44 to 1 ▼" : "1 to 44 ▲"})`;
 
     return `
+      ${renderSectorTabsHeader()}
       <div class="view-title-bar">
         <div class="view-title-left">
           <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
@@ -18732,6 +18739,7 @@
         container.innerHTML = renderBreadthView();
         break;
       case "sectors":
+        State.sectorSubTab = "indices";
         container.innerHTML = renderSectorIndicesContent();
         break;
       case "sector-turnover":
@@ -19349,6 +19357,9 @@
         }
         if (view === "sector-turnover") {
           State.sectorSubTab = "turnover";
+        }
+        if (view === "sectors") {
+          State.sectorSubTab = "indices";
         }
         if (State.view !== view && State.view !== "login") {
           State.previousView = State.view;
@@ -20714,6 +20725,12 @@
     if (hash.startsWith("events-")) {
       State.eventsTab = hash.replace("events-", "");
       State.view = "events";
+    } else if (hash === "sector-turnover") {
+      State.sectorSubTab = "turnover";
+      State.view = "sector-turnover";
+    } else if (hash === "sectors") {
+      State.sectorSubTab = "indices";
+      State.view = "sectors";
     } else if (validViews.includes(hash)) {
       State.view = hash;
     } else {
@@ -20742,6 +20759,9 @@
           State.view = "events";
         } else if (h === "sector-turnover") {
           State.sectorSubTab = "turnover";
+          State.view = "sector-turnover";
+        } else if (h === "sectors") {
+          State.sectorSubTab = "indices";
           State.view = "sectors";
         } else {
           State.view = h;
