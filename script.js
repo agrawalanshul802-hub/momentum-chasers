@@ -834,131 +834,217 @@
     ["Automobiles", [52, 50, -8, 95, 40, 15, -25, 38, 45, 20, -16, 34, 72, 21, -9, 46, 63, -28, 18, 55, 32]]
   ];
 
-  // Sector Constituent Stocks (+ Advancing / - Declining Breakdown)
-  const SECTOR_CONSTITUENTS = {
+  // Sector Constituent Stocks Base Universe
+  const SECTOR_BASE_CONSTITUENTS = {
     "NBFC & Financials": {
       icon: "🏦",
       description: "Large Non-Banking Financial Companies, Housing & Consumer Finance Leaders",
-      advancing: [
-        { symbol: "BAJFINANCE", name: "Bajaj Finance Ltd", price: 6840.50, chg: 2.35, rsi: 64.2, ema: "Above 20 EMA", vol: "2.4M" },
-        { symbol: "BAJAJFINSV", name: "Bajaj Finserv Ltd", price: 1624.00, chg: 1.82, rsi: 61.5, ema: "Above 20 EMA", vol: "1.8M" },
-        { symbol: "CHOLAFIN", name: "Cholamandalam Investment", price: 1320.10, chg: 1.54, rsi: 65.1, ema: "Above 20 EMA", vol: "950K" },
-        { symbol: "SHRIRAMFIN", name: "Shriram Finance Ltd", price: 2940.00, chg: 1.20, rsi: 58.4, ema: "Above 20 EMA", vol: "820K" },
-        { symbol: "MUTHOOTFIN", name: "Muthoot Finance Ltd", price: 1850.40, chg: 0.95, rsi: 56.8, ema: "Above 20 EMA", vol: "610K" },
-        { symbol: "POONAWALLA", name: "Poonawalla Fincorp Ltd", price: 380.20, chg: 0.65, rsi: 54.2, ema: "Above 20 EMA", vol: "1.1M" }
-      ],
-      declining: [
-        { symbol: "JIOFIN", name: "Jio Financial Services", price: 312.40, chg: -0.65, rsi: 46.2, ema: "Below 20 EMA", vol: "4.2M" },
-        { symbol: "M&MFIN", name: "M&M Financial Services", price: 284.10, chg: -0.92, rsi: 43.8, ema: "Below 20 EMA", vol: "1.4M" },
-        { symbol: "L&TFH", name: "L&T Finance Holdings", price: 156.80, chg: -1.35, rsi: 41.5, ema: "Below 20 EMA", vol: "2.1M" },
-        { symbol: "MANAPPURAM", name: "Manappuram Finance Ltd", price: 172.50, chg: -1.80, rsi: 38.9, ema: "Below 20 EMA", vol: "1.9M" }
+      stocks: [
+        { symbol: "BAJFINANCE", name: "Bajaj Finance Ltd", price: 6840.50, beta: 1.25, baseVol: 2.4 },
+        { symbol: "BAJAJFINSV", name: "Bajaj Finserv Ltd", price: 1624.00, beta: 1.15, baseVol: 1.8 },
+        { symbol: "CHOLAFIN", name: "Cholamandalam Investment", price: 1320.10, beta: 1.10, baseVol: 0.95 },
+        { symbol: "SHRIRAMFIN", name: "Shriram Finance Ltd", price: 2940.00, beta: 1.05, baseVol: 0.82 },
+        { symbol: "MUTHOOTFIN", name: "Muthoot Finance Ltd", price: 1850.40, beta: 0.95, baseVol: 0.61 },
+        { symbol: "POONAWALLA", name: "Poonawalla Fincorp Ltd", price: 380.20, beta: 1.20, baseVol: 1.1 },
+        { symbol: "JIOFIN", name: "Jio Financial Services", price: 312.40, beta: 1.05, baseVol: 4.2 },
+        { symbol: "M&MFIN", name: "M&M Financial Services", price: 284.10, beta: 1.15, baseVol: 1.4 },
+        { symbol: "L&TFH", name: "L&T Finance Holdings", price: 156.80, beta: 1.08, baseVol: 2.1 },
+        { symbol: "MANAPPURAM", name: "Manappuram Finance Ltd", price: 172.50, beta: 1.30, baseVol: 1.9 }
       ]
     },
     "Iron & Steel Products": {
       icon: "🏗️",
       description: "Primary Steel Producers, Flat/Long Products & Sponge Iron",
-      advancing: [
-        { symbol: "TATASTEEL", name: "Tata Steel Ltd", price: 148.60, chg: 2.45, rsi: 65.4, ema: "Above 20 EMA", vol: "18.4M" },
-        { symbol: "JSWSTEEL", name: "JSW Steel Ltd", price: 965.20, chg: 1.95, rsi: 62.8, ema: "Above 20 EMA", vol: "3.2M" },
-        { symbol: "JINDALSTEL", name: "Jindal Steel & Power", price: 940.50, chg: 1.60, rsi: 60.1, ema: "Above 20 EMA", vol: "1.8M" },
-        { symbol: "SAIL", name: "Steel Authority of India", price: 124.30, chg: 0.85, rsi: 55.4, ema: "Above 20 EMA", vol: "9.6M" },
-        { symbol: "APLAPOLLO", name: "APL Apollo Tubes Ltd", price: 1480.00, chg: 0.55, rsi: 53.2, ema: "Above 20 EMA", vol: "420K" }
-      ],
-      declining: [
-        { symbol: "NMDC", name: "NMDC Ltd", price: 218.40, chg: -0.75, rsi: 44.5, ema: "Below 20 EMA", vol: "3.8M" },
-        { symbol: "VEDL", name: "Vedanta Ltd", price: 460.20, chg: -1.15, rsi: 42.1, ema: "Below 20 EMA", vol: "5.1M" },
-        { symbol: "HINDALCO", name: "Hindalco Industries Ltd", price: 645.00, chg: -0.40, rsi: 47.6, ema: "Below 20 EMA", vol: "2.9M" },
-        { symbol: "NATIONALUM", name: "National Aluminium Co", price: 212.50, chg: -1.65, rsi: 40.8, ema: "Below 20 EMA", vol: "4.4M" }
+      stocks: [
+        { symbol: "TATASTEEL", name: "Tata Steel Ltd", price: 148.60, beta: 1.35, baseVol: 18.4 },
+        { symbol: "JSWSTEEL", name: "JSW Steel Ltd", price: 965.20, beta: 1.20, baseVol: 3.2 },
+        { symbol: "JINDALSTEL", name: "Jindal Steel & Power", price: 940.50, beta: 1.30, baseVol: 1.8 },
+        { symbol: "SAIL", name: "Steel Authority of India", price: 124.30, beta: 1.40, baseVol: 9.6 },
+        { symbol: "APLAPOLLO", name: "APL Apollo Tubes Ltd", price: 1480.00, beta: 1.05, baseVol: 0.42 },
+        { symbol: "NMDC", name: "NMDC Ltd", price: 218.40, beta: 1.10, baseVol: 3.8 },
+        { symbol: "VEDL", name: "Vedanta Ltd", price: 460.20, beta: 1.25, baseVol: 5.1 },
+        { symbol: "HINDALCO", name: "Hindalco Industries Ltd", price: 645.00, beta: 1.15, baseVol: 2.9 },
+        { symbol: "NATIONALUM", name: "National Aluminium Co", price: 212.50, beta: 1.35, baseVol: 4.4 }
       ]
     },
     "Private Banks": {
       icon: "🏛️",
       description: "Scheduled Private Sector Commercial Banks & Financial Leaders",
-      advancing: [
-        { symbol: "HDFCBANK", name: "HDFC Bank Ltd", price: 1748.20, chg: 1.42, rsi: 62.5, ema: "Above 20 EMA", vol: "8.6M" },
-        { symbol: "ICICIBANK", name: "ICICI Bank Ltd", price: 1265.40, chg: 1.15, rsi: 64.1, ema: "Above 20 EMA", vol: "6.4M" },
-        { symbol: "KOTAKBANK", name: "Kotak Mahindra Bank", price: 1780.00, chg: 0.88, rsi: 57.2, ema: "Above 20 EMA", vol: "2.1M" },
-        { symbol: "FEDERALBNK", name: "Federal Bank Ltd", price: 198.50, chg: 0.65, rsi: 55.4, ema: "Above 20 EMA", vol: "4.8M" },
-        { symbol: "IDFCFIRSTB", name: "IDFC First Bank Ltd", price: 72.40, chg: 0.45, rsi: 52.1, ema: "Above 20 EMA", vol: "12.5M" }
-      ],
-      declining: [
-        { symbol: "INDUSINDBK", name: "IndusInd Bank Ltd", price: 910.25, chg: -0.13, rsi: 46.2, ema: "Below 20 EMA", vol: "1.7M" },
-        { symbol: "AXISBANK", name: "Axis Bank Ltd", price: 1142.00, chg: -0.55, rsi: 45.1, ema: "Below 20 EMA", vol: "3.4M" },
-        { symbol: "BANDHANBNK", name: "Bandhan Bank Ltd", price: 168.20, chg: -1.45, rsi: 39.4, ema: "Below 20 EMA", vol: "2.8M" },
-        { symbol: "RBLBANK", name: "RBL Bank Ltd", price: 192.10, chg: -2.10, rsi: 37.1, ema: "Below 20 EMA", vol: "3.1M" }
+      stocks: [
+        { symbol: "HDFCBANK", name: "HDFC Bank Ltd", price: 1748.20, beta: 0.95, baseVol: 8.6 },
+        { symbol: "ICICIBANK", name: "ICICI Bank Ltd", price: 1265.40, beta: 1.05, baseVol: 6.4 },
+        { symbol: "KOTAKBANK", name: "Kotak Mahindra Bank", price: 1780.00, beta: 0.90, baseVol: 2.1 },
+        { symbol: "FEDERALBNK", name: "Federal Bank Ltd", price: 198.50, beta: 1.10, baseVol: 4.8 },
+        { symbol: "IDFCFIRSTB", name: "IDFC First Bank Ltd", price: 72.40, beta: 1.20, baseVol: 12.5 },
+        { symbol: "INDUSINDBK", name: "IndusInd Bank Ltd", price: 910.25, beta: 1.30, baseVol: 1.7 },
+        { symbol: "AXISBANK", name: "Axis Bank Ltd", price: 1142.00, beta: 1.15, baseVol: 3.4 },
+        { symbol: "BANDHANBNK", name: "Bandhan Bank Ltd", price: 168.20, beta: 1.35, baseVol: 2.8 },
+        { symbol: "RBLBANK", name: "RBL Bank Ltd", price: 192.10, beta: 1.40, baseVol: 3.1 }
       ]
     },
     "Information Technology": {
       icon: "💻",
       description: "Software Services, Cloud, SaaS, AI Solutions & IT Consulting",
-      advancing: [
-        { symbol: "TCS", name: "Tata Consultancy Services", price: 4120.00, chg: 2.15, rsi: 66.8, ema: "Above 20 EMA", vol: "2.1M" },
-        { symbol: "INFY", name: "Infosys Ltd", price: 1845.50, chg: 1.75, rsi: 64.2, ema: "Above 20 EMA", vol: "5.4M" },
-        { symbol: "COFORGE", name: "Coforge Ltd", price: 7850.00, chg: 2.85, rsi: 68.4, ema: "Above 20 EMA", vol: "480K" },
-        { symbol: "HCLTECH", name: "HCL Technologies Ltd", price: 1790.00, chg: 1.35, rsi: 62.5, ema: "Above 20 EMA", vol: "1.9M" },
-        { symbol: "TECHM", name: "Tech Mahindra Ltd", price: 1640.20, chg: 1.10, rsi: 59.8, ema: "Above 20 EMA", vol: "1.6M" },
-        { symbol: "WIPRO", name: "Wipro Ltd", price: 542.10, chg: 0.75, rsi: 55.2, ema: "Above 20 EMA", vol: "3.8M" }
-      ],
-      declining: [
-        { symbol: "PERSISTENT", name: "Persistent Systems Ltd", price: 5210.00, chg: -0.65, rsi: 47.4, ema: "Below 20 EMA", vol: "340K" },
-        { symbol: "LTTS", name: "L&T Technology Services", price: 5080.00, chg: -1.25, rsi: 43.1, ema: "Below 20 EMA", vol: "290K" },
-        { symbol: "MPHASIS", name: "Mphasis Ltd", price: 2840.00, chg: -0.95, rsi: 45.2, ema: "Below 20 EMA", vol: "380K" },
-        { symbol: "KPITTECH", name: "KPIT Technologies Ltd", price: 1410.00, chg: -1.60, rsi: 41.8, ema: "Below 20 EMA", vol: "510K" }
+      stocks: [
+        { symbol: "TCS", name: "Tata Consultancy Services", price: 4120.00, beta: 0.85, baseVol: 2.1 },
+        { symbol: "INFY", name: "Infosys Ltd", price: 1845.50, beta: 0.95, baseVol: 5.4 },
+        { symbol: "COFORGE", name: "Coforge Ltd", price: 7850.00, beta: 1.30, baseVol: 0.48 },
+        { symbol: "HCLTECH", name: "HCL Technologies Ltd", price: 1790.00, beta: 0.90, baseVol: 1.9 },
+        { symbol: "TECHM", name: "Tech Mahindra Ltd", price: 1640.20, beta: 1.10, baseVol: 1.6 },
+        { symbol: "WIPRO", name: "Wipro Ltd", price: 542.10, beta: 0.95, baseVol: 3.8 },
+        { symbol: "PERSISTENT", name: "Persistent Systems Ltd", price: 5210.00, beta: 1.25, baseVol: 0.34 },
+        { symbol: "LTTS", name: "L&T Technology Services", price: 5080.00, beta: 1.15, baseVol: 0.29 },
+        { symbol: "MPHASIS", name: "Mphasis Ltd", price: 2840.00, beta: 1.20, baseVol: 0.38 },
+        { symbol: "KPITTECH", name: "KPIT Technologies Ltd", price: 1410.00, beta: 1.35, baseVol: 0.51 }
       ]
     },
     "Pharmaceuticals": {
       icon: "💊",
       description: "Formulations, Active Pharma Ingredients (API), CDMO & Healthcare",
-      advancing: [
-        { symbol: "SMSPHARMA", name: "SMS Pharmaceuticals Ltd", price: 274.90, chg: 3.10, rsi: 68.2, ema: "Above 20 EMA", vol: "940K" },
-        { symbol: "SHUKRAPHAR", name: "Shukra Pharmaceuticals", price: 158.20, chg: 2.40, rsi: 64.5, ema: "Above 20 EMA", vol: "620K" },
-        { symbol: "SUNPHARMA", name: "Sun Pharmaceutical Ltd", price: 1780.00, chg: 2.10, rsi: 65.4, ema: "Above 20 EMA", vol: "2.4M" },
-        { symbol: "CIPLA", name: "Cipla Ltd", price: 1520.40, chg: 1.65, rsi: 62.1, ema: "Above 20 EMA", vol: "1.8M" },
-        { symbol: "DRREDDY", name: "Dr. Reddy's Laboratories", price: 1240.00, chg: 1.30, rsi: 59.6, ema: "Above 20 EMA", vol: "1.2M" },
-        { symbol: "DIVISLAB", name: "Divi's Laboratories Ltd", price: 5840.00, chg: 0.95, rsi: 57.2, ema: "Above 20 EMA", vol: "410K" }
-      ],
-      declining: [
-        { symbol: "APLLTD", name: "Alembic Pharmaceuticals", price: 703.50, chg: -1.20, rsi: 41.8, ema: "Below 20 EMA", vol: "350K" },
-        { symbol: "LUPIN", name: "Lupin Ltd", price: 2040.00, chg: -0.65, rsi: 46.2, ema: "Below 20 EMA", vol: "820K" },
-        { symbol: "TORNTPHARM", name: "Torrent Pharmaceuticals", price: 3180.00, chg: -0.85, rsi: 44.9, ema: "Below 20 EMA", vol: "290K" },
-        { symbol: "BIOCON", name: "Biocon Ltd", price: 318.00, chg: -1.40, rsi: 42.3, ema: "Below 20 EMA", vol: "1.8M" }
+      stocks: [
+        { symbol: "SMSPHARMA", name: "SMS Pharmaceuticals Ltd", price: 274.90, beta: 1.20, baseVol: 0.94 },
+        { symbol: "SHUKRAPHAR", name: "Shukra Pharmaceuticals", price: 158.20, beta: 1.15, baseVol: 0.62 },
+        { symbol: "SUNPHARMA", name: "Sun Pharmaceutical Ltd", price: 1780.00, beta: 0.75, baseVol: 2.4 },
+        { symbol: "CIPLA", name: "Cipla Ltd", price: 1520.40, beta: 0.70, baseVol: 1.8 },
+        { symbol: "DRREDDY", name: "Dr. Reddy's Laboratories", price: 1240.00, beta: 0.80, baseVol: 1.2 },
+        { symbol: "DIVISLAB", name: "Divi's Laboratories Ltd", price: 5840.00, beta: 0.90, baseVol: 0.41 },
+        { symbol: "APLLTD", name: "Alembic Pharmaceuticals", price: 703.50, beta: 1.05, baseVol: 0.35 },
+        { symbol: "LUPIN", name: "Lupin Ltd", price: 2040.00, beta: 0.95, baseVol: 0.82 },
+        { symbol: "TORNTPHARM", name: "Torrent Pharmaceuticals", price: 3180.00, beta: 0.75, baseVol: 0.29 },
+        { symbol: "BIOCON", name: "Biocon Ltd", price: 318.00, beta: 1.10, baseVol: 1.8 }
       ]
     },
     "Power & Utilities": {
       icon: "⚡",
       description: "Thermal & Hydro Power Generation, Grid Infrastructure & Renewables",
-      advancing: [
-        { symbol: "NTPC", name: "NTPC Ltd", price: 375.40, chg: 2.85, rsi: 67.2, ema: "Above 20 EMA", vol: "14.2M" },
-        { symbol: "POWERGRID", name: "Power Grid Corp of India", price: 324.10, chg: 2.20, rsi: 64.8, ema: "Above 20 EMA", vol: "9.8M" },
-        { symbol: "TATAPOWER", name: "Tata Power Co Ltd", price: 415.00, chg: 1.95, rsi: 62.4, ema: "Above 20 EMA", vol: "6.4M" },
-        { symbol: "ADANIGREEN", name: "Adani Green Energy Ltd", price: 1540.00, chg: 1.60, rsi: 58.9, ema: "Above 20 EMA", vol: "1.8M" },
-        { symbol: "NHPC", name: "NHPC Ltd", price: 88.50, chg: 0.85, rsi: 54.6, ema: "Above 20 EMA", vol: "8.5M" }
-      ],
-      declining: [
-        { symbol: "ADANIPOWER", name: "Adani Power Ltd", price: 580.00, chg: -0.90, rsi: 44.8, ema: "Below 20 EMA", vol: "2.8M" },
-        { symbol: "JSWENERGY", name: "JSW Energy Ltd", price: 695.00, chg: -1.35, rsi: 41.6, ema: "Below 20 EMA", vol: "1.4M" },
-        { symbol: "IEX", name: "Indian Energy Exchange", price: 178.20, chg: -0.65, rsi: 46.3, ema: "Below 20 EMA", vol: "4.2M" },
-        { symbol: "BHEL", name: "Bharat Heavy Electricals", price: 235.00, chg: -1.75, rsi: 39.8, ema: "Below 20 EMA", vol: "7.1M" }
+      stocks: [
+        { symbol: "NTPC", name: "NTPC Ltd", price: 375.40, beta: 0.90, baseVol: 14.2 },
+        { symbol: "POWERGRID", name: "Power Grid Corp of India", price: 324.10, beta: 0.75, baseVol: 9.8 },
+        { symbol: "TATAPOWER", name: "Tata Power Co Ltd", price: 415.00, beta: 1.25, baseVol: 6.4 },
+        { symbol: "ADANIGREEN", name: "Adani Green Energy Ltd", price: 1540.00, beta: 1.45, baseVol: 1.8 },
+        { symbol: "NHPC", name: "NHPC Ltd", price: 88.50, beta: 0.85, baseVol: 8.5 },
+        { symbol: "ADANIPOWER", name: "Adani Power Ltd", price: 580.00, beta: 1.50, baseVol: 2.8 },
+        { symbol: "JSWENERGY", name: "JSW Energy Ltd", price: 695.00, beta: 1.35, baseVol: 1.4 },
+        { symbol: "IEX", name: "Indian Energy Exchange", price: 178.20, beta: 1.10, baseVol: 4.2 },
+        { symbol: "BHEL", name: "Bharat Heavy Electricals", price: 235.00, beta: 1.40, baseVol: 7.1 }
       ]
     },
     "Automobiles": {
       icon: "🚗",
       description: "2-Wheelers, Commercial Vehicles, Passenger Cars & Auto Ancillaries",
-      advancing: [
-        { symbol: "BAJAJ-AUTO", name: "Bajaj Auto Ltd", price: 9450.00, chg: 2.40, rsi: 66.2, ema: "Above 20 EMA", vol: "680K" },
-        { symbol: "TATAMOTORS", name: "Tata Motors Ltd", price: 842.00, chg: 1.85, rsi: 62.9, ema: "Above 20 EMA", vol: "8.4M" },
-        { symbol: "TVSMOTOR", name: "TVS Motor Co Ltd", price: 2420.00, chg: 1.55, rsi: 63.8, ema: "Above 20 EMA", vol: "740K" },
-        { symbol: "MARUTI", name: "Maruti Suzuki India", price: 11480.00, chg: 1.35, rsi: 60.4, ema: "Above 20 EMA", vol: "420K" },
-        { symbol: "M&M", name: "Mahindra & Mahindra Ltd", price: 2890.00, chg: 1.10, rsi: 58.6, ema: "Above 20 EMA", vol: "1.9M" }
-      ],
-      declining: [
-        { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd", price: 5385.00, chg: 0.80, rsi: 52.2, ema: "Above 20 EMA", vol: "480K" },
-        { symbol: "EICHERMOT", name: "Eicher Motors Ltd", price: 7650.00, chg: 1.34, rsi: 54.5, ema: "Above 20 EMA", vol: "390K" },
-        { symbol: "ASHOKLEY", name: "Ashok Leyland Ltd", price: 218.00, chg: -1.25, rsi: 42.1, ema: "Below 20 EMA", vol: "5.6M" },
-        { symbol: "BHARATFORG", name: "Bharat Forge Ltd", price: 1320.00, chg: -1.55, rsi: 40.6, ema: "Below 20 EMA", vol: "820K" }
+      stocks: [
+        { symbol: "BAJAJ-AUTO", name: "Bajaj Auto Ltd", price: 9450.00, beta: 0.90, baseVol: 0.68 },
+        { symbol: "TATAMOTORS", name: "Tata Motors Ltd", price: 842.00, beta: 1.35, baseVol: 8.4 },
+        { symbol: "TVSMOTOR", name: "TVS Motor Co Ltd", price: 2420.00, beta: 1.10, baseVol: 0.74 },
+        { symbol: "MARUTI", name: "Maruti Suzuki India", price: 11480.00, beta: 0.85, baseVol: 0.42 },
+        { symbol: "M&M", name: "Mahindra & Mahindra Ltd", price: 2890.00, beta: 1.15, baseVol: 1.9 },
+        { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd", price: 5385.00, beta: 0.95, baseVol: 0.48 },
+        { symbol: "EICHERMOT", name: "Eicher Motors Ltd", price: 7650.00, beta: 1.05, baseVol: 0.39 },
+        { symbol: "ASHOKLEY", name: "Ashok Leyland Ltd", price: 218.00, beta: 1.25, baseVol: 5.6 },
+        { symbol: "BHARATFORG", name: "Bharat Forge Ltd", price: 1320.00, beta: 1.20, baseVol: 0.82 }
       ]
     }
   };
+
+  // Dynamic Session-Aware Net Flow Constituent Evaluator
+  function getSectorConstituentsForSession(sectorName, score, sessionIdx) {
+    const sec = SECTOR_BASE_CONSTITUENTS[sectorName] || SECTOR_BASE_CONSTITUENTS["Automobiles"];
+    const list = sec.stocks;
+    const n = list.length;
+
+    let seed = 0;
+    for (let i = 0; i < sectorName.length; i++) seed += sectorName.charCodeAt(i);
+    seed += (sessionIdx || 0) * 17;
+
+    const pseudoRand = (offset) => {
+      const x = Math.sin(seed + offset) * 10000;
+      return x - Math.floor(x);
+    };
+
+    let targetAdvCount;
+    if (score >= 80) targetAdvCount = Math.min(n, Math.max(n - 1, Math.round(n * 0.9)));
+    else if (score >= 40) targetAdvCount = Math.round(n * 0.75);
+    else if (score > 10) targetAdvCount = Math.round(n * 0.65);
+    else if (score >= -10) targetAdvCount = Math.round(n * 0.5);
+    else if (score >= -40) targetAdvCount = Math.round(n * 0.35);
+    else targetAdvCount = Math.max(1, Math.round(n * 0.2));
+
+    const scoredStocks = list.map((stk, idx) => {
+      const pVar = (pseudoRand(idx * 3 + 1) - 0.5) * 1.2;
+      const stockMomentum = (score >= 0)
+        ? (stk.beta * (score / 40) + pVar)
+        : (score / 40 / stk.beta + pVar);
+      return { stk, momentum: stockMomentum, idx };
+    });
+
+    scoredStocks.sort((a, b) => b.momentum - a.momentum);
+
+    const advancing = [];
+    const declining = [];
+
+    scoredStocks.forEach((item, rank) => {
+      const stk = item.stk;
+      const isAdv = rank < targetAdvCount;
+      const pVar = pseudoRand(item.idx * 7 + 3);
+
+      const liveStock = (typeof ST_MAP !== 'undefined') ? ST_MAP[stk.symbol] : null;
+      const stockPrice = liveStock ? liveStock.price : stk.price;
+      const stockName = (liveStock && liveStock.name) ? liveStock.name : stk.name;
+
+      let chg, rsi, ema, vol;
+
+      if (isAdv) {
+        const baseGain = Math.max(0.35, Math.abs(score) * 0.038 * stk.beta);
+        chg = +(baseGain + pVar * 1.2).toFixed(2);
+        if (chg <= 0) chg = 0.50;
+        rsi = Math.min(82, +(54 + (score > 0 ? score * 0.22 : 6) + pVar * 8).toFixed(1));
+        ema = "Above 20 EMA";
+        const volNum = (stk.baseVol * (1 + (score > 0 ? score * 0.008 : 0) + pVar * 0.4)).toFixed(1);
+        vol = volNum > 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
+
+        advancing.push({
+          symbol: stk.symbol,
+          name: stockName,
+          price: stockPrice,
+          chg,
+          rsi,
+          ema,
+          vol
+        });
+      } else {
+        const baseDrop = Math.max(0.40, (score < 0 ? Math.abs(score) * 0.048 : 0.85) * stk.beta);
+        chg = +(-1 * (baseDrop + pVar * 1.0)).toFixed(2);
+        if (chg >= 0) chg = -0.50;
+        rsi = Math.max(28, +(46 - (score < 0 ? Math.abs(score) * 0.22 : 5) - pVar * 6).toFixed(1));
+        ema = "Below 20 EMA";
+        const volNum = (stk.baseVol * (1 + (score < 0 ? Math.abs(score) * 0.008 : 0) + pVar * 0.3)).toFixed(1);
+        vol = volNum > 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
+
+        declining.push({
+          symbol: stk.symbol,
+          name: stockName,
+          price: stockPrice,
+          chg,
+          rsi,
+          ema,
+          vol
+        });
+      }
+    });
+
+    return {
+      icon: sec.icon,
+      description: sec.description,
+      advancing,
+      declining
+    };
+  }
+
+  // Pre-generate default static SECTOR_CONSTITUENTS for backward compatibility
+  const SECTOR_CONSTITUENTS = {};
+  for (const secName of Object.keys(SECTOR_BASE_CONSTITUENTS)) {
+    SECTOR_CONSTITUENTS[secName] = getSectorConstituentsForSession(secName, 50, 0);
+  }
 
   // Market Valuation Dashboard (Feature 11) - Official National Stock Exchange (NSE) Archive Data
   const VL_FALLBACK = [
@@ -5180,7 +5266,8 @@
     },
     fiiDii: { periods: null, daily: [], latestDate: "", source: "Groww", updatedAt: "", status: "loading", error: "" },
     netflowTab: "10",           // "today", "5", "10", "month"
-    activeNetflowSector: "Information Technology", // Currently inspected sector in Net Flow
+    activeNetflowSector: "Automobiles", // Currently inspected sector in Net Flow
+    activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
     activeSectorIndex: "",
@@ -10486,8 +10573,16 @@
       return "flow-zero";
     };
 
-    const activeSec = State.activeNetflowSector || "Information Technology";
-    const secData = SECTOR_CONSTITUENTS[activeSec] || SECTOR_CONSTITUENTS["Information Technology"] || { icon: "💻", description: "", advancing: [], declining: [] };
+    const activeSec = State.activeNetflowSector || "Automobiles";
+    const activeSessionIdx = typeof State.activeNetflowSessionIdx === "number" ? Math.min(Math.max(0, State.activeNetflowSessionIdx), visibleCount - 1) : 0;
+
+    // Find active sector FL row to get session score
+    const activeRow = FL.find(r => r[0] === activeSec) || FL[6] || FL[0];
+    const activeScores = activeRow ? activeRow[1] : [];
+    const activeScore = (activeScores[activeSessionIdx] !== undefined) ? activeScores[activeSessionIdx] : (activeScores[0] || 0);
+    const activeLabel = dateLabels[activeSessionIdx] || "Today";
+
+    const secData = getSectorConstituentsForSession(activeSec, activeScore, activeSessionIdx);
 
     const advStocks = secData.advancing || [];
     const decStocks = secData.declining || [];
@@ -10541,29 +10636,41 @@
       const secName = row[0];
       const scores = row[1].slice(0, visibleCount);
       const isActive = secName === activeSec;
-      const meta = SECTOR_CONSTITUENTS[secName] || { icon: "📊", advancing: [], declining: [] };
-      const advCount = meta.advancing.length;
-      const decCount = meta.declining.length;
+
+      const rowSessionIdx = isActive ? activeSessionIdx : 0;
+      const rowScore = (scores[rowSessionIdx] !== undefined) ? scores[rowSessionIdx] : (scores[0] || 0);
+      const rowData = getSectorConstituentsForSession(secName, rowScore, rowSessionIdx);
+      const advCount = rowData.advancing.length;
+      const decCount = rowData.declining.length;
 
       return `
-              <div class="netflow-row ${isActive ? 'active-sector-row' : ''}" style="${gridColsCss}" data-action="select-netflow-sector" data-sector="${secName}" title="Click to view ${secName} constituent + and - stocks">
+              <div class="netflow-row ${isActive ? 'active-sector-row' : ''}" style="${gridColsCss}" data-action="select-netflow-sector" data-sector="${secName}" title="Click row to view ${secName} constituent + and - stocks">
                 <div class="netflow-sector-cell">
                   <div class="netflow-sector-main">
-                    <span class="netflow-sector-icon">${meta.icon || '📊'}</span>
+                    <span class="netflow-sector-icon">${rowData.icon || '📊'}</span>
                     <span class="netflow-sector-name">${secName}</span>
                   </div>
                   <div class="netflow-sector-pill">
-                    <span class="adv-badge" title="${advCount} Advancing (+) Stocks">+${advCount}</span>
-                    <span class="dec-badge" title="${decCount} Declining (-) Stocks">-${decCount}</span>
+                    <span class="adv-badge" data-action="filter-netflow-adv" data-sector="${secName}" title="${advCount} Advancing (+) Stocks — Click to filter only Advancing stocks">+${advCount}</span>
+                    <span class="dec-badge" data-action="filter-netflow-dec" data-sector="${secName}" title="${decCount} Declining (-) Stocks — Click to filter only Declining stocks">-${decCount}</span>
                     <span class="netflow-chevron">${isActive ? '▼' : '▶'}</span>
                   </div>
                 </div>
 
-                ${scores.map((score, sIdx) => `
-                  <div class="netflow-cell ${getFlowClass(score)}" title="${secName} (${dateLabels[sIdx]}): Flow score ${score > 0 ? '+' + score : score}">
+                ${scores.map((score, sIdx) => {
+                  const isCellActive = isActive && (sIdx === activeSessionIdx);
+                  return `
+                  <div class="netflow-cell ${getFlowClass(score)} ${isCellActive ? 'active-cell' : ''}" 
+                       data-action="select-netflow-session" 
+                       data-sector="${secName}" 
+                       data-session-idx="${sIdx}" 
+                       data-score="${score}" 
+                       data-label="${dateLabels[sIdx]}"
+                       title="${secName} (${dateLabels[sIdx]}): Flow score ${score > 0 ? '+' + score : score} — Click to inspect ${dateLabels[sIdx]} constituent stocks">
                     <span>${score > 0 ? "+" + score : score}</span>
                   </div>
-                `).join("")}
+                `;
+                }).join("")}
               </div>
             `;
     }).join("");
@@ -10591,13 +10698,13 @@
       <div class="netflow-table-card">
         <div class="netflow-interactive-hint">
           <span>💡</span>
-          <span>Click any sector row to inspect its <strong>Advancing (+)</strong> and <strong>Declining (-)</strong> constituent stocks. Currently inspecting: <strong>${activeSec}</strong></span>
+          <span>Click any cell to inspect its <strong>Advancing (+)</strong> and <strong>Declining (-)</strong> constituent stocks. Currently inspecting: <strong>${activeSec} (${activeLabel})</strong></span>
         </div>
 
         <div class="netflow-table">
           <div class="netflow-row header-row" style="${gridColsCss}">
             <div class="netflow-header-cell" style="text-align:left">Sector Cluster</div>
-            ${dateLabels.map(d => `<div class="netflow-header-cell">${d}</div>`).join("")}
+            ${dateLabels.map((d, dIdx) => `<div class="netflow-header-cell ${dIdx === activeSessionIdx ? 'font-bold' : ''}">${d}</div>`).join("")}
           </div>
 
           ${tableRowsHtml}
@@ -10613,9 +10720,11 @@
               <div>
                 <div class="netflow-breakdown-title">
                   <span>${activeSec}</span>
-                  <span class="netflow-active-badge">Constituents Net Flow</span>
+                  <span class="netflow-active-badge ${activeScore >= 0 ? 'badge-green' : 'badge-red'}">
+                    Session: ${activeLabel} (${activeScore > 0 ? '+' + activeScore : activeScore} Net Flow)
+                  </span>
                 </div>
-                <div class="netflow-breakdown-desc">${secData.description}</div>
+                <div class="netflow-breakdown-desc">${secData.description} • Constituent breakdown reflects ${activeLabel} institutional flow (${activeScore >= 0 ? 'Net Buying Inflow' : 'Net Selling Outflow'}).</div>
               </div>
             </div>
 
@@ -10638,7 +10747,7 @@
                 <div class="netflow-col-header">
                   <div class="netflow-col-title">
                     <span class="dot-green"></span>
-                    <span>🟢 Advancing Stocks (+) — Net Buyer Inflow</span>
+                    <span>🟢 Advancing Stocks (+) — Net Buyer Inflow (${advStocks.length})</span>
                   </div>
                   <span class="netflow-col-count font-mono">${advStocks.length} Stocks</span>
                 </div>
@@ -10653,7 +10762,7 @@
                 <div class="netflow-col-header">
                   <div class="netflow-col-title">
                     <span class="dot-red"></span>
-                    <span>🔴 Declining Stocks (-) — Net Seller Outflow</span>
+                    <span>🔴 Declining Stocks (-) — Net Seller Outflow (${decStocks.length})</span>
                   </div>
                   <span class="netflow-col-count font-mono">${decStocks.length} Stocks</span>
                 </div>
@@ -10665,8 +10774,6 @@
           </div>
         </div>
       ` : ''}
-
-      
     `;
   }
 
@@ -10678,10 +10785,51 @@
     const rows = container.querySelectorAll(".netflow-row[data-sector]");
     rows.forEach(row => {
       row.addEventListener("click", e => {
+        // 1. If clicked on a specific session cell
+        const cell = e.target.closest("[data-action='select-netflow-session']");
+        if (cell) {
+          e.stopPropagation();
+          const sec = cell.dataset.sector;
+          const sIdx = parseInt(cell.dataset.sessionIdx, 10);
+          if (sec) State.activeNetflowSector = sec;
+          if (!isNaN(sIdx)) State.activeNetflowSessionIdx = sIdx;
+          renderActiveView();
+          const breakdown = document.getElementById("netflow-stock-breakdown");
+          if (breakdown) breakdown.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
+
+        // 2. If clicked on advancing badge (+X)
+        const advBadge = e.target.closest("[data-action='filter-netflow-adv']");
+        if (advBadge) {
+          e.stopPropagation();
+          const sec = advBadge.dataset.sector;
+          if (sec) State.activeNetflowSector = sec;
+          State.netflowStockFilter = "advancing";
+          renderActiveView();
+          const breakdown = document.getElementById("netflow-stock-breakdown");
+          if (breakdown) breakdown.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
+
+        // 3. If clicked on declining badge (-Y)
+        const decBadge = e.target.closest("[data-action='filter-netflow-dec']");
+        if (decBadge) {
+          e.stopPropagation();
+          const sec = decBadge.dataset.sector;
+          if (sec) State.activeNetflowSector = sec;
+          State.netflowStockFilter = "declining";
+          renderActiveView();
+          const breakdown = document.getElementById("netflow-stock-breakdown");
+          if (breakdown) breakdown.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
+
         if (e.target.closest("button, a")) return;
         const sec = row.dataset.sector;
         if (sec) {
           State.activeNetflowSector = sec;
+          State.activeNetflowSessionIdx = 0;
           renderActiveView();
           const breakdown = document.getElementById("netflow-stock-breakdown");
           if (breakdown) {
@@ -10697,6 +10845,7 @@
       btn.addEventListener("click", e => {
         e.stopPropagation();
         State.netflowTab = btn.dataset.val;
+        State.activeNetflowSessionIdx = 0;
         renderActiveView();
       });
     });
@@ -17321,7 +17470,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.7" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.8" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
@@ -20122,10 +20271,36 @@
         const sector = (row && row.dataset.sector) || target.dataset.sector;
         if (sector) {
           State.activeNetflowSector = sector;
+          State.activeNetflowSessionIdx = 0;
           renderActiveView();
           const el = document.getElementById("netflow-stock-breakdown");
           if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
+      }
+      else if (action === "select-netflow-session") {
+        const sector = target.dataset.sector;
+        const sIdx = parseInt(target.dataset.sessionIdx, 10);
+        if (sector) State.activeNetflowSector = sector;
+        if (!isNaN(sIdx)) State.activeNetflowSessionIdx = sIdx;
+        renderActiveView();
+        const el = document.getElementById("netflow-stock-breakdown");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      else if (action === "filter-netflow-adv") {
+        const sector = target.dataset.sector;
+        if (sector) State.activeNetflowSector = sector;
+        State.netflowStockFilter = "advancing";
+        renderActiveView();
+        const el = document.getElementById("netflow-stock-breakdown");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      else if (action === "filter-netflow-dec") {
+        const sector = target.dataset.sector;
+        if (sector) State.activeNetflowSector = sector;
+        State.netflowStockFilter = "declining";
+        renderActiveView();
+        const el = document.getElementById("netflow-stock-breakdown");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
       else if (action === "set-netflow-stock-filter") {
         State.netflowStockFilter = target.dataset.filter;
