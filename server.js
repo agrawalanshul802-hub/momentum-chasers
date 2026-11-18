@@ -5796,7 +5796,7 @@ const server = http.createServer(async (req, res) => {
   // Stock Universe endpoint for Owner Studio Autocomplete
   if (pathname === '/api/stocks-universe') {
     try {
-      const stocksPath = path.join(__dirname, 'data', 'stocks-nifty500.json');
+      const stocksPath = path.join(__dirname, 'data', 'stocks-universe.json');
       if (fs.existsSync(stocksPath)) {
         const rawStocks = JSON.parse(fs.readFileSync(stocksPath, 'utf8'));
         const list = rawStocks.map(s => ({

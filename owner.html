@@ -576,7 +576,7 @@
 
         <!-- Stock Universe Selector -->
         <div class="form-group">
-          <label class="form-label">Constituent Stocks (Select from 500+ Universe) *</label>
+          <label class="form-label">Constituent Stocks (Select from 2,000+ Universe) *</label>
           <div class="stock-picker-wrap">
             <div class="stock-tags-container" id="stock-tags-container" onclick="focusStockInput()">
               <!-- Selected tags appear here -->
@@ -809,7 +809,7 @@
       }
     }
 
-    // Load 500+ Stock Universe
+    // Load 2,000+ Stock Universe
     function loadStockUniverse() {
       fetch('/api/stocks-universe')
         .then(function(res) { return res.json(); })
