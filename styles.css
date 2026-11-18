@@ -13117,3 +13117,195 @@ body.theme-white .dms-delay {
     border-color: var(--g) !important;
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15) !important;
 }
+
+/* ==========================================================================
+   FEATURE: OWNER TRADING IDEAS & CURATED SETUPS (PUBLISHED BY OWNER)
+   ========================================================================== */
+.owner-ideas-section {
+    padding-top: 10px;
+    margin-bottom: 6px;
+}
+
+.owner-live-tag {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--g);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.owner-panel-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--ln);
+    color: var(--mu);
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.owner-panel-link-btn:hover {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: var(--g);
+}
+
+.owner-idea-chip {
+    border-color: rgba(34, 197, 94, 0.25);
+    background: rgba(34, 197, 94, 0.04);
+}
+
+.owner-idea-chip:hover {
+    border-color: rgba(34, 197, 94, 0.5);
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--ink);
+}
+
+.owner-idea-chip.active {
+    background: rgba(34, 197, 94, 0.2) !important;
+    border-color: var(--g) !important;
+    color: var(--g) !important;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.25);
+}
+
+.owner-idea-intel-card {
+    background: var(--sf2);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+.idea-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.idea-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.idea-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.idea-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.idea-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--mu);
+    margin-top: 3px;
+    flex-wrap: wrap;
+}
+
+.idea-cat-badge {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--g);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 10px;
+}
+
+.clear-idea-filter-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.clear-idea-filter-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+}
+
+.idea-metrics-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--sf3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.idea-metric-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--mu);
+}
+
+.idea-metric-pill strong {
+    color: var(--ink);
+}
+
+.idea-thesis-box {
+    font-size: 12px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid var(--g);
+    padding: 6px 12px;
+    border-radius: 0 6px 6px 0;
+}
+
+.idea-stocks-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+}
+
+.idea-stock-tag {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.idea-stock-tag:hover {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    transform: translateY(-1px);
+}

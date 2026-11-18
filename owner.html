@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Publishing Studio — Momentum Chasers</title>
+  <link rel="icon" type="image/png" href="logo-icon.png">
+  <link rel="stylesheet" href="styles.css?v=6.0.0">
+  <style>
+    :root {
+      --bg-studio: #090d14;
+      --card-bg: #121824;
+      --card-border: #1e283a;
+      --accent-green: #22c55e;
+      --accent-cyan: #38bdf8;
+      --accent-red: #ef4444;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      background: var(--bg-studio);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Studio Header */
+    .studio-header {
+      background: #0f1420;
+      border-bottom: 1px solid var(--card-border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .studio-brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+
+    .studio-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .studio-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: var(--accent-green);
+      border-radius: 4px;
+    }
+
+    .studio-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--accent-red);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* Main Layout */
+    .studio-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .studio-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .studio-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 22px;
+      box-sizing: border-box;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-main);
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+
+    /* Stock Tags Input */
+    .stock-picker-wrap {
+      position: relative;
+    }
+
+    .stock-tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 6px;
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      min-height: 42px;
+      align-items: center;
+    }
+
+    .stock-tag-pill {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent-cyan);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stock-tag-pill .remove-tag {
+      cursor: pointer;
+      opacity: 0.7;
+      font-size: 12px;
+    }
+
+    .stock-tag-pill .remove-tag:hover {
+      opacity: 1;
+      color: #fff;
+    }
+
+    .stock-input-inline {
+      flex: 1;
+      min-width: 120px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 220px;
+      overflow-y: auto;
+      background: #111726;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      z-index: 50;
+      margin-top: 4px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: none;
+    }
+
+    .autocomplete-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+
+    .autocomplete-item:hover {
+      background: rgba(34, 197, 94, 0.15);
+      color: #fff;
+    }
+
+    .autocomplete-item .sec-badge {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* Buttons */
+    .btn-submit {
+      width: 100%;
+      background: var(--accent-green);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-submit:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+    }
+
+    /* Idea Card in Manager */
+    .idea-item-card {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .idea-item-card:hover {
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .idea-item-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .idea-item-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .idea-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+    }
+
+    .action-btn.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    /* Live Preview Box */
+    .preview-box {
+      background: #0b0f19;
+      border: 1px dashed rgba(34, 197, 94, 0.35);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .preview-chip-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: var(--accent-green);
+      margin-bottom: 12px;
+    }
+
+    /* PIN Gate Overlay */
+    .pin-gate-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(9, 13, 20, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .pin-card {
+      background: #121824;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    }
+
+    .pin-card h2 {
+      font-size: 18px;
+      margin: 0 0 8px 0;
+      color: var(--text-main);
+    }
+
+    .pin-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0 0 20px 0;
+    }
+
+    .pin-input {
+      width: 100%;
+      background: #090d14;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 0.2em;
+      color: var(--accent-green);
+      box-sizing: border-box;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .pin-input:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--accent-green);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 2000;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PIN GATE OVERLAY -->
+  <div id="pin-gate" class="pin-gate-overlay">
+    <div class="pin-card">
+      <div style="font-size: 32px; margin-bottom: 12px;">🔐</div>
+      <h2>Owner Publishing Studio</h2>
+      <p>Enter your Owner PIN to publish ideas to the Screener</p>
+      <form id="pin-form" onsubmit="handlePinSubmit(event)">
+        <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="12" autofocus autocomplete="off">
+        <button type="submit" class="btn-submit">Unlock Owner Studio</button>
+      </form>
+      <div id="pin-error" style="color:var(--accent-red);font-size:12px;margin-top:10px;display:none;">
+        Incorrect PIN. Please try again.
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:14px;">
+        Default Studio PIN: <code>1234</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDIO APP -->
+  <header class="studio-header">
+    <div class="studio-brand">
+      <img src="logo-icon.png" alt="Logo" onerror="this.style.display='none'">
+      <div class="studio-title">
+        <span>Momentum Chasers</span>
+        <span class="studio-badge">Owner Studio</span>
+      </div>
+    </div>
+    <div class="studio-header-actions">
+      <a href="/" class="btn-outline" target="_blank" title="Open Live Screener in new tab">
+        <span>📊 Live Screener ↗</span>
+      </a>
+      <button class="btn-outline btn-danger" onclick="lockStudio()" title="Lock studio session">
+        <span>🔒 Lock Studio</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="studio-container">
+    <!-- LEFT: CREATOR FORM -->
+    <div class="studio-card">
+      <div class="card-title">
+        <span>📝</span> <span id="form-heading">Publish New Trading Idea</span>
+      </div>
+      <div class="card-subtitle">
+        Ideas published here appear immediately in the Screener's Owner Ideas section.
+      </div>
+
+      <form id="idea-form" onsubmit="handleIdeaSubmit(event)">
+        <input type="hidden" id="idea-id" value="">
+
+        <!-- Idea Title -->
+        <div class="form-group">
+          <label class="form-label" for="idea-title">Idea Title / Setup Name *</label>
+          <input type="text" id="idea-title" class="form-input" placeholder="e.g. Defense Sector Momentum, Auto Ancillary Breakout" required oninput="updateLivePreview()">
+        </div>
+
+        <!-- Setup Category & Timeframe -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="idea-category">Setup Category / Tag</label>
+            <select id="idea-category" class="form-select" onchange="updateLivePreview()">
+              <option value="High Conviction Breakout">High Conviction Breakout</option>
+              <option value="Swing Long">Swing Long</option>
+              <option value="VCP Compression">VCP Compression</option>
+              <option value="Volume Breakout">Volume Breakout</option>
+              <option value="Earnings Momentum">Earnings Momentum</option>
+              <option value="Positional Multibagger">Positional Multibagger</option>
+              <option value="Reversal Setup">Reversal Setup</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="idea-timeframe">Target Timeframe</label>
+            <select id="idea-timeframe" class="form-select" onchange="updateLivePreview()">
+              <option value="1-2 Weeks">1-2 Weeks (Short Swing)</option>
+              <option value="2-4 Weeks" selected>2-4 Weeks (Swing)</option>
+              <option value="1-3 Months">1-3 Months (Positional)</option>
+              <option value="3-6 Months">3-6 Months (Medium Term)</option>
+              <option value="Intraday / BTST">Intraday / BTST</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Stock Universe Selector -->
+        <div class="form-group">
+          <label class="form-label">Constituent Stocks (Select from 500+ Universe) *</label>
+          <div class="stock-picker-wrap">
+            <div class="stock-tags-container" id="stock-tags-container" onclick="focusStockInput()">
+              <!-- Selected tags appear here -->
+              <input type="text" id="stock-search-input" class="stock-input-inline" placeholder="Type stock name or symbol..." autocomplete="off" oninput="handleStockSearch(this.value)" onkeydown="handleStockKeyDown(event)">
+            </div>
+            <div id="stock-autocomplete" class="autocomplete-dropdown"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            Click to pick or type symbol and press Enter. e.g. <code>BEL, HAL, BDL</code>
+          </div>
+        </div>
+
+        <!-- Trade Levels: Entry, Target, Stop Loss -->
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label" for="idea-entry">Entry Range / Level</label>
+            <input type="text" id="idea-entry" class="form-input" placeholder="e.g. ₹2,950 - ₹3,050" oninput="updateLivePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="idea-target">Target Price / %</label>
+            <input type="text" id="idea-target" class="form-input" placeholder="e.g. +16% (₹3,450)" oninput="updateLivePreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="idea-sl">Stop Loss / %</label>
+            <input type="text" id="idea-sl" class="form-input" placeholder="e.g. -4.5% (₹2,820)" oninput="updateLivePreview()">
+          </div>
+        </div>
+
+        <!-- Analysis & Setup Notes -->
+        <div class="form-group">
+          <label class="form-label" for="idea-thesis">Owner's Analysis Thesis & Setup Rationale</label>
+          <textarea id="idea-thesis" class="form-textarea" placeholder="Explain the chart pattern, EMAs alignment, volume expansion, or fundamental catalysts for this setup..." oninput="updateLivePreview()"></textarea>
+        </div>
+
+        <!-- Active Toggle -->
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="idea-active" checked style="accent-color:var(--accent-green);width:16px;height:16px;">
+          <label for="idea-active" style="font-size:12px;color:var(--text-main);cursor:pointer;">
+            Make this idea active and visible in the Screener
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" id="btn-submit-idea" class="btn-submit">
+            <span>🚀 Publish Idea to Screener</span>
+          </button>
+          <button type="button" id="btn-cancel-edit" class="btn-outline" style="display:none;" onclick="cancelEdit()">
+            Cancel Edit
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- RIGHT: PREVIEW & PUBLISHED IDEAS MANAGER -->
+    <div>
+      <!-- LIVE PREVIEW CARD -->
+      <div class="studio-card" style="margin-bottom: 24px;">
+        <div class="card-title">
+          <span>👁️</span> <span>Live Screener Preview</span>
+        </div>
+        <div class="card-subtitle">
+          Real-time preview of how users will see this in the Screener presets area.
+        </div>
+        <div class="preview-box">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;">
+            Preset Chip Preview:
+          </div>
+          <div id="preview-chip" class="preview-chip-preview">
+            <span>💡</span> <span id="prev-chip-title">Your Idea Title</span>
+            <span id="prev-chip-count" style="font-size:10px;background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:10px;">0 stocks</span>
+          </div>
+
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;margin-top:14px;">
+            Intel Card Preview (When Clicked):
+          </div>
+          <div id="preview-intel-card" style="background:#121824;border:1px solid var(--card-border);border-radius:8px;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <strong id="prev-card-title" style="color:var(--text-main);font-size:13px;">Your Idea Title</strong>
+              <span id="prev-card-cat" style="background:rgba(34,197,94,0.15);color:var(--accent-green);font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;">High Conviction Breakout</span>
+            </div>
+            <div style="display:flex;gap:12px;font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+              <span>Target: <strong id="prev-card-target" style="color:var(--accent-green)">TBD</strong></span>
+              <span>SL: <strong id="prev-card-sl" style="color:var(--accent-red)">TBD</strong></span>
+              <span>Timeframe: <span id="prev-card-tf">2-4 Weeks</span></span>
+            </div>
+            <div id="prev-card-thesis" style="font-size:12px;color:var(--text-muted);line-height:1.4;">
+              Your setup rationale and thesis will appear here for visitors.
+            </div>
+            <div id="prev-card-stocks" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+              <!-- Stocks pills preview -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PUBLISHED IDEAS LIST -->
+      <div class="studio-card">
+        <div class="card-title" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span>📋</span> <span>Published Ideas (<span id="ideas-count">0</span>)</span>
+          </div>
+          <button class="btn-outline" style="padding:4px 8px;font-size:11px;" onclick="fetchIdeas()">
+            ↻ Refresh
+          </button>
+        </div>
+        <div class="card-subtitle">
+          Manage all trading ideas live on your terminal.
+        </div>
+        <div id="published-ideas-list">
+          <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px;">
+            Loading published ideas...
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast">
+    <span>✅</span> <span id="toast-msg">Idea Published!</span>
+  </div>
+
+  <script>
+    // State
+    let stockUniverse = [];
+    let selectedSymbols = [];
+    let publishedIdeas = [];
+    let ownerPin = sessionStorage.getItem('mc_owner_pin') || '';
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadStockUniverse();
+    });
+
+    function checkAuth() {
+      if (ownerPin) {
+        verifyPinWithServer(ownerPin, (valid) => {
+          if (valid) {
+            document.getElementById('pin-gate').style.display = 'none';
+            fetchIdeas();
+          } else {
+            sessionStorage.removeItem('mc_owner_pin');
+            ownerPin = '';
+            document.getElementById('pin-gate').style.display = 'flex';
+          }
+        });
+      } else {
+        document.getElementById('pin-gate').style.display = 'flex';
+      }
+    }
+
+    function verifyPinWithServer(pin, cb) {
+      fetch('/api/owner-ideas/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin })
+      })
+      .then(res => res.json())
+      .then(data => cb(data && data.valid))
+      .catch(() => cb(false));
+    }
+
+    function handlePinSubmit(e) {
+      e.preventDefault();
+      const pin = document.getElementById('pin-input').value.trim();
+      const errEl = document.getElementById('pin-error');
+      errEl.style.display = 'none';
+
+      verifyPinWithServer(pin, (valid) => {
+        if (valid) {
+          ownerPin = pin;
+          sessionStorage.setItem('mc_owner_pin', pin);
+          document.getElementById('pin-gate').style.display = 'none';
+          showToast('Owner Studio Unlocked');
+          fetchIdeas();
+        } else {
+          errEl.style.display = 'block';
+        }
+      });
+    }
+
+    function lockStudio() {
+      sessionStorage.removeItem('mc_owner_pin');
+      ownerPin = '';
+      document.getElementById('pin-gate').style.display = 'flex';
+      document.getElementById('pin-input').value = '';
+    }
+
+    // Load 500+ Stock Universe
+    async function loadStockUniverse() {
+      try {
+        const res = await fetch('/api/stocks-universe');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.stocks) {
+            stockUniverse = data.stocks;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load stock universe:', e);
+      }
+    }
+
+    // Stock Search & Autocomplete
+    function handleStockSearch(val) {
+      const dropdown = document.getElementById('stock-autocomplete');
+      const q = (val || '').trim().toLowerCase();
+      if (!q) {
+        dropdown.style.display = 'none';
+        return;
+      }
+
+      const matches = stockUniverse.filter(s => 
+        s.symbol.toLowerCase().includes(q) || (s.name && s.name.toLowerCase().includes(q))
+      ).slice(0, 8);
+
+      if (matches.length === 0) {
+        dropdown.innerHTML = `<div style="padding:10px;font-size:12px;color:#94a3b8;text-align:center;">No match found. Press Enter to add "<strong>\${val.toUpperCase()}</strong>"</div>`;
+        dropdown.style.display = 'block';
+        return;
+      }
+
+      dropdown.innerHTML = matches.map(s => `
+        <div class="autocomplete-item" onclick="addStockTag('\${s.symbol}')">
+          <div>
+            <strong>\${s.symbol}</strong> · <span style="color:#94a3b8">\${s.name}</span>
+          </div>
+          <div>
+            <span class="sec-badge">\${s.sector || ''}</span>
+          </div>
+        </div>
+      `).join('');
+      dropdown.style.display = 'block';
+    }
+
+    function handleStockKeyDown(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const input = document.getElementById('stock-search-input');
+        const val = input.value.trim().toUpperCase();
+        if (val) {
+          val.split(/[,\\s]+/).forEach(sym => {
+            if (sym) addStockTag(sym);
+          });
+          input.value = '';
+          document.getElementById('stock-autocomplete').style.display = 'none';
+        }
+      }
+    }
+
+    function addStockTag(sym) {
+      sym = (sym || '').trim().toUpperCase();
+      if (sym && !selectedSymbols.includes(sym)) {
+        selectedSymbols.push(sym);
+        renderStockTags();
+        updateLivePreview();
+      }
+      const input = document.getElementById('stock-search-input');
+      input.value = '';
+      document.getElementById('stock-autocomplete').style.display = 'none';
+      input.focus();
+    }
+
+    function removeStockTag(sym) {
+      selectedSymbols = selectedSymbols.filter(s => s !== sym);
+      renderStockTags();
+      updateLivePreview();
+    }
+
+    function renderStockTags() {
+      const container = document.getElementById('stock-tags-container');
+      const input = document.getElementById('stock-search-input');
+      
+      const pills = selectedSymbols.map(sym => `
+        <span class="stock-tag-pill">
+          <span>\${sym}</span>
+          <span class="remove-tag" onclick="removeStockTag('\${sym}')">✕</span>
+        </span>
+      `).join('');
+
+      container.innerHTML = pills;
+      container.appendChild(input);
+    }
+
+    function focusStockInput() {
+      document.getElementById('stock-search-input').focus();
+    }
+
+    // Live Preview
+    function updateLivePreview() {
+      const title = document.getElementById('idea-title').value.trim() || 'Your Idea Title';
+      const cat = document.getElementById('idea-category').value;
+      const tf = document.getElementById('idea-timeframe').value;
+      const entry = document.getElementById('idea-entry').value.trim() || 'CMP';
+      const target = document.getElementById('idea-target').value.trim() || 'TBD';
+      const sl = document.getElementById('idea-sl').value.trim() || 'TBD';
+      const thesis = document.getElementById('idea-thesis').value.trim() || 'Your setup rationale and thesis will appear here for visitors.';
+
+      document.getElementById('prev-chip-title').textContent = title;
+      document.getElementById('prev-chip-count').textContent = `\${selectedSymbols.length} stocks`;
+
+      document.getElementById('prev-card-title').textContent = title;
+      document.getElementById('prev-card-cat').textContent = cat;
+      document.getElementById('prev-card-tf').textContent = tf;
+      document.getElementById('prev-card-target').textContent = target;
+      document.getElementById('prev-card-sl').textContent = sl;
+      document.getElementById('prev-card-thesis').textContent = thesis;
+
+      const stocksEl = document.getElementById('prev-card-stocks');
+      if (selectedSymbols.length > 0) {
+        stocksEl.innerHTML = selectedSymbols.map(s => `
+          <span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">\${s}</span>
+        `).join('');
+      } else {
+        stocksEl.innerHTML = `<span style="color:#64748b;font-size:11px;">No stocks added yet</span>`;
+      }
+    }
+
+    // CRUD: Fetch Ideas
+    async function fetchIdeas() {
+      try {
+        const res = await fetch('/api/owner-ideas');
+        if (res.ok) {
+          const data = await res.json();
+          publishedIdeas = data.ideas || [];
+          renderPublishedIdeas();
+        }
+      } catch (e) {
+        console.error('Failed to fetch ideas:', e);
+      }
+    }
+
+    function renderPublishedIdeas() {
+      const listEl = document.getElementById('published-ideas-list');
+      document.getElementById('ideas-count').textContent = publishedIdeas.length;
+
+      if (publishedIdeas.length === 0) {
+        listEl.innerHTML = `<div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">No ideas published yet. Use the form to publish your first idea!</div>`;
+        return;
+      }
+
+      listEl.innerHTML = publishedIdeas.map(idea => `
+        <div class="idea-item-card">
+          <div class="idea-item-header">
+            <div>
+              <div class="idea-item-title">
+                <span>💡</span>
+                <span>\${escapeHtml(idea.title)}</span>
+                <span style="font-size:10px;padding:1px 6px;border-radius:4px;background:\${idea.active ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)'};color:\${idea.active ? '#22c55e' : '#94a3b8'};">
+                  \${idea.active ? 'Active' : 'Hidden'}
+                </span>
+              </div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;">
+                \${escapeHtml(idea.category || 'Setup')} · \${escapeHtml(idea.timeframe || 'Swing')} · Published: \${idea.publishedAt || ''}
+              </div>
+            </div>
+            <div class="idea-item-actions">
+              <button class="action-btn" onclick="toggleActiveIdea('\${idea.id}', \${!idea.active})" title="Show or hide in Screener">
+                \${idea.active ? 'Hide' : 'Show'}
+              </button>
+              <button class="action-btn" onclick="editIdea('\${idea.id}')" title="Edit this idea">
+                Edit
+              </button>
+              <button class="action-btn delete" onclick="deleteIdea('\${idea.id}')" title="Delete idea">
+                Delete
+              </button>
+            </div>
+          </div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">
+            \${(idea.symbols || []).map(s => `<span style="background:rgba(56,189,248,0.1);color:#38bdf8;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;">\${s}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Submit Idea
+    async function handleIdeaSubmit(e) {
+      e.preventDefault();
+      if (selectedSymbols.length === 0) {
+        alert('Please add at least one constituent stock for this idea.');
+        return;
+      }
+
+      const id = document.getElementById('idea-id').value;
+      const title = document.getElementById('idea-title').value.trim();
+      const category = document.getElementById('idea-category').value;
+      const timeframe = document.getElementById('idea-timeframe').value;
+      const entry = document.getElementById('idea-entry').value.trim();
+      const target = document.getElementById('idea-target').value.trim();
+      const stopLoss = document.getElementById('idea-sl').value.trim();
+      const thesis = document.getElementById('idea-thesis').value.trim();
+      const active = document.getElementById('idea-active').checked;
+
+      const payload = {
+        pin: ownerPin,
+        id: id || undefined,
+        title,
+        category,
+        timeframe,
+        symbols: selectedSymbols,
+        entry,
+        target,
+        stopLoss,
+        thesis,
+        active
+      };
+
+      try {
+        const res = await fetch('/api/owner-ideas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-owner-pin': ownerPin },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          showToast(id ? 'Idea Updated Successfully!' : 'Idea Published to Screener!');
+          resetForm();
+          fetchIdeas();
+        } else {
+          alert('Error: ' + (data.error || 'Failed to save idea'));
+        }
+      } catch (err) {
+        alert('Network error: ' + err.message);
+      }
+    }
+
+    function editIdea(id) {
+      const idea = publishedIdeas.find(i => i.id === id);
+      if (!idea) return;
+
+      document.getElementById('idea-id').value = idea.id;
+      document.getElementById('idea-title').value = idea.title || '';
+      document.getElementById('idea-category').value = idea.category || 'High Conviction Breakout';
+      document.getElementById('idea-timeframe').value = idea.timeframe || '2-4 Weeks';
+      document.getElementById('idea-entry').value = idea.entry || '';
+      document.getElementById('idea-target').value = idea.target || '';
+      document.getElementById('idea-sl').value = idea.stopLoss || '';
+      document.getElementById('idea-thesis').value = idea.thesis || '';
+      document.getElementById('idea-active').checked = idea.active !== false;
+
+      selectedSymbols = [...(idea.symbols || [])];
+      renderStockTags();
+      updateLivePreview();
+
+      document.getElementById('form-heading').textContent = 'Edit Trading Idea';
+      document.getElementById('btn-submit-idea').innerHTML = '<span>💾 Save Changes</span>';
+      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      resetForm();
+    }
+
+    function resetForm() {
+      document.getElementById('idea-id').value = '';
+      document.getElementById('idea-form').reset();
+      selectedSymbols = [];
+      renderStockTags();
+      updateLivePreview();
+      document.getElementById('form-heading').textContent = 'Publish New Trading Idea';
+      document.getElementById('btn-submit-idea').innerHTML = '<span>🚀 Publish Idea to Screener</span>';
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+    }
+
+    async function toggleActiveIdea(id, newActive) {
+      try {
+        const res = await fetch('/api/owner-ideas', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'x-owner-pin': ownerPin },
+          body: JSON.stringify({ pin: ownerPin, id, active: newActive })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(newActive ? 'Idea Activated in Screener' : 'Idea Hidden from Screener');
+          fetchIdeas();
+        }
+      } catch (e) {
+        alert('Failed to update status');
+      }
+    }
+
+    async function deleteIdea(id) {
+      if (!confirm('Are you sure you want to delete this trading idea from the Screener?')) return;
+      try {
+        const res = await fetch('/api/owner-ideas', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'x-owner-pin': ownerPin },
+          body: JSON.stringify({ pin: ownerPin, id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Idea Deleted');
+          fetchIdeas();
+        }
+      } catch (e) {
+        alert('Failed to delete idea');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[m]));
+    }
+  </script>
+</body>
+</html>

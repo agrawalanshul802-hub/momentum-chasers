@@ -1,0 +1,56 @@
+[
+  {
+    "id": "idea_defense_momentum",
+    "title": "Defense Sector Momentum",
+    "category": "High Conviction Breakout",
+    "symbols": [
+      "BEL",
+      "HAL",
+      "BDL",
+      "COCHINSHIP"
+    ],
+    "timeframe": "2-4 Weeks",
+    "entry": "CMP / Pullback to 10 EMA",
+    "target": "+15% to +18% (New ATHs)",
+    "stopLoss": "-4.5% below 20 EMA",
+    "thesis": "Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.",
+    "publishedAt": "2026-11-18",
+    "active": true
+  },
+  {
+    "id": "idea_auto_ancillary",
+    "title": "Automobile & EV Ancillary Leaders",
+    "category": "Swing Long",
+    "symbols": [
+      "M&M",
+      "TVSMOTOR",
+      "BOSCHLTD",
+      "MOTHERSON"
+    ],
+    "timeframe": "1-3 Months",
+    "entry": "Near 20 EMA breakout support",
+    "target": "+12% to +16%",
+    "stopLoss": "-5.0% below swing low",
+    "thesis": "Festive rural demand uptick combined with operating margin expansion from moderating input costs; daily RSI holding bullish momentum above 60.",
+    "publishedAt": "2026-11-18",
+    "active": true
+  },
+  {
+    "id": "idea_capital_goods",
+    "title": "Capital Goods & Engineering VCP",
+    "category": "VCP Compression",
+    "symbols": [
+      "ABB",
+      "SIEMENS",
+      "CUMMINSIND",
+      "KRN"
+    ],
+    "timeframe": "2-4 Weeks",
+    "entry": "Breakout above 20-day pivot",
+    "target": "+14.0%",
+    "stopLoss": "-4.0%",
+    "thesis": "Tight volatility contraction pattern (VCP) across private capex proxies; order inflows up 24% YoY with institutional accumulation on daily charts.",
+    "publishedAt": "2026-11-18",
+    "active": true
+  }
+]

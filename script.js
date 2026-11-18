@@ -5198,7 +5198,10 @@
     marketCap: "all",           // "all", "LC", "MC", "SC"
     sector: "all",              // "all" or specific sector
     selectedPresets: [],        // Active technical or financial preset keys
-    presetsCollapsed: true,    // Toggle collapse for technical and financial presets section
+    presetsCollapsed: true,
+    ownerIdeas: [],             // Live owner ideas published from Owner Studio
+    activeOwnerIdeaId: null,    // Currently filtered owner idea in screener
+    isOwnerIdeasLoaded: false,  // Fetch status
     searchQuery: "",            // Text filter in screener
     screenerPage: 1,            // Active screener page
     screenerPageSize: 50,       // Items per page (25, 50, 100, "all")
@@ -7902,6 +7905,7 @@
       State.sector,
       State.searchQuery,
       (State.selectedPresets || []).slice().sort().join(","),
+      State.activeOwnerIdeaId || "",
       State.timeframe,
       State.screenerSortCol,
       State.screenerSortDir,
@@ -7932,6 +7936,15 @@
         const matchName = stock[8].name.toLowerCase().includes(q);
         if (!matchSymbol && !matchSector && !matchName) return false;
       }
+      // Active Owner Idea filter
+      if (State.activeOwnerIdeaId) {
+        const activeIdea = (State.ownerIdeas || []).find(i => i.id === State.activeOwnerIdeaId);
+        if (activeIdea && Array.isArray(activeIdea.symbols) && activeIdea.symbols.length > 0) {
+          const symsUpper = activeIdea.symbols.map(s => s.trim().toUpperCase());
+          if (!symsUpper.includes(stock[0].toUpperCase())) return false;
+        }
+      }
+
       // Selected Presets
       if (State.selectedPresets && State.selectedPresets.length > 0) {
         const stockTags = stock[State.timeframe === "w" ? 6 : 5];
@@ -8315,6 +8328,23 @@
         </div>
 
         <div id="screener-presets-wrap" style="${State.presetsCollapsed ? 'display:none;' : ''}">
+          <!-- Owner Ideas Row (Published by Owner) -->
+          <div class="preset-section-divider owner-ideas-section" style="padding-top:10px;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div style="font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;">
+                <span style="font-size:14px;">💡</span>
+                <span>Owner Ideas & Setups (Published by Owner)</span>
+                <span class="owner-live-tag">Live Ideas</span>
+              </div>
+              <a href="/owner" class="owner-panel-link-btn" title="Open separate Owner Panel to publish & manage ideas" target="_blank">
+                <span>⚙️ Owner Studio</span>
+              </a>
+            </div>
+            <div class="chips-wrap-group" id="owner-ideas-chips-container">
+              ${renderOwnerIdeaChipsHTML()}
+            </div>
+          </div>
+
           <!-- Technical Presets Row -->
           <div class="preset-section-divider">
             <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
@@ -8345,6 +8375,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Active Owner Idea Intel Card -->
+        ${renderActiveOwnerIdeaCardHTML()}
 
         <!-- Pattern Preview Card (BananaPatterns Element 3) -->
         ${firstActivePattern ? `
@@ -8664,6 +8697,150 @@
   }
 
   // ==========================================================================
+
+  // ==========================================================================
+  // FEATURE: OWNER TRADING IDEAS & CURATED SETUPS ENGINE (PUBLISHED BY OWNER)
+  // ==========================================================================
+
+  const OWNER_IDEAS_SEED = [
+    {
+      id: 'idea_defense_momentum',
+      title: 'Defense Sector Momentum',
+      category: 'High Conviction Breakout',
+      symbols: ['BEL', 'HAL', 'BDL', 'COCHINSHIP'],
+      timeframe: '2-4 Weeks',
+      entry: 'CMP / Pullback to 10 EMA',
+      target: '+15% to +18% (New ATHs)',
+      stopLoss: '-4.5% below 20 EMA',
+      thesis: 'Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.',
+      publishedAt: '2026-11-18',
+      active: true
+    },
+    {
+      id: 'idea_auto_ancillary',
+      title: 'Automobile & EV Ancillary Leaders',
+      category: 'Swing Long',
+      symbols: ['M&M', 'TVSMOTOR', 'BOSCHLTD', 'MOTHERSON'],
+      timeframe: '1-3 Months',
+      entry: 'Near 20 EMA breakout support',
+      target: '+12% to +16%',
+      stopLoss: '-5.0% below swing low',
+      thesis: 'Festive rural demand uptick combined with operating margin expansion from moderating input costs; daily RSI holding bullish momentum above 60.',
+      publishedAt: '2026-11-18',
+      active: true
+    },
+    {
+      id: 'idea_capital_goods',
+      title: 'Capital Goods & Engineering VCP',
+      category: 'VCP Compression',
+      symbols: ['ABB', 'SIEMENS', 'CUMMINSIND', 'KRN'],
+      timeframe: '2-4 Weeks',
+      entry: 'Breakout above 20-day pivot',
+      target: '+14.0%',
+      stopLoss: '-4.0%',
+      thesis: 'Tight volatility contraction pattern (VCP) across private capex proxies; order inflows up 24% YoY with institutional accumulation on daily charts.',
+      publishedAt: '2026-11-18',
+      active: true
+    }
+  ];
+
+  async function fetchOwnerIdeas() {
+    try {
+      const base = getApiBase();
+      const res = await fetch(`${base}/api/owner-ideas`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.ideas) && data.ideas.length > 0) {
+          State.ownerIdeas = data.ideas;
+          State.isOwnerIdeasLoaded = true;
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Live owner ideas fetch notice:', e);
+    }
+    if (!State.ownerIdeas || State.ownerIdeas.length === 0) {
+      State.ownerIdeas = [...OWNER_IDEAS_SEED];
+      State.isOwnerIdeasLoaded = true;
+    }
+  }
+
+  function renderOwnerIdeaChipsHTML() {
+    const ideas = (State.ownerIdeas && State.ownerIdeas.length > 0) ? State.ownerIdeas.filter(i => i.active !== false) : OWNER_IDEAS_SEED;
+    if (!ideas || ideas.length === 0) {
+      return `
+        <div style="font-size:12px;color:var(--mu);padding:4px 0;display:flex;align-items:center;gap:8px;">
+          <span>No active published ideas yet.</span>
+          <a href="/owner" class="owner-panel-link-btn" target="_blank" style="padding:2px 7px;">+ Publish First Idea</a>
+        </div>
+      `;
+    }
+
+    return ideas.map(idea => {
+      const isActive = State.activeOwnerIdeaId === idea.id;
+      const count = (idea.symbols || []).length;
+      return `
+        <button class="preset-chip-btn owner-idea-chip ${isActive ? 'active' : ''}" data-action="toggle-owner-idea" data-idea-id="${escapeHtml(idea.id)}" title="Click to filter screener to ${count} stocks in ${escapeHtml(idea.title)}">
+          <span>${isActive ? '✓' : '💡'}</span>
+          <span>${escapeHtml(idea.title)}</span>
+          <span style="font-size:10px;opacity:0.85;background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:10px;margin-left:2px;">${count}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderActiveOwnerIdeaCardHTML() {
+    if (!State.activeOwnerIdeaId) return '';
+    const ideasList = (State.ownerIdeas && State.ownerIdeas.length > 0) ? State.ownerIdeas : OWNER_IDEAS_SEED;
+    const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
+    if (!activeIdea) return '';
+
+    const count = (activeIdea.symbols || []).length;
+    return `
+      <div class="owner-idea-intel-card">
+        <div class="idea-header-row">
+          <div class="idea-title-wrap">
+            <span class="idea-icon">💡</span>
+            <div>
+              <div class="idea-title">${escapeHtml(activeIdea.title)}</div>
+              <div class="idea-meta">
+                <span class="idea-cat-badge">${escapeHtml(activeIdea.category || 'Trading Idea')}</span>
+                <span>⏱ Timeframe: <strong>${escapeHtml(activeIdea.timeframe || 'Swing')}</strong></span>
+                <span>📅 Published: <strong>${escapeHtml(activeIdea.publishedAt || 'Today')}</strong></span>
+                <span style="color:var(--g)">🎯 Showing ${count} constituent stocks below</span>
+              </div>
+            </div>
+          </div>
+          <button class="clear-idea-filter-btn" data-action="clear-owner-idea" title="Clear this idea filter and show all stocks">
+            ✕ Deselect Idea
+          </button>
+        </div>
+
+        <div class="idea-metrics-row">
+          <div class="idea-metric-pill"><span>Entry Range:</span> <strong>${escapeHtml(activeIdea.entry || 'CMP')}</strong></div>
+          <div class="idea-metric-pill"><span>Target:</span> <strong style="color:var(--g)">${escapeHtml(activeIdea.target || 'TBD')}</strong></div>
+          <div class="idea-metric-pill"><span>Stop Loss:</span> <strong style="color:var(--r)">${escapeHtml(activeIdea.stopLoss || 'TBD')}</strong></div>
+        </div>
+
+        ${activeIdea.thesis ? `
+          <div class="idea-thesis-box">
+            <strong style="color:var(--ink);display:block;margin-bottom:2px;">Owner's Thesis & Setup Rationale:</strong>
+            ${escapeHtml(activeIdea.thesis)}
+          </div>
+        ` : ''}
+
+        <div class="idea-stocks-list">
+          <span style="font-size:11px;color:var(--mu);font-weight:600;">Constituent Stocks (${count}):</span>
+          ${(activeIdea.symbols || []).map(sym => `
+            <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" title="Click to view deep dive on ${escapeHtml(sym)}">
+              ${escapeHtml(sym)}
+            </span>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   // 7A-1. FEATURE: SECTOR TURNOVER & MONEY FLOW HEATMAP (NSE BHAVCOPY DATA)
   // ==========================================================================
 
@@ -17484,7 +17661,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=5.9.9" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=6.0.0" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
@@ -20199,6 +20376,20 @@
         State.presetsCollapsed = !State.presetsCollapsed;
         renderActiveView();
       }
+      else if (action === "toggle-owner-idea") {
+        const btn = target.closest("[data-idea-id]");
+        const ideaId = (btn && btn.dataset.ideaId) || target.dataset.ideaId;
+        if (ideaId) {
+          State.activeOwnerIdeaId = (State.activeOwnerIdeaId === ideaId ? null : ideaId);
+          State.currentPage = 1;
+          renderActiveView();
+        }
+      }
+      else if (action === "clear-owner-idea") {
+        State.activeOwnerIdeaId = null;
+        State.currentPage = 1;
+        renderActiveView();
+      }
       else if (action === "toggle-preset") {
         const p = target.dataset.preset;
         const idx = State.selectedPresets.indexOf(p);
@@ -20796,6 +20987,7 @@
         State.marketCap = "all";
         State.sector = "all";
         State.selectedPresets = [];
+        State.activeOwnerIdeaId = null;
         State.searchQuery = "";
         State.screenerSortCol = "default";
         State.screenerSortDir = "desc";
@@ -21402,6 +21594,7 @@
       YahooFinanceLiveService.syncAll(false);
     }, 1200);
 
+    fetchOwnerIdeas();
     window.State = State; window.getHeatmapStocksForIndex = getHeatmapStocksForIndex; window.renderHeatmapView = renderHeatmapView;
     console.log("Momentum Chasers v2.5 initialized with Yahoo Finance Live Data Engine & BananaPatterns architecture.");
   }

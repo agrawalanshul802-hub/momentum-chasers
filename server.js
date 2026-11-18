@@ -5747,8 +5747,188 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // 6g. Owner Trading Ideas & Curated Setups Engine: /api/owner-ideas
+  const ownerIdeasPath = path.join(__dirname, 'data', 'owner-ideas.json');
+  const OWNER_PIN = (process.env.OWNER_PIN || '1234').toString().trim();
+
+  function getStoredOwnerIdeas() {
+    try {
+      if (fs.existsSync(ownerIdeasPath)) {
+        const raw = fs.readFileSync(ownerIdeasPath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Error reading owner ideas:', e.message);
+    }
+    return [];
+  }
+
+  function saveStoredOwnerIdeas(ideas) {
+    try {
+      fs.mkdirSync(path.dirname(ownerIdeasPath), { recursive: true });
+      fs.writeFileSync(ownerIdeasPath, JSON.stringify(ideas, null, 2) + '\n', 'utf8');
+      return true;
+    } catch (e) {
+      console.error('Error writing owner ideas:', e.message);
+      return false;
+    }
+  }
+
+  function parseRequestBody(request) {
+    return new Promise((resolve) => {
+      let data = '';
+      request.on('data', chunk => {
+        data += chunk;
+        if (data.length > 2e6) request.destroy();
+      });
+      request.on('end', () => {
+        try {
+          resolve(data ? JSON.parse(data) : {});
+        } catch (_) {
+          resolve({});
+        }
+      });
+      request.on('error', () => resolve({}));
+    });
+  }
+
+  // Stock Universe endpoint for Owner Studio Autocomplete
+  if (pathname === '/api/stocks-universe') {
+    try {
+      const stocksPath = path.join(__dirname, 'data', 'stocks-nifty500.json');
+      if (fs.existsSync(stocksPath)) {
+        const rawStocks = JSON.parse(fs.readFileSync(stocksPath, 'utf8'));
+        const list = rawStocks.map(s => ({
+          symbol: s[0],
+          cap: s[1],
+          sector: s[2],
+          price: s[3],
+          dayChg: s[4],
+          name: (s[8] && s[8].name) ? s[8].name : s[0]
+        }));
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=300' });
+        res.end(JSON.stringify({ success: true, stocks: list }));
+        return;
+      }
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: e.message }));
+      return;
+    }
+  }
+
+  // Verify PIN Endpoint
+  if (pathname === '/api/owner-ideas/verify-pin' && req.method === 'POST') {
+    const body = await parseRequestBody(req);
+    const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+    const isValid = pin === OWNER_PIN;
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, valid: isValid }));
+    return;
+  }
+
+  // Owner Ideas CRUD Endpoint
+  if (pathname === '/api/owner-ideas') {
+    if (req.method === 'GET') {
+      const ideas = getStoredOwnerIdeas();
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      });
+      res.end(JSON.stringify({ success: true, count: ideas.length, ideas }));
+      return;
+    }
+
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (pin !== OWNER_PIN) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+        return;
+      }
+
+      if (!body.title || !body.title.trim()) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Title is required' }));
+        return;
+      }
+
+      const ideas = getStoredOwnerIdeas();
+      const newIdea = {
+        id: body.id || ('idea_' + Date.now()),
+        title: body.title.trim(),
+        category: (body.category || 'High Conviction').trim(),
+        symbols: Array.isArray(body.symbols) ? body.symbols.map(s => s.trim().toUpperCase()).filter(Boolean) : [],
+        timeframe: (body.timeframe || '2-4 Weeks').trim(),
+        entry: (body.entry || 'CMP').trim(),
+        target: (body.target || '').trim(),
+        stopLoss: (body.stopLoss || '').trim(),
+        thesis: (body.thesis || '').trim(),
+        publishedAt: body.publishedAt || new Date().toISOString().slice(0, 10),
+        active: body.active !== false
+      };
+
+      // If updating an existing idea with same id, replace it; else unshift to top
+      const existingIdx = ideas.findIndex(i => i.id === newIdea.id);
+      if (existingIdx >= 0) {
+        ideas[existingIdx] = newIdea;
+      } else {
+        ideas.unshift(newIdea);
+      }
+
+      saveStoredOwnerIdeas(ideas);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, idea: newIdea, ideas }));
+      return;
+    }
+
+    if (req.method === 'PUT') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (pin !== OWNER_PIN) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+        return;
+      }
+
+      const ideas = getStoredOwnerIdeas();
+      const idx = ideas.findIndex(i => i.id === body.id);
+      if (idx === -1) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Idea not found' }));
+        return;
+      }
+
+      ideas[idx] = { ...ideas[idx], ...body, id: ideas[idx].id };
+      saveStoredOwnerIdeas(ideas);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, ideas }));
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || parsedUrl.query.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      const id = body.id || parsedUrl.query.id;
+      if (pin !== OWNER_PIN) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+        return;
+      }
+
+      let ideas = getStoredOwnerIdeas();
+      ideas = ideas.filter(i => i.id !== id);
+      saveStoredOwnerIdeas(ideas);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, ideas }));
+      return;
+    }
+  }
+
   // 7. Static File Serving
-  const reqPath = pathname === '/login' ? 'login.html' : (pathname === '/' ? 'index.html' : pathname);
+  const reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
   let decodedPath;
   try {
     decodedPath = decodeURIComponent(reqPath);
@@ -5786,7 +5966,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     const isScriptOrStyle = ext === '.js' || ext === '.css';
-    const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname.startsWith('/order-flow');
+    const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname === '/owner' || pathname === '/admin' || pathname.startsWith('/order-flow');
     const isNoCache = isScriptOrStyle || isHtml || ext === '.json';
     const etag = `W/"${stat.size.toString(16)}-${Math.trunc(stat.mtimeMs).toString(16)}"`;
     const headers = {
