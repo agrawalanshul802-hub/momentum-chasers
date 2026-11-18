@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Owner Publishing Studio — Momentum Chasers</title>
   <link rel="icon" type="image/png" href="logo-icon.png">
-  <link rel="stylesheet" href="styles.css?v=6.0.1">
+  
   <style>
     :root {
       --bg-studio: #090d14;
@@ -16,6 +16,16 @@
       --accent-red: #ef4444;
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
+    }
+
+    
+    html, body {
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -117,7 +127,7 @@
       max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 24px;
+      padding: 24px 24px 100px 24px;
       box-sizing: border-box;
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
