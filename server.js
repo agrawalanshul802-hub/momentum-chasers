@@ -5762,8 +5762,48 @@ server.listen(PORT, async () => {
   console.log(`🌊 Order Flow F&O Engine: Active (http://localhost:${PORT}/order-flow/)`);
   console.log(`================================================================\n`);
 
+  // Bulk live quote fetcher for Order Flow F&O Engine
+  const fetchBulkQuotes = async (symbols) => {
+    if (!symbols || !symbols.length) return [];
+    try {
+      const session = await yahooSession.getSession();
+      if (!session.cookie || !session.crumb) return [];
+      const chunkSize = 80;
+      const chunkPromises = [];
+      for (let i = 0; i < symbols.length; i += chunkSize) {
+        const chunk = symbols.slice(i, i + chunkSize);
+        const chunkUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(chunk.join(','))}&crumb=${encodeURIComponent(session.crumb)}`;
+        chunkPromises.push(new Promise((resolve) => {
+          const req = https.get(chunkUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+              'Cookie': session.cookie
+            },
+            timeout: 7000
+          }, qRes => {
+            let body = '';
+            qRes.on('data', c => body += c);
+            qRes.on('end', () => {
+              try {
+                const j = JSON.parse(body);
+                resolve(j?.quoteResponse?.result || []);
+              } catch(e) { resolve([]); }
+            });
+          });
+          req.on('error', () => resolve([]));
+          req.on('timeout', function() { this.destroy(); resolve([]); });
+        }));
+      }
+      const chunkResults = await Promise.all(chunkPromises);
+      return chunkResults.flat();
+    } catch (e) {
+      return [];
+    }
+  };
+
   // Initialize Order Flow Engine with live market price feed
   orderFlowEngine.initOrderFlow({
+    fetchBulkQuotes,
     getLivePrice: (sym) => {
       const q = CACHE.get(`item_quote_${sym}.NS`) || CACHE.get(`item_quote_${sym}`);
       if (q && q.quote && typeof q.quote.regularMarketPrice === 'number' && q.quote.regularMarketPrice > 0) {

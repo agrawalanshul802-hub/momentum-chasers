@@ -233,8 +233,62 @@ try {
 }
 
 let externalPriceResolver = null;
+let externalBulkQuoteFetcher = null;
+const liveMarketQuotes = new Map();
+
+const YAHOO_INDEX_MAP = {
+  NIFTY: '^NSEI',
+  BANKNIFTY: '^NSEBANK',
+  SENSEX: '^BSESN',
+  BANKEX: '^BSEBK',
+  FINNIFTY: 'NIFTY_FIN_SERVICE.NS',
+  MIDCPNIFTY: '^NSEMDCP50',
+  NIFTYNXT50: '^NSENX50'
+};
+
+function getYahooSymbol(u) {
+  if (YAHOO_INDEX_MAP[u.symbol]) return YAHOO_INDEX_MAP[u.symbol];
+  if (u.kind === 'index') return `^${u.symbol}`;
+  return `${u.symbol}.NS`;
+}
+
+async function syncLiveMarketQuotes() {
+  if (typeof externalBulkQuoteFetcher !== 'function') return;
+  try {
+    const symbolsToFetch = [];
+    const revMap = new Map();
+    for (const u of universe) {
+      const ySym = getYahooSymbol(u);
+      symbolsToFetch.push(ySym);
+      revMap.set(ySym, u.symbol);
+    }
+    const quotes = await externalBulkQuoteFetcher(symbolsToFetch);
+    if (!Array.isArray(quotes) || !quotes.length) return;
+
+    for (const q of quotes) {
+      if (!q || !q.symbol || typeof q.regularMarketPrice !== 'number' || q.regularMarketPrice <= 0) continue;
+      const uSym = revMap.get(q.symbol) || q.symbol.replace('.NS', '');
+      const price = q.regularMarketPrice;
+      const changePct = typeof q.regularMarketChangePercent === 'number' ? q.regularMarketChangePercent : 0;
+      const prevClose = (typeof q.regularMarketPreviousClose === 'number' && q.regularMarketPreviousClose > 0)
+        ? q.regularMarketPreviousClose
+        : (price / (1 + changePct / 100));
+      const dayHigh = typeof q.regularMarketDayHigh === 'number' ? q.regularMarketDayHigh : price;
+      const dayLow = typeof q.regularMarketDayLow === 'number' ? q.regularMarketDayLow : price;
+      liveMarketQuotes.set(uSym, { price, changePct, prevClose, dayHigh, dayLow });
+    }
+    // Clear sessionsCache so updated market quotes immediately take effect
+    sessionsCache.clear();
+    console.log(`[OrderFlow] Live feed synced: ${liveMarketQuotes.size} real NSE quotes active.`);
+  } catch (err) {
+    console.warn('[OrderFlow] Live quotes sync error:', err.message);
+  }
+}
 
 function basePrice(u) {
+  if (liveMarketQuotes.has(u.symbol)) {
+    return liveMarketQuotes.get(u.symbol).price;
+  }
   if (typeof externalPriceResolver === 'function') {
     const ext = externalPriceResolver(u.symbol);
     if (typeof ext === 'number' && ext > 0) return ext;
@@ -254,28 +308,59 @@ function sessionOf(session, currentUniverse) {
   let held = sessionsCache.get(session);
   if (held) return held;
   if (sessionsCache.size > 4) sessionsCache.clear();
-  const mood = gaussOf(seeded(`mood|${session}`));
-  const market = mood() * 0.7 - 0.1;
+  
+  // Real NIFTY market move
+  const niftyLive = liveMarketQuotes.get('NIFTY');
+  const market = (niftyLive && typeof niftyLive.changePct === 'number')
+    ? niftyLive.changePct
+    : (gaussOf(seeded(`mood|${session}`))() * 0.7 - 0.1);
+
   const sectorMood = new Map();
   held = new Map();
+  const nowIdx = minuteIndex(session, provider.now());
+
   for (const u of currentUniverse) {
+    const live = liveMarketQuotes.get(u.symbol);
+    const index = u.kind === 'index';
+    let prevClose;
+    let move;
+    let currentSpot;
+
+    if (live && live.price > 0) {
+      currentSpot = live.price;
+      prevClose = live.prevClose;
+      move = live.changePct;
+    } else {
+      const random = seeded(`${session}|${u.symbol}`);
+      const gauss = gaussOf(random);
+      prevClose = basePrice(u) * Math.exp(gaussOf(seeded(`prev|${session}|${u.symbol}`))() * 0.04);
+      if (u.sector && !sectorMood.has(u.sector)) sectorMood.set(u.sector, gaussOf(seeded(`sector|${session}|${u.sector}`))() * 0.9);
+      const beta = index ? 0.85 : 0.6 + random() * 0.8;
+      move = clamp(index ? market * beta + gauss() * 0.25 : market * beta + (sectorMood.get(u.sector) ?? 0) * 1.3 + gauss() * 2.2, -9.5, 9.5);
+      currentSpot = prevClose * (1 + move / 100);
+    }
+
     const random = seeded(`${session}|${u.symbol}`);
     const gauss = gaussOf(random);
-    const index = u.kind === 'index';
-    if (u.sector && !sectorMood.has(u.sector)) sectorMood.set(u.sector, gaussOf(seeded(`sector|${session}|${u.sector}`))() * 0.9);
-    const beta = index ? 0.85 : 0.6 + random() * 0.8;
-    const move = clamp(index ? market * beta + gauss() * 0.25 : market * beta + (sectorMood.get(u.sector) ?? 0) * 1.3 + gauss() * 2.2, -9.5, 9.5);
-    const prevClose = basePrice(u) * Math.exp(gaussOf(seeded(`prev|${session}|${u.symbol}`))() * 0.04);
-    const sigma = prevClose * (index ? 0.0045 : 0.009) / Math.sqrt(SESSION_MINUTES);
+    const sigma = prevClose * (index ? 0.003 : 0.007) / Math.sqrt(SESSION_MINUTES);
     const walk = [0];
     for (let i = 1; i <= SESSION_MINUTES; i++) walk.push(walk[i - 1] + gauss() * sigma);
+
     const path = walk.map((w, i) => {
-      const t = i / SESSION_MINUTES;
-      const drift = prevClose * (1 + (move / 100) * (1 - Math.pow(1 - t, 3)));
-      return Math.max(prevClose * 0.5, drift + (w - walk[SESSION_MINUTES] * t));
+      if (nowIdx > 0 && i <= nowIdx) {
+        const prog = i / nowIdx;
+        const base = prevClose + (currentSpot - prevClose) * prog;
+        const noise = (w - walk[nowIdx] * prog) * 0.35;
+        return Math.max(prevClose * 0.5, round2(base + noise));
+      } else {
+        const t = i / SESSION_MINUTES;
+        const drift = prevClose * (1 + (move / 100) * (1 - Math.pow(1 - t, 3)));
+        return Math.max(prevClose * 0.5, round2(drift + (w - walk[SESSION_MINUTES] * t)));
+      }
     });
-    const agrees = random() < 0.7;
-    const oiMove = (agrees ? 1 : -1) * (0.02 + random() * 0.1);
+
+    const agrees = move >= 0;
+    const oiMove = (agrees ? 1 : -1) * (0.02 + Math.abs(move) * 0.04);
     const oiLots = index ? 60_000 + random() * 140_000 : 2_000 + random() * 9_000;
     held.set(u.symbol, { u, prevClose, path, oiMove, oiLots });
   }
@@ -476,6 +561,10 @@ async function build() {
   const clock = provider.now();
   const session = getLatestTradingSessionDate(new Date(clock));
   if (ladderCache.session !== session) { ladderCache.session = session; ladderCache.bySymbol.clear(); }
+  
+  // Sync real-time live quotes from exchange for all underlyings & indices
+  await syncLiveMarketQuotes();
+
   const series = [];
   const ladders = {};
   const failed = [];
@@ -584,6 +673,9 @@ function serveStaticFile(res, filePath) {
 
 module.exports = {
   initOrderFlow(options = {}) {
+    if (options && typeof options.fetchBulkQuotes === 'function') {
+      externalBulkQuoteFetcher = options.fetchBulkQuotes;
+    }
     if (options && typeof options.getLivePrice === 'function') {
       externalPriceResolver = options.getLivePrice;
     }

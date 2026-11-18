@@ -672,7 +672,7 @@
     }
   ],
   [
-    "ETERNAL",
+    "ZOMATO",
     "LC",
     "Consumer Services",
     375.05,
@@ -685,7 +685,7 @@
       "pb": 10.7,
       "rev": 25.7,
       "profit": 4.8,
-      "name": "Eternal Ltd",
+      "name": "Zomato Ltd",
       "high52": 378,
       "low52": 212.6,
       "results": "2026-12-16",
@@ -5162,27 +5162,6 @@
       "high52": 1563.4,
       "low52": 1210.8,
       "results": "2026-12-22",
-      "resultsStatus": "Confirmed"
-    }
-  ],
-  [
-    "VMM",
-    "MC",
-    "Consumer Services",
-    92.99,
-    -2.01,
-    "r",
-    "r",
-    8,
-    {
-      "pe": 48.9,
-      "pb": 5.5,
-      "rev": 6,
-      "profit": 3.4,
-      "name": "Vishal Mega Mart Ltd",
-      "high52": 139.5,
-      "low52": 84.16,
-      "results": "2026-12-19",
       "resultsStatus": "Confirmed"
     }
   ],
