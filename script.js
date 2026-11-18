@@ -7938,7 +7938,10 @@
       }
       // Active Owner Idea filter
       if (State.activeOwnerIdeaId) {
-        const activeIdea = (State.ownerIdeas || []).find(i => i.id === State.activeOwnerIdeaId);
+        const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
+          ? (State.ownerIdeas || [])
+          : OWNER_IDEAS_SEED;
+        const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
         if (activeIdea && Array.isArray(activeIdea.symbols) && activeIdea.symbols.length > 0) {
           const symsUpper = activeIdea.symbols.map(s => s.trim().toUpperCase());
           if (!symsUpper.includes(stock[0].toUpperCase())) return false;
@@ -8336,9 +8339,14 @@
                 <span>Owner Ideas & Setups (Published by Owner)</span>
                 <span class="owner-live-tag">Live Ideas</span>
               </div>
-              <a href="/owner" class="owner-panel-link-btn" title="Open separate Owner Panel to publish & manage ideas" target="_blank">
-                <span>⚙️ Owner Studio</span>
-              </a>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button class="owner-panel-link-btn" data-action="refresh-owner-ideas" title="Refresh live published ideas" style="cursor:pointer;background:transparent;">
+                  <span>↻ Refresh</span>
+                </button>
+                <a href="/owner" class="owner-panel-link-btn" title="Open separate Owner Panel to publish & manage ideas" target="_blank">
+                  <span>⚙️ Owner Studio</span>
+                </a>
+              </div>
             </div>
             <div class="chips-wrap-group" id="owner-ideas-chips-container">
               ${renderOwnerIdeaChipsHTML()}
@@ -8744,15 +8752,27 @@
     }
   ];
 
-  async function fetchOwnerIdeas() {
+  async function fetchOwnerIdeas(forceRender = false) {
     try {
       const base = getApiBase();
-      const res = await fetch(`${base}/api/owner-ideas`);
+      const res = await fetch(`${base}/api/owner-ideas?_t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
-        if (data && data.success && Array.isArray(data.ideas) && data.ideas.length > 0) {
+        if (data && data.success && Array.isArray(data.ideas)) {
           State.ownerIdeas = data.ideas;
           State.isOwnerIdeasLoaded = true;
+          const wrap = document.getElementById('owner-ideas-chips-container');
+          if (wrap) wrap.innerHTML = renderOwnerIdeaChipsHTML();
+          if (State.activeOwnerIdeaId) {
+            const activeIdea = State.ownerIdeas.find(i => i.id === State.activeOwnerIdeaId && i.active !== false);
+            if (!activeIdea) {
+              State.activeOwnerIdeaId = null;
+              forceRender = true;
+            }
+          }
+          if (forceRender && State.view === 'screener') {
+            renderActiveView();
+          }
           return;
         }
       }
@@ -8760,13 +8780,20 @@
       console.warn('Live owner ideas fetch notice:', e);
     }
     if (!State.ownerIdeas || State.ownerIdeas.length === 0) {
-      State.ownerIdeas = [...OWNER_IDEAS_SEED];
-      State.isOwnerIdeasLoaded = true;
+      if (!State.isOwnerIdeasLoaded) {
+        State.ownerIdeas = [...OWNER_IDEAS_SEED];
+        State.isOwnerIdeasLoaded = true;
+      }
     }
+    const wrap = document.getElementById('owner-ideas-chips-container');
+    if (wrap) wrap.innerHTML = renderOwnerIdeaChipsHTML();
   }
 
   function renderOwnerIdeaChipsHTML() {
-    const ideas = (State.ownerIdeas && State.ownerIdeas.length > 0) ? State.ownerIdeas.filter(i => i.active !== false) : OWNER_IDEAS_SEED;
+    const source = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
+      ? (State.ownerIdeas || [])
+      : OWNER_IDEAS_SEED;
+    const ideas = source.filter(i => i.active !== false);
     if (!ideas || ideas.length === 0) {
       return `
         <div style="font-size:12px;color:var(--mu);padding:4px 0;display:flex;align-items:center;gap:8px;">
@@ -8791,8 +8818,10 @@
 
   function renderActiveOwnerIdeaCardHTML() {
     if (!State.activeOwnerIdeaId) return '';
-    const ideasList = (State.ownerIdeas && State.ownerIdeas.length > 0) ? State.ownerIdeas : OWNER_IDEAS_SEED;
-    const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
+    const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
+      ? (State.ownerIdeas || [])
+      : OWNER_IDEAS_SEED;
+    const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId && i.active !== false);
     if (!activeIdea) return '';
 
     const count = (activeIdea.symbols || []).length;
@@ -17661,7 +17690,7 @@
 
         <!-- Embedded Order Flow React Application Frame -->
         <div style="flex:1;width:100%;height:100%;position:relative;background:#0d1117;overflow:hidden;">
-          <iframe id="orderflow-iframe" src="/order-flow/?v=6.0.2" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
+          <iframe id="orderflow-iframe" src="/order-flow/?v=6.0.3" style="width:100%;height:100%;border:none;display:block;" title="F&O Order Flow"></iframe>
         </div>
       </div>
     `;
@@ -20381,14 +20410,23 @@
         const ideaId = (btn && btn.dataset.ideaId) || target.dataset.ideaId;
         if (ideaId) {
           State.activeOwnerIdeaId = (State.activeOwnerIdeaId === ideaId ? null : ideaId);
-          State.currentPage = 1;
+          State.screenerPage = 1;
+          if (State.activeOwnerIdeaId) {
+            State.marketCap = "all";
+            State.sector = "all";
+            State.searchQuery = "";
+          }
           renderActiveView();
         }
       }
       else if (action === "clear-owner-idea") {
         State.activeOwnerIdeaId = null;
-        State.currentPage = 1;
+        State.screenerPage = 1;
         renderActiveView();
+      }
+      else if (action === "refresh-owner-ideas") {
+        fetchOwnerIdeas(true);
+        if (typeof showToast === 'function') showToast("Refreshing published ideas...", "💡");
       }
       else if (action === "toggle-preset") {
         const p = target.dataset.preset;
@@ -21584,8 +21622,20 @@
 
     // Sync immediately when switching back to tab
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && State.liveSync.countdown <= 5) {
-        YahooFinanceLiveService.syncAll(false);
+      if (!document.hidden) {
+        if (State.liveSync.countdown <= 5) {
+          YahooFinanceLiveService.syncAll(false);
+        }
+        if (State.view === 'screener') {
+          fetchOwnerIdeas(false);
+        }
+      }
+    });
+
+    // Cross-tab broadcast sync for Owner Studio ideas
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'mc_owner_ideas_sync') {
+        fetchOwnerIdeas(true);
       }
     });
 

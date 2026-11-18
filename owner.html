@@ -943,7 +943,7 @@
 
     // CRUD: Fetch Ideas
     function fetchIdeas() {
-      fetch('/api/owner-ideas')
+      fetch('/api/owner-ideas?_t=' + Date.now())
         .then(function(res) { return res.json(); })
         .then(function(data) {
           publishedIdeas = (data && data.ideas) ? data.ideas : [];
@@ -1046,7 +1046,7 @@
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          showToast(id ? 'Idea Updated Successfully!' : 'Idea Published to Screener!');
+          showToast(id ? 'Idea Updated Successfully!' : 'Idea Published to Screener!'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
           resetForm();
           fetchIdeas();
         } else {
@@ -1107,7 +1107,7 @@
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          showToast(newActive ? 'Idea Activated in Screener' : 'Idea Hidden from Screener');
+          showToast(newActive ? 'Idea Activated in Screener' : 'Idea Hidden from Screener'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
           fetchIdeas();
         }
       })
@@ -1126,7 +1126,7 @@
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          showToast('Idea Deleted');
+          showToast('Idea Deleted'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
           fetchIdeas();
         }
       })
