@@ -2790,11 +2790,30 @@
       return "Q4 FY" + String(fy).slice(2);
     }
 
+    // Indian quarterly result windows (by month of announcement):
+    // Q1 (Apr-Jun quarter) → results in Aug-Sep
+    // Q2 (Jul-Sep quarter) → results in Oct-Nov
+    // Q3 (Oct-Dec quarter) → results in Jan-Feb
+    // Q4 (Jan-Mar quarter) → results in Apr-May
+    function getNextIndianResultDate(dt) {
+      const mo = dt.getMonth() + 1;
+      const yr = dt.getFullYear();
+      if (mo >= 8 && mo <= 9)   return new Date(`${yr}-10-15T00:00:00`);       // Q1 done → Q2 window Oct
+      if (mo >= 10 && mo <= 11) return new Date(`${yr + 1}-01-15T00:00:00`);   // Q2 done → Q3 window Jan
+      if (mo === 12)             return new Date(`${yr + 1}-01-15T00:00:00`);   // Dec → Q3 window Jan
+      if (mo >= 1 && mo <= 2)   return new Date(`${yr}-04-15T00:00:00`);       // Q3 done → Q4 window Apr
+      if (mo >= 3 && mo <= 5)   return new Date(`${yr}-08-15T00:00:00`);       // Q4/early → Q1 window Aug
+      if (mo >= 6 && mo <= 7)   return new Date(`${yr}-08-15T00:00:00`);       // Jun-Jul → Q1 window Aug
+      return new Date(dt.getTime() + 91 * 86400000);
+    }
+
     if (isPast) {
       // Put past dates into the Previous section
       prevDate = recordedDate;
-      // Next earnings is the following quarter (~91 days later)
-      nextDate = new Date(recordedDate.getTime() + 91 * 86400000);
+      // Next earnings = proper Indian quarterly window
+      nextDate = getNextIndianResultDate(recordedDate);
+      // If still past (stale data), push one more quarter
+      if (nextDate <= today) nextDate = getNextIndianResultDate(nextDate);
       status = meta.resultsStatus || "Tentative";
       quarterLabel = getQuarterLabel(nextDate);
     } else {
