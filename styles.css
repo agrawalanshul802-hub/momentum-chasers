@@ -245,6 +245,95 @@ a {
     border-bottom: 1px solid var(--ln);
     overflow: visible;
     user-select: none;
+    transition: left 0.28s cubic-bezier(0.16, 1, 0.3, 1), width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   SIDEBAR COLLAPSED / FULL WORKSPACE MODE
+   ========================================================================== */
+body.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+}
+
+body.sidebar-collapsed .main-content {
+    margin-left: 0 !important;
+}
+
+body.sidebar-collapsed .ticker-container {
+    left: 0 !important;
+    width: 100% !important;
+}
+
+/* Expand Brand Button on Ticker Bar when Sidebar is inside */
+.ticker-sidebar-toggle-btn {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    padding: 0 14px;
+    background: var(--sf);
+    border: none;
+    border-right: 1px solid var(--ln);
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+    transition: background 0.15s ease;
+    z-index: 92;
+}
+
+body.sidebar-collapsed .ticker-sidebar-toggle-btn {
+    display: inline-flex;
+}
+
+.ticker-sidebar-toggle-btn:hover {
+    background: var(--sf2);
+}
+
+.ticker-sidebar-toggle-btn .sidebar-brand-text h1 {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.ticker-sidebar-toggle-btn .sidebar-brand-text h1 span {
+    color: var(--g);
+    margin-left: 4px;
+}
+
+.ticker-sidebar-toggle-btn .sidebar-toggle-chevron {
+    color: var(--mu);
+    transition: transform 0.15s ease, color 0.15s ease;
+    margin-left: 2px;
+}
+
+.ticker-sidebar-toggle-btn:hover .sidebar-toggle-chevron {
+    color: var(--g);
+    transform: translateX(2px);
+}
+
+body.theme-white .ticker-sidebar-toggle-btn {
+    background: #ffffff;
+    border-right-color: var(--ln);
+}
+
+body.theme-white .ticker-sidebar-toggle-btn:hover {
+    background: #f8fafc;
+}
+
+body.theme-white .sidebar-header:hover {
+    background: #f8fafc;
+}
+
+body.theme-white .sidebar-header:hover .sidebar-collapse-trigger {
+    color: #059669;
+    background: rgba(5, 150, 105, 0.1);
 }
 
 .ticker-label {
@@ -1681,7 +1770,7 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     height: 100vh;
     overflow: hidden;
     z-index: 95;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), width 0.28s ease;
 }
 
 /* Stable Pinned Brand Header (NEVER SCROLLS, PINNED AT TOP: 0) */
@@ -1691,15 +1780,50 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 0 16px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 14px;
     border-bottom: 1px solid var(--ln);
     background: var(--sf);
     margin: 0;
     cursor: pointer;
     text-align: left;
     z-index: 2;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.sidebar-header:hover {
+    background: var(--sf2);
+}
+
+.sidebar-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-collapse-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--mu);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.sidebar-header:hover .sidebar-collapse-trigger {
+    color: var(--g);
+    background: rgba(34, 197, 94, 0.12);
 }
 
 /* Scrollable Middle Body for Navigation & Watchlist */
@@ -2414,6 +2538,7 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     overflow-x: hidden;
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
+    transition: margin-left 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .top-bar-controls {

@@ -19,7 +19,7 @@
     <!-- Main Stylesheet & Favicon -->
     <link rel="icon" type="image/png" href="logo-icon.png">
     <link rel="apple-touch-icon" href="logo-icon.png">
-    <link rel="stylesheet" href="styles.css?v=5.8.7">
+    <link rel="stylesheet" href="styles.css?v=5.8.8">
 
     <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
     <script src="lightweight-charts.js"></script>
@@ -32,6 +32,21 @@
 
     <!-- FEATURE 01: Customisable Moving Market Ticker -->
     <header class="ticker-container" id="ticker-bar" aria-label="Market Ticker">
+        <!-- Sidebar Toggle Brand Button (Visible when sidebar is collapsed) -->
+        <button class="ticker-sidebar-toggle-btn" id="ticker-sidebar-toggle-btn"
+            data-action="toggle-sidebar" title="Expand Sidebar (MOMENTUM CHASERS)"
+            aria-label="Expand Sidebar">
+            <div class="sidebar-logo-icon" style="width:24px;height:24px;">
+                <img src="logo-icon.png" alt="Momentum Chasers Logo" class="sidebar-logo-img">
+            </div>
+            <div class="sidebar-brand-text ticker-brand-text">
+                <h1>MOMENTUM <span>CHASERS</span></h1>
+            </div>
+            <svg class="sidebar-toggle-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+
         <div class="ticker-track-wrapper">
             <div class="ticker-track" id="ticker-track">
                 <!-- Rendered dynamically via script.js -->
@@ -74,14 +89,21 @@
 
         <!-- Collapsible Sidebar -->
         <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
-            <!-- Pinned Brand Header (Stable - Never scrolls) -->
-            <div class="sidebar-header" data-view="home" title="Momentum Chasers — Home" style="cursor:pointer">
-                <div class="sidebar-logo-icon">
-                    <img src="logo-icon.png" alt="Momentum Chasers Logo" class="sidebar-logo-img">
+            <!-- Pinned Brand Header (Stable - Never scrolls, Click to collapse/expand sidebar) -->
+            <div class="sidebar-header" id="sidebar-header" data-action="toggle-sidebar" title="Click to collapse sidebar for more workspace" style="cursor:pointer">
+                <div class="sidebar-header-left">
+                    <div class="sidebar-logo-icon">
+                        <img src="logo-icon.png" alt="Momentum Chasers Logo" class="sidebar-logo-img">
+                    </div>
+                    <div class="sidebar-brand-text">
+                        <h1>MOMENTUM <span>CHASERS</span></h1>
+                    </div>
                 </div>
-                <div class="sidebar-brand-text">
-                    <h1>MOMENTUM <span>CHASERS</span></h1>
-                </div>
+                <button class="sidebar-collapse-trigger" data-action="toggle-sidebar" title="Collapse sidebar for more space" aria-label="Collapse sidebar">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
             </div>
 
             <!-- Scrollable Navigation & Watchlist Body -->
@@ -630,7 +652,7 @@
     <script src="supabase-config.js?v=4.7.2"></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=5.8.7"></script>
+    <script src="script.js?v=5.8.8"></script>
 </body>
 
 </html>

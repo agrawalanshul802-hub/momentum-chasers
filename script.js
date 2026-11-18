@@ -15723,6 +15723,20 @@
     `;
   }
 
+  // Helper to format event date cleanly (e.g. "04 Nov 2026")
+  function formatEventDisplayDate(isoDate) {
+    if (!isoDate) return "—";
+    const parts = String(isoDate).split("-");
+    if (parts.length === 3) {
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${String(d).padStart(2, "0")} ${months[m] || ""} ${y}`;
+    }
+    return isoDate;
+  }
+
   // 0. Consolidated All-Events Table (Multi-category master feed)
   function renderEventsAllTable() {
     const q = (State.eventsSearch || "").trim().toLowerCase();
@@ -15904,8 +15918,8 @@
           </span>
         </td>
         <td class="col-datetime">
-          <div style="font-weight:700;color:var(--ink);font-family:var(--font-mono);font-size:12px">${item.date}</div>
-          <div style="font-size:11px;color:var(--mu);margin-top:2px">${item.time}</div>
+          <div style="font-weight:700;color:var(--ink);font-size:12.5px;letter-spacing:-0.01em">${formatEventDisplayDate(item.date)}</div>
+          <div style="font-size:11px;color:var(--mu);margin-top:2px;font-weight:500">${item.time}</div>
         </td>
         <td class="col-company">
           <div style="display:flex;flex-direction:column;gap:2px">
@@ -19044,6 +19058,32 @@
   // 14. EVENT HANDLERS & INTERACTIONS
   // ==========================================================================
 
+  // Toggle Collapsible Sidebar (Click on Brand Logo / Name or Chevron)
+  function toggleSidebar(forceState) {
+    const sidebar = $("#sidebar");
+    if (window.innerWidth <= 768) {
+      if (sidebar) {
+        if (typeof forceState === "boolean") {
+          sidebar.classList.toggle("mobile-open", forceState);
+        } else {
+          sidebar.classList.toggle("mobile-open");
+        }
+      }
+      return;
+    }
+    const body = document.body;
+    const isCurrentlyCollapsed = body.classList.contains("sidebar-collapsed");
+    const nextCollapsed = typeof forceState === "boolean" ? forceState : !isCurrentlyCollapsed;
+    body.classList.toggle("sidebar-collapsed", nextCollapsed);
+    try {
+      localStorage.setItem("momentum_sidebar_collapsed", nextCollapsed ? "1" : "0");
+    } catch (e) { }
+    // Dispatch window resize event for TradingView charts and responsive layouts
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 290);
+  }
+
   function navigateBack() {
     let dest = State.previousView;
     if (!dest || dest === State.view || dest === "login") {
@@ -19274,6 +19314,12 @@
       // Back button click
       if (action === "go-back") {
         navigateBack();
+        return;
+      }
+
+      // Sidebar Collapse / Expand toggle (Logo / Brand Name / Chevron / Ticker Button)
+      if (action === "toggle-sidebar") {
+        toggleSidebar();
         return;
       }
 
@@ -20648,6 +20694,13 @@
       }
     } catch (e) { }
     applyTheme(savedTheme);
+
+    // Restore collapsed sidebar workspace preference on desktop
+    try {
+      if (localStorage.getItem("momentum_sidebar_collapsed") === "1" && window.innerWidth > 768) {
+        document.body.classList.add("sidebar-collapsed");
+      }
+    } catch (e) { }
 
     // Load persisted ticker & watchlist preferences from localStorage & Supabase
     loadTickerPreferences();
