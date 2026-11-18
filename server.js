@@ -4792,6 +4792,90 @@ function getSectorTurnoverPayload(baseline = 8) {
   };
 }
 
+function categorizeValuationIndex(name) {
+  const n = String(name || '').toLowerCase();
+  if (n.includes('shariah') || n.includes('esg') || n.includes('ahimsa')) return 'Thematic & Strategy';
+  if (n === 'nifty 50' || n === 'nifty next 50' || n === 'nifty 100' || n === 'nifty 200' || n === 'nifty 500' || 
+      n.includes('midcap 150') || n.includes('smallcap 250') || n.includes('microcap 250') || n.includes('total market') || 
+      n === 'nifty midcap 50' || n === 'nifty smallcap 50' || n === 'nifty largemidcap 250' || n === 'nifty 1000' || n === 'nifty smallcap 500') {
+    return 'Broad Market';
+  }
+  if (n.includes('bank') || n.includes('it') || n.includes('pharma') || n.includes('auto') || n.includes('fmcg') || 
+      n.includes('metal') || n.includes('energy') || n.includes('oil & gas') || n.includes('realty') || n.includes('media') || 
+      n.includes('financial') || n.includes('consumer durables') || n.includes('healthcare') || n.includes('telecom') || 
+      n.includes('chemicals') || n.includes('capital goods') || n.includes('cement') || n.includes('construction') || 
+      n.includes('hospitals') || n.includes('insurance') || n.includes('housing') || n.includes('nbfc')) {
+    return 'Sectoral';
+  }
+  return 'Thematic & Strategy';
+}
+
+function getValuationContext(name, pe) {
+  if (pe === null || isNaN(pe)) return 'Not Meaningful';
+  const n = String(name || '').toLowerCase();
+  if (n === 'nifty 50' || n === 'nifty 100' || n === 'nifty 500') {
+    if (pe < 18) return 'Attractive / Undervalued';
+    if (pe <= 22.5) return 'Historical Average';
+    if (pe <= 25) return 'Mildly Elevated';
+    return 'High Valuation';
+  }
+  if (n.includes('bank')) {
+    if (pe < 12) return 'Attractive / Undervalued';
+    if (pe <= 18) return 'Historical Average';
+    return 'Elevated';
+  }
+  if (n.includes('it')) {
+    if (pe < 22) return 'Historical Average';
+    if (pe <= 28) return 'Reasonable Growth';
+    return 'Premium';
+  }
+  if (pe < 15) return 'Value Zone';
+  if (pe <= 25) return 'Reasonable Valuation';
+  if (pe <= 35) return 'Growth Premium';
+  return 'High Growth / Premium';
+}
+
+function parseValuationCSV(csv) {
+  const lines = String(csv || '').split('\n').map(l => l.trim()).filter(Boolean);
+  const rows = [];
+  let asOfDate = '';
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim().replace(/^"/, '').replace(/"$/, ''));
+    if (cols.length < 13) continue;
+    const name = cols[0];
+    const date = cols[1];
+    if (date && !asOfDate) asOfDate = date;
+    const close = parseFloat(cols[5]);
+    const chg = parseFloat(cols[7]);
+    const pe = cols[10] && cols[10] !== '-' ? parseFloat(cols[10]) : null;
+    const pb = cols[11] && cols[11] !== '-' ? parseFloat(cols[11]) : null;
+    const divYield = cols[12] && cols[12] !== '-' ? parseFloat(cols[12]) : null;
+    if (pe !== null || pb !== null) {
+      const category = categorizeValuationIndex(name);
+      const context = getValuationContext(name, pe);
+      rows.push({
+        name,
+        date: date || asOfDate,
+        close: !isNaN(close) ? close : null,
+        chg: !isNaN(chg) ? chg : null,
+        pe: pe !== null && !isNaN(pe) ? Math.round(pe * 100) / 100 : null,
+        pb: pb !== null && !isNaN(pb) ? Math.round(pb * 100) / 100 : null,
+        divYield: divYield !== null && !isNaN(divYield) ? Math.round(divYield * 100) / 100 : null,
+        category,
+        context
+      });
+    }
+  }
+
+  return {
+    asOfDate,
+    source: 'National Stock Exchange of India (NSE Archives)',
+    updatedAt: new Date().toISOString(),
+    total: rows.length,
+    data: rows
+  };
+}
+
 const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, 'http://localhost');
   parsedUrl.query = Object.fromEntries(parsedUrl.searchParams.entries());
@@ -5595,6 +5679,58 @@ const server = http.createServer(async (req, res) => {
       return;
     } catch (err) {
       console.error('Error in /api/sector-turnover:', err);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
+      return;
+    }
+  }
+
+  // 6f. Official NSE Index Valuation Dashboard Endpoint: /api/market-valuation
+  if (pathname === '/api/market-valuation' || pathname === '/api/valuation') {
+    const cacheKey = 'market_valuation_v1';
+    const cached = CACHE.get(cacheKey);
+    if (cached && (Date.now() - cached.time < 30 * 60 * 1000)) { // 30-minute cache
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'HIT' });
+      res.end(cached.data);
+      return;
+    }
+
+    try {
+      let csv = '';
+      try {
+        csv = await fetchCSVFromNSE('https://archives.nseindia.com/content/indices/ind_close_all.csv');
+      } catch (e) {
+        console.warn('[Valuation] Live NSE archive fetch notice:', e.message);
+      }
+
+      let payload = null;
+      if (csv) {
+        payload = parseValuationCSV(csv);
+      }
+
+      // Fallback to local data/market-valuation.json if archive fetch failed
+      if (!payload || !payload.data || !payload.data.length) {
+        const localPath = path.join(__dirname, 'data', 'market-valuation.json');
+        if (fs.existsSync(localPath)) {
+          payload = JSON.parse(fs.readFileSync(localPath, 'utf8'));
+        }
+      }
+
+      if (payload && payload.data) {
+        const outStr = JSON.stringify(payload);
+        CACHE.set(cacheKey, { time: Date.now(), data: outStr });
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=120',
+          'X-Cache': 'MISS'
+        });
+        res.end(outStr);
+        return;
+      }
+
+      throw new Error('No valuation data available');
+    } catch (err) {
+      console.error('Error in /api/market-valuation:', err);
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: err.message }));
       return;
