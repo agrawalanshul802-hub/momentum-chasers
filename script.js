@@ -10877,7 +10877,7 @@
       const athCell = row.querySelector(".stock-ath-cell");
       if (athCell && typeof getStockAthDistance === "function") {
         const ath = getStockAthDistance(s);
-        const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
+        const cls = ath.dist >= 0 ? 'val-green' : 'val-red';
         athCell.className = `font-mono ${cls} stock-ath-cell`;
         athCell.title = `All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}`;
         athCell.textContent = `${ath.dist.toFixed(2)}%`;
@@ -11824,7 +11824,7 @@
       const emas = getStockEmaStatus(s);
       const capFull = s[1] === "MC" ? "Mid Cap" : s[1] === "SC" ? "Small Cap" : s[1] === "LC" ? "Large Cap" : (s[1] || "");
       const ath = getStockAthDistance(s);
-      const cls = ath.dist >= -5 ? 'val-green' : ath.dist >= -15 ? 'val-amber' : 'val-red';
+      const cls = ath.dist >= 0 ? 'val-green' : 'val-red';
       const earn = getStockEarningsDates(s);
       return `
         <tr data-symbol="${s[0]}">
@@ -13410,7 +13410,7 @@
                           ATL: ₹${formatNumber(sec.atlPrice, 1)}
                         </div>
                       ` : `
-                        <div style="font-weight:700;color:${sec.athDist >= -2 ? 'var(--g)' : sec.athDist >= -8 ? 'var(--ink)' : 'var(--r)'};">
+                        <div style="font-weight:700;color:${sec.athDist >= 0 ? 'var(--g)' : 'var(--r)'};">
                           ${sec.athDist >= 0 ? '<span style="color:var(--g);font-weight:800;">🔥 At ATH</span>' : `${sec.athDist.toFixed(2)}%`}
                         </div>
                         <div style="font-size:10px;color:var(--mu);" title="All-Time High Benchmark Level">
@@ -13482,7 +13482,7 @@
                     </td>
                     <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:${sec.chg >= 0 ? "var(--g)" : "var(--r)"}">${sec.chg >= 0 ? "+" : ""}${sec.chg.toFixed(2)}%</td>
                     <td style="text-align:right;font-family:var(--font-mono);font-weight:600;color:${sec.rsi >= 60 ? "var(--g)" : "var(--mu)"}">${sec.rsi.toFixed(1)}</td>
-                    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:${sec.athDist >= -2 ? "var(--g)" : "var(--mu)"}">${sec.athDist.toFixed(2)}%</td>
+                    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:${sec.athDist >= 0 ? "var(--g)" : "var(--r)"}">${sec.athDist.toFixed(2)}%</td>
                     <td style="text-align:center">
                       <span class="crossover-status-tag ${sec.athDist >= -2 ? "bullish" : "bearish"}">
                         ${sec.athDist >= -2 ? "ATH Leader (<2%)" : sec.athDist >= -5 ? "Near ATH" : "Pullback"}
@@ -25320,7 +25320,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.2', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.3', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
