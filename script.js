@@ -12939,7 +12939,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.0");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.1");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -13409,15 +13409,15 @@
                     </td>
                     <td class="font-mono" style="text-align:right">
                       ${(isAllTimeCol && isLowMode) ? `
-                        <div style="font-weight:700;color:var(--r);">
-                          ${sec.athDist.toFixed(2)}%
+                        <div class="${sec.atlDist >= 0 ? 'val-green' : 'val-red'}" style="font-weight:700;color:${sec.atlDist >= 0 ? 'var(--g)' : 'var(--r)'};">
+                          ${sec.atlDist >= 0 ? '+' : ''}${sec.atlDist.toFixed(2)}%
                         </div>
                         <div style="font-size:10px;color:var(--mu);" title="All-Time Low Benchmark Level">
                           ATL: ₹${formatNumber(sec.atlPrice, 1)}
                         </div>
                       ` : `
-                        <div style="font-weight:700;color:${sec.athDist >= 0 ? 'var(--g)' : 'var(--r)'};">
-                          ${sec.athDist >= 0 ? '<span style="color:var(--g);font-weight:800;">🔥 At ATH</span>' : `${sec.athDist.toFixed(2)}%`}
+                        <div class="${sec.athDist >= 0 ? 'val-green' : 'val-red'}" style="font-weight:700;color:${sec.athDist >= 0 ? 'var(--g)' : 'var(--r)'};">
+                          ${sec.athDist >= 0 ? '<span class="val-green" style="color:var(--g);font-weight:800;">🔥 At ATH</span>' : `${sec.athDist.toFixed(2)}%`}
                         </div>
                         <div style="font-size:10px;color:var(--mu);" title="All-Time High Benchmark Level">
                           ATH: ₹${formatNumber(sec.athPrice, 1)}
@@ -25738,7 +25738,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.0"
+          "./data/authentic-sector-turnover.json?v=6.2.1"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25783,7 +25783,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.0', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.1', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
