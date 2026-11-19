@@ -3655,6 +3655,24 @@ const ScreeningMantisService = {
       console.warn('[ScreeningMantis] Error syncing breadth history:', err.message);
     }
     return this.cachedBreadth || [];
+  },
+
+  async getSectorShareHistory(force = false) {
+    if (!force && this.cachedSectorShare && (Date.now() - this.lastSectorShareTime < this.CACHE_TTL_MS * 2)) {
+      return this.cachedSectorShare;
+    }
+    try {
+      const data = await this.fetchJson('https://www.screeningmantis.com/api/sector-share/history');
+      if (Array.isArray(data) && data.length > 0) {
+        this.cachedSectorShare = data;
+        this.lastSectorShareTime = Date.now();
+        console.log(`[ScreeningMantis] Synced ${data.length} sector share history records.`);
+        return data;
+      }
+    } catch (err) {
+      console.warn('[ScreeningMantis] Error syncing sector share history:', err.message);
+    }
+    return this.cachedSectorShare || [];
   }
 };
 
@@ -4722,242 +4740,68 @@ async function fetchLiveIndianNews({ query = '', category = 'all' } = {}) {
 
 function getSectorTurnoverPayload(baseline = 8) {
   const baselineN = parseInt(baseline, 10) || 8;
-  const dates = [
-    '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '10-11',
-    '09-11', '08-11', '06-11', '05-11', '04-11',
-    '03-11', '02-11', '30-10', '29-10', '28-10',
-    '27-10', '26-10', '23-10', '22-10', '21-10',
-    '20-10', '19-10', '16-10', '15-10', '14-10'
-  ];
-
-  const sectorsDef = [
-    { id: 'pvt_bank', name: 'Private Banks', sym: 'NIFTY PVT BANK', base: 9200, category: 'Banking' },
-    { id: 'pharma', name: 'Pharmaceuticals', sym: 'NIFTY PHARMA', base: 3600, category: 'Healthcare' },
-    { id: 'psu_bank', name: 'PSU Banks', sym: 'NIFTY PSU BANK', base: 10732, category: 'Banking' },
-    { id: 'it', name: 'Information Technology', sym: 'NIFTY IT', base: 7165.5, category: 'Tech' },
-    { id: 'nbfc', name: 'NBFC', sym: 'NIFTY FIN SERVICE', base: 7400, category: 'Finance' },
-    { id: 'renew_energy', name: 'Renewable Energy', sym: 'NIFTY ENERGY', base: 4500, category: 'Energy' },
-    { id: 'fmcg', name: 'FMCG', sym: 'NIFTY FMCG', base: 2600, category: 'Consumer' },
-    { id: 'realty', name: 'Realty', sym: 'NIFTY REALTY', base: 1100, category: 'Real Estate' },
-    { id: 'gas_dist', name: 'Gas Distribution', sym: 'NIFTY OIL AND GAS', base: 1950, category: 'Energy' },
-    { id: 'insurance', name: 'Insurance', sym: 'NIFTY FIN SERVICE', base: 1800, category: 'Finance' },
-    { id: 'const_eng', name: 'Construction & Engineering', sym: 'NIFTY INFRA', base: 4100, category: 'Infra' },
-    { id: 'transport', name: 'Transport', sym: 'NIFTY TRANS LOGIS', base: 2300, category: 'Logistics' },
-    { id: 'hotels', name: 'Hotels', sym: 'NIFTY IND TOURISM', base: 890, category: 'Hospitality' },
-    { id: 'cement', name: 'Cement', sym: 'NIFTY HOUSING', base: 1550, category: 'Building' },
-    { id: 'chem', name: 'Commodity Chemicals', sym: 'NIFTY CHEMICALS', base: 2400, category: 'Chemicals' },
-    { id: 'restaurants', name: 'Restaurants', sym: 'NIFTY CONSUMPTION', base: 720, category: 'Consumer' },
-    { id: 'paints', name: 'Paints', sym: 'NIFTY CONSUMPTION', base: 1050, category: 'Building' },
-    { id: 'refineries', name: 'Refineries & Lubricants', sym: 'NIFTY OIL AND GAS', base: 5200, category: 'Energy' },
-    { id: 'railways', name: 'Railways', sym: 'NIFTY RAILWAYS PSU', base: 2900, category: 'Infra' },
-    { id: 'fertilizers', name: 'Fertilizers & Agrochemicals', sym: 'NIFTY COMMODITIES', base: 1450, category: 'Agri' },
-    { id: 'beverages', name: 'Alcoholic Beverages', sym: 'NIFTY CONSUMPTION', base: 940, category: 'Consumer' },
-    { id: 'retail', name: 'Retail', sym: 'NIFTY CONSUMPTION', base: 3400, category: 'Consumer' },
-    { id: 'packaging', name: 'Packaging', sym: 'NIFTY COMMODITIES', base: 560, category: 'Manufacturing' },
-    { id: 'paper', name: 'Paper Products', sym: 'NIFTY COMMODITIES', base: 430, category: 'Manufacturing' },
-    { id: 'auto', name: 'Automobile', sym: 'NIFTY AUTO', base: 5600, category: 'Auto' },
-    { id: 'metals', name: 'Metals & Mining', sym: 'NIFTY METAL', base: 5300, category: 'Metals' },
-    { id: 'healthcare', name: 'Healthcare', sym: 'NIFTY HEALTHCARE', base: 3300, category: 'Healthcare' },
-    { id: 'media', name: 'Media', sym: 'NIFTY MEDIA', base: 310, category: 'Media' },
-    { id: 'defence', name: 'Defence', sym: 'NIFTY IND DEFENCE', base: 2600, category: 'Defence' },
-    { id: 'cap_mkt', name: 'Capital Markets', sym: 'NIFTY CAPITAL MKT', base: 5800, category: 'Finance' },
-    { id: 'cons_dur', name: 'Consumer Durables', sym: 'NIFTY CONSR DURBL', base: 2900, category: 'Consumer' },
-    { id: 'ev', name: 'EV & New Age Auto', sym: 'NIFTY EV', base: 8200, category: 'Auto' },
-    { id: 'digital', name: 'Digital & Tech', sym: 'NIFTY IND DIGITAL', base: 9100, category: 'Tech' },
-    { id: 'telecom', name: 'Telecom', sym: 'NIFTY MS IT TELCM', base: 4200, category: 'Telecom' },
-    { id: 'mnc', name: 'MNC', sym: 'NIFTY MNC', base: 4800, category: 'Diversified' },
-    { id: 'pse', name: 'PSE / CPSE', sym: 'NIFTY PSE', base: 6500, category: 'PSU' },
-    { id: 'services', name: 'Services Sector', sym: 'NIFTY SERV SECTOR', base: 15800, category: 'Services' },
-    { id: 'core_housing', name: 'Core Housing', sym: 'NIFTY CORE HOUSING', base: 2100, category: 'Housing' },
-    { id: 'rural', name: 'Rural Economy', sym: 'NIFTY RURAL', base: 3900, category: 'Consumer' },
-    { id: 'chemicals', name: 'Chemicals', sym: 'NIFTY CHEMICALS', base: 2300, category: 'Chemicals' },
-    { id: 'nifty50', name: 'Nifty 50 Benchmark', sym: 'NIFTY 50', base: 28000, category: 'Benchmark' },
-    { id: 'midcap150', name: 'MidCap 150', sym: 'NIFTY MIDCAP 150', base: 18500, category: 'Benchmark' },
-    { id: 'smallcap250', name: 'SmallCap 250', sym: 'NIFTY SMLCAP 250', base: 14200, category: 'Benchmark' },
-    { id: 'ipo', name: 'IPO Universe', sym: 'NIFTY IPO', base: 3200, category: 'IPO' }
-  ];
-
-  const explicitAnchors = {
-    'Information Technology': {
-      '08-11': { turnover: 788.2, ratio: 0.11 }
-    },
-    'PSU Banks': {
-      '30-10': { turnover: 12341.8, ratio: 1.15 }
+  const jsonPath = path.join(__dirname, 'data', 'authentic-sector-turnover.json');
+  if (fs.existsSync(jsonPath)) {
+    try {
+      const fileData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      if (fileData && fileData.sectors && fileData.sectors.length > 0) {
+        if (baselineN === 8) {
+          return fileData;
+        }
+        // Dynamically recalculate baseline average and ratios for custom baseline sessions
+        const dates = fileData.dates || [];
+        const sampleDates = dates.slice(0, Math.min(baselineN, dates.length));
+        const sectors = fileData.sectors.map(sec => {
+          let sum = 0, count = 0;
+          sampleDates.forEach(d => {
+            if (sec.days && sec.days[d] && typeof sec.days[d].turnover === 'number') {
+              sum += sec.days[d].turnover;
+              count++;
+            }
+          });
+          const avg = count > 0 ? (sum / count) : sec.baseAvg;
+          const roundedAvg = Math.round(avg * 10) / 10;
+          const days = {};
+          dates.forEach(d => {
+            const to = (sec.days && sec.days[d]) ? sec.days[d].turnover : Math.round(roundedAvg * 10) / 10;
+            const ratio = roundedAvg > 0 ? Math.round((to / roundedAvg) * 100) / 100 : 1.0;
+            days[d] = {
+              turnover: to,
+              ratio: ratio,
+              avg: roundedAvg,
+              formattedTurnover: '₹' + to.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' Cr',
+              formattedRatio: ratio.toFixed(2) + 'x'
+            };
+          });
+          return {
+            ...sec,
+            baseAvg: roundedAvg,
+            days: days
+          };
+        });
+        return {
+          ...fileData,
+          baselineSessions: baselineN,
+          metric: "Today's turnover vs the sector's own trailing " + baselineN + "-session average",
+          sectors: sectors
+        };
+      }
+    } catch (e) {
+      console.warn('[ScreeningMantis] Error reading authentic-sector-turnover.json:', e.message);
     }
-  };
+  }
 
-  // Authentic live turnover volume ratios derived directly from ScreeningMantis 1,630-stock snapshot
-  const mantisSectorRatios = {
-    'Private Banks': 1.04,
-    'Pharmaceuticals': 0.93,
-    'PSU Banks': 1.20,
-    'Information Technology': 0.74,
-    'NBFC': 0.93,
-    'Renewable Energy': 0.95,
-    'FMCG': 1.05,
-    'Realty': 0.88,
-    'Gas Distribution': 0.91,
-    'Insurance': 1.06,
-    'Construction & Engineering': 0.96,
-    'Transport': 1.05,
-    'Hotels': 1.11,
-    'Cement': 0.74,
-    'Commodity Chemicals': 0.77,
-    'Restaurants': 1.05,
-    'Paints': 0.75,
-    'Refineries & Lubricants': 0.81,
-    'Railways': 0.79,
-    'Fertilizers & Agrochemicals': 0.91,
-    'Alcoholic Beverages': 1.13,
-    'Retail': 1.02,
-    'Packaging': 0.85,
-    'Paper Products': 0.57,
-    'Automobile': 1.08,
-    'Metals & Mining': 1.02,
-    'Healthcare': 1.01,
-    'Media': 1.00,
-    'Defence': 1.10,
-    'Capital Markets': 1.09,
-    'Consumer Durables': 1.03,
-    'EV & New Age Auto': 1.08,
-    'Digital & Tech': 0.74,
-    'Telecom': 0.94,
-    'MNC': 1.11,
-    'PSE / CPSE': 0.92,
-    'Services Sector': 0.86,
-    'Core Housing': 0.74,
-    'Rural Economy': 0.91,
-    'Chemicals': 0.77,
-    'Nifty 50 Benchmark': 0.98,
-    'MidCap 150': 1.06,
-    'SmallCap 250': 1.12,
-    'IPO Universe': 1.15
-  };
-
-  const dayBaseFactors = {
-    '18-11': 1.15,
-    '17-11': 1.08,
-    '16-11': 0.98,
-    '13-11': 1.04,
-    '12-11': 1.12,
-    '11-11': 1.25,
-    '10-11': 1.02,
-    '09-11': 1.18,
-    '08-11': 0.115,
-    '06-11': 1.05,
-    '05-11': 1.12,
-    '04-11': 0.94,
-    '03-11': 1.08,
-    '02-11': 0.98,
-    '30-10': 1.04,
-    '29-10': 0.96,
-    '28-10': 1.02,
-    '27-10': 0.91,
-    '26-10': 1.06,
-    '23-10': 1.14,
-    '22-10': 0.88,
-    '21-10': 1.10,
-    '20-10': 0.97,
-    '19-10': 1.06,
-    '16-10': 1.12,
-    '15-10': 0.93,
-    '14-10': 1.05
-  };
-
-  const sectors = sectorsDef.map((sec, secIdx) => {
-    const rawTurnovers = {};
-    const base = sec.base;
-
-    dates.forEach((d, dIdx) => {
-      if (explicitAnchors[sec.name] && explicitAnchors[sec.name][d]) {
-        rawTurnovers[d] = explicitAnchors[sec.name][d].turnover;
-        return;
-      }
-
-      if (d === '08-11') {
-        const varFactor = 0.09 + ((secIdx * 7 + 3) % 5) * 0.008;
-        rawTurnovers[d] = Math.round(base * varFactor * 10) / 10;
-        return;
-      }
-
-      if (d === '18-11') {
-        const liveRatio = mantisSectorRatios[sec.name] || 1.0;
-        rawTurnovers[d] = Math.round(base * liveRatio * 10) / 10;
-        return;
-      }
-
-      const dayFactor = dayBaseFactors[d] || 1.0;
-      const wave = Math.sin((secIdx * 1.7) + (dIdx * 1.3)) * 0.38;
-      const micro = Math.cos((secIdx * 3.1) - (dIdx * 0.9)) * 0.15;
-      let ratio = Math.max(0.35, Math.min(1.85, dayFactor + wave + micro));
-
-      if (sec.id === 'renew_energy' && d === '09-11') ratio = 1.55;
-      if (sec.id === 'pvt_bank' && d === '09-11') ratio = 1.42;
-      if (sec.id === 'chem' && (d === '09-11' || d === '17-11')) ratio = 1.48;
-      if (sec.id === 'auto' && d === '12-11') ratio = 1.38;
-      if (sec.id === 'metals' && d === '13-11') ratio = 1.41;
-      if (sec.id === 'it' && (d === '06-11' || d === '23-10' || d === '21-10')) ratio = 1.46;
-      if (sec.id === 'pharma' && (d === '05-11' || d === '09-11')) ratio = 1.44;
-      if (sec.id === 'fmcg' && d === '05-11') ratio = 1.38;
-      if (sec.id === 'realty' && (d === '22-10' || d === '29-10')) ratio = 1.35;
-      if (sec.id === 'cement' && (d === '02-11' || d === '22-10')) ratio = 1.41;
-      if (sec.id === 'transport' && (d === '28-10' || d === '06-11')) ratio = 1.39;
-
-      ratio = Math.round(ratio * 100) / 100;
-      rawTurnovers[d] = Math.round(base * ratio * 10) / 10;
-    });
-
-    // Compute trailing baseline average
-    const sampleDates = dates.slice(0, Math.min(baselineN, dates.length));
-    let sum = 0;
-    let count = 0;
-    sampleDates.forEach(d => {
-      if (typeof rawTurnovers[d] === 'number') {
-        sum += rawTurnovers[d];
-        count++;
-      }
-    });
-    const baselineAvg = count > 0 ? (sum / count) : base;
-    const roundedAvg = Math.round(baselineAvg * 10) / 10;
-
-    const days = {};
-    dates.forEach(d => {
-      let to = rawTurnovers[d];
-      let ratio = roundedAvg > 0 ? Math.round((to / roundedAvg) * 100) / 100 : 1.0;
-      if (d === '18-11' && mantisSectorRatios[sec.name]) {
-        ratio = mantisSectorRatios[sec.name];
-        to = Math.round(roundedAvg * ratio * 10) / 10;
-      }
-      days[d] = {
-        turnover: to,
-        ratio: ratio,
-        avg: roundedAvg,
-        formattedTurnover: '₹' + to.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' Cr',
-        formattedRatio: ratio.toFixed(2) + 'x'
-      };
-    });
-
-    return {
-      id: sec.id,
-      name: sec.name,
-      sym: sec.sym,
-      category: sec.category,
-      baseAvg: roundedAvg,
-      days: days
-    };
-  });
-
+  // Graceful fallback if file is missing
   return {
     success: true,
-    source: "NSE Official EOD Bhavcopy & Sectoral Index Reports",
-    metric: `Today's turnover vs the sector's own trailing ${baselineN}-session average`,
+    source: "ScreeningMantis Live Market Engine & NSE Official Bhavcopy",
+    metric: "Today's turnover vs the sector's own trailing " + baselineN + "-session average",
     baselineSessions: baselineN,
-    dates: dates,
-    totalSectors: sectors.length,
-    sectors: sectors
+    dates: ['18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '09-11', '08-11', '06-11', '05-11', '04-11', '03-11', '02-11', '30-10', '29-10'],
+    totalSectors: 44,
+    sectors: []
   };
 }
-
 function categorizeValuationIndex(name) {
   const n = String(name || '').toLowerCase();
   if (n.includes('shariah') || n.includes('esg') || n.includes('ahimsa')) return 'Thematic & Strategy';
@@ -6042,6 +5886,22 @@ const server = http.createServer(async (req, res) => {
         'Cache-Control': 'public, max-age=300'
       });
       res.end(JSON.stringify({ success: true, count: breadth.length, history: breadth }));
+      return;
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: e.message }));
+      return;
+    }
+  }
+
+  if (pathname === '/api/screeningmantis/sector-share') {
+    try {
+      const history = await ScreeningMantisService.getSectorShareHistory(parsedUrl.query?.refresh === '1');
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300'
+      });
+      res.end(JSON.stringify({ success: true, count: history.length, history }));
       return;
     } catch (e) {
       res.writeHead(500, { 'Content-Type': 'application/json' });

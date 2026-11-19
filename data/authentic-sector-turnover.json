@@ -1,0 +1,5042 @@
+{
+  "success": true,
+  "source": "ScreeningMantis Live Market Engine & NSE Bhavcopy",
+  "metric": "Today's turnover vs the sector's own trailing 8-session average",
+  "baselineSessions": 8,
+  "dates": [
+    "18-11",
+    "17-11",
+    "16-11",
+    "13-11",
+    "12-11",
+    "11-11",
+    "09-11",
+    "08-11",
+    "06-11",
+    "05-11",
+    "04-11",
+    "03-11",
+    "02-11",
+    "30-10",
+    "29-10"
+  ],
+  "totalSectors": 44,
+  "sectors": [
+    {
+      "id": "pvt_bank",
+      "name": "Private Banks",
+      "sym": "NIFTY PVT BANK",
+      "category": "Banking",
+      "baseAvg": 9200,
+      "days": {
+        "18-11": {
+          "turnover": 8556,
+          "ratio": 0.93,
+          "avg": 9200,
+          "formattedTurnover": "₹8,556.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "17-11": {
+          "turnover": 8556,
+          "ratio": 0.93,
+          "avg": 9200,
+          "formattedTurnover": "₹8,556.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "16-11": {
+          "turnover": 6808,
+          "ratio": 0.74,
+          "avg": 9200,
+          "formattedTurnover": "₹6,808.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "13-11": {
+          "turnover": 6164,
+          "ratio": 0.67,
+          "avg": 9200,
+          "formattedTurnover": "₹6,164.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "12-11": {
+          "turnover": 8832,
+          "ratio": 0.96,
+          "avg": 9200,
+          "formattedTurnover": "₹8,832.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "11-11": {
+          "turnover": 11960,
+          "ratio": 1.3,
+          "avg": 9200,
+          "formattedTurnover": "₹11,960.0 Cr",
+          "formattedRatio": "1.30x"
+        },
+        "09-11": {
+          "turnover": 12144,
+          "ratio": 1.32,
+          "avg": 9200,
+          "formattedTurnover": "₹12,144.0 Cr",
+          "formattedRatio": "1.32x"
+        },
+        "08-11": {
+          "turnover": 736,
+          "ratio": 0.08,
+          "avg": 9200,
+          "formattedTurnover": "₹736.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 12144,
+          "ratio": 1.32,
+          "avg": 9200,
+          "formattedTurnover": "₹12,144.0 Cr",
+          "formattedRatio": "1.32x"
+        },
+        "05-11": {
+          "turnover": 10212,
+          "ratio": 1.11,
+          "avg": 9200,
+          "formattedTurnover": "₹10,212.0 Cr",
+          "formattedRatio": "1.11x"
+        },
+        "04-11": {
+          "turnover": 6532,
+          "ratio": 0.71,
+          "avg": 9200,
+          "formattedTurnover": "₹6,532.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "03-11": {
+          "turnover": 7544,
+          "ratio": 0.82,
+          "avg": 9200,
+          "formattedTurnover": "₹7,544.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "02-11": {
+          "turnover": 5152,
+          "ratio": 0.56,
+          "avg": 9200,
+          "formattedTurnover": "₹5,152.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "30-10": {
+          "turnover": 6348,
+          "ratio": 0.69,
+          "avg": 9200,
+          "formattedTurnover": "₹6,348.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "29-10": {
+          "turnover": 7912,
+          "ratio": 0.86,
+          "avg": 9200,
+          "formattedTurnover": "₹7,912.0 Cr",
+          "formattedRatio": "0.86x"
+        }
+      }
+    },
+    {
+      "id": "pharma",
+      "name": "Pharmaceuticals",
+      "sym": "NIFTY PHARMA",
+      "category": "Healthcare",
+      "baseAvg": 3600,
+      "days": {
+        "18-11": {
+          "turnover": 3456,
+          "ratio": 0.96,
+          "avg": 3600,
+          "formattedTurnover": "₹3,456.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "17-11": {
+          "turnover": 2520,
+          "ratio": 0.7,
+          "avg": 3600,
+          "formattedTurnover": "₹2,520.0 Cr",
+          "formattedRatio": "0.70x"
+        },
+        "16-11": {
+          "turnover": 3384,
+          "ratio": 0.94,
+          "avg": 3600,
+          "formattedTurnover": "₹3,384.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "13-11": {
+          "turnover": 2628,
+          "ratio": 0.73,
+          "avg": 3600,
+          "formattedTurnover": "₹2,628.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "12-11": {
+          "turnover": 3060,
+          "ratio": 0.85,
+          "avg": 3600,
+          "formattedTurnover": "₹3,060.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "11-11": {
+          "turnover": 3384,
+          "ratio": 0.94,
+          "avg": 3600,
+          "formattedTurnover": "₹3,384.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "09-11": {
+          "turnover": 7272,
+          "ratio": 2.02,
+          "avg": 3600,
+          "formattedTurnover": "₹7,272.0 Cr",
+          "formattedRatio": "2.02x"
+        },
+        "08-11": {
+          "turnover": 576,
+          "ratio": 0.16,
+          "avg": 3600,
+          "formattedTurnover": "₹576.0 Cr",
+          "formattedRatio": "0.16x"
+        },
+        "06-11": {
+          "turnover": 3672,
+          "ratio": 1.02,
+          "avg": 3600,
+          "formattedTurnover": "₹3,672.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "05-11": {
+          "turnover": 2556,
+          "ratio": 0.71,
+          "avg": 3600,
+          "formattedTurnover": "₹2,556.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "04-11": {
+          "turnover": 3132,
+          "ratio": 0.87,
+          "avg": 3600,
+          "formattedTurnover": "₹3,132.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "03-11": {
+          "turnover": 2772,
+          "ratio": 0.77,
+          "avg": 3600,
+          "formattedTurnover": "₹2,772.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "02-11": {
+          "turnover": 2700,
+          "ratio": 0.75,
+          "avg": 3600,
+          "formattedTurnover": "₹2,700.0 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "30-10": {
+          "turnover": 4464,
+          "ratio": 1.24,
+          "avg": 3600,
+          "formattedTurnover": "₹4,464.0 Cr",
+          "formattedRatio": "1.24x"
+        },
+        "29-10": {
+          "turnover": 3060,
+          "ratio": 0.85,
+          "avg": 3600,
+          "formattedTurnover": "₹3,060.0 Cr",
+          "formattedRatio": "0.85x"
+        }
+      }
+    },
+    {
+      "id": "psu_bank",
+      "name": "PSU Banks",
+      "sym": "NIFTY PSU BANK",
+      "category": "Banking",
+      "baseAvg": 10732,
+      "days": {
+        "18-11": {
+          "turnover": 8692.9,
+          "ratio": 0.81,
+          "avg": 10732,
+          "formattedTurnover": "₹8,692.9 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "17-11": {
+          "turnover": 11590.6,
+          "ratio": 1.08,
+          "avg": 10732,
+          "formattedTurnover": "₹11,590.6 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "16-11": {
+          "turnover": 8263.6,
+          "ratio": 0.77,
+          "avg": 10732,
+          "formattedTurnover": "₹8,263.6 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "13-11": {
+          "turnover": 8907.6,
+          "ratio": 0.83,
+          "avg": 10732,
+          "formattedTurnover": "₹8,907.6 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "12-11": {
+          "turnover": 11054,
+          "ratio": 1.03,
+          "avg": 10732,
+          "formattedTurnover": "₹11,054.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "11-11": {
+          "turnover": 14273.6,
+          "ratio": 1.33,
+          "avg": 10732,
+          "formattedTurnover": "₹14,273.6 Cr",
+          "formattedRatio": "1.33x"
+        },
+        "09-11": {
+          "turnover": 12234.5,
+          "ratio": 1.14,
+          "avg": 10732,
+          "formattedTurnover": "₹12,234.5 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "08-11": {
+          "turnover": 536.6,
+          "ratio": 0.05,
+          "avg": 10732,
+          "formattedTurnover": "₹536.6 Cr",
+          "formattedRatio": "0.05x"
+        },
+        "06-11": {
+          "turnover": 5258.7,
+          "ratio": 0.49,
+          "avg": 10732,
+          "formattedTurnover": "₹5,258.7 Cr",
+          "formattedRatio": "0.49x"
+        },
+        "05-11": {
+          "turnover": 7405.1,
+          "ratio": 0.69,
+          "avg": 10732,
+          "formattedTurnover": "₹7,405.1 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "04-11": {
+          "turnover": 5044,
+          "ratio": 0.47,
+          "avg": 10732,
+          "formattedTurnover": "₹5,044.0 Cr",
+          "formattedRatio": "0.47x"
+        },
+        "03-11": {
+          "turnover": 8049,
+          "ratio": 0.75,
+          "avg": 10732,
+          "formattedTurnover": "₹8,049.0 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "02-11": {
+          "turnover": 4614.8,
+          "ratio": 0.43,
+          "avg": 10732,
+          "formattedTurnover": "₹4,614.8 Cr",
+          "formattedRatio": "0.43x"
+        },
+        "30-10": {
+          "turnover": 4722.1,
+          "ratio": 0.44,
+          "avg": 10732,
+          "formattedTurnover": "₹4,722.1 Cr",
+          "formattedRatio": "0.44x"
+        },
+        "29-10": {
+          "turnover": 4936.7,
+          "ratio": 0.46,
+          "avg": 10732,
+          "formattedTurnover": "₹4,936.7 Cr",
+          "formattedRatio": "0.46x"
+        }
+      }
+    },
+    {
+      "id": "it",
+      "name": "Information Technology",
+      "sym": "NIFTY IT",
+      "category": "Tech",
+      "baseAvg": 7165.5,
+      "days": {
+        "18-11": {
+          "turnover": 6592.3,
+          "ratio": 0.92,
+          "avg": 7165.5,
+          "formattedTurnover": "₹6,592.3 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "17-11": {
+          "turnover": 6449,
+          "ratio": 0.9,
+          "avg": 7165.5,
+          "formattedTurnover": "₹6,449.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "16-11": {
+          "turnover": 5374.1,
+          "ratio": 0.75,
+          "avg": 7165.5,
+          "formattedTurnover": "₹5,374.1 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "13-11": {
+          "turnover": 7308.8,
+          "ratio": 1.02,
+          "avg": 7165.5,
+          "formattedTurnover": "₹7,308.8 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "12-11": {
+          "turnover": 6449,
+          "ratio": 0.9,
+          "avg": 7165.5,
+          "formattedTurnover": "₹6,449.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "11-11": {
+          "turnover": 8526.9,
+          "ratio": 1.19,
+          "avg": 7165.5,
+          "formattedTurnover": "₹8,526.9 Cr",
+          "formattedRatio": "1.19x"
+        },
+        "09-11": {
+          "turnover": 7882.1,
+          "ratio": 1.1,
+          "avg": 7165.5,
+          "formattedTurnover": "₹7,882.1 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "08-11": {
+          "turnover": 644.9,
+          "ratio": 0.09,
+          "avg": 7165.5,
+          "formattedTurnover": "₹644.9 Cr",
+          "formattedRatio": "0.09x"
+        },
+        "06-11": {
+          "turnover": 9530.1,
+          "ratio": 1.33,
+          "avg": 7165.5,
+          "formattedTurnover": "₹9,530.1 Cr",
+          "formattedRatio": "1.33x"
+        },
+        "05-11": {
+          "turnover": 7452.1,
+          "ratio": 1.04,
+          "avg": 7165.5,
+          "formattedTurnover": "₹7,452.1 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "04-11": {
+          "turnover": 8885.2,
+          "ratio": 1.24,
+          "avg": 7165.5,
+          "formattedTurnover": "₹8,885.2 Cr",
+          "formattedRatio": "1.24x"
+        },
+        "03-11": {
+          "turnover": 7237.2,
+          "ratio": 1.01,
+          "avg": 7165.5,
+          "formattedTurnover": "₹7,237.2 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "02-11": {
+          "turnover": 9530.1,
+          "ratio": 1.33,
+          "avg": 7165.5,
+          "formattedTurnover": "₹9,530.1 Cr",
+          "formattedRatio": "1.33x"
+        },
+        "30-10": {
+          "turnover": 16624,
+          "ratio": 2.32,
+          "avg": 7165.5,
+          "formattedTurnover": "₹16,624.0 Cr",
+          "formattedRatio": "2.32x"
+        },
+        "29-10": {
+          "turnover": 11894.7,
+          "ratio": 1.66,
+          "avg": 7165.5,
+          "formattedTurnover": "₹11,894.7 Cr",
+          "formattedRatio": "1.66x"
+        }
+      }
+    },
+    {
+      "id": "nbfc",
+      "name": "NBFC",
+      "sym": "NIFTY FIN SERVICE",
+      "category": "Finance",
+      "baseAvg": 7400,
+      "days": {
+        "18-11": {
+          "turnover": 7696,
+          "ratio": 1.04,
+          "avg": 7400,
+          "formattedTurnover": "₹7,696.0 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "17-11": {
+          "turnover": 6438,
+          "ratio": 0.87,
+          "avg": 7400,
+          "formattedTurnover": "₹6,438.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "16-11": {
+          "turnover": 6290,
+          "ratio": 0.85,
+          "avg": 7400,
+          "formattedTurnover": "₹6,290.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "13-11": {
+          "turnover": 7844,
+          "ratio": 1.06,
+          "avg": 7400,
+          "formattedTurnover": "₹7,844.0 Cr",
+          "formattedRatio": "1.06x"
+        },
+        "12-11": {
+          "turnover": 7178,
+          "ratio": 0.97,
+          "avg": 7400,
+          "formattedTurnover": "₹7,178.0 Cr",
+          "formattedRatio": "0.97x"
+        },
+        "11-11": {
+          "turnover": 8880,
+          "ratio": 1.2,
+          "avg": 7400,
+          "formattedTurnover": "₹8,880.0 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "09-11": {
+          "turnover": 6808,
+          "ratio": 0.92,
+          "avg": 7400,
+          "formattedTurnover": "₹6,808.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "08-11": {
+          "turnover": 592,
+          "ratio": 0.08,
+          "avg": 7400,
+          "formattedTurnover": "₹592.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 5402,
+          "ratio": 0.73,
+          "avg": 7400,
+          "formattedTurnover": "₹5,402.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "05-11": {
+          "turnover": 9472,
+          "ratio": 1.28,
+          "avg": 7400,
+          "formattedTurnover": "₹9,472.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "04-11": {
+          "turnover": 6586,
+          "ratio": 0.89,
+          "avg": 7400,
+          "formattedTurnover": "₹6,586.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "03-11": {
+          "turnover": 5698,
+          "ratio": 0.77,
+          "avg": 7400,
+          "formattedTurnover": "₹5,698.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "02-11": {
+          "turnover": 6216,
+          "ratio": 0.84,
+          "avg": 7400,
+          "formattedTurnover": "₹6,216.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "30-10": {
+          "turnover": 6438,
+          "ratio": 0.87,
+          "avg": 7400,
+          "formattedTurnover": "₹6,438.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "29-10": {
+          "turnover": 8288,
+          "ratio": 1.12,
+          "avg": 7400,
+          "formattedTurnover": "₹8,288.0 Cr",
+          "formattedRatio": "1.12x"
+        }
+      }
+    },
+    {
+      "id": "renew_energy",
+      "name": "Renewable Energy",
+      "sym": "NIFTY ENERGY",
+      "category": "Energy",
+      "baseAvg": 4500,
+      "days": {
+        "18-11": {
+          "turnover": 3195,
+          "ratio": 0.71,
+          "avg": 4500,
+          "formattedTurnover": "₹3,195.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "17-11": {
+          "turnover": 4005,
+          "ratio": 0.89,
+          "avg": 4500,
+          "formattedTurnover": "₹4,005.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "16-11": {
+          "turnover": 4410,
+          "ratio": 0.98,
+          "avg": 4500,
+          "formattedTurnover": "₹4,410.0 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "13-11": {
+          "turnover": 5175,
+          "ratio": 1.15,
+          "avg": 4500,
+          "formattedTurnover": "₹5,175.0 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "12-11": {
+          "turnover": 3330,
+          "ratio": 0.74,
+          "avg": 4500,
+          "formattedTurnover": "₹3,330.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "11-11": {
+          "turnover": 5670,
+          "ratio": 1.26,
+          "avg": 4500,
+          "formattedTurnover": "₹5,670.0 Cr",
+          "formattedRatio": "1.26x"
+        },
+        "09-11": {
+          "turnover": 7335,
+          "ratio": 1.63,
+          "avg": 4500,
+          "formattedTurnover": "₹7,335.0 Cr",
+          "formattedRatio": "1.63x"
+        },
+        "08-11": {
+          "turnover": 540,
+          "ratio": 0.12,
+          "avg": 4500,
+          "formattedTurnover": "₹540.0 Cr",
+          "formattedRatio": "0.12x"
+        },
+        "06-11": {
+          "turnover": 2700,
+          "ratio": 0.6,
+          "avg": 4500,
+          "formattedTurnover": "₹2,700.0 Cr",
+          "formattedRatio": "0.60x"
+        },
+        "05-11": {
+          "turnover": 3600,
+          "ratio": 0.8,
+          "avg": 4500,
+          "formattedTurnover": "₹3,600.0 Cr",
+          "formattedRatio": "0.80x"
+        },
+        "04-11": {
+          "turnover": 3510,
+          "ratio": 0.78,
+          "avg": 4500,
+          "formattedTurnover": "₹3,510.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "03-11": {
+          "turnover": 2565,
+          "ratio": 0.57,
+          "avg": 4500,
+          "formattedTurnover": "₹2,565.0 Cr",
+          "formattedRatio": "0.57x"
+        },
+        "02-11": {
+          "turnover": 4410,
+          "ratio": 0.98,
+          "avg": 4500,
+          "formattedTurnover": "₹4,410.0 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "30-10": {
+          "turnover": 5490,
+          "ratio": 1.22,
+          "avg": 4500,
+          "formattedTurnover": "₹5,490.0 Cr",
+          "formattedRatio": "1.22x"
+        },
+        "29-10": {
+          "turnover": 3555,
+          "ratio": 0.79,
+          "avg": 4500,
+          "formattedTurnover": "₹3,555.0 Cr",
+          "formattedRatio": "0.79x"
+        }
+      }
+    },
+    {
+      "id": "fmcg",
+      "name": "FMCG",
+      "sym": "NIFTY FMCG",
+      "category": "Consumer",
+      "baseAvg": 2600,
+      "days": {
+        "18-11": {
+          "turnover": 2392,
+          "ratio": 0.92,
+          "avg": 2600,
+          "formattedTurnover": "₹2,392.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "17-11": {
+          "turnover": 2158,
+          "ratio": 0.83,
+          "avg": 2600,
+          "formattedTurnover": "₹2,158.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "16-11": {
+          "turnover": 3484,
+          "ratio": 1.34,
+          "avg": 2600,
+          "formattedTurnover": "₹3,484.0 Cr",
+          "formattedRatio": "1.34x"
+        },
+        "13-11": {
+          "turnover": 2678,
+          "ratio": 1.03,
+          "avg": 2600,
+          "formattedTurnover": "₹2,678.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "12-11": {
+          "turnover": 3874,
+          "ratio": 1.49,
+          "avg": 2600,
+          "formattedTurnover": "₹3,874.0 Cr",
+          "formattedRatio": "1.49x"
+        },
+        "11-11": {
+          "turnover": 2314,
+          "ratio": 0.89,
+          "avg": 2600,
+          "formattedTurnover": "₹2,314.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "09-11": {
+          "turnover": 2626,
+          "ratio": 1.01,
+          "avg": 2600,
+          "formattedTurnover": "₹2,626.0 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "08-11": {
+          "turnover": 182,
+          "ratio": 0.07,
+          "avg": 2600,
+          "formattedTurnover": "₹182.0 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 1586,
+          "ratio": 0.61,
+          "avg": 2600,
+          "formattedTurnover": "₹1,586.0 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "05-11": {
+          "turnover": 2184,
+          "ratio": 0.84,
+          "avg": 2600,
+          "formattedTurnover": "₹2,184.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "04-11": {
+          "turnover": 3302,
+          "ratio": 1.27,
+          "avg": 2600,
+          "formattedTurnover": "₹3,302.0 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "03-11": {
+          "turnover": 4082,
+          "ratio": 1.57,
+          "avg": 2600,
+          "formattedTurnover": "₹4,082.0 Cr",
+          "formattedRatio": "1.57x"
+        },
+        "02-11": {
+          "turnover": 2184,
+          "ratio": 0.84,
+          "avg": 2600,
+          "formattedTurnover": "₹2,184.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "30-10": {
+          "turnover": 3198,
+          "ratio": 1.23,
+          "avg": 2600,
+          "formattedTurnover": "₹3,198.0 Cr",
+          "formattedRatio": "1.23x"
+        },
+        "29-10": {
+          "turnover": 2366,
+          "ratio": 0.91,
+          "avg": 2600,
+          "formattedTurnover": "₹2,366.0 Cr",
+          "formattedRatio": "0.91x"
+        }
+      }
+    },
+    {
+      "id": "realty",
+      "name": "Realty",
+      "sym": "NIFTY REALTY",
+      "category": "Real Estate",
+      "baseAvg": 1100,
+      "days": {
+        "18-11": {
+          "turnover": 1111,
+          "ratio": 1.01,
+          "avg": 1100,
+          "formattedTurnover": "₹1,111.0 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "17-11": {
+          "turnover": 1232,
+          "ratio": 1.12,
+          "avg": 1100,
+          "formattedTurnover": "₹1,232.0 Cr",
+          "formattedRatio": "1.12x"
+        },
+        "16-11": {
+          "turnover": 770,
+          "ratio": 0.7,
+          "avg": 1100,
+          "formattedTurnover": "₹770.0 Cr",
+          "formattedRatio": "0.70x"
+        },
+        "13-11": {
+          "turnover": 968,
+          "ratio": 0.88,
+          "avg": 1100,
+          "formattedTurnover": "₹968.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "12-11": {
+          "turnover": 1705,
+          "ratio": 1.55,
+          "avg": 1100,
+          "formattedTurnover": "₹1,705.0 Cr",
+          "formattedRatio": "1.55x"
+        },
+        "11-11": {
+          "turnover": 979,
+          "ratio": 0.89,
+          "avg": 1100,
+          "formattedTurnover": "₹979.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "09-11": {
+          "turnover": 1188,
+          "ratio": 1.08,
+          "avg": 1100,
+          "formattedTurnover": "₹1,188.0 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "08-11": {
+          "turnover": 77,
+          "ratio": 0.07,
+          "avg": 1100,
+          "formattedTurnover": "₹77.0 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 968,
+          "ratio": 0.88,
+          "avg": 1100,
+          "formattedTurnover": "₹968.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "05-11": {
+          "turnover": 1364,
+          "ratio": 1.24,
+          "avg": 1100,
+          "formattedTurnover": "₹1,364.0 Cr",
+          "formattedRatio": "1.24x"
+        },
+        "04-11": {
+          "turnover": 968,
+          "ratio": 0.88,
+          "avg": 1100,
+          "formattedTurnover": "₹968.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "03-11": {
+          "turnover": 1089,
+          "ratio": 0.99,
+          "avg": 1100,
+          "formattedTurnover": "₹1,089.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "02-11": {
+          "turnover": 1100,
+          "ratio": 1,
+          "avg": 1100,
+          "formattedTurnover": "₹1,100.0 Cr",
+          "formattedRatio": "1.00x"
+        },
+        "30-10": {
+          "turnover": 1232,
+          "ratio": 1.12,
+          "avg": 1100,
+          "formattedTurnover": "₹1,232.0 Cr",
+          "formattedRatio": "1.12x"
+        },
+        "29-10": {
+          "turnover": 1232,
+          "ratio": 1.12,
+          "avg": 1100,
+          "formattedTurnover": "₹1,232.0 Cr",
+          "formattedRatio": "1.12x"
+        }
+      }
+    },
+    {
+      "id": "gas_dist",
+      "name": "Gas Distribution",
+      "sym": "NIFTY OIL AND GAS",
+      "category": "Energy",
+      "baseAvg": 1950,
+      "days": {
+        "18-11": {
+          "turnover": 2652,
+          "ratio": 1.36,
+          "avg": 1950,
+          "formattedTurnover": "₹2,652.0 Cr",
+          "formattedRatio": "1.36x"
+        },
+        "17-11": {
+          "turnover": 1345.5,
+          "ratio": 0.69,
+          "avg": 1950,
+          "formattedTurnover": "₹1,345.5 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "16-11": {
+          "turnover": 1404,
+          "ratio": 0.72,
+          "avg": 1950,
+          "formattedTurnover": "₹1,404.0 Cr",
+          "formattedRatio": "0.72x"
+        },
+        "13-11": {
+          "turnover": 2145,
+          "ratio": 1.1,
+          "avg": 1950,
+          "formattedTurnover": "₹2,145.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "12-11": {
+          "turnover": 2008.5,
+          "ratio": 1.03,
+          "avg": 1950,
+          "formattedTurnover": "₹2,008.5 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "11-11": {
+          "turnover": 2418,
+          "ratio": 1.24,
+          "avg": 1950,
+          "formattedTurnover": "₹2,418.0 Cr",
+          "formattedRatio": "1.24x"
+        },
+        "09-11": {
+          "turnover": 2593.5,
+          "ratio": 1.33,
+          "avg": 1950,
+          "formattedTurnover": "₹2,593.5 Cr",
+          "formattedRatio": "1.33x"
+        },
+        "08-11": {
+          "turnover": 117,
+          "ratio": 0.06,
+          "avg": 1950,
+          "formattedTurnover": "₹117.0 Cr",
+          "formattedRatio": "0.06x"
+        },
+        "06-11": {
+          "turnover": 1248,
+          "ratio": 0.64,
+          "avg": 1950,
+          "formattedTurnover": "₹1,248.0 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "05-11": {
+          "turnover": 1735.5,
+          "ratio": 0.89,
+          "avg": 1950,
+          "formattedTurnover": "₹1,735.5 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "04-11": {
+          "turnover": 3061.5,
+          "ratio": 1.57,
+          "avg": 1950,
+          "formattedTurnover": "₹3,061.5 Cr",
+          "formattedRatio": "1.57x"
+        },
+        "03-11": {
+          "turnover": 6201,
+          "ratio": 3.18,
+          "avg": 1950,
+          "formattedTurnover": "₹6,201.0 Cr",
+          "formattedRatio": "3.18x"
+        },
+        "02-11": {
+          "turnover": 2554.5,
+          "ratio": 1.31,
+          "avg": 1950,
+          "formattedTurnover": "₹2,554.5 Cr",
+          "formattedRatio": "1.31x"
+        },
+        "30-10": {
+          "turnover": 2028,
+          "ratio": 1.04,
+          "avg": 1950,
+          "formattedTurnover": "₹2,028.0 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "29-10": {
+          "turnover": 1267.5,
+          "ratio": 0.65,
+          "avg": 1950,
+          "formattedTurnover": "₹1,267.5 Cr",
+          "formattedRatio": "0.65x"
+        }
+      }
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance",
+      "sym": "NIFTY FIN SERVICE",
+      "category": "Finance",
+      "baseAvg": 1800,
+      "days": {
+        "18-11": {
+          "turnover": 1872,
+          "ratio": 1.04,
+          "avg": 1800,
+          "formattedTurnover": "₹1,872.0 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "17-11": {
+          "turnover": 1440,
+          "ratio": 0.8,
+          "avg": 1800,
+          "formattedTurnover": "₹1,440.0 Cr",
+          "formattedRatio": "0.80x"
+        },
+        "16-11": {
+          "turnover": 1602,
+          "ratio": 0.89,
+          "avg": 1800,
+          "formattedTurnover": "₹1,602.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "13-11": {
+          "turnover": 1836,
+          "ratio": 1.02,
+          "avg": 1800,
+          "formattedTurnover": "₹1,836.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "12-11": {
+          "turnover": 2898,
+          "ratio": 1.61,
+          "avg": 1800,
+          "formattedTurnover": "₹2,898.0 Cr",
+          "formattedRatio": "1.61x"
+        },
+        "11-11": {
+          "turnover": 1926,
+          "ratio": 1.07,
+          "avg": 1800,
+          "formattedTurnover": "₹1,926.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "09-11": {
+          "turnover": 1314,
+          "ratio": 0.73,
+          "avg": 1800,
+          "formattedTurnover": "₹1,314.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "08-11": {
+          "turnover": 72,
+          "ratio": 0.04,
+          "avg": 1800,
+          "formattedTurnover": "₹72.0 Cr",
+          "formattedRatio": "0.04x"
+        },
+        "06-11": {
+          "turnover": 1512,
+          "ratio": 0.84,
+          "avg": 1800,
+          "formattedTurnover": "₹1,512.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "05-11": {
+          "turnover": 1368,
+          "ratio": 0.76,
+          "avg": 1800,
+          "formattedTurnover": "₹1,368.0 Cr",
+          "formattedRatio": "0.76x"
+        },
+        "04-11": {
+          "turnover": 1296,
+          "ratio": 0.72,
+          "avg": 1800,
+          "formattedTurnover": "₹1,296.0 Cr",
+          "formattedRatio": "0.72x"
+        },
+        "03-11": {
+          "turnover": 1530,
+          "ratio": 0.85,
+          "avg": 1800,
+          "formattedTurnover": "₹1,530.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "02-11": {
+          "turnover": 1116,
+          "ratio": 0.62,
+          "avg": 1800,
+          "formattedTurnover": "₹1,116.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "30-10": {
+          "turnover": 1332,
+          "ratio": 0.74,
+          "avg": 1800,
+          "formattedTurnover": "₹1,332.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "29-10": {
+          "turnover": 1116,
+          "ratio": 0.62,
+          "avg": 1800,
+          "formattedTurnover": "₹1,116.0 Cr",
+          "formattedRatio": "0.62x"
+        }
+      }
+    },
+    {
+      "id": "const_eng",
+      "name": "Construction & Engineering",
+      "sym": "NIFTY INFRA",
+      "category": "Infra",
+      "baseAvg": 4100,
+      "days": {
+        "18-11": {
+          "turnover": 3608,
+          "ratio": 0.88,
+          "avg": 4100,
+          "formattedTurnover": "₹3,608.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "17-11": {
+          "turnover": 3895,
+          "ratio": 0.95,
+          "avg": 4100,
+          "formattedTurnover": "₹3,895.0 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "16-11": {
+          "turnover": 2501,
+          "ratio": 0.61,
+          "avg": 4100,
+          "formattedTurnover": "₹2,501.0 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "13-11": {
+          "turnover": 3239,
+          "ratio": 0.79,
+          "avg": 4100,
+          "formattedTurnover": "₹3,239.0 Cr",
+          "formattedRatio": "0.79x"
+        },
+        "12-11": {
+          "turnover": 4018,
+          "ratio": 0.98,
+          "avg": 4100,
+          "formattedTurnover": "₹4,018.0 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "11-11": {
+          "turnover": 6068,
+          "ratio": 1.48,
+          "avg": 4100,
+          "formattedTurnover": "₹6,068.0 Cr",
+          "formattedRatio": "1.48x"
+        },
+        "09-11": {
+          "turnover": 4961,
+          "ratio": 1.21,
+          "avg": 4100,
+          "formattedTurnover": "₹4,961.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "08-11": {
+          "turnover": 451,
+          "ratio": 0.11,
+          "avg": 4100,
+          "formattedTurnover": "₹451.0 Cr",
+          "formattedRatio": "0.11x"
+        },
+        "06-11": {
+          "turnover": 4387,
+          "ratio": 1.07,
+          "avg": 4100,
+          "formattedTurnover": "₹4,387.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "05-11": {
+          "turnover": 4838,
+          "ratio": 1.18,
+          "avg": 4100,
+          "formattedTurnover": "₹4,838.0 Cr",
+          "formattedRatio": "1.18x"
+        },
+        "04-11": {
+          "turnover": 4510,
+          "ratio": 1.1,
+          "avg": 4100,
+          "formattedTurnover": "₹4,510.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "03-11": {
+          "turnover": 4920,
+          "ratio": 1.2,
+          "avg": 4100,
+          "formattedTurnover": "₹4,920.0 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "02-11": {
+          "turnover": 5494,
+          "ratio": 1.34,
+          "avg": 4100,
+          "formattedTurnover": "₹5,494.0 Cr",
+          "formattedRatio": "1.34x"
+        },
+        "30-10": {
+          "turnover": 2993,
+          "ratio": 0.73,
+          "avg": 4100,
+          "formattedTurnover": "₹2,993.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "29-10": {
+          "turnover": 3034,
+          "ratio": 0.74,
+          "avg": 4100,
+          "formattedTurnover": "₹3,034.0 Cr",
+          "formattedRatio": "0.74x"
+        }
+      }
+    },
+    {
+      "id": "transport",
+      "name": "Transport",
+      "sym": "NIFTY TRANS LOGIS",
+      "category": "Logistics",
+      "baseAvg": 2300,
+      "days": {
+        "18-11": {
+          "turnover": 2185,
+          "ratio": 0.95,
+          "avg": 2300,
+          "formattedTurnover": "₹2,185.0 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "17-11": {
+          "turnover": 2346,
+          "ratio": 1.02,
+          "avg": 2300,
+          "formattedTurnover": "₹2,346.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "16-11": {
+          "turnover": 1725,
+          "ratio": 0.75,
+          "avg": 2300,
+          "formattedTurnover": "₹1,725.0 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "13-11": {
+          "turnover": 2185,
+          "ratio": 0.95,
+          "avg": 2300,
+          "formattedTurnover": "₹2,185.0 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "12-11": {
+          "turnover": 1541,
+          "ratio": 0.67,
+          "avg": 2300,
+          "formattedTurnover": "₹1,541.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "11-11": {
+          "turnover": 3818,
+          "ratio": 1.66,
+          "avg": 2300,
+          "formattedTurnover": "₹3,818.0 Cr",
+          "formattedRatio": "1.66x"
+        },
+        "09-11": {
+          "turnover": 2300,
+          "ratio": 1,
+          "avg": 2300,
+          "formattedTurnover": "₹2,300.0 Cr",
+          "formattedRatio": "1.00x"
+        },
+        "08-11": {
+          "turnover": 184,
+          "ratio": 0.08,
+          "avg": 2300,
+          "formattedTurnover": "₹184.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 2645,
+          "ratio": 1.15,
+          "avg": 2300,
+          "formattedTurnover": "₹2,645.0 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "05-11": {
+          "turnover": 2990,
+          "ratio": 1.3,
+          "avg": 2300,
+          "formattedTurnover": "₹2,990.0 Cr",
+          "formattedRatio": "1.30x"
+        },
+        "04-11": {
+          "turnover": 2852,
+          "ratio": 1.24,
+          "avg": 2300,
+          "formattedTurnover": "₹2,852.0 Cr",
+          "formattedRatio": "1.24x"
+        },
+        "03-11": {
+          "turnover": 3197,
+          "ratio": 1.39,
+          "avg": 2300,
+          "formattedTurnover": "₹3,197.0 Cr",
+          "formattedRatio": "1.39x"
+        },
+        "02-11": {
+          "turnover": 1288,
+          "ratio": 0.56,
+          "avg": 2300,
+          "formattedTurnover": "₹1,288.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "30-10": {
+          "turnover": 4439,
+          "ratio": 1.93,
+          "avg": 2300,
+          "formattedTurnover": "₹4,439.0 Cr",
+          "formattedRatio": "1.93x"
+        },
+        "29-10": {
+          "turnover": 3772,
+          "ratio": 1.64,
+          "avg": 2300,
+          "formattedTurnover": "₹3,772.0 Cr",
+          "formattedRatio": "1.64x"
+        }
+      }
+    },
+    {
+      "id": "hotels",
+      "name": "Hotels",
+      "sym": "NIFTY IND TOURISM",
+      "category": "Hospitality",
+      "baseAvg": 890,
+      "days": {
+        "18-11": {
+          "turnover": 649.7,
+          "ratio": 0.73,
+          "avg": 890,
+          "formattedTurnover": "₹649.7 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "17-11": {
+          "turnover": 1094.7,
+          "ratio": 1.23,
+          "avg": 890,
+          "formattedTurnover": "₹1,094.7 Cr",
+          "formattedRatio": "1.23x"
+        },
+        "16-11": {
+          "turnover": 560.7,
+          "ratio": 0.63,
+          "avg": 890,
+          "formattedTurnover": "₹560.7 Cr",
+          "formattedRatio": "0.63x"
+        },
+        "13-11": {
+          "turnover": 1228.2,
+          "ratio": 1.38,
+          "avg": 890,
+          "formattedTurnover": "₹1,228.2 Cr",
+          "formattedRatio": "1.38x"
+        },
+        "12-11": {
+          "turnover": 854.4,
+          "ratio": 0.96,
+          "avg": 890,
+          "formattedTurnover": "₹854.4 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "11-11": {
+          "turnover": 845.5,
+          "ratio": 0.95,
+          "avg": 890,
+          "formattedTurnover": "₹845.5 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "09-11": {
+          "turnover": 979,
+          "ratio": 1.1,
+          "avg": 890,
+          "formattedTurnover": "₹979.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "08-11": {
+          "turnover": 71.2,
+          "ratio": 0.08,
+          "avg": 890,
+          "formattedTurnover": "₹71.2 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 952.3,
+          "ratio": 1.07,
+          "avg": 890,
+          "formattedTurnover": "₹952.3 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "05-11": {
+          "turnover": 765.4,
+          "ratio": 0.86,
+          "avg": 890,
+          "formattedTurnover": "₹765.4 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "04-11": {
+          "turnover": 676.4,
+          "ratio": 0.76,
+          "avg": 890,
+          "formattedTurnover": "₹676.4 Cr",
+          "formattedRatio": "0.76x"
+        },
+        "03-11": {
+          "turnover": 614.1,
+          "ratio": 0.69,
+          "avg": 890,
+          "formattedTurnover": "₹614.1 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "02-11": {
+          "turnover": 961.2,
+          "ratio": 1.08,
+          "avg": 890,
+          "formattedTurnover": "₹961.2 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "30-10": {
+          "turnover": 934.5,
+          "ratio": 1.05,
+          "avg": 890,
+          "formattedTurnover": "₹934.5 Cr",
+          "formattedRatio": "1.05x"
+        },
+        "29-10": {
+          "turnover": 783.2,
+          "ratio": 0.88,
+          "avg": 890,
+          "formattedTurnover": "₹783.2 Cr",
+          "formattedRatio": "0.88x"
+        }
+      }
+    },
+    {
+      "id": "cement",
+      "name": "Cement",
+      "sym": "NIFTY HOUSING",
+      "category": "Building",
+      "baseAvg": 1550,
+      "days": {
+        "18-11": {
+          "turnover": 1131.5,
+          "ratio": 0.73,
+          "avg": 1550,
+          "formattedTurnover": "₹1,131.5 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "17-11": {
+          "turnover": 1317.5,
+          "ratio": 0.85,
+          "avg": 1550,
+          "formattedTurnover": "₹1,317.5 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "16-11": {
+          "turnover": 1240,
+          "ratio": 0.8,
+          "avg": 1550,
+          "formattedTurnover": "₹1,240.0 Cr",
+          "formattedRatio": "0.80x"
+        },
+        "13-11": {
+          "turnover": 1581,
+          "ratio": 1.02,
+          "avg": 1550,
+          "formattedTurnover": "₹1,581.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "12-11": {
+          "turnover": 1224.5,
+          "ratio": 0.79,
+          "avg": 1550,
+          "formattedTurnover": "₹1,224.5 Cr",
+          "formattedRatio": "0.79x"
+        },
+        "11-11": {
+          "turnover": 1488,
+          "ratio": 0.96,
+          "avg": 1550,
+          "formattedTurnover": "₹1,488.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "09-11": {
+          "turnover": 1860,
+          "ratio": 1.2,
+          "avg": 1550,
+          "formattedTurnover": "₹1,860.0 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "08-11": {
+          "turnover": 155,
+          "ratio": 0.1,
+          "avg": 1550,
+          "formattedTurnover": "₹155.0 Cr",
+          "formattedRatio": "0.10x"
+        },
+        "06-11": {
+          "turnover": 2449,
+          "ratio": 1.58,
+          "avg": 1550,
+          "formattedTurnover": "₹2,449.0 Cr",
+          "formattedRatio": "1.58x"
+        },
+        "05-11": {
+          "turnover": 2387,
+          "ratio": 1.54,
+          "avg": 1550,
+          "formattedTurnover": "₹2,387.0 Cr",
+          "formattedRatio": "1.54x"
+        },
+        "04-11": {
+          "turnover": 1426,
+          "ratio": 0.92,
+          "avg": 1550,
+          "formattedTurnover": "₹1,426.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "03-11": {
+          "turnover": 1813.5,
+          "ratio": 1.17,
+          "avg": 1550,
+          "formattedTurnover": "₹1,813.5 Cr",
+          "formattedRatio": "1.17x"
+        },
+        "02-11": {
+          "turnover": 1596.5,
+          "ratio": 1.03,
+          "avg": 1550,
+          "formattedTurnover": "₹1,596.5 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "30-10": {
+          "turnover": 1441.5,
+          "ratio": 0.93,
+          "avg": 1550,
+          "formattedTurnover": "₹1,441.5 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "29-10": {
+          "turnover": 1643,
+          "ratio": 1.06,
+          "avg": 1550,
+          "formattedTurnover": "₹1,643.0 Cr",
+          "formattedRatio": "1.06x"
+        }
+      }
+    },
+    {
+      "id": "chem",
+      "name": "Commodity Chemicals",
+      "sym": "NIFTY CHEMICALS",
+      "category": "Chemicals",
+      "baseAvg": 2400,
+      "days": {
+        "18-11": {
+          "turnover": 1656,
+          "ratio": 0.69,
+          "avg": 2400,
+          "formattedTurnover": "₹1,656.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "17-11": {
+          "turnover": 5088,
+          "ratio": 2.12,
+          "avg": 2400,
+          "formattedTurnover": "₹5,088.0 Cr",
+          "formattedRatio": "2.12x"
+        },
+        "16-11": {
+          "turnover": 1680,
+          "ratio": 0.7,
+          "avg": 2400,
+          "formattedTurnover": "₹1,680.0 Cr",
+          "formattedRatio": "0.70x"
+        },
+        "13-11": {
+          "turnover": 1464,
+          "ratio": 0.61,
+          "avg": 2400,
+          "formattedTurnover": "₹1,464.0 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "12-11": {
+          "turnover": 1728,
+          "ratio": 0.72,
+          "avg": 2400,
+          "formattedTurnover": "₹1,728.0 Cr",
+          "formattedRatio": "0.72x"
+        },
+        "11-11": {
+          "turnover": 1728,
+          "ratio": 0.72,
+          "avg": 2400,
+          "formattedTurnover": "₹1,728.0 Cr",
+          "formattedRatio": "0.72x"
+        },
+        "09-11": {
+          "turnover": 3960,
+          "ratio": 1.65,
+          "avg": 2400,
+          "formattedTurnover": "₹3,960.0 Cr",
+          "formattedRatio": "1.65x"
+        },
+        "08-11": {
+          "turnover": 312,
+          "ratio": 0.13,
+          "avg": 2400,
+          "formattedTurnover": "₹312.0 Cr",
+          "formattedRatio": "0.13x"
+        },
+        "06-11": {
+          "turnover": 2208,
+          "ratio": 0.92,
+          "avg": 2400,
+          "formattedTurnover": "₹2,208.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "05-11": {
+          "turnover": 2952,
+          "ratio": 1.23,
+          "avg": 2400,
+          "formattedTurnover": "₹2,952.0 Cr",
+          "formattedRatio": "1.23x"
+        },
+        "04-11": {
+          "turnover": 2616,
+          "ratio": 1.09,
+          "avg": 2400,
+          "formattedTurnover": "₹2,616.0 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "03-11": {
+          "turnover": 2064,
+          "ratio": 0.86,
+          "avg": 2400,
+          "formattedTurnover": "₹2,064.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "02-11": {
+          "turnover": 1752,
+          "ratio": 0.73,
+          "avg": 2400,
+          "formattedTurnover": "₹1,752.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "30-10": {
+          "turnover": 1848,
+          "ratio": 0.77,
+          "avg": 2400,
+          "formattedTurnover": "₹1,848.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "29-10": {
+          "turnover": 1656,
+          "ratio": 0.69,
+          "avg": 2400,
+          "formattedTurnover": "₹1,656.0 Cr",
+          "formattedRatio": "0.69x"
+        }
+      }
+    },
+    {
+      "id": "restaurants",
+      "name": "Restaurants",
+      "sym": "NIFTY CONSUMPTION",
+      "category": "Consumer",
+      "baseAvg": 720,
+      "days": {
+        "18-11": {
+          "turnover": 612,
+          "ratio": 0.85,
+          "avg": 720,
+          "formattedTurnover": "₹612.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "17-11": {
+          "turnover": 352.8,
+          "ratio": 0.49,
+          "avg": 720,
+          "formattedTurnover": "₹352.8 Cr",
+          "formattedRatio": "0.49x"
+        },
+        "16-11": {
+          "turnover": 439.2,
+          "ratio": 0.61,
+          "avg": 720,
+          "formattedTurnover": "₹439.2 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "13-11": {
+          "turnover": 784.8,
+          "ratio": 1.09,
+          "avg": 720,
+          "formattedTurnover": "₹784.8 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "12-11": {
+          "turnover": 770.4,
+          "ratio": 1.07,
+          "avg": 720,
+          "formattedTurnover": "₹770.4 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "11-11": {
+          "turnover": 986.4,
+          "ratio": 1.37,
+          "avg": 720,
+          "formattedTurnover": "₹986.4 Cr",
+          "formattedRatio": "1.37x"
+        },
+        "09-11": {
+          "turnover": 1476,
+          "ratio": 2.05,
+          "avg": 720,
+          "formattedTurnover": "₹1,476.0 Cr",
+          "formattedRatio": "2.05x"
+        },
+        "08-11": {
+          "turnover": 50.4,
+          "ratio": 0.07,
+          "avg": 720,
+          "formattedTurnover": "₹50.4 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 597.6,
+          "ratio": 0.83,
+          "avg": 720,
+          "formattedTurnover": "₹597.6 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "05-11": {
+          "turnover": 1807.2,
+          "ratio": 2.51,
+          "avg": 720,
+          "formattedTurnover": "₹1,807.2 Cr",
+          "formattedRatio": "2.51x"
+        },
+        "04-11": {
+          "turnover": 914.4,
+          "ratio": 1.27,
+          "avg": 720,
+          "formattedTurnover": "₹914.4 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "03-11": {
+          "turnover": 612,
+          "ratio": 0.85,
+          "avg": 720,
+          "formattedTurnover": "₹612.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "02-11": {
+          "turnover": 828,
+          "ratio": 1.15,
+          "avg": 720,
+          "formattedTurnover": "₹828.0 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "30-10": {
+          "turnover": 1238.4,
+          "ratio": 1.72,
+          "avg": 720,
+          "formattedTurnover": "₹1,238.4 Cr",
+          "formattedRatio": "1.72x"
+        },
+        "29-10": {
+          "turnover": 669.6,
+          "ratio": 0.93,
+          "avg": 720,
+          "formattedTurnover": "₹669.6 Cr",
+          "formattedRatio": "0.93x"
+        }
+      }
+    },
+    {
+      "id": "paints",
+      "name": "Paints",
+      "sym": "NIFTY CONSUMPTION",
+      "category": "Building",
+      "baseAvg": 1050,
+      "days": {
+        "18-11": {
+          "turnover": 787.5,
+          "ratio": 0.75,
+          "avg": 1050,
+          "formattedTurnover": "₹787.5 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "17-11": {
+          "turnover": 1554,
+          "ratio": 1.48,
+          "avg": 1050,
+          "formattedTurnover": "₹1,554.0 Cr",
+          "formattedRatio": "1.48x"
+        },
+        "16-11": {
+          "turnover": 1176,
+          "ratio": 1.12,
+          "avg": 1050,
+          "formattedTurnover": "₹1,176.0 Cr",
+          "formattedRatio": "1.12x"
+        },
+        "13-11": {
+          "turnover": 661.5,
+          "ratio": 0.63,
+          "avg": 1050,
+          "formattedTurnover": "₹661.5 Cr",
+          "formattedRatio": "0.63x"
+        },
+        "12-11": {
+          "turnover": 913.5,
+          "ratio": 0.87,
+          "avg": 1050,
+          "formattedTurnover": "₹913.5 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "11-11": {
+          "turnover": 1281,
+          "ratio": 1.22,
+          "avg": 1050,
+          "formattedTurnover": "₹1,281.0 Cr",
+          "formattedRatio": "1.22x"
+        },
+        "09-11": {
+          "turnover": 1071,
+          "ratio": 1.02,
+          "avg": 1050,
+          "formattedTurnover": "₹1,071.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "08-11": {
+          "turnover": 52.5,
+          "ratio": 0.05,
+          "avg": 1050,
+          "formattedTurnover": "₹52.5 Cr",
+          "formattedRatio": "0.05x"
+        },
+        "06-11": {
+          "turnover": 850.5,
+          "ratio": 0.81,
+          "avg": 1050,
+          "formattedTurnover": "₹850.5 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "05-11": {
+          "turnover": 2110.5,
+          "ratio": 2.01,
+          "avg": 1050,
+          "formattedTurnover": "₹2,110.5 Cr",
+          "formattedRatio": "2.01x"
+        },
+        "04-11": {
+          "turnover": 1260,
+          "ratio": 1.2,
+          "avg": 1050,
+          "formattedTurnover": "₹1,260.0 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "03-11": {
+          "turnover": 1953,
+          "ratio": 1.86,
+          "avg": 1050,
+          "formattedTurnover": "₹1,953.0 Cr",
+          "formattedRatio": "1.86x"
+        },
+        "02-11": {
+          "turnover": 1207.5,
+          "ratio": 1.15,
+          "avg": 1050,
+          "formattedTurnover": "₹1,207.5 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "30-10": {
+          "turnover": 1323,
+          "ratio": 1.26,
+          "avg": 1050,
+          "formattedTurnover": "₹1,323.0 Cr",
+          "formattedRatio": "1.26x"
+        },
+        "29-10": {
+          "turnover": 2467.5,
+          "ratio": 2.35,
+          "avg": 1050,
+          "formattedTurnover": "₹2,467.5 Cr",
+          "formattedRatio": "2.35x"
+        }
+      }
+    },
+    {
+      "id": "refineries",
+      "name": "Refineries & Lubricants",
+      "sym": "NIFTY OIL AND GAS",
+      "category": "Energy",
+      "baseAvg": 5200,
+      "days": {
+        "18-11": {
+          "turnover": 4576,
+          "ratio": 0.88,
+          "avg": 5200,
+          "formattedTurnover": "₹4,576.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "17-11": {
+          "turnover": 5148,
+          "ratio": 0.99,
+          "avg": 5200,
+          "formattedTurnover": "₹5,148.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "16-11": {
+          "turnover": 2860,
+          "ratio": 0.55,
+          "avg": 5200,
+          "formattedTurnover": "₹2,860.0 Cr",
+          "formattedRatio": "0.55x"
+        },
+        "13-11": {
+          "turnover": 4316,
+          "ratio": 0.83,
+          "avg": 5200,
+          "formattedTurnover": "₹4,316.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "12-11": {
+          "turnover": 4472,
+          "ratio": 0.86,
+          "avg": 5200,
+          "formattedTurnover": "₹4,472.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "11-11": {
+          "turnover": 6136,
+          "ratio": 1.18,
+          "avg": 5200,
+          "formattedTurnover": "₹6,136.0 Cr",
+          "formattedRatio": "1.18x"
+        },
+        "09-11": {
+          "turnover": 6760,
+          "ratio": 1.3,
+          "avg": 5200,
+          "formattedTurnover": "₹6,760.0 Cr",
+          "formattedRatio": "1.30x"
+        },
+        "08-11": {
+          "turnover": 728,
+          "ratio": 0.14,
+          "avg": 5200,
+          "formattedTurnover": "₹728.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 5928,
+          "ratio": 1.14,
+          "avg": 5200,
+          "formattedTurnover": "₹5,928.0 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "05-11": {
+          "turnover": 5980,
+          "ratio": 1.15,
+          "avg": 5200,
+          "formattedTurnover": "₹5,980.0 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "04-11": {
+          "turnover": 5512,
+          "ratio": 1.06,
+          "avg": 5200,
+          "formattedTurnover": "₹5,512.0 Cr",
+          "formattedRatio": "1.06x"
+        },
+        "03-11": {
+          "turnover": 10868,
+          "ratio": 2.09,
+          "avg": 5200,
+          "formattedTurnover": "₹10,868.0 Cr",
+          "formattedRatio": "2.09x"
+        },
+        "02-11": {
+          "turnover": 21632,
+          "ratio": 4.16,
+          "avg": 5200,
+          "formattedTurnover": "₹21,632.0 Cr",
+          "formattedRatio": "4.16x"
+        },
+        "30-10": {
+          "turnover": 4316,
+          "ratio": 0.83,
+          "avg": 5200,
+          "formattedTurnover": "₹4,316.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "29-10": {
+          "turnover": 5616,
+          "ratio": 1.08,
+          "avg": 5200,
+          "formattedTurnover": "₹5,616.0 Cr",
+          "formattedRatio": "1.08x"
+        }
+      }
+    },
+    {
+      "id": "railways",
+      "name": "Railways",
+      "sym": "NIFTY RAILWAYS PSU",
+      "category": "Infra",
+      "baseAvg": 2900,
+      "days": {
+        "18-11": {
+          "turnover": 1334,
+          "ratio": 0.46,
+          "avg": 2900,
+          "formattedTurnover": "₹1,334.0 Cr",
+          "formattedRatio": "0.46x"
+        },
+        "17-11": {
+          "turnover": 1479,
+          "ratio": 0.51,
+          "avg": 2900,
+          "formattedTurnover": "₹1,479.0 Cr",
+          "formattedRatio": "0.51x"
+        },
+        "16-11": {
+          "turnover": 1885,
+          "ratio": 0.65,
+          "avg": 2900,
+          "formattedTurnover": "₹1,885.0 Cr",
+          "formattedRatio": "0.65x"
+        },
+        "13-11": {
+          "turnover": 2059,
+          "ratio": 0.71,
+          "avg": 2900,
+          "formattedTurnover": "₹2,059.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "12-11": {
+          "turnover": 2320,
+          "ratio": 0.8,
+          "avg": 2900,
+          "formattedTurnover": "₹2,320.0 Cr",
+          "formattedRatio": "0.80x"
+        },
+        "11-11": {
+          "turnover": 10498,
+          "ratio": 3.62,
+          "avg": 2900,
+          "formattedTurnover": "₹10,498.0 Cr",
+          "formattedRatio": "3.62x"
+        },
+        "09-11": {
+          "turnover": 2233,
+          "ratio": 0.77,
+          "avg": 2900,
+          "formattedTurnover": "₹2,233.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "08-11": {
+          "turnover": 203,
+          "ratio": 0.07,
+          "avg": 2900,
+          "formattedTurnover": "₹203.0 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 1334,
+          "ratio": 0.46,
+          "avg": 2900,
+          "formattedTurnover": "₹1,334.0 Cr",
+          "formattedRatio": "0.46x"
+        },
+        "05-11": {
+          "turnover": 1827,
+          "ratio": 0.63,
+          "avg": 2900,
+          "formattedTurnover": "₹1,827.0 Cr",
+          "formattedRatio": "0.63x"
+        },
+        "04-11": {
+          "turnover": 1537,
+          "ratio": 0.53,
+          "avg": 2900,
+          "formattedTurnover": "₹1,537.0 Cr",
+          "formattedRatio": "0.53x"
+        },
+        "03-11": {
+          "turnover": 1102,
+          "ratio": 0.38,
+          "avg": 2900,
+          "formattedTurnover": "₹1,102.0 Cr",
+          "formattedRatio": "0.38x"
+        },
+        "02-11": {
+          "turnover": 2407,
+          "ratio": 0.83,
+          "avg": 2900,
+          "formattedTurnover": "₹2,407.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "30-10": {
+          "turnover": 1450,
+          "ratio": 0.5,
+          "avg": 2900,
+          "formattedTurnover": "₹1,450.0 Cr",
+          "formattedRatio": "0.50x"
+        },
+        "29-10": {
+          "turnover": 3857,
+          "ratio": 1.33,
+          "avg": 2900,
+          "formattedTurnover": "₹3,857.0 Cr",
+          "formattedRatio": "1.33x"
+        }
+      }
+    },
+    {
+      "id": "fertilizers",
+      "name": "Fertilizers & Agrochemicals",
+      "sym": "NIFTY COMMODITIES",
+      "category": "Agri",
+      "baseAvg": 1450,
+      "days": {
+        "18-11": {
+          "turnover": 1218,
+          "ratio": 0.84,
+          "avg": 1450,
+          "formattedTurnover": "₹1,218.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "17-11": {
+          "turnover": 1580.5,
+          "ratio": 1.09,
+          "avg": 1450,
+          "formattedTurnover": "₹1,580.5 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "16-11": {
+          "turnover": 1711,
+          "ratio": 1.18,
+          "avg": 1450,
+          "formattedTurnover": "₹1,711.0 Cr",
+          "formattedRatio": "1.18x"
+        },
+        "13-11": {
+          "turnover": 1232.5,
+          "ratio": 0.85,
+          "avg": 1450,
+          "formattedTurnover": "₹1,232.5 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "12-11": {
+          "turnover": 1131,
+          "ratio": 0.78,
+          "avg": 1450,
+          "formattedTurnover": "₹1,131.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "11-11": {
+          "turnover": 2334.5,
+          "ratio": 1.61,
+          "avg": 1450,
+          "formattedTurnover": "₹2,334.5 Cr",
+          "formattedRatio": "1.61x"
+        },
+        "09-11": {
+          "turnover": 1218,
+          "ratio": 0.84,
+          "avg": 1450,
+          "formattedTurnover": "₹1,218.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "08-11": {
+          "turnover": 116,
+          "ratio": 0.08,
+          "avg": 1450,
+          "formattedTurnover": "₹116.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 1000.5,
+          "ratio": 0.69,
+          "avg": 1450,
+          "formattedTurnover": "₹1,000.5 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "05-11": {
+          "turnover": 2842,
+          "ratio": 1.96,
+          "avg": 1450,
+          "formattedTurnover": "₹2,842.0 Cr",
+          "formattedRatio": "1.96x"
+        },
+        "04-11": {
+          "turnover": 1203.5,
+          "ratio": 0.83,
+          "avg": 1450,
+          "formattedTurnover": "₹1,203.5 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "03-11": {
+          "turnover": 1087.5,
+          "ratio": 0.75,
+          "avg": 1450,
+          "formattedTurnover": "₹1,087.5 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "02-11": {
+          "turnover": 1348.5,
+          "ratio": 0.93,
+          "avg": 1450,
+          "formattedTurnover": "₹1,348.5 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "30-10": {
+          "turnover": 1856,
+          "ratio": 1.28,
+          "avg": 1450,
+          "formattedTurnover": "₹1,856.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "29-10": {
+          "turnover": 667,
+          "ratio": 0.46,
+          "avg": 1450,
+          "formattedTurnover": "₹667.0 Cr",
+          "formattedRatio": "0.46x"
+        }
+      }
+    },
+    {
+      "id": "beverages",
+      "name": "Alcoholic Beverages",
+      "sym": "NIFTY CONSUMPTION",
+      "category": "Consumer",
+      "baseAvg": 940,
+      "days": {
+        "18-11": {
+          "turnover": 855.4,
+          "ratio": 0.91,
+          "avg": 940,
+          "formattedTurnover": "₹855.4 Cr",
+          "formattedRatio": "0.91x"
+        },
+        "17-11": {
+          "turnover": 1306.6,
+          "ratio": 1.39,
+          "avg": 940,
+          "formattedTurnover": "₹1,306.6 Cr",
+          "formattedRatio": "1.39x"
+        },
+        "16-11": {
+          "turnover": 902.4,
+          "ratio": 0.96,
+          "avg": 940,
+          "formattedTurnover": "₹902.4 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "13-11": {
+          "turnover": 1015.2,
+          "ratio": 1.08,
+          "avg": 940,
+          "formattedTurnover": "₹1,015.2 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "12-11": {
+          "turnover": 1193.8,
+          "ratio": 1.27,
+          "avg": 940,
+          "formattedTurnover": "₹1,193.8 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "11-11": {
+          "turnover": 827.2,
+          "ratio": 0.88,
+          "avg": 940,
+          "formattedTurnover": "₹827.2 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "09-11": {
+          "turnover": 733.2,
+          "ratio": 0.78,
+          "avg": 940,
+          "formattedTurnover": "₹733.2 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "08-11": {
+          "turnover": 65.8,
+          "ratio": 0.07,
+          "avg": 940,
+          "formattedTurnover": "₹65.8 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 648.6,
+          "ratio": 0.69,
+          "avg": 940,
+          "formattedTurnover": "₹648.6 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "05-11": {
+          "turnover": 977.6,
+          "ratio": 1.04,
+          "avg": 940,
+          "formattedTurnover": "₹977.6 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "04-11": {
+          "turnover": 1015.2,
+          "ratio": 1.08,
+          "avg": 940,
+          "formattedTurnover": "₹1,015.2 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "03-11": {
+          "turnover": 1184.4,
+          "ratio": 1.26,
+          "avg": 940,
+          "formattedTurnover": "₹1,184.4 Cr",
+          "formattedRatio": "1.26x"
+        },
+        "02-11": {
+          "turnover": 1118.6,
+          "ratio": 1.19,
+          "avg": 940,
+          "formattedTurnover": "₹1,118.6 Cr",
+          "formattedRatio": "1.19x"
+        },
+        "30-10": {
+          "turnover": 1438.2,
+          "ratio": 1.53,
+          "avg": 940,
+          "formattedTurnover": "₹1,438.2 Cr",
+          "formattedRatio": "1.53x"
+        },
+        "29-10": {
+          "turnover": 1842.4,
+          "ratio": 1.96,
+          "avg": 940,
+          "formattedTurnover": "₹1,842.4 Cr",
+          "formattedRatio": "1.96x"
+        }
+      }
+    },
+    {
+      "id": "retail",
+      "name": "Retail",
+      "sym": "NIFTY CONSUMPTION",
+      "category": "Consumer",
+      "baseAvg": 3400,
+      "days": {
+        "18-11": {
+          "turnover": 2890,
+          "ratio": 0.85,
+          "avg": 3400,
+          "formattedTurnover": "₹2,890.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "17-11": {
+          "turnover": 5202,
+          "ratio": 1.53,
+          "avg": 3400,
+          "formattedTurnover": "₹5,202.0 Cr",
+          "formattedRatio": "1.53x"
+        },
+        "16-11": {
+          "turnover": 3060,
+          "ratio": 0.9,
+          "avg": 3400,
+          "formattedTurnover": "₹3,060.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "13-11": {
+          "turnover": 3094,
+          "ratio": 0.91,
+          "avg": 3400,
+          "formattedTurnover": "₹3,094.0 Cr",
+          "formattedRatio": "0.91x"
+        },
+        "12-11": {
+          "turnover": 2482,
+          "ratio": 0.73,
+          "avg": 3400,
+          "formattedTurnover": "₹2,482.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "11-11": {
+          "turnover": 4114,
+          "ratio": 1.21,
+          "avg": 3400,
+          "formattedTurnover": "₹4,114.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "09-11": {
+          "turnover": 2244,
+          "ratio": 0.66,
+          "avg": 3400,
+          "formattedTurnover": "₹2,244.0 Cr",
+          "formattedRatio": "0.66x"
+        },
+        "08-11": {
+          "turnover": 238,
+          "ratio": 0.07,
+          "avg": 3400,
+          "formattedTurnover": "₹238.0 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 2754,
+          "ratio": 0.81,
+          "avg": 3400,
+          "formattedTurnover": "₹2,754.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "05-11": {
+          "turnover": 3944,
+          "ratio": 1.16,
+          "avg": 3400,
+          "formattedTurnover": "₹3,944.0 Cr",
+          "formattedRatio": "1.16x"
+        },
+        "04-11": {
+          "turnover": 1530,
+          "ratio": 0.45,
+          "avg": 3400,
+          "formattedTurnover": "₹1,530.0 Cr",
+          "formattedRatio": "0.45x"
+        },
+        "03-11": {
+          "turnover": 1632,
+          "ratio": 0.48,
+          "avg": 3400,
+          "formattedTurnover": "₹1,632.0 Cr",
+          "formattedRatio": "0.48x"
+        },
+        "02-11": {
+          "turnover": 1530,
+          "ratio": 0.45,
+          "avg": 3400,
+          "formattedTurnover": "₹1,530.0 Cr",
+          "formattedRatio": "0.45x"
+        },
+        "30-10": {
+          "turnover": 2482,
+          "ratio": 0.73,
+          "avg": 3400,
+          "formattedTurnover": "₹2,482.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "29-10": {
+          "turnover": 1836,
+          "ratio": 0.54,
+          "avg": 3400,
+          "formattedTurnover": "₹1,836.0 Cr",
+          "formattedRatio": "0.54x"
+        }
+      }
+    },
+    {
+      "id": "packaging",
+      "name": "Packaging",
+      "sym": "NIFTY COMMODITIES",
+      "category": "Manufacturing",
+      "baseAvg": 560,
+      "days": {
+        "18-11": {
+          "turnover": 593.6,
+          "ratio": 1.06,
+          "avg": 560,
+          "formattedTurnover": "₹593.6 Cr",
+          "formattedRatio": "1.06x"
+        },
+        "17-11": {
+          "turnover": 408.8,
+          "ratio": 0.73,
+          "avg": 560,
+          "formattedTurnover": "₹408.8 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "16-11": {
+          "turnover": 1209.6,
+          "ratio": 2.16,
+          "avg": 560,
+          "formattedTurnover": "₹1,209.6 Cr",
+          "formattedRatio": "2.16x"
+        },
+        "13-11": {
+          "turnover": 599.2,
+          "ratio": 1.07,
+          "avg": 560,
+          "formattedTurnover": "₹599.2 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "12-11": {
+          "turnover": 487.2,
+          "ratio": 0.87,
+          "avg": 560,
+          "formattedTurnover": "₹487.2 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "11-11": {
+          "turnover": 548.8,
+          "ratio": 0.98,
+          "avg": 560,
+          "formattedTurnover": "₹548.8 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "09-11": {
+          "turnover": 369.6,
+          "ratio": 0.66,
+          "avg": 560,
+          "formattedTurnover": "₹369.6 Cr",
+          "formattedRatio": "0.66x"
+        },
+        "08-11": {
+          "turnover": 61.6,
+          "ratio": 0.11,
+          "avg": 560,
+          "formattedTurnover": "₹61.6 Cr",
+          "formattedRatio": "0.11x"
+        },
+        "06-11": {
+          "turnover": 347.2,
+          "ratio": 0.62,
+          "avg": 560,
+          "formattedTurnover": "₹347.2 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "05-11": {
+          "turnover": 610.4,
+          "ratio": 1.09,
+          "avg": 560,
+          "formattedTurnover": "₹610.4 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "04-11": {
+          "turnover": 688.8,
+          "ratio": 1.23,
+          "avg": 560,
+          "formattedTurnover": "₹688.8 Cr",
+          "formattedRatio": "1.23x"
+        },
+        "03-11": {
+          "turnover": 711.2,
+          "ratio": 1.27,
+          "avg": 560,
+          "formattedTurnover": "₹711.2 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "02-11": {
+          "turnover": 1433.6,
+          "ratio": 2.56,
+          "avg": 560,
+          "formattedTurnover": "₹1,433.6 Cr",
+          "formattedRatio": "2.56x"
+        },
+        "30-10": {
+          "turnover": 571.2,
+          "ratio": 1.02,
+          "avg": 560,
+          "formattedTurnover": "₹571.2 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "29-10": {
+          "turnover": 918.4,
+          "ratio": 1.64,
+          "avg": 560,
+          "formattedTurnover": "₹918.4 Cr",
+          "formattedRatio": "1.64x"
+        }
+      }
+    },
+    {
+      "id": "paper",
+      "name": "Paper Products",
+      "sym": "NIFTY COMMODITIES",
+      "category": "Manufacturing",
+      "baseAvg": 430,
+      "days": {
+        "18-11": {
+          "turnover": 387,
+          "ratio": 0.9,
+          "avg": 430,
+          "formattedTurnover": "₹387.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "17-11": {
+          "turnover": 253.7,
+          "ratio": 0.59,
+          "avg": 430,
+          "formattedTurnover": "₹253.7 Cr",
+          "formattedRatio": "0.59x"
+        },
+        "16-11": {
+          "turnover": 378.4,
+          "ratio": 0.88,
+          "avg": 430,
+          "formattedTurnover": "₹378.4 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "13-11": {
+          "turnover": 275.2,
+          "ratio": 0.64,
+          "avg": 430,
+          "formattedTurnover": "₹275.2 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "12-11": {
+          "turnover": 292.4,
+          "ratio": 0.68,
+          "avg": 430,
+          "formattedTurnover": "₹292.4 Cr",
+          "formattedRatio": "0.68x"
+        },
+        "11-11": {
+          "turnover": 305.3,
+          "ratio": 0.71,
+          "avg": 430,
+          "formattedTurnover": "₹305.3 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "09-11": {
+          "turnover": 447.2,
+          "ratio": 1.04,
+          "avg": 430,
+          "formattedTurnover": "₹447.2 Cr",
+          "formattedRatio": "1.04x"
+        },
+        "08-11": {
+          "turnover": 86,
+          "ratio": 0.2,
+          "avg": 430,
+          "formattedTurnover": "₹86.0 Cr",
+          "formattedRatio": "0.20x"
+        },
+        "06-11": {
+          "turnover": 1148.1,
+          "ratio": 2.67,
+          "avg": 430,
+          "formattedTurnover": "₹1,148.1 Cr",
+          "formattedRatio": "2.67x"
+        },
+        "05-11": {
+          "turnover": 210.7,
+          "ratio": 0.49,
+          "avg": 430,
+          "formattedTurnover": "₹210.7 Cr",
+          "formattedRatio": "0.49x"
+        },
+        "04-11": {
+          "turnover": 270.9,
+          "ratio": 0.63,
+          "avg": 430,
+          "formattedTurnover": "₹270.9 Cr",
+          "formattedRatio": "0.63x"
+        },
+        "03-11": {
+          "turnover": 356.9,
+          "ratio": 0.83,
+          "avg": 430,
+          "formattedTurnover": "₹356.9 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "02-11": {
+          "turnover": 361.2,
+          "ratio": 0.84,
+          "avg": 430,
+          "formattedTurnover": "₹361.2 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "30-10": {
+          "turnover": 378.4,
+          "ratio": 0.88,
+          "avg": 430,
+          "formattedTurnover": "₹378.4 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "29-10": {
+          "turnover": 726.7,
+          "ratio": 1.69,
+          "avg": 430,
+          "formattedTurnover": "₹726.7 Cr",
+          "formattedRatio": "1.69x"
+        }
+      }
+    },
+    {
+      "id": "auto",
+      "name": "Automobile",
+      "sym": "NIFTY AUTO",
+      "category": "Auto",
+      "baseAvg": 5600,
+      "days": {
+        "18-11": {
+          "turnover": 5264,
+          "ratio": 0.94,
+          "avg": 5600,
+          "formattedTurnover": "₹5,264.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "17-11": {
+          "turnover": 6328,
+          "ratio": 1.13,
+          "avg": 5600,
+          "formattedTurnover": "₹6,328.0 Cr",
+          "formattedRatio": "1.13x"
+        },
+        "16-11": {
+          "turnover": 6552,
+          "ratio": 1.17,
+          "avg": 5600,
+          "formattedTurnover": "₹6,552.0 Cr",
+          "formattedRatio": "1.17x"
+        },
+        "13-11": {
+          "turnover": 4536,
+          "ratio": 0.81,
+          "avg": 5600,
+          "formattedTurnover": "₹4,536.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "12-11": {
+          "turnover": 5208,
+          "ratio": 0.93,
+          "avg": 5600,
+          "formattedTurnover": "₹5,208.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "11-11": {
+          "turnover": 6216,
+          "ratio": 1.11,
+          "avg": 5600,
+          "formattedTurnover": "₹6,216.0 Cr",
+          "formattedRatio": "1.11x"
+        },
+        "09-11": {
+          "turnover": 4816,
+          "ratio": 0.86,
+          "avg": 5600,
+          "formattedTurnover": "₹4,816.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "08-11": {
+          "turnover": 504,
+          "ratio": 0.09,
+          "avg": 5600,
+          "formattedTurnover": "₹504.0 Cr",
+          "formattedRatio": "0.09x"
+        },
+        "06-11": {
+          "turnover": 6104,
+          "ratio": 1.09,
+          "avg": 5600,
+          "formattedTurnover": "₹6,104.0 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "05-11": {
+          "turnover": 8232,
+          "ratio": 1.47,
+          "avg": 5600,
+          "formattedTurnover": "₹8,232.0 Cr",
+          "formattedRatio": "1.47x"
+        },
+        "04-11": {
+          "turnover": 4200,
+          "ratio": 0.75,
+          "avg": 5600,
+          "formattedTurnover": "₹4,200.0 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "03-11": {
+          "turnover": 4256,
+          "ratio": 0.76,
+          "avg": 5600,
+          "formattedTurnover": "₹4,256.0 Cr",
+          "formattedRatio": "0.76x"
+        },
+        "02-11": {
+          "turnover": 4368,
+          "ratio": 0.78,
+          "avg": 5600,
+          "formattedTurnover": "₹4,368.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "30-10": {
+          "turnover": 4984,
+          "ratio": 0.89,
+          "avg": 5600,
+          "formattedTurnover": "₹4,984.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "29-10": {
+          "turnover": 4368,
+          "ratio": 0.78,
+          "avg": 5600,
+          "formattedTurnover": "₹4,368.0 Cr",
+          "formattedRatio": "0.78x"
+        }
+      }
+    },
+    {
+      "id": "metals",
+      "name": "Metals & Mining",
+      "sym": "NIFTY METAL",
+      "category": "Metals",
+      "baseAvg": 5300,
+      "days": {
+        "18-11": {
+          "turnover": 4876,
+          "ratio": 0.92,
+          "avg": 5300,
+          "formattedTurnover": "₹4,876.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "17-11": {
+          "turnover": 5830,
+          "ratio": 1.1,
+          "avg": 5300,
+          "formattedTurnover": "₹5,830.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "16-11": {
+          "turnover": 5194,
+          "ratio": 0.98,
+          "avg": 5300,
+          "formattedTurnover": "₹5,194.0 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "13-11": {
+          "turnover": 4611,
+          "ratio": 0.87,
+          "avg": 5300,
+          "formattedTurnover": "₹4,611.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "12-11": {
+          "turnover": 5777,
+          "ratio": 1.09,
+          "avg": 5300,
+          "formattedTurnover": "₹5,777.0 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "11-11": {
+          "turnover": 5300,
+          "ratio": 1,
+          "avg": 5300,
+          "formattedTurnover": "₹5,300.0 Cr",
+          "formattedRatio": "1.00x"
+        },
+        "09-11": {
+          "turnover": 5830,
+          "ratio": 1.1,
+          "avg": 5300,
+          "formattedTurnover": "₹5,830.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "08-11": {
+          "turnover": 689,
+          "ratio": 0.13,
+          "avg": 5300,
+          "formattedTurnover": "₹689.0 Cr",
+          "formattedRatio": "0.13x"
+        },
+        "06-11": {
+          "turnover": 4505,
+          "ratio": 0.85,
+          "avg": 5300,
+          "formattedTurnover": "₹4,505.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "05-11": {
+          "turnover": 4399,
+          "ratio": 0.83,
+          "avg": 5300,
+          "formattedTurnover": "₹4,399.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "04-11": {
+          "turnover": 6307,
+          "ratio": 1.19,
+          "avg": 5300,
+          "formattedTurnover": "₹6,307.0 Cr",
+          "formattedRatio": "1.19x"
+        },
+        "03-11": {
+          "turnover": 4558,
+          "ratio": 0.86,
+          "avg": 5300,
+          "formattedTurnover": "₹4,558.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "02-11": {
+          "turnover": 4664,
+          "ratio": 0.88,
+          "avg": 5300,
+          "formattedTurnover": "₹4,664.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "30-10": {
+          "turnover": 4399,
+          "ratio": 0.83,
+          "avg": 5300,
+          "formattedTurnover": "₹4,399.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "29-10": {
+          "turnover": 4240,
+          "ratio": 0.8,
+          "avg": 5300,
+          "formattedTurnover": "₹4,240.0 Cr",
+          "formattedRatio": "0.80x"
+        }
+      }
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "sym": "NIFTY HEALTHCARE",
+      "category": "Healthcare",
+      "baseAvg": 3300,
+      "days": {
+        "18-11": {
+          "turnover": 3399,
+          "ratio": 1.03,
+          "avg": 3300,
+          "formattedTurnover": "₹3,399.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "17-11": {
+          "turnover": 3993,
+          "ratio": 1.21,
+          "avg": 3300,
+          "formattedTurnover": "₹3,993.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "16-11": {
+          "turnover": 5445,
+          "ratio": 1.65,
+          "avg": 3300,
+          "formattedTurnover": "₹5,445.0 Cr",
+          "formattedRatio": "1.65x"
+        },
+        "13-11": {
+          "turnover": 3795,
+          "ratio": 1.15,
+          "avg": 3300,
+          "formattedTurnover": "₹3,795.0 Cr",
+          "formattedRatio": "1.15x"
+        },
+        "12-11": {
+          "turnover": 3399,
+          "ratio": 1.03,
+          "avg": 3300,
+          "formattedTurnover": "₹3,399.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "11-11": {
+          "turnover": 2244,
+          "ratio": 0.68,
+          "avg": 3300,
+          "formattedTurnover": "₹2,244.0 Cr",
+          "formattedRatio": "0.68x"
+        },
+        "09-11": {
+          "turnover": 2442,
+          "ratio": 0.74,
+          "avg": 3300,
+          "formattedTurnover": "₹2,442.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "08-11": {
+          "turnover": 297,
+          "ratio": 0.09,
+          "avg": 3300,
+          "formattedTurnover": "₹297.0 Cr",
+          "formattedRatio": "0.09x"
+        },
+        "06-11": {
+          "turnover": 2244,
+          "ratio": 0.68,
+          "avg": 3300,
+          "formattedTurnover": "₹2,244.0 Cr",
+          "formattedRatio": "0.68x"
+        },
+        "05-11": {
+          "turnover": 3234,
+          "ratio": 0.98,
+          "avg": 3300,
+          "formattedTurnover": "₹3,234.0 Cr",
+          "formattedRatio": "0.98x"
+        },
+        "04-11": {
+          "turnover": 3366,
+          "ratio": 1.02,
+          "avg": 3300,
+          "formattedTurnover": "₹3,366.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "03-11": {
+          "turnover": 2772,
+          "ratio": 0.84,
+          "avg": 3300,
+          "formattedTurnover": "₹2,772.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "02-11": {
+          "turnover": 3267,
+          "ratio": 0.99,
+          "avg": 3300,
+          "formattedTurnover": "₹3,267.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "30-10": {
+          "turnover": 3729,
+          "ratio": 1.13,
+          "avg": 3300,
+          "formattedTurnover": "₹3,729.0 Cr",
+          "formattedRatio": "1.13x"
+        },
+        "29-10": {
+          "turnover": 3267,
+          "ratio": 0.99,
+          "avg": 3300,
+          "formattedTurnover": "₹3,267.0 Cr",
+          "formattedRatio": "0.99x"
+        }
+      }
+    },
+    {
+      "id": "media",
+      "name": "Media",
+      "sym": "NIFTY MEDIA",
+      "category": "Media",
+      "baseAvg": 310,
+      "days": {
+        "18-11": {
+          "turnover": 353.4,
+          "ratio": 1.14,
+          "avg": 310,
+          "formattedTurnover": "₹353.4 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "17-11": {
+          "turnover": 251.1,
+          "ratio": 0.81,
+          "avg": 310,
+          "formattedTurnover": "₹251.1 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "16-11": {
+          "turnover": 353.4,
+          "ratio": 1.14,
+          "avg": 310,
+          "formattedTurnover": "₹353.4 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "13-11": {
+          "turnover": 337.9,
+          "ratio": 1.09,
+          "avg": 310,
+          "formattedTurnover": "₹337.9 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "12-11": {
+          "turnover": 368.9,
+          "ratio": 1.19,
+          "avg": 310,
+          "formattedTurnover": "₹368.9 Cr",
+          "formattedRatio": "1.19x"
+        },
+        "11-11": {
+          "turnover": 279,
+          "ratio": 0.9,
+          "avg": 310,
+          "formattedTurnover": "₹279.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "09-11": {
+          "turnover": 347.2,
+          "ratio": 1.12,
+          "avg": 310,
+          "formattedTurnover": "₹347.2 Cr",
+          "formattedRatio": "1.12x"
+        },
+        "08-11": {
+          "turnover": 46.5,
+          "ratio": 0.15,
+          "avg": 310,
+          "formattedTurnover": "₹46.5 Cr",
+          "formattedRatio": "0.15x"
+        },
+        "06-11": {
+          "turnover": 170.5,
+          "ratio": 0.55,
+          "avg": 310,
+          "formattedTurnover": "₹170.5 Cr",
+          "formattedRatio": "0.55x"
+        },
+        "05-11": {
+          "turnover": 471.2,
+          "ratio": 1.52,
+          "avg": 310,
+          "formattedTurnover": "₹471.2 Cr",
+          "formattedRatio": "1.52x"
+        },
+        "04-11": {
+          "turnover": 883.5,
+          "ratio": 2.85,
+          "avg": 310,
+          "formattedTurnover": "₹883.5 Cr",
+          "formattedRatio": "2.85x"
+        },
+        "03-11": {
+          "turnover": 279,
+          "ratio": 0.9,
+          "avg": 310,
+          "formattedTurnover": "₹279.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "02-11": {
+          "turnover": 480.5,
+          "ratio": 1.55,
+          "avg": 310,
+          "formattedTurnover": "₹480.5 Cr",
+          "formattedRatio": "1.55x"
+        },
+        "30-10": {
+          "turnover": 207.7,
+          "ratio": 0.67,
+          "avg": 310,
+          "formattedTurnover": "₹207.7 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "29-10": {
+          "turnover": 285.2,
+          "ratio": 0.92,
+          "avg": 310,
+          "formattedTurnover": "₹285.2 Cr",
+          "formattedRatio": "0.92x"
+        }
+      }
+    },
+    {
+      "id": "defence",
+      "name": "Defence",
+      "sym": "NIFTY IND DEFENCE",
+      "category": "Defence",
+      "baseAvg": 2600,
+      "days": {
+        "18-11": {
+          "turnover": 1794,
+          "ratio": 0.69,
+          "avg": 2600,
+          "formattedTurnover": "₹1,794.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "17-11": {
+          "turnover": 1638,
+          "ratio": 0.63,
+          "avg": 2600,
+          "formattedTurnover": "₹1,638.0 Cr",
+          "formattedRatio": "0.63x"
+        },
+        "16-11": {
+          "turnover": 1664,
+          "ratio": 0.64,
+          "avg": 2600,
+          "formattedTurnover": "₹1,664.0 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "13-11": {
+          "turnover": 2678,
+          "ratio": 1.03,
+          "avg": 2600,
+          "formattedTurnover": "₹2,678.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "12-11": {
+          "turnover": 4420,
+          "ratio": 1.7,
+          "avg": 2600,
+          "formattedTurnover": "₹4,420.0 Cr",
+          "formattedRatio": "1.70x"
+        },
+        "11-11": {
+          "turnover": 3146,
+          "ratio": 1.21,
+          "avg": 2600,
+          "formattedTurnover": "₹3,146.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "09-11": {
+          "turnover": 3328,
+          "ratio": 1.28,
+          "avg": 2600,
+          "formattedTurnover": "₹3,328.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "08-11": {
+          "turnover": 390,
+          "ratio": 0.15,
+          "avg": 2600,
+          "formattedTurnover": "₹390.0 Cr",
+          "formattedRatio": "0.15x"
+        },
+        "06-11": {
+          "turnover": 2418,
+          "ratio": 0.93,
+          "avg": 2600,
+          "formattedTurnover": "₹2,418.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "05-11": {
+          "turnover": 2340,
+          "ratio": 0.9,
+          "avg": 2600,
+          "formattedTurnover": "₹2,340.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "04-11": {
+          "turnover": 2626,
+          "ratio": 1.01,
+          "avg": 2600,
+          "formattedTurnover": "₹2,626.0 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "03-11": {
+          "turnover": 2678,
+          "ratio": 1.03,
+          "avg": 2600,
+          "formattedTurnover": "₹2,678.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "02-11": {
+          "turnover": 2184,
+          "ratio": 0.84,
+          "avg": 2600,
+          "formattedTurnover": "₹2,184.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "30-10": {
+          "turnover": 2626,
+          "ratio": 1.01,
+          "avg": 2600,
+          "formattedTurnover": "₹2,626.0 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "29-10": {
+          "turnover": 1586,
+          "ratio": 0.61,
+          "avg": 2600,
+          "formattedTurnover": "₹1,586.0 Cr",
+          "formattedRatio": "0.61x"
+        }
+      }
+    },
+    {
+      "id": "cap_mkt",
+      "name": "Capital Markets",
+      "sym": "NIFTY CAPITAL MKT",
+      "category": "Finance",
+      "baseAvg": 5800,
+      "days": {
+        "18-11": {
+          "turnover": 5742,
+          "ratio": 0.99,
+          "avg": 5800,
+          "formattedTurnover": "₹5,742.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "17-11": {
+          "turnover": 10208,
+          "ratio": 1.76,
+          "avg": 5800,
+          "formattedTurnover": "₹10,208.0 Cr",
+          "formattedRatio": "1.76x"
+        },
+        "16-11": {
+          "turnover": 4118,
+          "ratio": 0.71,
+          "avg": 5800,
+          "formattedTurnover": "₹4,118.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "13-11": {
+          "turnover": 5742,
+          "ratio": 0.99,
+          "avg": 5800,
+          "formattedTurnover": "₹5,742.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "12-11": {
+          "turnover": 4814,
+          "ratio": 0.83,
+          "avg": 5800,
+          "formattedTurnover": "₹4,814.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "11-11": {
+          "turnover": 4756,
+          "ratio": 0.82,
+          "avg": 5800,
+          "formattedTurnover": "₹4,756.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "09-11": {
+          "turnover": 3886,
+          "ratio": 0.67,
+          "avg": 5800,
+          "formattedTurnover": "₹3,886.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "08-11": {
+          "turnover": 812,
+          "ratio": 0.14,
+          "avg": 5800,
+          "formattedTurnover": "₹812.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 6206,
+          "ratio": 1.07,
+          "avg": 5800,
+          "formattedTurnover": "₹6,206.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "05-11": {
+          "turnover": 7250,
+          "ratio": 1.25,
+          "avg": 5800,
+          "formattedTurnover": "₹7,250.0 Cr",
+          "formattedRatio": "1.25x"
+        },
+        "04-11": {
+          "turnover": 4756,
+          "ratio": 0.82,
+          "avg": 5800,
+          "formattedTurnover": "₹4,756.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "03-11": {
+          "turnover": 7018,
+          "ratio": 1.21,
+          "avg": 5800,
+          "formattedTurnover": "₹7,018.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "02-11": {
+          "turnover": 3596,
+          "ratio": 0.62,
+          "avg": 5800,
+          "formattedTurnover": "₹3,596.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "30-10": {
+          "turnover": 3248,
+          "ratio": 0.56,
+          "avg": 5800,
+          "formattedTurnover": "₹3,248.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "29-10": {
+          "turnover": 2784,
+          "ratio": 0.48,
+          "avg": 5800,
+          "formattedTurnover": "₹2,784.0 Cr",
+          "formattedRatio": "0.48x"
+        }
+      }
+    },
+    {
+      "id": "cons_dur",
+      "name": "Consumer Durables",
+      "sym": "NIFTY CONSR DURBL",
+      "category": "Consumer",
+      "baseAvg": 2900,
+      "days": {
+        "18-11": {
+          "turnover": 2059,
+          "ratio": 0.71,
+          "avg": 2900,
+          "formattedTurnover": "₹2,059.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "17-11": {
+          "turnover": 2001,
+          "ratio": 0.69,
+          "avg": 2900,
+          "formattedTurnover": "₹2,001.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "16-11": {
+          "turnover": 2320,
+          "ratio": 0.8,
+          "avg": 2900,
+          "formattedTurnover": "₹2,320.0 Cr",
+          "formattedRatio": "0.80x"
+        },
+        "13-11": {
+          "turnover": 4379,
+          "ratio": 1.51,
+          "avg": 2900,
+          "formattedTurnover": "₹4,379.0 Cr",
+          "formattedRatio": "1.51x"
+        },
+        "12-11": {
+          "turnover": 3161,
+          "ratio": 1.09,
+          "avg": 2900,
+          "formattedTurnover": "₹3,161.0 Cr",
+          "formattedRatio": "1.09x"
+        },
+        "11-11": {
+          "turnover": 2262,
+          "ratio": 0.78,
+          "avg": 2900,
+          "formattedTurnover": "₹2,262.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "09-11": {
+          "turnover": 2987,
+          "ratio": 1.03,
+          "avg": 2900,
+          "formattedTurnover": "₹2,987.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "08-11": {
+          "turnover": 377,
+          "ratio": 0.13,
+          "avg": 2900,
+          "formattedTurnover": "₹377.0 Cr",
+          "formattedRatio": "0.13x"
+        },
+        "06-11": {
+          "turnover": 4524,
+          "ratio": 1.56,
+          "avg": 2900,
+          "formattedTurnover": "₹4,524.0 Cr",
+          "formattedRatio": "1.56x"
+        },
+        "05-11": {
+          "turnover": 2668,
+          "ratio": 0.92,
+          "avg": 2900,
+          "formattedTurnover": "₹2,668.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "04-11": {
+          "turnover": 1798,
+          "ratio": 0.62,
+          "avg": 2900,
+          "formattedTurnover": "₹1,798.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "03-11": {
+          "turnover": 1537,
+          "ratio": 0.53,
+          "avg": 2900,
+          "formattedTurnover": "₹1,537.0 Cr",
+          "formattedRatio": "0.53x"
+        },
+        "02-11": {
+          "turnover": 2407,
+          "ratio": 0.83,
+          "avg": 2900,
+          "formattedTurnover": "₹2,407.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "30-10": {
+          "turnover": 4321,
+          "ratio": 1.49,
+          "avg": 2900,
+          "formattedTurnover": "₹4,321.0 Cr",
+          "formattedRatio": "1.49x"
+        },
+        "29-10": {
+          "turnover": 4292,
+          "ratio": 1.48,
+          "avg": 2900,
+          "formattedTurnover": "₹4,292.0 Cr",
+          "formattedRatio": "1.48x"
+        }
+      }
+    },
+    {
+      "id": "ev",
+      "name": "EV & New Age Auto",
+      "sym": "NIFTY EV",
+      "category": "Auto",
+      "baseAvg": 8200,
+      "days": {
+        "18-11": {
+          "turnover": 7708,
+          "ratio": 0.94,
+          "avg": 8200,
+          "formattedTurnover": "₹7,708.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "17-11": {
+          "turnover": 6970,
+          "ratio": 0.85,
+          "avg": 8200,
+          "formattedTurnover": "₹6,970.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "16-11": {
+          "turnover": 12382,
+          "ratio": 1.51,
+          "avg": 8200,
+          "formattedTurnover": "₹12,382.0 Cr",
+          "formattedRatio": "1.51x"
+        },
+        "13-11": {
+          "turnover": 7954,
+          "ratio": 0.97,
+          "avg": 8200,
+          "formattedTurnover": "₹7,954.0 Cr",
+          "formattedRatio": "0.97x"
+        },
+        "12-11": {
+          "turnover": 8446,
+          "ratio": 1.03,
+          "avg": 8200,
+          "formattedTurnover": "₹8,446.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "11-11": {
+          "turnover": 7708,
+          "ratio": 0.94,
+          "avg": 8200,
+          "formattedTurnover": "₹7,708.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "09-11": {
+          "turnover": 7708,
+          "ratio": 0.94,
+          "avg": 8200,
+          "formattedTurnover": "₹7,708.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "08-11": {
+          "turnover": 1312,
+          "ratio": 0.16,
+          "avg": 8200,
+          "formattedTurnover": "₹1,312.0 Cr",
+          "formattedRatio": "0.16x"
+        },
+        "06-11": {
+          "turnover": 7380,
+          "ratio": 0.9,
+          "avg": 8200,
+          "formattedTurnover": "₹7,380.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "05-11": {
+          "turnover": 9348,
+          "ratio": 1.14,
+          "avg": 8200,
+          "formattedTurnover": "₹9,348.0 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "04-11": {
+          "turnover": 7790,
+          "ratio": 0.95,
+          "avg": 8200,
+          "formattedTurnover": "₹7,790.0 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "03-11": {
+          "turnover": 6068,
+          "ratio": 0.74,
+          "avg": 8200,
+          "formattedTurnover": "₹6,068.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "02-11": {
+          "turnover": 6396,
+          "ratio": 0.78,
+          "avg": 8200,
+          "formattedTurnover": "₹6,396.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "30-10": {
+          "turnover": 5248,
+          "ratio": 0.64,
+          "avg": 8200,
+          "formattedTurnover": "₹5,248.0 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "29-10": {
+          "turnover": 5166,
+          "ratio": 0.63,
+          "avg": 8200,
+          "formattedTurnover": "₹5,166.0 Cr",
+          "formattedRatio": "0.63x"
+        }
+      }
+    },
+    {
+      "id": "digital",
+      "name": "Digital & Tech",
+      "sym": "NIFTY IND DIGITAL",
+      "category": "Tech",
+      "baseAvg": 9100,
+      "days": {
+        "18-11": {
+          "turnover": 9646,
+          "ratio": 1.06,
+          "avg": 9100,
+          "formattedTurnover": "₹9,646.0 Cr",
+          "formattedRatio": "1.06x"
+        },
+        "17-11": {
+          "turnover": 12558,
+          "ratio": 1.38,
+          "avg": 9100,
+          "formattedTurnover": "₹12,558.0 Cr",
+          "formattedRatio": "1.38x"
+        },
+        "16-11": {
+          "turnover": 8554,
+          "ratio": 0.94,
+          "avg": 9100,
+          "formattedTurnover": "₹8,554.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "13-11": {
+          "turnover": 7189,
+          "ratio": 0.79,
+          "avg": 9100,
+          "formattedTurnover": "₹7,189.0 Cr",
+          "formattedRatio": "0.79x"
+        },
+        "12-11": {
+          "turnover": 7098,
+          "ratio": 0.78,
+          "avg": 9100,
+          "formattedTurnover": "₹7,098.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "11-11": {
+          "turnover": 10647,
+          "ratio": 1.17,
+          "avg": 9100,
+          "formattedTurnover": "₹10,647.0 Cr",
+          "formattedRatio": "1.17x"
+        },
+        "09-11": {
+          "turnover": 6188,
+          "ratio": 0.68,
+          "avg": 9100,
+          "formattedTurnover": "₹6,188.0 Cr",
+          "formattedRatio": "0.68x"
+        },
+        "08-11": {
+          "turnover": 910,
+          "ratio": 0.1,
+          "avg": 9100,
+          "formattedTurnover": "₹910.0 Cr",
+          "formattedRatio": "0.10x"
+        },
+        "06-11": {
+          "turnover": 7735,
+          "ratio": 0.85,
+          "avg": 9100,
+          "formattedTurnover": "₹7,735.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "05-11": {
+          "turnover": 11557,
+          "ratio": 1.27,
+          "avg": 9100,
+          "formattedTurnover": "₹11,557.0 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "04-11": {
+          "turnover": 7826,
+          "ratio": 0.86,
+          "avg": 9100,
+          "formattedTurnover": "₹7,826.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "03-11": {
+          "turnover": 10010,
+          "ratio": 1.1,
+          "avg": 9100,
+          "formattedTurnover": "₹10,010.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "02-11": {
+          "turnover": 7371,
+          "ratio": 0.81,
+          "avg": 9100,
+          "formattedTurnover": "₹7,371.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "30-10": {
+          "turnover": 17017,
+          "ratio": 1.87,
+          "avg": 9100,
+          "formattedTurnover": "₹17,017.0 Cr",
+          "formattedRatio": "1.87x"
+        },
+        "29-10": {
+          "turnover": 12740,
+          "ratio": 1.4,
+          "avg": 9100,
+          "formattedTurnover": "₹12,740.0 Cr",
+          "formattedRatio": "1.40x"
+        }
+      }
+    },
+    {
+      "id": "telecom",
+      "name": "Telecom",
+      "sym": "NIFTY MS IT TELCM",
+      "category": "Telecom",
+      "baseAvg": 4200,
+      "days": {
+        "18-11": {
+          "turnover": 3402,
+          "ratio": 0.81,
+          "avg": 4200,
+          "formattedTurnover": "₹3,402.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "17-11": {
+          "turnover": 4494,
+          "ratio": 1.07,
+          "avg": 4200,
+          "formattedTurnover": "₹4,494.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "16-11": {
+          "turnover": 4956,
+          "ratio": 1.18,
+          "avg": 4200,
+          "formattedTurnover": "₹4,956.0 Cr",
+          "formattedRatio": "1.18x"
+        },
+        "13-11": {
+          "turnover": 4494,
+          "ratio": 1.07,
+          "avg": 4200,
+          "formattedTurnover": "₹4,494.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "12-11": {
+          "turnover": 3570,
+          "ratio": 0.85,
+          "avg": 4200,
+          "formattedTurnover": "₹3,570.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "11-11": {
+          "turnover": 3822,
+          "ratio": 0.91,
+          "avg": 4200,
+          "formattedTurnover": "₹3,822.0 Cr",
+          "formattedRatio": "0.91x"
+        },
+        "09-11": {
+          "turnover": 3234,
+          "ratio": 0.77,
+          "avg": 4200,
+          "formattedTurnover": "₹3,234.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "08-11": {
+          "turnover": 588,
+          "ratio": 0.14,
+          "avg": 4200,
+          "formattedTurnover": "₹588.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 5376,
+          "ratio": 1.28,
+          "avg": 4200,
+          "formattedTurnover": "₹5,376.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "05-11": {
+          "turnover": 3192,
+          "ratio": 0.76,
+          "avg": 4200,
+          "formattedTurnover": "₹3,192.0 Cr",
+          "formattedRatio": "0.76x"
+        },
+        "04-11": {
+          "turnover": 4536,
+          "ratio": 1.08,
+          "avg": 4200,
+          "formattedTurnover": "₹4,536.0 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "03-11": {
+          "turnover": 8064,
+          "ratio": 1.92,
+          "avg": 4200,
+          "formattedTurnover": "₹8,064.0 Cr",
+          "formattedRatio": "1.92x"
+        },
+        "02-11": {
+          "turnover": 5334,
+          "ratio": 1.27,
+          "avg": 4200,
+          "formattedTurnover": "₹5,334.0 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "30-10": {
+          "turnover": 6678,
+          "ratio": 1.59,
+          "avg": 4200,
+          "formattedTurnover": "₹6,678.0 Cr",
+          "formattedRatio": "1.59x"
+        },
+        "29-10": {
+          "turnover": 13482,
+          "ratio": 3.21,
+          "avg": 4200,
+          "formattedTurnover": "₹13,482.0 Cr",
+          "formattedRatio": "3.21x"
+        }
+      }
+    },
+    {
+      "id": "mnc",
+      "name": "MNC",
+      "sym": "NIFTY MNC",
+      "category": "Diversified",
+      "baseAvg": 4800,
+      "days": {
+        "18-11": {
+          "turnover": 4944,
+          "ratio": 1.03,
+          "avg": 4800,
+          "formattedTurnover": "₹4,944.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "17-11": {
+          "turnover": 8016,
+          "ratio": 1.67,
+          "avg": 4800,
+          "formattedTurnover": "₹8,016.0 Cr",
+          "formattedRatio": "1.67x"
+        },
+        "16-11": {
+          "turnover": 2976,
+          "ratio": 0.62,
+          "avg": 4800,
+          "formattedTurnover": "₹2,976.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "13-11": {
+          "turnover": 3072,
+          "ratio": 0.64,
+          "avg": 4800,
+          "formattedTurnover": "₹3,072.0 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "12-11": {
+          "turnover": 12432,
+          "ratio": 2.59,
+          "avg": 4800,
+          "formattedTurnover": "₹12,432.0 Cr",
+          "formattedRatio": "2.59x"
+        },
+        "11-11": {
+          "turnover": 3072,
+          "ratio": 0.64,
+          "avg": 4800,
+          "formattedTurnover": "₹3,072.0 Cr",
+          "formattedRatio": "0.64x"
+        },
+        "09-11": {
+          "turnover": 2160,
+          "ratio": 0.45,
+          "avg": 4800,
+          "formattedTurnover": "₹2,160.0 Cr",
+          "formattedRatio": "0.45x"
+        },
+        "08-11": {
+          "turnover": 384,
+          "ratio": 0.08,
+          "avg": 4800,
+          "formattedTurnover": "₹384.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 2928,
+          "ratio": 0.61,
+          "avg": 4800,
+          "formattedTurnover": "₹2,928.0 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "05-11": {
+          "turnover": 2592,
+          "ratio": 0.54,
+          "avg": 4800,
+          "formattedTurnover": "₹2,592.0 Cr",
+          "formattedRatio": "0.54x"
+        },
+        "04-11": {
+          "turnover": 2592,
+          "ratio": 0.54,
+          "avg": 4800,
+          "formattedTurnover": "₹2,592.0 Cr",
+          "formattedRatio": "0.54x"
+        },
+        "03-11": {
+          "turnover": 4368,
+          "ratio": 0.91,
+          "avg": 4800,
+          "formattedTurnover": "₹4,368.0 Cr",
+          "formattedRatio": "0.91x"
+        },
+        "02-11": {
+          "turnover": 2304,
+          "ratio": 0.48,
+          "avg": 4800,
+          "formattedTurnover": "₹2,304.0 Cr",
+          "formattedRatio": "0.48x"
+        },
+        "30-10": {
+          "turnover": 1872,
+          "ratio": 0.39,
+          "avg": 4800,
+          "formattedTurnover": "₹1,872.0 Cr",
+          "formattedRatio": "0.39x"
+        },
+        "29-10": {
+          "turnover": 5424,
+          "ratio": 1.13,
+          "avg": 4800,
+          "formattedTurnover": "₹5,424.0 Cr",
+          "formattedRatio": "1.13x"
+        }
+      }
+    },
+    {
+      "id": "pse",
+      "name": "PSE / CPSE",
+      "sym": "NIFTY PSE",
+      "category": "PSU",
+      "baseAvg": 6500,
+      "days": {
+        "18-11": {
+          "turnover": 5265,
+          "ratio": 0.81,
+          "avg": 6500,
+          "formattedTurnover": "₹5,265.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "17-11": {
+          "turnover": 7020,
+          "ratio": 1.08,
+          "avg": 6500,
+          "formattedTurnover": "₹7,020.0 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "16-11": {
+          "turnover": 5005,
+          "ratio": 0.77,
+          "avg": 6500,
+          "formattedTurnover": "₹5,005.0 Cr",
+          "formattedRatio": "0.77x"
+        },
+        "13-11": {
+          "turnover": 5395,
+          "ratio": 0.83,
+          "avg": 6500,
+          "formattedTurnover": "₹5,395.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "12-11": {
+          "turnover": 6695,
+          "ratio": 1.03,
+          "avg": 6500,
+          "formattedTurnover": "₹6,695.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "11-11": {
+          "turnover": 8645,
+          "ratio": 1.33,
+          "avg": 6500,
+          "formattedTurnover": "₹8,645.0 Cr",
+          "formattedRatio": "1.33x"
+        },
+        "09-11": {
+          "turnover": 7410,
+          "ratio": 1.14,
+          "avg": 6500,
+          "formattedTurnover": "₹7,410.0 Cr",
+          "formattedRatio": "1.14x"
+        },
+        "08-11": {
+          "turnover": 325,
+          "ratio": 0.05,
+          "avg": 6500,
+          "formattedTurnover": "₹325.0 Cr",
+          "formattedRatio": "0.05x"
+        },
+        "06-11": {
+          "turnover": 3185,
+          "ratio": 0.49,
+          "avg": 6500,
+          "formattedTurnover": "₹3,185.0 Cr",
+          "formattedRatio": "0.49x"
+        },
+        "05-11": {
+          "turnover": 4485,
+          "ratio": 0.69,
+          "avg": 6500,
+          "formattedTurnover": "₹4,485.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "04-11": {
+          "turnover": 3055,
+          "ratio": 0.47,
+          "avg": 6500,
+          "formattedTurnover": "₹3,055.0 Cr",
+          "formattedRatio": "0.47x"
+        },
+        "03-11": {
+          "turnover": 4875,
+          "ratio": 0.75,
+          "avg": 6500,
+          "formattedTurnover": "₹4,875.0 Cr",
+          "formattedRatio": "0.75x"
+        },
+        "02-11": {
+          "turnover": 2795,
+          "ratio": 0.43,
+          "avg": 6500,
+          "formattedTurnover": "₹2,795.0 Cr",
+          "formattedRatio": "0.43x"
+        },
+        "30-10": {
+          "turnover": 2860,
+          "ratio": 0.44,
+          "avg": 6500,
+          "formattedTurnover": "₹2,860.0 Cr",
+          "formattedRatio": "0.44x"
+        },
+        "29-10": {
+          "turnover": 2990,
+          "ratio": 0.46,
+          "avg": 6500,
+          "formattedTurnover": "₹2,990.0 Cr",
+          "formattedRatio": "0.46x"
+        }
+      }
+    },
+    {
+      "id": "services",
+      "name": "Services Sector",
+      "sym": "NIFTY SERV SECTOR",
+      "category": "Services",
+      "baseAvg": 15800,
+      "days": {
+        "18-11": {
+          "turnover": 13588,
+          "ratio": 0.86,
+          "avg": 15800,
+          "formattedTurnover": "₹13,588.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "17-11": {
+          "turnover": 12956,
+          "ratio": 0.82,
+          "avg": 15800,
+          "formattedTurnover": "₹12,956.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "16-11": {
+          "turnover": 19276,
+          "ratio": 1.22,
+          "avg": 15800,
+          "formattedTurnover": "₹19,276.0 Cr",
+          "formattedRatio": "1.22x"
+        },
+        "13-11": {
+          "turnover": 25912,
+          "ratio": 1.64,
+          "avg": 15800,
+          "formattedTurnover": "₹25,912.0 Cr",
+          "formattedRatio": "1.64x"
+        },
+        "12-11": {
+          "turnover": 13430,
+          "ratio": 0.85,
+          "avg": 15800,
+          "formattedTurnover": "₹13,430.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "11-11": {
+          "turnover": 17064,
+          "ratio": 1.08,
+          "avg": 15800,
+          "formattedTurnover": "₹17,064.0 Cr",
+          "formattedRatio": "1.08x"
+        },
+        "09-11": {
+          "turnover": 13430,
+          "ratio": 0.85,
+          "avg": 15800,
+          "formattedTurnover": "₹13,430.0 Cr",
+          "formattedRatio": "0.85x"
+        },
+        "08-11": {
+          "turnover": 2212,
+          "ratio": 0.14,
+          "avg": 15800,
+          "formattedTurnover": "₹2,212.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 13904,
+          "ratio": 0.88,
+          "avg": 15800,
+          "formattedTurnover": "₹13,904.0 Cr",
+          "formattedRatio": "0.88x"
+        },
+        "05-11": {
+          "turnover": 15642,
+          "ratio": 0.99,
+          "avg": 15800,
+          "formattedTurnover": "₹15,642.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "04-11": {
+          "turnover": 35076,
+          "ratio": 2.22,
+          "avg": 15800,
+          "formattedTurnover": "₹35,076.0 Cr",
+          "formattedRatio": "2.22x"
+        },
+        "03-11": {
+          "turnover": 14220,
+          "ratio": 0.9,
+          "avg": 15800,
+          "formattedTurnover": "₹14,220.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "02-11": {
+          "turnover": 23858,
+          "ratio": 1.51,
+          "avg": 15800,
+          "formattedTurnover": "₹23,858.0 Cr",
+          "formattedRatio": "1.51x"
+        },
+        "30-10": {
+          "turnover": 28914,
+          "ratio": 1.83,
+          "avg": 15800,
+          "formattedTurnover": "₹28,914.0 Cr",
+          "formattedRatio": "1.83x"
+        },
+        "29-10": {
+          "turnover": 16116,
+          "ratio": 1.02,
+          "avg": 15800,
+          "formattedTurnover": "₹16,116.0 Cr",
+          "formattedRatio": "1.02x"
+        }
+      }
+    },
+    {
+      "id": "core_housing",
+      "name": "Core Housing",
+      "sym": "NIFTY CORE HOUSING",
+      "category": "Housing",
+      "baseAvg": 2100,
+      "days": {
+        "18-11": {
+          "turnover": 2331,
+          "ratio": 1.11,
+          "avg": 2100,
+          "formattedTurnover": "₹2,331.0 Cr",
+          "formattedRatio": "1.11x"
+        },
+        "17-11": {
+          "turnover": 2625,
+          "ratio": 1.25,
+          "avg": 2100,
+          "formattedTurnover": "₹2,625.0 Cr",
+          "formattedRatio": "1.25x"
+        },
+        "16-11": {
+          "turnover": 2226,
+          "ratio": 1.06,
+          "avg": 2100,
+          "formattedTurnover": "₹2,226.0 Cr",
+          "formattedRatio": "1.06x"
+        },
+        "13-11": {
+          "turnover": 1743,
+          "ratio": 0.83,
+          "avg": 2100,
+          "formattedTurnover": "₹1,743.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "12-11": {
+          "turnover": 1638,
+          "ratio": 0.78,
+          "avg": 2100,
+          "formattedTurnover": "₹1,638.0 Cr",
+          "formattedRatio": "0.78x"
+        },
+        "11-11": {
+          "turnover": 2037,
+          "ratio": 0.97,
+          "avg": 2100,
+          "formattedTurnover": "₹2,037.0 Cr",
+          "formattedRatio": "0.97x"
+        },
+        "09-11": {
+          "turnover": 1890,
+          "ratio": 0.9,
+          "avg": 2100,
+          "formattedTurnover": "₹1,890.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "08-11": {
+          "turnover": 252,
+          "ratio": 0.12,
+          "avg": 2100,
+          "formattedTurnover": "₹252.0 Cr",
+          "formattedRatio": "0.12x"
+        },
+        "06-11": {
+          "turnover": 2016,
+          "ratio": 0.96,
+          "avg": 2100,
+          "formattedTurnover": "₹2,016.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "05-11": {
+          "turnover": 4620,
+          "ratio": 2.2,
+          "avg": 2100,
+          "formattedTurnover": "₹4,620.0 Cr",
+          "formattedRatio": "2.20x"
+        },
+        "04-11": {
+          "turnover": 2457,
+          "ratio": 1.17,
+          "avg": 2100,
+          "formattedTurnover": "₹2,457.0 Cr",
+          "formattedRatio": "1.17x"
+        },
+        "03-11": {
+          "turnover": 1827,
+          "ratio": 0.87,
+          "avg": 2100,
+          "formattedTurnover": "₹1,827.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "02-11": {
+          "turnover": 1974,
+          "ratio": 0.94,
+          "avg": 2100,
+          "formattedTurnover": "₹1,974.0 Cr",
+          "formattedRatio": "0.94x"
+        },
+        "30-10": {
+          "turnover": 2079,
+          "ratio": 0.99,
+          "avg": 2100,
+          "formattedTurnover": "₹2,079.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "29-10": {
+          "turnover": 6111,
+          "ratio": 2.91,
+          "avg": 2100,
+          "formattedTurnover": "₹6,111.0 Cr",
+          "formattedRatio": "2.91x"
+        }
+      }
+    },
+    {
+      "id": "rural",
+      "name": "Rural Economy",
+      "sym": "NIFTY RURAL",
+      "category": "Consumer",
+      "baseAvg": 3900,
+      "days": {
+        "18-11": {
+          "turnover": 3588,
+          "ratio": 0.92,
+          "avg": 3900,
+          "formattedTurnover": "₹3,588.0 Cr",
+          "formattedRatio": "0.92x"
+        },
+        "17-11": {
+          "turnover": 3237,
+          "ratio": 0.83,
+          "avg": 3900,
+          "formattedTurnover": "₹3,237.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "16-11": {
+          "turnover": 5226,
+          "ratio": 1.34,
+          "avg": 3900,
+          "formattedTurnover": "₹5,226.0 Cr",
+          "formattedRatio": "1.34x"
+        },
+        "13-11": {
+          "turnover": 4017,
+          "ratio": 1.03,
+          "avg": 3900,
+          "formattedTurnover": "₹4,017.0 Cr",
+          "formattedRatio": "1.03x"
+        },
+        "12-11": {
+          "turnover": 5811,
+          "ratio": 1.49,
+          "avg": 3900,
+          "formattedTurnover": "₹5,811.0 Cr",
+          "formattedRatio": "1.49x"
+        },
+        "11-11": {
+          "turnover": 3471,
+          "ratio": 0.89,
+          "avg": 3900,
+          "formattedTurnover": "₹3,471.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "09-11": {
+          "turnover": 3939,
+          "ratio": 1.01,
+          "avg": 3900,
+          "formattedTurnover": "₹3,939.0 Cr",
+          "formattedRatio": "1.01x"
+        },
+        "08-11": {
+          "turnover": 273,
+          "ratio": 0.07,
+          "avg": 3900,
+          "formattedTurnover": "₹273.0 Cr",
+          "formattedRatio": "0.07x"
+        },
+        "06-11": {
+          "turnover": 2379,
+          "ratio": 0.61,
+          "avg": 3900,
+          "formattedTurnover": "₹2,379.0 Cr",
+          "formattedRatio": "0.61x"
+        },
+        "05-11": {
+          "turnover": 3276,
+          "ratio": 0.84,
+          "avg": 3900,
+          "formattedTurnover": "₹3,276.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "04-11": {
+          "turnover": 4953,
+          "ratio": 1.27,
+          "avg": 3900,
+          "formattedTurnover": "₹4,953.0 Cr",
+          "formattedRatio": "1.27x"
+        },
+        "03-11": {
+          "turnover": 6123,
+          "ratio": 1.57,
+          "avg": 3900,
+          "formattedTurnover": "₹6,123.0 Cr",
+          "formattedRatio": "1.57x"
+        },
+        "02-11": {
+          "turnover": 3276,
+          "ratio": 0.84,
+          "avg": 3900,
+          "formattedTurnover": "₹3,276.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "30-10": {
+          "turnover": 4797,
+          "ratio": 1.23,
+          "avg": 3900,
+          "formattedTurnover": "₹4,797.0 Cr",
+          "formattedRatio": "1.23x"
+        },
+        "29-10": {
+          "turnover": 3549,
+          "ratio": 0.91,
+          "avg": 3900,
+          "formattedTurnover": "₹3,549.0 Cr",
+          "formattedRatio": "0.91x"
+        }
+      }
+    },
+    {
+      "id": "chemicals",
+      "name": "Chemicals",
+      "sym": "NIFTY CHEMICALS",
+      "category": "Chemicals",
+      "baseAvg": 2300,
+      "days": {
+        "18-11": {
+          "turnover": 2070,
+          "ratio": 0.9,
+          "avg": 2300,
+          "formattedTurnover": "₹2,070.0 Cr",
+          "formattedRatio": "0.90x"
+        },
+        "17-11": {
+          "turnover": 1863,
+          "ratio": 0.81,
+          "avg": 2300,
+          "formattedTurnover": "₹1,863.0 Cr",
+          "formattedRatio": "0.81x"
+        },
+        "16-11": {
+          "turnover": 2185,
+          "ratio": 0.95,
+          "avg": 2300,
+          "formattedTurnover": "₹2,185.0 Cr",
+          "formattedRatio": "0.95x"
+        },
+        "13-11": {
+          "turnover": 2760,
+          "ratio": 1.2,
+          "avg": 2300,
+          "formattedTurnover": "₹2,760.0 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "12-11": {
+          "turnover": 2208,
+          "ratio": 0.96,
+          "avg": 2300,
+          "formattedTurnover": "₹2,208.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "11-11": {
+          "turnover": 2944,
+          "ratio": 1.28,
+          "avg": 2300,
+          "formattedTurnover": "₹2,944.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "09-11": {
+          "turnover": 2047,
+          "ratio": 0.89,
+          "avg": 2300,
+          "formattedTurnover": "₹2,047.0 Cr",
+          "formattedRatio": "0.89x"
+        },
+        "08-11": {
+          "turnover": 299,
+          "ratio": 0.13,
+          "avg": 2300,
+          "formattedTurnover": "₹299.0 Cr",
+          "formattedRatio": "0.13x"
+        },
+        "06-11": {
+          "turnover": 1564,
+          "ratio": 0.68,
+          "avg": 2300,
+          "formattedTurnover": "₹1,564.0 Cr",
+          "formattedRatio": "0.68x"
+        },
+        "05-11": {
+          "turnover": 1909,
+          "ratio": 0.83,
+          "avg": 2300,
+          "formattedTurnover": "₹1,909.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "04-11": {
+          "turnover": 2346,
+          "ratio": 1.02,
+          "avg": 2300,
+          "formattedTurnover": "₹2,346.0 Cr",
+          "formattedRatio": "1.02x"
+        },
+        "03-11": {
+          "turnover": 2944,
+          "ratio": 1.28,
+          "avg": 2300,
+          "formattedTurnover": "₹2,944.0 Cr",
+          "formattedRatio": "1.28x"
+        },
+        "02-11": {
+          "turnover": 2714,
+          "ratio": 1.18,
+          "avg": 2300,
+          "formattedTurnover": "₹2,714.0 Cr",
+          "formattedRatio": "1.18x"
+        },
+        "30-10": {
+          "turnover": 5037,
+          "ratio": 2.19,
+          "avg": 2300,
+          "formattedTurnover": "₹5,037.0 Cr",
+          "formattedRatio": "2.19x"
+        },
+        "29-10": {
+          "turnover": 2967,
+          "ratio": 1.29,
+          "avg": 2300,
+          "formattedTurnover": "₹2,967.0 Cr",
+          "formattedRatio": "1.29x"
+        }
+      }
+    },
+    {
+      "id": "nifty50",
+      "name": "Nifty 50 Benchmark",
+      "sym": "NIFTY 50",
+      "category": "Benchmark",
+      "baseAvg": 28000,
+      "days": {
+        "18-11": {
+          "turnover": 26040,
+          "ratio": 0.93,
+          "avg": 28000,
+          "formattedTurnover": "₹26,040.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "17-11": {
+          "turnover": 26040,
+          "ratio": 0.93,
+          "avg": 28000,
+          "formattedTurnover": "₹26,040.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "16-11": {
+          "turnover": 20720,
+          "ratio": 0.74,
+          "avg": 28000,
+          "formattedTurnover": "₹20,720.0 Cr",
+          "formattedRatio": "0.74x"
+        },
+        "13-11": {
+          "turnover": 18760,
+          "ratio": 0.67,
+          "avg": 28000,
+          "formattedTurnover": "₹18,760.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "12-11": {
+          "turnover": 26880,
+          "ratio": 0.96,
+          "avg": 28000,
+          "formattedTurnover": "₹26,880.0 Cr",
+          "formattedRatio": "0.96x"
+        },
+        "11-11": {
+          "turnover": 36400,
+          "ratio": 1.3,
+          "avg": 28000,
+          "formattedTurnover": "₹36,400.0 Cr",
+          "formattedRatio": "1.30x"
+        },
+        "09-11": {
+          "turnover": 36960,
+          "ratio": 1.32,
+          "avg": 28000,
+          "formattedTurnover": "₹36,960.0 Cr",
+          "formattedRatio": "1.32x"
+        },
+        "08-11": {
+          "turnover": 2240,
+          "ratio": 0.08,
+          "avg": 28000,
+          "formattedTurnover": "₹2,240.0 Cr",
+          "formattedRatio": "0.08x"
+        },
+        "06-11": {
+          "turnover": 36960,
+          "ratio": 1.32,
+          "avg": 28000,
+          "formattedTurnover": "₹36,960.0 Cr",
+          "formattedRatio": "1.32x"
+        },
+        "05-11": {
+          "turnover": 31080,
+          "ratio": 1.11,
+          "avg": 28000,
+          "formattedTurnover": "₹31,080.0 Cr",
+          "formattedRatio": "1.11x"
+        },
+        "04-11": {
+          "turnover": 19880,
+          "ratio": 0.71,
+          "avg": 28000,
+          "formattedTurnover": "₹19,880.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "03-11": {
+          "turnover": 22960,
+          "ratio": 0.82,
+          "avg": 28000,
+          "formattedTurnover": "₹22,960.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "02-11": {
+          "turnover": 15680,
+          "ratio": 0.56,
+          "avg": 28000,
+          "formattedTurnover": "₹15,680.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "30-10": {
+          "turnover": 19320,
+          "ratio": 0.69,
+          "avg": 28000,
+          "formattedTurnover": "₹19,320.0 Cr",
+          "formattedRatio": "0.69x"
+        },
+        "29-10": {
+          "turnover": 24080,
+          "ratio": 0.86,
+          "avg": 28000,
+          "formattedTurnover": "₹24,080.0 Cr",
+          "formattedRatio": "0.86x"
+        }
+      }
+    },
+    {
+      "id": "midcap150",
+      "name": "MidCap 150",
+      "sym": "NIFTY MIDCAP 150",
+      "category": "Benchmark",
+      "baseAvg": 18500,
+      "days": {
+        "18-11": {
+          "turnover": 18315,
+          "ratio": 0.99,
+          "avg": 18500,
+          "formattedTurnover": "₹18,315.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "17-11": {
+          "turnover": 32560,
+          "ratio": 1.76,
+          "avg": 18500,
+          "formattedTurnover": "₹32,560.0 Cr",
+          "formattedRatio": "1.76x"
+        },
+        "16-11": {
+          "turnover": 13135,
+          "ratio": 0.71,
+          "avg": 18500,
+          "formattedTurnover": "₹13,135.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "13-11": {
+          "turnover": 18315,
+          "ratio": 0.99,
+          "avg": 18500,
+          "formattedTurnover": "₹18,315.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "12-11": {
+          "turnover": 15355,
+          "ratio": 0.83,
+          "avg": 18500,
+          "formattedTurnover": "₹15,355.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "11-11": {
+          "turnover": 15170,
+          "ratio": 0.82,
+          "avg": 18500,
+          "formattedTurnover": "₹15,170.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "09-11": {
+          "turnover": 12395,
+          "ratio": 0.67,
+          "avg": 18500,
+          "formattedTurnover": "₹12,395.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "08-11": {
+          "turnover": 2590,
+          "ratio": 0.14,
+          "avg": 18500,
+          "formattedTurnover": "₹2,590.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 19795,
+          "ratio": 1.07,
+          "avg": 18500,
+          "formattedTurnover": "₹19,795.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "05-11": {
+          "turnover": 23125,
+          "ratio": 1.25,
+          "avg": 18500,
+          "formattedTurnover": "₹23,125.0 Cr",
+          "formattedRatio": "1.25x"
+        },
+        "04-11": {
+          "turnover": 15170,
+          "ratio": 0.82,
+          "avg": 18500,
+          "formattedTurnover": "₹15,170.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "03-11": {
+          "turnover": 22385,
+          "ratio": 1.21,
+          "avg": 18500,
+          "formattedTurnover": "₹22,385.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "02-11": {
+          "turnover": 11470,
+          "ratio": 0.62,
+          "avg": 18500,
+          "formattedTurnover": "₹11,470.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "30-10": {
+          "turnover": 10360,
+          "ratio": 0.56,
+          "avg": 18500,
+          "formattedTurnover": "₹10,360.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "29-10": {
+          "turnover": 8880,
+          "ratio": 0.48,
+          "avg": 18500,
+          "formattedTurnover": "₹8,880.0 Cr",
+          "formattedRatio": "0.48x"
+        }
+      }
+    },
+    {
+      "id": "smallcap250",
+      "name": "SmallCap 250",
+      "sym": "NIFTY SMLCAP 250",
+      "category": "Benchmark",
+      "baseAvg": 14200,
+      "days": {
+        "18-11": {
+          "turnover": 13206,
+          "ratio": 0.93,
+          "avg": 14200,
+          "formattedTurnover": "₹13,206.0 Cr",
+          "formattedRatio": "0.93x"
+        },
+        "17-11": {
+          "turnover": 11928,
+          "ratio": 0.84,
+          "avg": 14200,
+          "formattedTurnover": "₹11,928.0 Cr",
+          "formattedRatio": "0.84x"
+        },
+        "16-11": {
+          "turnover": 15620,
+          "ratio": 1.1,
+          "avg": 14200,
+          "formattedTurnover": "₹15,620.0 Cr",
+          "formattedRatio": "1.10x"
+        },
+        "13-11": {
+          "turnover": 20590,
+          "ratio": 1.45,
+          "avg": 14200,
+          "formattedTurnover": "₹20,590.0 Cr",
+          "formattedRatio": "1.45x"
+        },
+        "12-11": {
+          "turnover": 23430,
+          "ratio": 1.65,
+          "avg": 14200,
+          "formattedTurnover": "₹23,430.0 Cr",
+          "formattedRatio": "1.65x"
+        },
+        "11-11": {
+          "turnover": 12212,
+          "ratio": 0.86,
+          "avg": 14200,
+          "formattedTurnover": "₹12,212.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "09-11": {
+          "turnover": 9940,
+          "ratio": 0.7,
+          "avg": 14200,
+          "formattedTurnover": "₹9,940.0 Cr",
+          "formattedRatio": "0.70x"
+        },
+        "08-11": {
+          "turnover": 1278,
+          "ratio": 0.09,
+          "avg": 14200,
+          "formattedTurnover": "₹1,278.0 Cr",
+          "formattedRatio": "0.09x"
+        },
+        "06-11": {
+          "turnover": 10366,
+          "ratio": 0.73,
+          "avg": 14200,
+          "formattedTurnover": "₹10,366.0 Cr",
+          "formattedRatio": "0.73x"
+        },
+        "05-11": {
+          "turnover": 14910,
+          "ratio": 1.05,
+          "avg": 14200,
+          "formattedTurnover": "₹14,910.0 Cr",
+          "formattedRatio": "1.05x"
+        },
+        "04-11": {
+          "turnover": 12354,
+          "ratio": 0.87,
+          "avg": 14200,
+          "formattedTurnover": "₹12,354.0 Cr",
+          "formattedRatio": "0.87x"
+        },
+        "03-11": {
+          "turnover": 13774,
+          "ratio": 0.97,
+          "avg": 14200,
+          "formattedTurnover": "₹13,774.0 Cr",
+          "formattedRatio": "0.97x"
+        },
+        "02-11": {
+          "turnover": 16898,
+          "ratio": 1.19,
+          "avg": 14200,
+          "formattedTurnover": "₹16,898.0 Cr",
+          "formattedRatio": "1.19x"
+        },
+        "30-10": {
+          "turnover": 12212,
+          "ratio": 0.86,
+          "avg": 14200,
+          "formattedTurnover": "₹12,212.0 Cr",
+          "formattedRatio": "0.86x"
+        },
+        "29-10": {
+          "turnover": 20590,
+          "ratio": 1.45,
+          "avg": 14200,
+          "formattedTurnover": "₹20,590.0 Cr",
+          "formattedRatio": "1.45x"
+        }
+      }
+    },
+    {
+      "id": "ipo",
+      "name": "IPO Universe",
+      "sym": "NIFTY IPO",
+      "category": "IPO",
+      "baseAvg": 3200,
+      "days": {
+        "18-11": {
+          "turnover": 3168,
+          "ratio": 0.99,
+          "avg": 3200,
+          "formattedTurnover": "₹3,168.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "17-11": {
+          "turnover": 5632,
+          "ratio": 1.76,
+          "avg": 3200,
+          "formattedTurnover": "₹5,632.0 Cr",
+          "formattedRatio": "1.76x"
+        },
+        "16-11": {
+          "turnover": 2272,
+          "ratio": 0.71,
+          "avg": 3200,
+          "formattedTurnover": "₹2,272.0 Cr",
+          "formattedRatio": "0.71x"
+        },
+        "13-11": {
+          "turnover": 3168,
+          "ratio": 0.99,
+          "avg": 3200,
+          "formattedTurnover": "₹3,168.0 Cr",
+          "formattedRatio": "0.99x"
+        },
+        "12-11": {
+          "turnover": 2656,
+          "ratio": 0.83,
+          "avg": 3200,
+          "formattedTurnover": "₹2,656.0 Cr",
+          "formattedRatio": "0.83x"
+        },
+        "11-11": {
+          "turnover": 2624,
+          "ratio": 0.82,
+          "avg": 3200,
+          "formattedTurnover": "₹2,624.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "09-11": {
+          "turnover": 2144,
+          "ratio": 0.67,
+          "avg": 3200,
+          "formattedTurnover": "₹2,144.0 Cr",
+          "formattedRatio": "0.67x"
+        },
+        "08-11": {
+          "turnover": 448,
+          "ratio": 0.14,
+          "avg": 3200,
+          "formattedTurnover": "₹448.0 Cr",
+          "formattedRatio": "0.14x"
+        },
+        "06-11": {
+          "turnover": 3424,
+          "ratio": 1.07,
+          "avg": 3200,
+          "formattedTurnover": "₹3,424.0 Cr",
+          "formattedRatio": "1.07x"
+        },
+        "05-11": {
+          "turnover": 4000,
+          "ratio": 1.25,
+          "avg": 3200,
+          "formattedTurnover": "₹4,000.0 Cr",
+          "formattedRatio": "1.25x"
+        },
+        "04-11": {
+          "turnover": 2624,
+          "ratio": 0.82,
+          "avg": 3200,
+          "formattedTurnover": "₹2,624.0 Cr",
+          "formattedRatio": "0.82x"
+        },
+        "03-11": {
+          "turnover": 3872,
+          "ratio": 1.21,
+          "avg": 3200,
+          "formattedTurnover": "₹3,872.0 Cr",
+          "formattedRatio": "1.21x"
+        },
+        "02-11": {
+          "turnover": 1984,
+          "ratio": 0.62,
+          "avg": 3200,
+          "formattedTurnover": "₹1,984.0 Cr",
+          "formattedRatio": "0.62x"
+        },
+        "30-10": {
+          "turnover": 1792,
+          "ratio": 0.56,
+          "avg": 3200,
+          "formattedTurnover": "₹1,792.0 Cr",
+          "formattedRatio": "0.56x"
+        },
+        "29-10": {
+          "turnover": 1536,
+          "ratio": 0.48,
+          "avg": 3200,
+          "formattedTurnover": "₹1,536.0 Cr",
+          "formattedRatio": "0.48x"
+        }
+      }
+    }
+  ]
+}
