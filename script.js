@@ -13568,15 +13568,43 @@
   function renderSectorStocksView() {
     const sectorIndex = State.activeSectorIndex || "NIFTY 50";
     const stocks = getHeatmapStocksForIndex(sectorIndex);
-    const rows = stocks.map(stock => `
+    const rows = stocks.map(stock => {
+      let industry = stock.sector || "—";
+      const sLower = sectorIndex.toLowerCase();
+      if (sLower.includes("hotel") || sLower.includes("tourism")) {
+        industry = "Hotels & Hospitality";
+      } else if (sLower.includes("paint")) {
+        industry = "Paints & Coatings";
+      } else if (sLower.includes("rail")) {
+        industry = "Railways & Logistics";
+      } else if (sLower.includes("gas")) {
+        industry = "Gas Distribution";
+      } else if (sLower.includes("cement")) {
+        industry = "Cement & Building Materials";
+      } else if (sLower.includes("paper")) {
+        industry = "Paper Products";
+      } else if (sLower.includes("packag")) {
+        industry = "Packaging";
+      } else if (sLower.includes("restaurant")) {
+        industry = "Restaurants & QSR";
+      } else if (sLower.includes("beverage")) {
+        industry = "Alcoholic Beverages";
+      } else if (sLower.includes("refiner")) {
+        industry = "Refineries & Petrochemicals";
+      } else if (sLower.includes("fertilizer")) {
+        industry = "Fertilizers & Agro";
+      }
+
+      return `
       <tr data-action="open-stock" data-symbol="${escapeHtml(stock.symbol)}" title="Open ${escapeHtml(stock.name)} quote and chart" style="cursor:pointer">
         <td><strong>${escapeHtml(stock.symbol)}</strong></td>
         <td>${escapeHtml(stock.name)}</td>
-        <td>${escapeHtml(stock.sector || "—")}</td>
+        <td>${escapeHtml(industry)}</td>
         <td class="font-mono" style="text-align:right">₹${formatNumber(stock.price, 2)}</td>
         <td class="font-mono ${getColorClass(stock.chg)}" style="text-align:right;font-weight:700">${formatPercent(stock.chg)}</td>
         <td class="font-mono" style="text-align:right">${escapeHtml(stock.volume || "—")}</td>
-      </tr>`).join("");
+      </tr>`;
+    }).join("");
 
     return `
       <div class="sector-turnover-view">
@@ -13608,6 +13636,22 @@
           </div>
         </div>
       </div>`;
+  }
+
+  function setupSectorStocksEvents() {
+    const searchInput = document.getElementById("sector-stocks-search");
+    if (searchInput) {
+      searchInput.addEventListener("input", e => {
+        const query = e.target.value.toLowerCase().trim();
+        const table = document.getElementById("sector-constituents-table");
+        if (!table) return;
+        const rows = table.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(query) ? "" : "none";
+        });
+      });
+    }
   }
 
   function renderSectorTurnoverADContent() {
@@ -17269,7 +17313,32 @@
     "NIFTY TRANSPORTATION & LOGISTICS": ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY"],
     "NIFTY MIDSMALL FINANCIAL SERVICES": ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS"],
     "NIFTY IT": ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS", "LTTS"],
-    "NIFTY IND TOURISM": ["INDIGO", "IHCL", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "VIPIND", "YATRA", "EASEMYTRIP"],
+    "NIFTY IND TOURISM": ["INDHOTEL", "INDIGO", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "TBOTEK", "IXIGO", "THOMASCOOK", "WONDERLA", "EASEMYTRIP", "YATRA", "DELTACORP"],
+    "HOTELS": [
+      "INDHOTEL", "ITCHOTELS", "THELEELA", "EIHOTEL", "CHALET", "VENTIVE", 
+      "LEMONTREE", "ITDC", "JUNIPER", "MHRIL", "SAMHI", "ORIENTHOT", 
+      "PARKHOTELS", "BRIGHOTEL", "TAJGVK", "EIHAHOTELS", "BENARAS", 
+      "ASIANHOTNR", "VHLTD", "ROHLTD", "MCCHRLS-B"
+    ],
+    "PAINTS": ["ASIANPAINT", "BERGERPAINT", "KANSAINER", "AKZOINDIA", "INDIGOPNTS", "SHALPAINTS", "SIRCA"],
+    "RAILWAYS": ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JUPITERIN", "TEXRAIL"],
+    "CEMENT": ["ULTRACEMCO", "AMBUJACEM", "SHREECEM", "ACC", "DALBHARAT", "RAMCOCEM", "JKCEMENT", "HEIDELBERG", "PRISMCEM", "STARCEMENT", "SAGCEM"],
+    "GAS DISTRIBUTION": ["GAIL", "IGL", "MGL", "GUJGASLTD", "PETRONET", "ATGL", "GSPL"],
+    "PAPER PRODUCTS": ["CENTURYPLY", "JKPAPER", "WESTCOAST", "ANDHRAPAP", "TNPL", "KIRANVYAP", "SESHAPAPER"],
+    "PACKAGING": ["POLYPLEX", "EPL", "TIMETECHNO", "UFLEX", "JINDALPOLY", "HUHTAMAKI", "TCPLPACK"],
+    "ALCOHOLIC BEVERAGES": ["UNITEDSPR", "UBL", "RADICO", "TI", "SULA", "SOMATEX", "GLOBUSSPR", "GMBL"],
+    "RESTAURANTS": ["JUBLFOOD", "DEVYANI", "SAPPHIRE", "WESTLIFE", "RESTAURANT", "BARBEQUE", "SPECIALITY", "ZOMATO"],
+    "REFINERIES & LUBRICANTS": ["RELIANCE", "IOC", "BPCL", "HINDPETRO", "MRPL", "CHENNPETRO", "CASTROLIND", "GOCLCORP"],
+    "FERTILIZERS & AGROCHEMICALS": ["UPL", "COROMANDEL", "PIIND", "CHAMBLFERT", "DEEPAKFERT", "GNFC", "GSFC", "FACT", "RCF", "NFL"],
+    "COMMODITY CHEMICALS": ["TATACHEM", "DEEPAKNTR", "GUJFLUORO", "AARTIIND", "ATUL", "ALKYLAMINE", "BALAMINES", "NOCIL", "FINEORG"],
+    "RETAIL": ["TRENT", "DMART", "SHOPERSTOP", "ABFRL", "V-MART", "ETHOSLTD", "MEDPLUS", "KENTRO", "NYKAA"],
+    "TRANSPORT": ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY"],
+    "CONSTRUCTION & ENGINEERING": ["LT", "NCC", "PNCINFRA", "GRINFRA", "KNRCON", "ASHOKA", "HBLPOWER", "NBCC", "ENGINEERSIN"],
+    "RENEWABLE ENERGY": ["ADANIGREEN", "TATAPOWER", "SUZLON", "WAAREEENER", "PREMIERENE", "ACMESOLAR", "INOXWIND", "KPIGREEN", "SJVN", "NHPC"],
+    "NBFC": ["BAJFINANCE", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC"],
+    "INSURANCE": ["HDFCLIFE", "SBILIFE", "ICICIPRULI", "LICI", "ICICIGI", "GICRE", "NIACL", "STARHEALTH", "POLICYBZR"],
+    "TELECOM": ["BHARTIARTL", "TATACOMM", "INDUSTOWER", "HFCL", "TEJASNET", "STERLITE", "ROUTE", "ITI", "VODAFONE"],
+    "SERVICES SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "BLS"],
     "NIFTY 50": HEATMAP_NIFTY50_DATA.map(s => s.symbol),
     "NIFTY FIN SERVICE": ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE"],
     "NIFTY SERV SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART"],
@@ -17387,10 +17456,124 @@
     };
   }
 
+  // Friendly Sector Name to Benchmark Index Symbol Map
+  const SECTOR_NAME_TO_INDEX_MAP = {
+    "Hotels": "HOTELS",
+    "Paints": "PAINTS",
+    "Gas Distribution": "GAS DISTRIBUTION",
+    "Rural Economy": "NIFTY RURAL",
+    "Alcoholic Beverages": "ALCOHOLIC BEVERAGES",
+    "MNC": "NIFTY MNC",
+    "Media": "NIFTY MEDIA",
+    "SmallCap 250": "NIFTY SMLCAP 250",
+    "Automobile": "NIFTY AUTO",
+    "Renewable Energy": "RENEWABLE ENERGY",
+    "Paper Products": "PAPER PRODUCTS",
+    "EV & New Age Auto": "NIFTY EV",
+    "NBFC": "NBFC",
+    "Consumer Durables": "NIFTY CONSUMER DURABLES",
+    "Metals & Mining": "NIFTY METAL",
+    "Private Banks": "NIFTY PRIVATE BANK",
+    "MidCap 150": "NIFTY MIDCAP 150",
+    "Fertilizers & Agrochemicals": "FERTILIZERS & AGROCHEMICALS",
+    "Pharmaceuticals": "NIFTY PHARMA",
+    "PSU Banks": "NIFTY PSU BANK",
+    "Information Technology": "NIFTY IT",
+    "FMCG": "NIFTY FMCG",
+    "Realty": "NIFTY REALTY",
+    "Insurance": "INSURANCE",
+    "Construction & Engineering": "CONSTRUCTION & ENGINEERING",
+    "Transport": "TRANSPORT",
+    "Cement": "CEMENT",
+    "Commodity Chemicals": "COMMODITY CHEMICALS",
+    "Restaurants": "RESTAURANTS",
+    "Refineries & Lubricants": "REFINERIES & LUBRICANTS",
+    "Railways": "RAILWAYS",
+    "Retail": "RETAIL",
+    "Packaging": "PACKAGING",
+    "Healthcare": "NIFTY HEALTHCARE",
+    "Defence": "NIFTY INDIA DEFENCE",
+    "Capital Markets": "NIFTY CAPITAL MKT",
+    "Digital & Tech": "NIFTY INDIA DIGITAL",
+    "Telecom": "TELECOM",
+    "PSE / CPSE": "NIFTY PSE",
+    "Services Sector": "SERVICES SECTOR",
+    "Core Housing": "NIFTY CORE HOUSING",
+    "Chemicals": "NIFTY CHEMICALS",
+    "Nifty 50 Benchmark": "NIFTY 50",
+    "IPO Universe": "NIFTY IPO"
+  };
+
+  // Helper to resolve any stock symbol from HM_STOCKS_MAP, ST_MAP, or ScreeningMantis
+  function resolveStockForHeatmap(sym) {
+    if (!sym) return null;
+    const cleanSym = String(sym).toUpperCase().trim();
+    if (HM_STOCKS_MAP[cleanSym]) return HM_STOCKS_MAP[cleanSym];
+
+    const stItem = (typeof ST_MAP !== "undefined" && ST_MAP[cleanSym]) 
+      || (typeof ST !== "undefined" && Array.isArray(ST) && ST.find(x => x[0] === cleanSym));
+    if (stItem) {
+      const isArr = Array.isArray(stItem);
+      const symbol = isArr ? stItem[0] : stItem.symbol;
+      const meta = isArr ? (stItem[8] || {}) : stItem;
+      const name = meta.name || symbol;
+      const sector = (isArr ? stItem[2] : stItem.sector) || "Equity";
+      const price = typeof (isArr ? stItem[3] : stItem.price) === "number" ? (isArr ? stItem[3] : stItem.price) : 0;
+      const chg = typeof (isArr ? stItem[4] : stItem.chg) === "number" ? (isArr ? stItem[4] : stItem.chg) : 0;
+      const mcap = typeof meta.marketCapCr === "number" ? meta.marketCapCr : (typeof meta.mcap === "number" ? meta.mcap : 5000);
+      const volume = meta.volume || `${Math.max(1, Math.round((price * 10) % 50))} L`;
+      const initials = symbol.slice(0, 3);
+
+      const stockObj = {
+        symbol: symbol,
+        name: name,
+        sector: sector,
+        price: price,
+        chg: chg,
+        mcap: mcap,
+        volume: volume,
+        logoBg: "#1e293b",
+        logoColor: "#ffffff",
+        logoText: initials
+      };
+      HM_STOCKS_MAP[cleanSym] = stockObj;
+      return stockObj;
+    }
+
+    if (typeof ScreeningMantisClient !== "undefined" && Array.isArray(ScreeningMantisClient.cachedSnapshotResults)) {
+      const sm = ScreeningMantisClient.cachedSnapshotResults.find(x => x.symbol === cleanSym);
+      if (sm) {
+        const stockObj = {
+          symbol: sm.symbol,
+          name: sm.name || sm.symbol,
+          sector: sm.sector || "Equity",
+          price: sm.currentClose || 0,
+          chg: sm.chg1d || 0,
+          mcap: sm.marketCapCr || 5000,
+          volume: sm.volRatio ? `${sm.volRatio.toFixed(1)}x Vol` : "—",
+          logoBg: "#1e293b",
+          logoColor: "#ffffff",
+          logoText: sm.symbol.slice(0, 3)
+        };
+        HM_STOCKS_MAP[cleanSym] = stockObj;
+        return stockObj;
+      }
+    }
+    return null;
+  }
+
   function getHeatmapStocksForIndex(idxName) {
     const raw = String(idxName || "All Stocks").trim();
     const clean = raw.replace(/^\d+[\.\s\-]+/, "").trim() || "All Stocks";
-    const norm = clean.toUpperCase();
+    let norm = clean.toUpperCase();
+
+    // Check alias mapping first
+    if (SECTOR_NAME_TO_INDEX_MAP[clean]) {
+      norm = SECTOR_NAME_TO_INDEX_MAP[clean].toUpperCase();
+    } else {
+      const matchAlias = Object.keys(SECTOR_NAME_TO_INDEX_MAP).find(k => k.toUpperCase() === norm);
+      if (matchAlias) norm = SECTOR_NAME_TO_INDEX_MAP[matchAlias].toUpperCase();
+    }
 
     // ALL SECTORS HEATMAP MODE: Returns all 44 Nifty Sectoral Indices
     if (norm === "ALL SECTORS" || norm === "SECTORS" || norm === "ALL SECTOR" || norm === "ALL SECTOR HEATMAP") {
@@ -17428,6 +17611,7 @@
     if (norm === "NIFTY SMLCAP 250" || norm === "NIFTY SMALLCAP 250" || norm === "SMALLCAP 250" || norm === "SMALLCAP") {
       return NIFTY_SMALLCAP_250_DATA;
     }
+
     let matchedKey = Object.keys(HEATMAP_SECTOR_SYMBOLS_MAP).find(k => {
       const kNorm = k.toUpperCase();
       const kStrip = kNorm.replace(/^NIFTY\s+/, "").trim();
@@ -17445,9 +17629,20 @@
     }
     if (matchedKey && HEATMAP_SECTOR_SYMBOLS_MAP[matchedKey]) {
       const symbols = HEATMAP_SECTOR_SYMBOLS_MAP[matchedKey];
-      const list = symbols.map(sym => HM_STOCKS_MAP[sym]).filter(Boolean);
+      const list = symbols.map(resolveStockForHeatmap).filter(Boolean);
       if (list.length > 0) return list;
     }
+
+    // Dynamic fallback: look for stocks in ST whose sector matches
+    if (typeof ST !== "undefined" && Array.isArray(ST)) {
+      const matchedFromST = ST.filter(s => {
+        const sec = String(s[2] || "").toLowerCase();
+        const q = clean.toLowerCase();
+        return sec.includes(q) || q.includes(sec);
+      }).map(s => resolveStockForHeatmap(s[0])).filter(Boolean);
+      if (matchedFromST.length > 0) return matchedFromST;
+    }
+
     return HEATMAP_NIFTY50_DATA;
   }
 
@@ -23489,6 +23684,7 @@
         break;
       case "sector-stocks":
         container.innerHTML = renderSectorStocksView();
+        setupSectorStocksEvents();
         break;
       case "mmi":
         container.innerHTML = renderMMIView();
@@ -25608,7 +25804,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.6', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.7', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
