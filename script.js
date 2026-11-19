@@ -15069,6 +15069,9 @@
                 ${scores.map((score, sIdx) => {
                   const isCellActive = isActive && (sIdx === activeSessionIdx);
                   const cellDate = tradingDates[sIdx] || { shortLabel: `Session ${sIdx}` };
+                  const cellTitle = (sIdx === 0)
+                    ? `${secName} (${cellDate.shortLabel}): Net Flow ${score > 0 ? '+' + score : score}% | ${advCount} Green / ${decCount} Red (${Math.round((advCount / (advCount + decCount || 1)) * 100)}% Advance Ratio) — Click to inspect constituent stocks`
+                    : `${secName} (${cellDate.shortLabel}): Net Flow score ${score > 0 ? '+' + score : score}% — Click to inspect constituent stocks`;
                   return `
                   <div class="netflow-cell ${getFlowClass(score)} ${isCellActive ? 'active-cell' : ''}" 
                        data-action="select-netflow-session" 
@@ -15076,7 +15079,7 @@
                        data-session-idx="${sIdx}" 
                        data-score="${score}" 
                        data-label="${cellDate.shortLabel}"
-                       title="${secName} (${cellDate.shortLabel}): Flow score ${score > 0 ? '+' + score : score} — Click to inspect ${cellDate.shortLabel} constituent stocks">
+                       title="${cellTitle}">
                     <span>${score > 0 ? "+" + score : score}</span>
                   </div>
                 `;
