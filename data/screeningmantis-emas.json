@@ -11139,26 +11139,6 @@
     "emaCross": "bull",
     "emaCrossCandles": 12
   },
-  "ELPROINTL": {
-    "aboveEma10": true,
-    "aboveEma20": true,
-    "aboveEma50": true,
-    "aboveEma200": false,
-    "wAboveEma10": true,
-    "wAboveEma20": true,
-    "wAboveEma50": false,
-    "wAboveEma200": false,
-    "ema10": 173.72,
-    "ema20": 171.96,
-    "ema50": 171.42,
-    "ema200": null,
-    "wEma10": 172.25,
-    "wEma20": 169.61,
-    "wEma50": null,
-    "wEma200": null,
-    "emaCross": "bull",
-    "emaCrossCandles": 5
-  },
   "HUBTOWN": {
     "aboveEma10": true,
     "aboveEma20": true,

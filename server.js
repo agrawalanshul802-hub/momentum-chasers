@@ -4902,7 +4902,7 @@ async function fetchLiveFiiDiiData() {
   } catch (err) {
     console.warn('Could not persist FII/DII session history:', err.message);
   }
-  return { records: history, source: 'Groww', latestDate: records[0].date };
+  return { records: history, source: 'Groww', latestDate: history[0]?.date || records[0]?.date };
 }
 
 function summarizeFiiDii(rows) {
@@ -5114,7 +5114,7 @@ function getSectorTurnoverPayload(baseline = 8) {
     source: "ScreeningMantis Live Market Engine & NSE Official Bhavcopy",
     metric: "Today's turnover vs the sector's own trailing " + baselineN + "-session average",
     baselineSessions: baselineN,
-    dates: ['18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '09-11', '08-11', '06-11', '05-11', '04-11', '03-11', '02-11', '30-10', '29-10'],
+    dates: ['19-11', '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '09-11', '08-11', '06-11', '05-11', '04-11', '03-11', '02-11', '30-10'],
     totalSectors: 44,
     sectors: []
   };
