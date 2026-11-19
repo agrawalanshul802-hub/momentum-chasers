@@ -12663,19 +12663,6 @@
 
   const OWNER_IDEAS_SEED = [
     {
-      id: 'idea_1795026393432',
-      title: 'abc',
-      category: 'Volume Breakout',
-      symbols: ['ABB'],
-      timeframe: '3-6 Months',
-      entry: '64',
-      target: '24121',
-      stopLoss: '63531',
-      thesis: 'QIDUCCDCQO',
-      publishedAt: '2026-11-18',
-      active: true
-    },
-    {
       id: 'idea_defense_momentum',
       title: 'Defense Sector Momentum',
       category: 'High Conviction Breakout',
@@ -12939,7 +12926,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.1");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.2");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -25738,7 +25725,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.1"
+          "./data/authentic-sector-turnover.json?v=6.2.2"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25783,7 +25770,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.1', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.2', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {

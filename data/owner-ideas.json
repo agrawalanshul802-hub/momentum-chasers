@@ -1,20 +1,5 @@
 [
   {
-    "id": "idea_1795026393432",
-    "title": "abc",
-    "category": "Volume Breakout",
-    "symbols": [
-      "ABB"
-    ],
-    "timeframe": "3-6 Months",
-    "entry": "64",
-    "target": "24121",
-    "stopLoss": "63531",
-    "thesis": "QIDUCCDCQO",
-    "publishedAt": "2026-11-18",
-    "active": true
-  },
-  {
     "id": "idea_defense_momentum",
     "title": "Defense Sector Momentum",
     "category": "High Conviction Breakout",
