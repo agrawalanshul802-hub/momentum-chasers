@@ -17639,11 +17639,63 @@
     "IPO Universe": "NIFTY IPO"
   };
 
+  // Synchronize Heatmap datasets with live quotes from ST_MAP, ST, and ScreeningMantis
+  function syncHeatmapLivePrices() {
+    const updateItem = (item) => {
+      if (!item || !item.symbol) return;
+      const sym = String(item.symbol).toUpperCase().trim();
+      const live = (typeof ST_MAP !== "undefined" && ST_MAP[sym]) 
+        || (typeof ST !== "undefined" && Array.isArray(ST) && ST.find(s => s[0] === sym));
+      if (live) {
+        const isArr = Array.isArray(live);
+        const price = isArr ? live[3] : live.price;
+        const chg = isArr ? live[4] : live.chg;
+        const meta = isArr ? (live[8] || {}) : live;
+        if (typeof price === "number" && price > 0) item.price = price;
+        if (typeof chg === "number") item.chg = chg;
+        if (meta.mcap || meta.marketCapCr) item.mcap = meta.mcap || meta.marketCapCr;
+        if (meta.volume) item.volume = meta.volume;
+      } else if (typeof ScreeningMantisClient !== "undefined" && Array.isArray(ScreeningMantisClient.cachedSnapshotResults)) {
+        const sm = ScreeningMantisClient.cachedSnapshotResults.find(x => x.symbol === sym);
+        if (sm) {
+          if (typeof sm.currentClose === "number" && sm.currentClose > 0) item.price = sm.currentClose;
+          if (typeof sm.chg1d === "number") item.chg = sm.chg1d;
+          if (typeof sm.marketCapCr === "number") item.mcap = sm.marketCapCr;
+          if (sm.volRatio) item.volume = `${sm.volRatio.toFixed(1)}x Vol`;
+        }
+      }
+    };
+
+    if (Array.isArray(HEATMAP_NIFTY50_DATA)) HEATMAP_NIFTY50_DATA.forEach(updateItem);
+    if (Array.isArray(HEATMAP_EXTRA_STOCKS)) HEATMAP_EXTRA_STOCKS.forEach(updateItem);
+    if (Array.isArray(NIFTY_MIDCAP_150_DATA)) NIFTY_MIDCAP_150_DATA.forEach(updateItem);
+    if (Array.isArray(NIFTY_SMALLCAP_250_DATA)) NIFTY_SMALLCAP_250_DATA.forEach(updateItem);
+    if (typeof HM_STOCKS_MAP !== "undefined") {
+      Object.values(HM_STOCKS_MAP).forEach(updateItem);
+    }
+  }
+
   // Helper to resolve any stock symbol from HM_STOCKS_MAP, ST_MAP, or ScreeningMantis
   function resolveStockForHeatmap(sym) {
     if (!sym) return null;
     const cleanSym = String(sym).toUpperCase().trim();
-    if (HM_STOCKS_MAP[cleanSym]) return HM_STOCKS_MAP[cleanSym];
+    const existing = HM_STOCKS_MAP[cleanSym];
+    if (existing) {
+      // Re-hydrate with live quotes from ST_MAP / ST
+      const live = (typeof ST_MAP !== "undefined" && ST_MAP[cleanSym]) 
+        || (typeof ST !== "undefined" && Array.isArray(ST) && ST.find(x => x[0] === cleanSym));
+      if (live) {
+        const isArr = Array.isArray(live);
+        const p = isArr ? live[3] : live.price;
+        const c = isArr ? live[4] : live.chg;
+        const m = isArr ? (live[8] || {}) : live;
+        if (typeof p === "number" && p > 0) existing.price = p;
+        if (typeof c === "number") existing.chg = c;
+        if (m.mcap || m.marketCapCr) existing.mcap = m.mcap || m.marketCapCr;
+        if (m.volume) existing.volume = m.volume;
+      }
+      return existing;
+    }
 
     const stItem = (typeof ST_MAP !== "undefined" && ST_MAP[cleanSym]) 
       || (typeof ST !== "undefined" && Array.isArray(ST) && ST.find(x => x[0] === cleanSym));
@@ -17698,6 +17750,7 @@
   }
 
   function getHeatmapStocksForIndex(idxName) {
+    syncHeatmapLivePrices();
     const raw = String(idxName || "All Stocks").trim();
     const clean = raw.replace(/^\d+[\.\s\-]+/, "").trim() || "All Stocks";
     let norm = clean.toUpperCase();
@@ -17890,7 +17943,8 @@
     const activeNorm = activeIndex.trim().toUpperCase();
     const isAllSectors = (activeNorm === "ALL SECTORS" || activeNorm === "SECTORS" || activeNorm === "ALL SECTOR" || activeNorm === "ALL SECTOR HEATMAP");
 
-    // Read live index stats from SC (all 44 sectors) or HEATMAP_INDEX_STATS
+    // Read live index stats from IDX (benchmark), SC (44 sectors), or ScreeningMantis
+    syncHeatmapLivePrices();
     const currentIdxStat = (function () {
       if (isAllSectors) {
         let upCount = 0, downCount = 0;
@@ -17904,11 +17958,28 @@
           isUp: upCount >= downCount
         };
       }
-      if (activeNorm === "ALL STOCKS") {
-        return { price: "25,030.35", chg: "+493.75 (+2.01%) ↗", isUp: true };
+      // Benchmark index check from IDX
+      if (typeof IDX !== "undefined" && Array.isArray(IDX)) {
+        const foundIdx = IDX.find(i => {
+          const name = String(i[0] || "").toUpperCase();
+          return name === activeNorm || (activeNorm === "NIFTY 50" && name.includes("NIFTY 50")) || (activeNorm === "NIFTY BANK" && name.includes("BANK"));
+        });
+        if (foundIdx && typeof foundIdx[1] === "number") {
+          const isUp = foundIdx[2] >= 0;
+          const sign = isUp ? "+" : "";
+          const ptsSign = (foundIdx[3] || 0) >= 0 ? "+" : "";
+          const ptsStr = foundIdx[3] ? `${ptsSign}${Number(foundIdx[3]).toFixed(2)} (` : "";
+          const closeParen = foundIdx[3] ? ")" : "";
+          return {
+            price: Number(foundIdx[1]).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            chg: `${ptsStr}${sign}${Number(foundIdx[2]).toFixed(2)}%${closeParen} ${isUp ? '↗' : '↘'}`,
+            isUp: isUp
+          };
+        }
       }
+      // Sector index check from SC
       const foundSc = (typeof SC !== "undefined") && SC.find(s => s[0].toUpperCase() === activeNorm || s[0].replace(/^NIFTY\s+/, '').toUpperCase() === activeNorm);
-      if (foundSc) {
+      if (foundSc && typeof foundSc[1] === "number") {
         const isUp = foundSc[2] >= 0;
         const sign = isUp ? "+" : "";
         return {
@@ -17920,7 +17991,7 @@
       if (typeof HEATMAP_INDEX_STATS !== "undefined" && HEATMAP_INDEX_STATS[activeIndex]) {
         return HEATMAP_INDEX_STATS[activeIndex];
       }
-      return { price: "25,030.35", chg: "+493.75 (+2.01%) ↗", isUp: true };
+      return { price: "25,514.30", chg: "+286.25 (+1.14%) ↗", isUp: true };
     })();
 
     // Filter stocks according to selected index from all 44 sectors or All Stocks
@@ -18266,11 +18337,24 @@
     if (syncBtn) {
       syncBtn.addEventListener("click", () => {
         syncBtn.classList.add("spinning");
-        if (typeof YahooFinanceLiveService !== "undefined" && YahooFinanceLiveService.syncHeatmapQuotes) {
-          YahooFinanceLiveService.syncHeatmapQuotes(true).finally(() => {
-            syncBtn.classList.remove("spinning");
-          });
+        const promises = [];
+        if (typeof ScreeningMantisClient !== "undefined") {
+          promises.push(ScreeningMantisClient.syncSectorIndices());
+          promises.push(ScreeningMantisClient.syncScannerSnapshot());
         }
+        if (typeof YahooFinanceLiveService !== "undefined" && YahooFinanceLiveService.syncHeatmapQuotes) {
+          promises.push(YahooFinanceLiveService.syncHeatmapQuotes(true));
+        }
+        Promise.allSettled(promises).finally(() => {
+          syncBtn.classList.remove("spinning");
+          if (typeof syncHeatmapLivePrices === "function") syncHeatmapLivePrices();
+          const container = document.getElementById("view-container");
+          if (container && State.view === "heatmap") {
+            container.innerHTML = renderHeatmapView();
+            setupHeatmapEvents();
+          }
+          showToast("Heatmap live market data refreshed!", "🟢");
+        });
       });
     }
 
@@ -26205,8 +26289,18 @@
           }
           window._screeningMantisEmaMap = this.cachedEmaMap;
           console.log(`[ScreeningMantis] Synced ${updatedCount} stocks with verified earnings & live quotes.`);
+          if (typeof syncHeatmapLivePrices === "function") {
+            syncHeatmapLivePrices();
+          }
           if (State.view === "screener") {
             updateScreenerLiveQuotes();
+          }
+          if (State.view === "heatmap") {
+            const container = document.getElementById("view-container");
+            if (container) {
+              container.innerHTML = renderHeatmapView();
+              setupHeatmapEvents();
+            }
           }
           if (State.view === "sector-stocks") {
             const container = document.getElementById("view-container");
@@ -26379,6 +26473,11 @@
           }
         });
       }
+    }
+
+    // Hydrate Heatmap stocks with authentic live prices from ST
+    if (typeof syncHeatmapLivePrices === "function") {
+      syncHeatmapLivePrices();
     }
 
     // Load persisted theme preference (White or Midnight)
