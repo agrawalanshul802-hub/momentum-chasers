@@ -8841,7 +8841,7 @@
     { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-10-19", quarter: "Q2 FY27", epsEst: "₹23.90", revEst: "₹85,100 Cr", status: "Reported", cap: "LC", sector: "Banking" },
     { symbol: "ICICIBANK", company: "ICICI Bank Limited", date: "2026-10-26", quarter: "Q2 FY27", epsEst: "₹17.20", revEst: "₹47,200 Cr", status: "Reported", cap: "LC", sector: "Banking" },
 
-    // November 2026 (Live EarningsPulse.ai Indian Calendar & Q2 Results)
+    // November 2026 (Live Indian Corporate Results)
     { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", quarter: "Q2 FY27", epsEst: "₹34.80", revEst: "₹65,400 Cr", status: "Confirmed", cap: "LC", sector: "IT" },
     { symbol: "SMSPHARMA", company: "SMS Pharmaceuticals Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.20", revEst: "₹240 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
     { symbol: "TATAMOTORS", company: "Tata Motors Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹14.50", revEst: "₹1,08,000 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
@@ -8849,7 +8849,7 @@
     { symbol: "BSE", company: "BSE Limited (Exchange)", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹28.50", revEst: "₹480 Cr", status: "Confirmed", cap: "LC", sector: "Capital Markets" },
     { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹9.80", revEst: "₹1,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Oil & Gas" },
     { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-    // 2026-11-12 (EarningsPulse.ai Main Featured Date)
+    // 2026-11-12 (Featured Benchmark Date)
     { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
     { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
     { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹16,400 Cr", status: "Confirmed", cap: "LC", sector: "Power Generation / Renewables" },
@@ -13088,7 +13088,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.6");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.7");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -20075,7 +20075,7 @@
 
 
   // ==========================================================================
-  // EARNINGS LIVE SERVICE (EarningsPulse.ai & Exchange Feed Gateway)
+  // EARNINGS LIVE SERVICE (Official Exchange & Corporate Gateway)
   // ==========================================================================
   const EarningsLiveService = {
     data: null,
@@ -20243,7 +20243,7 @@
 
     const weekBounds = getWeekBounds(curDate);
 
-    // Auto-fetch fresh live earnings feed from EarningsPulse.ai gateway if not loaded
+    // Auto-fetch fresh live earnings feed from exchange gateway if not loaded
     if (!EarningsLiveService.data && !EarningsLiveService.isSyncing) {
       setTimeout(() => {
         EarningsLiveService.fetchEarnings(curRange, curDate, false);
@@ -20370,8 +20370,7 @@
       rangeHeading = `Corporate Earnings Search for "${State.eventsSearch.trim()}"`;
     }
 
-    const epUrl = `https://earningspulse.ai/earnings?range=${encodeURIComponent(curRange)}&date=${encodeURIComponent(curDate)}`;
-
+    
     function sanitizeEarningsField(val, fallback) {
       if (val === undefined || val === null || val === "undefined" || val === "null" || val === "") {
         return fallback;
@@ -20391,8 +20390,7 @@
       const itemEps = sanitizeEarningsField(item.epsEst, "₹" + Math.max(1, (price * 0.008)).toFixed(2));
       const itemRev = sanitizeEarningsField(item.revEst, "₹" + formatNumber(Math.round(Math.max(50, price * 1.2)), 0) + " Cr");
       const itemSector = sanitizeEarningsField(item.sector || q.sector, "Equities");
-      const itemPulseUrl = `https://earningspulse.ai/earnings?range=day&date=${item.date}`;
-      const tvUrl = `https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(item.symbol)}`;
+            const tvUrl = `https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(item.symbol)}`;
 
       return `
           <tr>
@@ -20427,11 +20425,7 @@
                   title="Open ${item.symbol} Live Candlestick Chart on TradingView" onclick="event.stopPropagation()">
                   <span>📈</span> Chart ↗
                 </a>
-                <a href="${itemPulseUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
-                  style="padding:3px 8px;font-size:11px;text-decoration:none;color:var(--accent);border-color:rgba(59,130,246,0.4);"
-                  title="Open on EarningsPulse.ai">
-                  Pulse ↗
-                </a>
+
                 ${item.resultLink ? `
                   <a href="${item.resultLink}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
                     style="padding:3px 8px;font-size:11px;text-decoration:none;color:#38bdf8;border-color:rgba(56,189,248,0.4);"
@@ -20452,7 +20446,7 @@
     }).join("");
 
     return `
-      <!-- EarningsPulse.ai Live Integration Toolbar -->
+      <!-- Corporate Earnings Live Integration Toolbar -->
       <div class="earnings-pulse-toolbar">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span style="font-size:12px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;">
@@ -20469,11 +20463,11 @@
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;">
-          <button class="row-action-btn" data-action="sync-live-earnings" style="height:32px;padding:4px 12px;font-weight:700;color:var(--g);border-color:rgba(34,197,94,0.4);" title="Refresh live earnings calendar from exchange & EarningsPulse.ai">
+          <button class="row-action-btn" data-action="sync-live-earnings" style="height:32px;padding:4px 12px;font-weight:700;color:var(--g);border-color:rgba(34,197,94,0.4);" title="Refresh live earnings calendar from official exchange feed & concall.in">
             <span>↻</span> <span>Sync Live Earnings</span>
           </button>
-          <a href="${epUrl}" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" title="Open live Indian Earnings Calendar on EarningsPulse.ai (${curRange} view)">
-            <span>⚡</span> Live on EarningsPulse.ai ↗
+          <a href="https://concall.in" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:#c084fc;text-decoration:none;" title="Open live Indian concall &amp; earnings portal on concall.in">
+            <span>🎧</span> concall.in ↗
           </a>
           <a href="https://www.nseindia.com/companies-listing/corporate-filings-announcements" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" style="background:rgba(255,255,255,0.08);border:1px solid var(--ln);color:var(--ink);" title="View Official NSE Corporate Filings &amp; Financial Announcements">
             <span>🏛️</span> NSE Announcements ↗
@@ -20484,9 +20478,9 @@
       <div class="table-card-container" style="margin-top:0">
         <div class="table-summary-bar">
           <span class="match-counter-text">${rangeHeading} — ${data.length} Scheduled Companies</span>
-          <a href="${epUrl}" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:4px;" title="Powered by EarningsPulse.ai live calendar">
-            <span>📊</span> Source: EarningsPulse.ai Live Tracker ↗
-          </a>
+          <span style="font-size:11px;color:var(--g);display:inline-flex;align-items:center;gap:4px;">
+            <span>📊</span> Source: Official Exchange Filings &amp; Concall.in
+          </span>
         </div>
         <div class="table-scroll-wrapper">
           <table class="data-table-main">
@@ -20505,7 +20499,7 @@
               </tr>
             </thead>
             <tbody>
-              ${rows || `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">No scheduled earnings results found matching "<strong>${escapeHtml(State.eventsSearch)}</strong>". <a href="${epUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--g);margin-left:8px;">Check live on EarningsPulse.ai ↗</a></td></tr>`}
+              ${rows || `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">No scheduled earnings results found matching "<strong>${escapeHtml(State.eventsSearch)}</strong>". </td></tr>`}
             </tbody>
           </table>
         </div>
@@ -25959,7 +25953,7 @@
     async preloadStaticData() {
       // 1. Preload 1,630 authentic stock EMAs from local repository cache
       try {
-        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.6", { cache: "no-store" });
+        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.7", { cache: "no-store" });
         if (res.ok) {
           const map = await res.json();
           if (map && typeof map === "object") {
@@ -25975,7 +25969,7 @@
 
       // 2. Preload 46 authentic sector indices with live EMAs
       try {
-        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.6", { cache: "no-store" });
+        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.7", { cache: "no-store" });
         if (resSec.ok) {
           const secList = await resSec.json();
           if (Array.isArray(secList) && secList.length > 0) {
@@ -26008,7 +26002,7 @@
         const urls = [
           localBase ? (localBase + "/api/screeningmantis/sectors") : null,
           "https://www.screeningmantis.com/api/sector-indices",
-          "./data/screeningmantis-sectors.json?v=6.2.6"
+          "./data/screeningmantis-sectors.json?v=6.2.7"
         ].filter(Boolean);
 
         let data = null;
@@ -26069,7 +26063,7 @@
           localBase ? (localBase + "/api/screeningmantis/emas") : null,
           localBase ? (localBase + "/api/screeningmantis/snapshot") : null,
           "https://www.screeningmantis.com/api/scanner/snapshot",
-          "./data/screeningmantis-emas.json?v=6.2.6"
+          "./data/screeningmantis-emas.json?v=6.2.7"
         ].filter(Boolean);
 
         let snapshotResults = null;
@@ -26190,7 +26184,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.6"
+          "./data/authentic-sector-turnover.json?v=6.2.7"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -26236,7 +26230,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.6', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.7', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {

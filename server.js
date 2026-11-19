@@ -5579,7 +5579,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 6a. Live Indian Earnings Calendar & EarningsPulse.ai Gateway Endpoint: /api/earnings/live
+  // 6a. Live Indian Corporate Earnings Calendar Endpoint: /api/earnings/live
   if (pathname === '/api/earnings/live') {
     const range = parsedUrl.query?.range || 'month';
     const date = parsedUrl.query?.date || '2026-11-12';
@@ -5592,7 +5592,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     const ALL_SCHEDULED_EARNINGS = [
-      // November 2026 (Live EarningsPulse.ai Indian Calendar & Q2 Results)
+      // November 2026 (Live Indian Corporate Results)
       { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", quarter: "Q2 FY27", epsEst: "₹34.80", revEst: "₹65,400 Cr", status: "Confirmed", cap: "LC", sector: "IT" },
       { symbol: "SMSPHARMA", company: "SMS Pharmaceuticals Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.20", revEst: "₹240 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
       { symbol: "TATAMOTORS", company: "Tata Motors Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹14.50", revEst: "₹1,08,000 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
@@ -5600,7 +5600,7 @@ const server = http.createServer(async (req, res) => {
       { symbol: "BSE", company: "BSE Limited (Exchange)", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹28.50", revEst: "₹480 Cr", status: "Confirmed", cap: "LC", sector: "Capital Markets" },
       { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹9.80", revEst: "₹1,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Oil & Gas" },
       { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-      // 2026-11-12 (EarningsPulse.ai Main Featured Date)
+      // 2026-11-12 (Featured Benchmark Date)
       { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
       { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
       { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹16,400 Cr", status: "Confirmed", cap: "LC", sector: "Power Generation / Renewables" },
@@ -5665,11 +5665,11 @@ const server = http.createServer(async (req, res) => {
 
     const payload = {
       status: "success",
-      source: "EarningsPulse.ai & Indian Equities Live Gateway",
+      source: "Indian Equities Corporate Results Gateway",
       range: range,
       date: date,
       count: filteredEvents.length,
-      url: `https://earningspulse.ai/earnings?range=${encodeURIComponent(range)}&date=${encodeURIComponent(date)}`,
+      url: "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
       timestamp: new Date().toISOString(),
       events: filteredEvents
     };
