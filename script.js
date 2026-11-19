@@ -10575,14 +10575,36 @@
 
   const getStockEmaStatus = s => {
     if (!s) return [false, false, false, false];
-    const sym = s[0];
-    const price = s[3];
+    const sym = Array.isArray(s) ? s[0] : (s.symbol || s);
     const tf = State.timeframe || "d";
-    const tagsStr = (tf === "w" ? s[6] : s[5]) || s[5] || "";
 
-    // 1. If live or cached chart data exists with real computed EMAs, evaluate directly
+    // 1. Direct Live EMA from ScreeningMantis (Authentic Primary Source)
+    if (typeof ScreeningMantisClient !== "undefined" && typeof ScreeningMantisClient.getStockEma === "function") {
+      const smEma = ScreeningMantisClient.getStockEma(sym, tf);
+      if (smEma) return smEma;
+    }
+    if (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]) {
+      const rec = window._screeningMantisEmaMap[sym];
+      if (tf === "w") {
+        return [
+          Boolean(rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10),
+          Boolean(rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20),
+          Boolean(rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50),
+          Boolean(rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200)
+        ];
+      }
+      return [
+        Boolean(rec.aboveEma10),
+        Boolean(rec.aboveEma20),
+        Boolean(rec.aboveEma50),
+        Boolean(rec.aboveEma200)
+      ];
+    }
+
+    // 2. Fallback: If live or cached chart data exists with real computed EMAs, evaluate directly
     if (CHART_DATA[sym] && CHART_DATA[sym].ema10 && CHART_DATA[sym].ema10.length) {
       const cd = CHART_DATA[sym];
+      const price = Array.isArray(s) ? s[3] : s.price;
       const e10 = cd.ema10[cd.ema10.length - 1];
       const e20 = cd.ema20[cd.ema20.length - 1];
       const e50 = cd.ema50[cd.ema50.length - 1];
@@ -10595,24 +10617,25 @@
       ];
     }
 
-    // 2. High-momentum / all aligned preset tag
+    // 3. High-momentum / all aligned preset tag
+    const tagsStr = (tf === "w" ? (Array.isArray(s) ? s[6] : "") : (Array.isArray(s) ? s[5] : "")) || "";
     if (tagsStr.includes("a")) {
       return [true, true, true, true];
     }
 
-    // 3. Compression / consolidation preset tag
+    // 4. Compression / consolidation preset tag
     if (tagsStr.includes("c")) {
-      return s[4] >= 0 ? [true, true, false, true] : [false, false, false, true];
+      return (Array.isArray(s) && s[4] >= 0) ? [true, true, false, true] : [false, false, false, true];
     }
 
-    // 4. Heuristic based on crossover days and price momentum
-    const isGolden = s[7] !== undefined && s[7] <= 5;
-    const isUp = s[4] >= 0;
+    // 5. Heuristic based on crossover days and price momentum
+    const isGolden = Array.isArray(s) && s[7] !== undefined && s[7] <= 5;
+    const isUp = Array.isArray(s) && s[4] >= 0;
     return [
       isUp,
       isUp || tagsStr.includes("r") || tagsStr.includes("b"),
       isGolden,
-      isGolden || (s[7] !== undefined && s[7] <= 8)
+      isGolden || (Array.isArray(s) && s[7] !== undefined && s[7] <= 8)
     ];
   };
 
@@ -10953,6 +10976,45 @@
         athCell.style.color = ath.dist >= 0 ? "var(--g)" : "var(--r)";
         athCell.title = `All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}`;
         athCell.textContent = `${ath.dist.toFixed(2)}%`;
+      }
+      const emaCell = row.querySelector(".stock-ema-cell");
+      if (emaCell && typeof getStockEmaStatus === "function") {
+        const sSym = row.dataset.symbol || (Array.isArray(s) ? s[0] : s.symbol);
+        const emas = getStockEmaStatus(s);
+        const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sSym]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sSym]);
+        const tf = State.timeframe || "d";
+        const isW = tf === "w";
+        const e10Val = smRec ? (isW ? smRec.wEma10 : smRec.ema10) : null;
+        const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
+        const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
+        const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
+
+        const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${emas[0] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `10 EMA: ${emas[0] ? 'Price Above' : 'Price Below'}`;
+        const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${emas[1] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `20 EMA: ${emas[1] ? 'Price Above' : 'Price Below'}`;
+        const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${emas[2] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `50 EMA: ${emas[2] ? 'Price Above' : 'Price Below'}`;
+        const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${emas[3] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `200 EMA: ${emas[3] ? 'Price Above' : 'Price Below'}`;
+
+        emaCell.innerHTML = `
+          <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
+          <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
+          <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
+          <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
+        `;
+      }
+      const crossCell = row.querySelector(".stock-cross-cell");
+      if (crossCell) {
+        const sSym = row.dataset.symbol || (Array.isArray(s) ? s[0] : s.symbol);
+        const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sSym]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sSym]);
+        const isGolden = (() => {
+          if (smRec && smRec.ema50 != null && smRec.ema200 != null) return smRec.ema50 >= smRec.ema200;
+          if (smRec && smRec.emaCross) return smRec.emaCross === "bull";
+          return Array.isArray(s) ? (s[7] <= 5 || (s[5] && s[5].includes("a"))) : true;
+        })();
+        crossCell.innerHTML = `
+          <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
+            ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
+          </span>
+        `;
       }
     };
 
@@ -11892,7 +11954,12 @@
     return visibleStocks.map(s => {
       const isStarred = State.watchlist.includes(s[0]);
       const tagsStr = s[State.timeframe === "w" ? 6 : 5] || "";
-      const isGolden = s[7] <= 5 || (s[5] && s[5].includes("a"));
+      const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[s[0]]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[s[0]]);
+      const isGolden = (() => {
+        if (smRec && smRec.ema50 != null && smRec.ema200 != null) return smRec.ema50 >= smRec.ema200;
+        if (smRec && smRec.emaCross) return smRec.emaCross === "bull";
+        return s[7] <= 5 || (s[5] && s[5].includes("a"));
+      })();
       const emas = getStockEmaStatus(s);
       const capFull = s[1] === "MC" ? "Mid Cap" : s[1] === "SC" ? "Small Cap" : s[1] === "LC" ? "Large Cap" : (s[1] || "");
       const ath = getStockAthDistance(s);
@@ -11979,14 +12046,30 @@
               </div>
             </td>` : ''}
           ${State.screenerCols.ema !== false ? `
-            <td style="text-align:center;white-space:nowrap">
-              <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="10 EMA: ${emas[0] ? "Price Above 10 EMA" : "Price Below 10 EMA"}">10</span>
-              <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="20 EMA: ${emas[1] ? "Price Above 20 EMA" : "Price Below 20 EMA"}">20</span>
-              <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="50 EMA: ${emas[2] ? "Price Above 50 EMA" : "Price Below 50 EMA"}">50</span>
-              <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="200 EMA: ${emas[3] ? "Price Above 200 EMA" : "Price Below 200 EMA"}">200</span>
+            <td style="text-align:center;white-space:nowrap" class="stock-ema-cell">
+              ${(() => {
+                const tf = State.timeframe || "d";
+                const isW = tf === "w";
+                const e10Val = smRec ? (isW ? smRec.wEma10 : smRec.ema10) : null;
+                const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
+                const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
+                const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
+
+                const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${emas[0] ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${emas[0] ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
+                const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${emas[1] ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${emas[1] ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
+                const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${emas[2] ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (ScreeningMantis Live)` : `50 EMA: ${emas[2] ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
+                const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${emas[3] ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (ScreeningMantis Live)` : `200 EMA: ${emas[3] ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
+
+                return `
+                  <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
+                  <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
+                  <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
+                  <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
+                `;
+              })()}
             </td>` : ''}
           ${State.screenerCols.cross !== false ? `
-            <td style="text-align:center">
+            <td style="text-align:center" class="stock-cross-cell">
               <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
                 ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
               </span>
@@ -12614,22 +12697,28 @@
 
   function getSectorTimeframeMetrics(sec, tf) {
     const [name, basePrice, dayChg, dayRsi, dayEmas, dayDist, crossDays] = sec;
-    const athPrice = SECTOR_ATH[name] || Math.round(basePrice * 1.05 * 10) / 10;
-    const athDist = Math.round(((basePrice - athPrice) / athPrice) * 10000) / 100;
-    const atlPrice = SECTOR_ATL[name] || Math.round(basePrice * 0.35 * 10) / 10;
-    const atlDist = Math.round(((basePrice - atlPrice) / atlPrice) * 10000) / 100;
+    const sm = sec._sm || (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedSectorIndices && ScreeningMantisClient.cachedSectorIndices.find(x => x.symbol === name || x.displayName === name));
+
+    const curPrice = (sm && typeof sm.currentClose === "number") ? sm.currentClose : basePrice;
+    const athPrice = SECTOR_ATH[name] || Math.round(curPrice * 1.05 * 10) / 10;
+    const athDist = Math.round(((curPrice - athPrice) / athPrice) * 10000) / 100;
+    const atlPrice = SECTOR_ATL[name] || Math.round(curPrice * 0.35 * 10) / 10;
+    const atlDist = Math.round(((curPrice - atlPrice) / atlPrice) * 10000) / 100;
 
     if (tf === "w") {
-      // Weekly multi-day structural momentum
-      const weekChg = Math.round((dayChg * 2.8 + (dayDist * 0.45) + (dayChg >= 0 ? 0.75 : -0.55)) * 100) / 100;
-      const weekRsi = Math.round(Math.min(84, Math.max(34, dayRsi + (dayChg >= 0 ? 3.8 : -3.2))) * 10) / 10;
-      const weekDist = Math.round((dayDist * 1.85 + (weekChg * 0.28)) * 100) / 100;
-      const weekEmas = dayEmas.slice();
-      if (weekRsi > 58) weekEmas[2] = 1;
-      if (weekRsi > 52) weekEmas[3] = 1;
+      const weekChg = (sm && typeof sm.chg1w === "number") ? sm.chg1w : (Math.round((dayChg * 2.8 + (dayDist * 0.45) + (dayChg >= 0 ? 0.75 : -0.55)) * 100) / 100);
+      const weekRsi = (sm && typeof sm.wRsi === "number") ? sm.wRsi : (Math.round(Math.min(84, Math.max(34, dayRsi + (dayChg >= 0 ? 3.8 : -3.2))) * 10) / 10);
+      const weekDist = (sm && typeof sm.emaDistPct === "number") ? sm.emaDistPct : (Math.round((dayDist * 1.85 + (weekChg * 0.28)) * 100) / 100);
+      const weekEmas = sm ? [
+        Boolean(sm.wAboveEma10 !== undefined ? sm.wAboveEma10 : sm.aboveEma10),
+        Boolean(sm.wAboveEma20 !== undefined ? sm.wAboveEma20 : sm.aboveEma20),
+        Boolean(sm.wAboveEma50 !== undefined ? sm.wAboveEma50 : sm.aboveEma50),
+        Boolean(sm.wAboveEma200 !== undefined ? sm.wAboveEma200 : sm.aboveEma200)
+      ] : dayEmas.slice();
+
       return {
         name,
-        price: basePrice,
+        price: curPrice,
         chg: weekChg,
         rsi: weekRsi,
         emas: weekEmas,
@@ -12638,24 +12727,33 @@
         athDist,
         atlPrice,
         atlDist,
-        isGolden: Boolean(weekEmas[2] && weekEmas[3]),
-        raw: sec
+        isGolden: sm ? Boolean(sm.wEmaCross === "bull" || (sm.wAboveEma50 && sm.wAboveEma200)) : Boolean(weekEmas[2] && weekEmas[3]),
+        raw: sec,
+        sm
       };
     }
     // Default Daily & All-Time High / Low Mode
+    const emas = sm ? [
+      Boolean(sm.aboveEma10),
+      Boolean(sm.aboveEma20),
+      Boolean(sm.aboveEma50),
+      Boolean(sm.aboveEma200)
+    ] : dayEmas;
+
     return {
       name,
-      price: basePrice,
-      chg: dayChg,
-      rsi: dayRsi,
-      emas: dayEmas,
-      dist: dayDist,
+      price: curPrice,
+      chg: (sm && typeof sm.chg1d === "number") ? sm.chg1d : dayChg,
+      rsi: (sm && typeof sm.rsi === "number") ? sm.rsi : dayRsi,
+      emas: emas,
+      dist: (sm && typeof sm.emaDistPct === "number") ? sm.emaDistPct : dayDist,
       athPrice,
       athDist,
       atlPrice,
       atlDist,
-      isGolden: Boolean(dayEmas[2] && dayEmas[3]),
-      raw: sec
+      isGolden: sm ? Boolean(sm.emaCross === "bull" || (sm.aboveEma50 && sm.aboveEma200)) : Boolean(dayEmas[2] && dayEmas[3]),
+      raw: sec,
+      sm
     };
   }
 
@@ -12930,7 +13028,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.3");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.4");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -13393,10 +13491,10 @@
                       </span>
                     </td>
                     <td style="text-align:center">
-                      <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="10 EMA">10</span>
-                      <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="20 EMA">20</span>
-                      <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="50 EMA">50</span>
-                      <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="200 EMA">200</span>
+                      <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="10 EMA · ${emas[0] ? 'Above' : 'Below'} 10 EMA (ScreeningMantis Live)">10</span>
+                      <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="20 EMA · ${emas[1] ? 'Above' : 'Below'} 20 EMA (ScreeningMantis Live)">20</span>
+                      <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="50 EMA · ${emas[2] ? 'Above' : 'Below'} 50 EMA (ScreeningMantis Live)">50</span>
+                      <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="200 EMA · ${emas[3] ? 'Above' : 'Below'} 200 EMA (ScreeningMantis Live)">200</span>
                     </td>
                     <td class="font-mono" style="text-align:right">
                       ${(isAllTimeCol && isLowMode) ? `
@@ -25574,13 +25672,108 @@
     lastSynced: null,
     cachedSectorIndices: null,
     cachedSnapshotResults: null,
+    cachedEmaMap: null,
+
+    getStockEma(symbol, tf = "d") {
+      if (!symbol) return null;
+      const cleanSym = String(symbol).toUpperCase().trim();
+      const rec = (this.cachedEmaMap && this.cachedEmaMap[cleanSym]) ||
+                  (window._screeningMantisEmaMap && window._screeningMantisEmaMap[cleanSym]);
+      if (!rec) return null;
+
+      if (tf === "w") {
+        return [
+          Boolean(rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10),
+          Boolean(rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20),
+          Boolean(rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50),
+          Boolean(rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200)
+        ];
+      }
+
+      return [
+        Boolean(rec.aboveEma10),
+        Boolean(rec.aboveEma20),
+        Boolean(rec.aboveEma50),
+        Boolean(rec.aboveEma200)
+      ];
+    },
+
+    getSectorEma(sectorSym, tf = "d") {
+      if (!sectorSym) return null;
+      const list = this.cachedSectorIndices || [];
+      const s = list.find(x => x.symbol === sectorSym || x.displayName === sectorSym);
+      if (!s) return null;
+
+      if (tf === "w") {
+        return [
+          Boolean(s.wAboveEma10 !== undefined ? s.wAboveEma10 : s.aboveEma10),
+          Boolean(s.wAboveEma20 !== undefined ? s.wAboveEma20 : s.aboveEma20),
+          Boolean(s.wAboveEma50 !== undefined ? s.wAboveEma50 : s.aboveEma50),
+          Boolean(s.wAboveEma200 !== undefined ? s.wAboveEma200 : s.aboveEma200)
+        ];
+      }
+
+      return [
+        Boolean(s.aboveEma10),
+        Boolean(s.aboveEma20),
+        Boolean(s.aboveEma50),
+        Boolean(s.aboveEma200)
+      ];
+    },
+
+    async preloadStaticData() {
+      // 1. Preload 1,630 authentic stock EMAs from local repository cache
+      try {
+        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.4", { cache: "no-store" });
+        if (res.ok) {
+          const map = await res.json();
+          if (map && typeof map === "object") {
+            this.cachedEmaMap = map;
+            window._screeningMantisEmaMap = map;
+            console.log(`[ScreeningMantis] Preloaded ${Object.keys(map).length} authentic stock EMAs.`);
+            if (State.view === "screener") {
+              updateScreenerLiveQuotes();
+            }
+          }
+        }
+      } catch (_) {}
+
+      // 2. Preload 46 authentic sector indices with live EMAs
+      try {
+        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.4", { cache: "no-store" });
+        if (resSec.ok) {
+          const secList = await resSec.json();
+          if (Array.isArray(secList) && secList.length > 0) {
+            this.cachedSectorIndices = secList;
+            SC.forEach(sec => {
+              const sm = secList.find(x => x.symbol === sec[0] || x.displayName === sec[0]);
+              if (sm) {
+                sec[1] = sm.currentClose;
+                sec[2] = typeof sm.chg1d === "number" ? sm.chg1d : sec[2];
+                sec[3] = typeof sm.rsi === "number" ? sm.rsi : sec[3];
+                sec[4] = [
+                  sm.aboveEma10 ? 1 : 0,
+                  sm.aboveEma20 ? 1 : 0,
+                  sm.aboveEma50 ? 1 : 0,
+                  sm.aboveEma200 ? 1 : 0
+                ];
+                sec[5] = typeof sm.emaDistPct === "number" ? sm.emaDistPct : sec[5];
+                sec[6] = typeof sm.emaCrossCandles === "number" ? sm.emaCrossCandles : sec[6];
+                sec._sm = sm;
+              }
+            });
+          }
+        }
+      } catch (_) {}
+    },
 
     async syncSectorIndices() {
       try {
         const localBase = getApiBase();
         const urls = [
           localBase ? (localBase + "/api/screeningmantis/sectors") : null,
-          "https://www.screeningmantis.com/api/sector-indices"
+          "https://www.screeningmantis.com/api/sector-indices",
+          "./data/screeningmantis-sectors.json?v=6.2.4"
         ].filter(Boolean);
 
         let data = null;
@@ -25616,6 +25809,7 @@
               ];
               sec[5] = typeof sm.emaDistPct === "number" ? sm.emaDistPct : sec[5];
               sec[6] = typeof sm.emaCrossCandles === "number" ? sm.emaCrossCandles : sec[6];
+              sec._sm = sm;
               updatedCount++;
             }
           });
@@ -25637,8 +25831,10 @@
       try {
         const localBase = getApiBase();
         const urls = [
+          localBase ? (localBase + "/api/screeningmantis/emas") : null,
           localBase ? (localBase + "/api/screeningmantis/snapshot") : null,
-          "https://www.screeningmantis.com/api/scanner/snapshot"
+          "https://www.screeningmantis.com/api/scanner/snapshot",
+          "./data/screeningmantis-emas.json?v=6.2.4"
         ].filter(Boolean);
 
         let snapshotResults = null;
@@ -25647,6 +25843,12 @@
             const res = await fetch(url, { cache: "no-store" });
             if (res.ok) {
               const json = await res.json();
+              if (json.emas && typeof json.emas === "object") {
+                this.cachedEmaMap = json.emas;
+                window._screeningMantisEmaMap = this.cachedEmaMap;
+                console.log(`[ScreeningMantis] Live EMA feed synced with ${Object.keys(json.emas).length} stocks.`);
+                if (State.view === "screener") updateScreenerLiveQuotes();
+              }
               const results = json.snapshot?.results || json.results;
               if (Array.isArray(results) && results.length > 0) {
                 snapshotResults = results;
@@ -25658,9 +25860,32 @@
 
         if (Array.isArray(snapshotResults) && snapshotResults.length > 0) {
           this.cachedSnapshotResults = snapshotResults;
+          if (!this.cachedEmaMap) this.cachedEmaMap = {};
           let updatedCount = 0;
           for (const s of snapshotResults) {
             const sym = s.symbol;
+            if (sym) {
+              this.cachedEmaMap[sym] = {
+                aboveEma10: Boolean(s.aboveEma10),
+                aboveEma20: Boolean(s.aboveEma20),
+                aboveEma50: Boolean(s.aboveEma50),
+                aboveEma200: Boolean(s.aboveEma200),
+                wAboveEma10: Boolean(s.wAboveEma10),
+                wAboveEma20: Boolean(s.wAboveEma20),
+                wAboveEma50: Boolean(s.wAboveEma50),
+                wAboveEma200: Boolean(s.wAboveEma200),
+                ema10: s.ema10,
+                ema20: s.ema20,
+                ema50: s.ema50,
+                ema200: s.ema200,
+                wEma10: s.wEma10,
+                wEma20: s.wEma20,
+                wEma50: s.wEma50,
+                wEma200: s.wEma200,
+                emaCross: s.emaCross,
+                emaCrossCandles: s.emaCrossCandles
+              };
+            }
             const stock = (typeof ST_MAP !== "undefined" && ST_MAP[sym]) || (typeof ST !== "undefined" && ST.find(x => x[0] === sym));
             if (stock) {
               const mapObj = ST_MAP[sym] || {};
@@ -25706,6 +25931,7 @@
               updatedCount++;
             }
           }
+          window._screeningMantisEmaMap = this.cachedEmaMap;
           console.log(`[ScreeningMantis] Synced ${updatedCount} stocks with verified earnings & live quotes.`);
           if (State.view === "screener") {
             updateScreenerLiveQuotes();
@@ -25729,7 +25955,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.3"
+          "./data/authentic-sector-turnover.json?v=6.2.4"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25757,6 +25983,7 @@
     async syncAll() {
       if (this.isSyncing) return;
       this.isSyncing = true;
+      await this.preloadStaticData();
       await Promise.allSettled([
         this.syncSectorIndices(),
         this.syncScannerSnapshot(),
@@ -25774,7 +26001,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.3', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.4', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {

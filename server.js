@@ -3613,10 +3613,21 @@ const ScreeningMantisService = {
         this.cachedSectors = data;
         this.lastSectorsTime = Date.now();
         console.log(`[ScreeningMantis] Synced ${data.length} live sector indices.`);
+        try {
+          fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-sectors.json'), JSON.stringify(data, null, 2));
+        } catch (_) {}
         return data;
       }
     } catch (err) {
       console.warn('[ScreeningMantis] Error syncing sector indices:', err.message);
+    }
+    if (!this.cachedSectors) {
+      try {
+        const p = path.join(__dirname, 'data', 'screeningmantis-sectors.json');
+        if (fs.existsSync(p)) {
+          this.cachedSectors = JSON.parse(fs.readFileSync(p, 'utf8'));
+        }
+      } catch (_) {}
     }
     return this.cachedSectors || [];
   },
@@ -3631,12 +3642,90 @@ const ScreeningMantisService = {
         this.cachedSnapshot = data;
         this.lastSnapshotTime = Date.now();
         console.log(`[ScreeningMantis] Synced scanner snapshot with ${data.snapshot.results.length} stocks.`);
+        try {
+          const map = {};
+          for (const r of data.snapshot.results) {
+            if (r.symbol) {
+              map[r.symbol] = {
+                aboveEma10: Boolean(r.aboveEma10),
+                aboveEma20: Boolean(r.aboveEma20),
+                aboveEma50: Boolean(r.aboveEma50),
+                aboveEma200: Boolean(r.aboveEma200),
+                wAboveEma10: Boolean(r.wAboveEma10),
+                wAboveEma20: Boolean(r.wAboveEma20),
+                wAboveEma50: Boolean(r.wAboveEma50),
+                wAboveEma200: Boolean(r.wAboveEma200),
+                ema10: r.ema10,
+                ema20: r.ema20,
+                ema50: r.ema50,
+                ema200: r.ema200,
+                wEma10: r.wEma10,
+                wEma20: r.wEma20,
+                wEma50: r.wEma50,
+                wEma200: r.wEma200,
+                emaCross: r.emaCross,
+                emaCrossCandles: r.emaCrossCandles
+              };
+            }
+          }
+          fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-emas.json'), JSON.stringify(map, null, 2));
+        } catch (_) {}
         return data;
       }
     } catch (err) {
       console.warn('[ScreeningMantis] Error syncing scanner snapshot:', err.message);
     }
+    if (!this.cachedSnapshot) {
+      try {
+        const p = path.join(__dirname, 'data', 'screeningmantis-emas.json');
+        if (fs.existsSync(p)) {
+          const map = JSON.parse(fs.readFileSync(p, 'utf8'));
+          const results = Object.keys(map).map(sym => ({ symbol: sym, ...map[sym] }));
+          this.cachedSnapshot = { success: true, snapshot: { results } };
+        }
+      } catch (_) {}
+    }
     return this.cachedSnapshot || null;
+  },
+
+  async getEmaMap(force = false) {
+    const snap = await this.getScannerSnapshot(force);
+    const results = (snap && snap.snapshot && Array.isArray(snap.snapshot.results)) ? snap.snapshot.results : [];
+    if (results.length > 0) {
+      const map = {};
+      for (const r of results) {
+        if (r.symbol) {
+          map[r.symbol] = {
+            aboveEma10: Boolean(r.aboveEma10),
+            aboveEma20: Boolean(r.aboveEma20),
+            aboveEma50: Boolean(r.aboveEma50),
+            aboveEma200: Boolean(r.aboveEma200),
+            wAboveEma10: Boolean(r.wAboveEma10),
+            wAboveEma20: Boolean(r.wAboveEma20),
+            wAboveEma50: Boolean(r.wAboveEma50),
+            wAboveEma200: Boolean(r.wAboveEma200),
+            ema10: r.ema10,
+            ema20: r.ema20,
+            ema50: r.ema50,
+            ema200: r.ema200,
+            wEma10: r.wEma10,
+            wEma20: r.wEma20,
+            wEma50: r.wEma50,
+            wEma200: r.wEma200,
+            emaCross: r.emaCross,
+            emaCrossCandles: r.emaCrossCandles
+          };
+        }
+      }
+      return map;
+    }
+    try {
+      const p = path.join(__dirname, 'data', 'screeningmantis-emas.json');
+      if (fs.existsSync(p)) {
+        return JSON.parse(fs.readFileSync(p, 'utf8'));
+      }
+    } catch (_) {}
+    return {};
   },
 
   async getBreadthHistory(limit = 30, force = false) {
@@ -5860,6 +5949,22 @@ const server = http.createServer(async (req, res) => {
         'Cache-Control': 'public, max-age=120'
       });
       res.end(JSON.stringify({ success: true, snapshot: snapshot?.snapshot || null }));
+      return;
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: e.message }));
+      return;
+    }
+  }
+
+  if (pathname === '/api/screeningmantis/emas') {
+    try {
+      const emas = await ScreeningMantisService.getEmaMap(parsedUrl.query?.refresh === '1');
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=120'
+      });
+      res.end(JSON.stringify({ success: true, count: Object.keys(emas).length, source: 'screeningmantis.com', emas }));
       return;
     } catch (e) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
