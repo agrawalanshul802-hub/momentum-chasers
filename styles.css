@@ -13316,22 +13316,25 @@ body.theme-white .dms-delay {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  font-size: 10px;
+  width: 17px;
+  height: 17px;
+  font-size: 11px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 800;
   line-height: 1;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--mu, #94a3b8);
   cursor: pointer;
   transition: all 0.15s ease;
   padding: 0;
   margin-left: 6px;
   vertical-align: middle;
-  opacity: 0.65;
+  opacity: 0.8;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
 }
 
 .data-table-main th:hover .col-close-btn,

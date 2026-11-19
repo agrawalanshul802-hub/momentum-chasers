@@ -11990,6 +11990,35 @@
     }
   }
 
+  window.hideScreenerCol = function (e, col) {
+    if (e) {
+      if (typeof e.stopPropagation === "function") e.stopPropagation();
+      if (typeof e.preventDefault === "function") e.preventDefault();
+      if (e.cancelBubble !== undefined) e.cancelBubble = true;
+    }
+    if (!col) return;
+    if (!State.screenerCols) {
+      State.screenerCols = { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
+    }
+    State.screenerCols[col] = false;
+    try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
+    renderActiveView();
+    const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "50×200 Cross", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
+    showToast(`Removed "${colNames[col] || col}" column. Click "↺ Reset Columns" to restore anytime.`, "✂️");
+  };
+
+  window.restoreAllScreenerCols = function (e) {
+    if (e) {
+      if (typeof e.stopPropagation === "function") e.stopPropagation();
+      if (typeof e.preventDefault === "function") e.preventDefault();
+      if (e.cancelBubble !== undefined) e.cancelBubble = true;
+    }
+    State.screenerCols = { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
+    try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
+    renderActiveView();
+    showToast("All table columns restored!", "🎛");
+  };
+
   function renderScreenerView() {
     const screenerSectors = getScreener44Sectors();
 
@@ -12247,7 +12276,7 @@
               <div class="screener-cols-dropdown ${State.screenerColsOpen ? 'show' : ''}" id="screener-cols-dropdown">
                 <div class="screener-cols-dropdown-header">
                   <span>Manage Columns</span>
-                  <button class="cols-reset-btn" data-action="restore-all-screener-cols" title="Restore all columns & filters">↺ Reset All</button>
+                  <button class="cols-reset-btn" data-action="restore-all-screener-cols" onclick="restoreAllScreenerCols(event)" title="Restore all columns & filters">↺ Reset All</button>
                 </div>
                 <label class="screener-col-item">
                   <input type="checkbox" data-action="toggle-screener-col-check" data-col="cap" ${State.screenerCols.cap !== false ? 'checked' : ''} />
@@ -12326,7 +12355,7 @@
               <span style="font-size:14px;">✂️</span>
               <span><strong>${hiddenColsList.length} column${hiddenColsList.length > 1 ? 's' : ''} removed</strong>: ${hiddenColsList.map(c => colLabels[c] || c).join(', ')}.</span>
             </div>
-            <button data-action="restore-all-screener-cols" style="background:var(--g);color:#0a0e14;font-weight:700;font-size:11px;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+            <button data-action="restore-all-screener-cols" onclick="restoreAllScreenerCols(event)" style="background:var(--g);color:#0a0e14;font-weight:700;font-size:11px;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
               <span>↺</span>
               <span>Restore All Columns</span>
             </button>
@@ -12339,32 +12368,32 @@
                 <th class="${getThClass('star')}" style="width:36px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
                 ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
                   <span>Cap</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="hideScreenerCol(event, 'cap')">✕</button>
                 </th>` : ''}
                 <th class="${getThClass('ticker')}" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
                 ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
                   <span>Sector</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="hideScreenerCol(event, 'sector')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
                   <span>Price (₹)</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="hideScreenerCol(event, 'price')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
                   <span>Day Chg</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="hideScreenerCol(event, 'chg')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
                   <span>% From ATH 📈</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="hideScreenerCol(event, 'athDist')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
                   <span>Earnings 📅</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="hideScreenerCol(event, 'earnings')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
                   <span>EMA</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="event.stopPropagation()">✕</button>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="hideScreenerCol(event, 'ema')">✕</button>
                 </th>` : ''}
                 ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by 50×200 EMA Cross (Golden Cross first / Death Cross first)">
                   <div style="display:inline-flex;align-items:center;gap:6px">
@@ -12372,7 +12401,7 @@
                       <div>50×200 EMA Cross</div>
                       <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
                     </div>
-                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="event.stopPropagation()">✕</button>
+                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
                   </div>
                 </th>` : ''}
               </tr>
@@ -24496,14 +24525,9 @@
         renderActiveView();
       }
       else if (action === "hide-screener-col") {
-        if (e && e.stopPropagation) e.stopPropagation();
         const col = target.dataset.col;
-        if (col && State.screenerCols) {
-          State.screenerCols[col] = false;
-          try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
-          renderActiveView();
-          const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "50×200 Cross", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
-          showToast(`Removed "${colNames[col] || col}" column. Click "↺ Reset Columns" to restore anytime.`, "✂️");
+        if (col && typeof window.hideScreenerCol === "function") {
+          window.hideScreenerCol(e, col);
         }
         return;
       }
@@ -24538,11 +24562,9 @@
         }
       }
       else if (action === "restore-all-screener-cols") {
-        if (e && e.stopPropagation) e.stopPropagation();
-        State.screenerCols = { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
-        try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
-        renderActiveView();
-        showToast("All table columns restored!", "🎛");
+        if (typeof window.restoreAllScreenerCols === "function") {
+          window.restoreAllScreenerCols(e);
+        }
         return;
       }
       else if (action === "toggle-ema-line") {
@@ -25298,7 +25320,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.1', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.2', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
