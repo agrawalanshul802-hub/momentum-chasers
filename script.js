@@ -12173,6 +12173,15 @@
             <p class="view-subheading">Precision technical and financial filters run against daily and weekly momentum criteria.</p>
           </div>
         </div>
+
+        <div class="screener-title-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
+          <!-- Screener Stock Search Input -->
+          <div style="display:inline-flex;align-items:center;position:relative;" class="screener-search-wrap">
+            <span style="position:absolute;left:12px;color:var(--mu);font-size:13px;pointer-events:none;display:flex;align-items:center;" aria-hidden="true">🔍</span>
+            <input type="text" id="screener-search-input" placeholder="Search 2,000+ stocks..." value="${escapeHtml(State.searchQuery || '')}" style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 30px 8px 34px;font-size:13px;color:var(--ink);width:240px;outline:none;transition:border-color 0.2s, box-shadow 0.2s;" />
+            ${State.searchQuery ? `<button id="screener-clear-search" style="position:absolute;right:10px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 2px;display:flex;align-items:center;" title="Clear search">✕</button>` : ''}
+          </div>
+        </div>
       </div>
 
       <!-- Screener Control Card -->
@@ -12214,18 +12223,13 @@
             </div>
           </div>
 
-          <!-- Screener Stock Search Input -->
-          <div style="display:inline-flex;align-items:center;position:relative;" class="screener-search-wrap">
-            <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;display:flex;align-items:center;" aria-hidden="true">🔍</span>
-            <input type="text" id="screener-search-input" placeholder="Search 2,000+ stocks..." value="${escapeHtml(State.searchQuery || '')}" style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:6px 26px 6px 30px;font-size:12px;color:var(--ink);width:175px;outline:none;transition:border-color 0.2s, box-shadow 0.2s;" />
-            ${State.searchQuery ? `<button id="screener-clear-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0 2px;display:flex;align-items:center;" title="Clear search">✕</button>` : ''}
-          </div>
-
           <!-- Clear All Filters Button -->
-          <button class="clear-all-filters-btn" id="screener-clear-all" style="margin-left:auto">Clear All Filters</button>
-          <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
-            <span>${State.presetsCollapsed ? "Show All Chips ▾" : "Hide Chips ▴"}</span>
-          </button>
+          <div style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;">
+            <button class="clear-all-filters-btn" id="screener-clear-all">Clear All Filters</button>
+            <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
+              <span>${State.presetsCollapsed ? "Show All Chips ▾" : "Hide Chips ▴"}</span>
+            </button>
+          </div>
         </div>
 
         <div id="screener-presets-wrap" style="${State.presetsCollapsed ? 'display:none;' : ''}">
@@ -12926,7 +12930,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.2");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.3");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -25725,7 +25729,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.2"
+          "./data/authentic-sector-turnover.json?v=6.2.3"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25770,7 +25774,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.2', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.3', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
