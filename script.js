@@ -11353,7 +11353,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -12093,7 +12093,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -13261,7 +13261,7 @@
       ${renderSectorTabsHeader()}
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -13991,7 +13991,7 @@
         <!-- View Header -->
         <div class="view-title-bar">
           <div class="view-title-left">
-            <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div>
@@ -14776,7 +14776,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -17697,7 +17697,7 @@
         <!-- Top Header: Title + Live Index Stats -->
         <div class="heatmap-header-row">
           <div class="heatmap-title-wrap">
-            <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <h2 class="heatmap-main-title">
@@ -18051,7 +18051,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -18421,7 +18421,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -18634,7 +18634,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -23706,16 +23706,19 @@
     }, 290);
   }
 
-  function navigateBack() {
+  window.navigateBack = function () {
     let dest = State.previousView;
-    if (!dest || dest === State.view || dest === "login") {
-      dest = "home";
+    if (!dest || dest === State.view || dest === "login" || dest === "sectors") {
+      dest = "screener";
     }
     State.previousView = State.view;
     State.view = dest;
     window.location.hash = dest;
     renderActiveView();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  function navigateBack() {
+    return window.navigateBack();
   }
 
   function openStockDetail(sym) {
@@ -25320,7 +25323,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.3', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.4', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
