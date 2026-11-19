@@ -12934,7 +12934,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.1.8");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.1.9");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -13696,10 +13696,7 @@
     if (isTurnover && !State.sectorTurnoverData) {
       fetchSectorTurnoverData();
     }
-    return `
-      ${renderSectorTabsHeader()}
-      ${isTurnover ? renderSectorTurnoverContent() : renderSectorIndicesContent()}
-    `;
+    return isTurnover ? renderSectorTurnoverContent() : renderSectorIndicesContent();
   }
 
   function setupSectorTurnoverEvents() {
@@ -25736,7 +25733,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.1.8"
+          "./data/authentic-sector-turnover.json?v=6.1.9"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25781,7 +25778,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.8', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.9', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
