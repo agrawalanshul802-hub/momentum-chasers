@@ -4558,7 +4558,7 @@
   // ---------------------------------------------------------------------------
   const MASTER_44_SECTORS = [
     { key: "NIFTY AUTO", label: "Automobiles & Auto (NIFTY AUTO)", broad: "Automobiles & Auto", icon: "🚗", desc: "Automobiles, 2-Wheelers, Commercial Vehicles & EV Ancillaries", extraSyms: ["TMPV", "M&M", "MARUTI", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF", "JBMA", "OLAELEC", "OLECTRA", "EXIDEIND", "ARE&M", "CRAFTSMAN", "CEATLTD", "GABRIEL", "JKTYRE", "MINDACORP", "MSUMI", "RKFORGE", "SANSERA", "SONACOMS", "TENNIND", "ZFCVINDIA", "NDRAUTO", "SHRIPISTON"] },
-    { key: "NIFTY BANK", label: "Banking & Finance (NIFTY BANK)", broad: "Banking & Finance", icon: "🏦", desc: "Scheduled Commercial Banks, PSU & Private Banking Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "YESBANK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB", "BANDHANBNK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK"] },
+    { key: "NIFTY BANK", label: "Nifty Bank Index (NIFTY BANK)", broad: null, icon: "🏦", desc: "Official NIFTY Bank Index — 14 Scheduled Commercial, Private & PSU Banking Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "BANDHANBNK", "RBLBANK"] },
     { key: "NIFTY PVT BANK", label: "Private Sector Banks (NIFTY PVT BANK)", broad: null, icon: "🏛️", desc: "Scheduled Private Sector Commercial Banks & Financial Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK", "CSBBANK"] },
     { key: "NIFTY PSU BANK", label: "Public Sector Banks (NIFTY PSU BANK)", broad: null, icon: "🏢", desc: "Public Sector Commercial Banks & State-Owned Financial Institutions", extraSyms: ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB"] },
     { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: null, icon: "💳", desc: "NBFCs, Consumer Credit, Housing Finance & Insurance Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
@@ -4623,7 +4623,8 @@
       (norm === "AUTOMOBILES" && s.key === "NIFTY AUTO") ||
       (norm === "PRIVATE BANKS" && s.key === "NIFTY PVT BANK") ||
       (norm === "PUBLIC SECTOR BANKS" && s.key === "NIFTY PSU BANK") ||
-      (norm === "BANKING & FINANCE" && s.key === "NIFTY BANK") ||
+      ((norm === "BANK NIFTY" || norm === "BANKING" || norm === "BANK") && s.key === "NIFTY BANK") ||
+      (norm === "BANKING & FINANCE" && s.key === "NIFTY FIN SERVICE") ||
       (norm === "INFORMATION TECHNOLOGY" && s.key === "NIFTY IT") ||
       (norm === "PHARMACEUTICALS" && s.key === "NIFTY PHARMA") ||
       (norm === "POWER & UTILITIES" && s.key === "NIFTY ENERGY") ||
@@ -4753,7 +4754,7 @@
   // Sector Constituent Stocks Base Universe (Fallback & Reference)
   const SECTOR_BASE_CONSTITUENTS = {
     "NIFTY AUTO": { icon: "🚗", description: "Automobiles, 2-Wheelers & EV Ancillaries" },
-    "NIFTY BANK": { icon: "🏦", description: "Scheduled Commercial Banks & Financial Leaders" },
+    "NIFTY BANK": { icon: "🏦", description: "Official NIFTY Bank Index — 14 Commercial, Private & PSU Banking Leaders" },
     "NIFTY PVT BANK": { icon: "🏛️", description: "Scheduled Private Sector Commercial Banks" },
     "NIFTY PSU BANK": { icon: "🏢", description: "State-Owned Public Sector Commercial Banks" },
     "NIFTY FIN SERVICE": { icon: "💳", description: "NBFCs, Consumer Credit, Housing & Insurance" },
@@ -4782,7 +4783,8 @@
       (norm === "AUTOMOBILES" && s.key === "NIFTY AUTO") ||
       (norm === "PRIVATE BANKS" && s.key === "NIFTY PVT BANK") ||
       (norm === "PUBLIC SECTOR BANKS" && s.key === "NIFTY PSU BANK") ||
-      (norm === "BANKING & FINANCE" && s.key === "NIFTY BANK") ||
+      ((norm === "BANK NIFTY" || norm === "BANKING" || norm === "BANK") && s.key === "NIFTY BANK") ||
+      (norm === "BANKING & FINANCE" && s.key === "NIFTY FIN SERVICE") ||
       (norm === "INFORMATION TECHNOLOGY" && s.key === "NIFTY IT") ||
       (norm === "PHARMACEUTICALS" && s.key === "NIFTY PHARMA") ||
       (norm === "POWER & UTILITIES" && s.key === "NIFTY ENERGY") ||
@@ -14953,6 +14955,10 @@
     const SECTOR_ALIASES = {
       "Automobiles": "NIFTY AUTO",
       "NBFC & Financials": "NIFTY FIN SERVICE",
+      "Banking & Finance": "NIFTY FIN SERVICE",
+      "Banking": "NIFTY BANK",
+      "Bank Nifty": "NIFTY BANK",
+      "Nifty Bank": "NIFTY BANK",
       "Iron & Steel Products": "NIFTY METAL",
       "Private Banks": "NIFTY PVT BANK",
       "Information Technology": "NIFTY IT",
@@ -17480,7 +17486,7 @@
     "NIFTY HOUSING": ["DLF", "GODREJPROP", "ULTRACEMCO", "ASIANPAINT", "BERGERPAINT", "HAVELLS", "POLYCAB", "PIDILITIND", "VOLTAS", "AMBUJACEM"],
     "NIFTY RURAL": ["M&M", "HEROMOTOCO", "ESCORTS", "DABUR", "MARICO", "UPL", "COROMANDEL", "PIIND", "DEEPAKNTR", "CHOLAFIN"],
     "NIFTY OIL AND GAS": ["RELIANCE", "ONGC", "IOC", "BPCL", "GAIL", "PETRONET", "OIL", "HINDPETRO", "GUJGASLTD", "IGL"],
-    "NIFTY BANK": ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK"],
+    "NIFTY BANK": ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "BANDHANBNK", "RBLBANK"],
     "NIFTY CORE HOUSING": ["DLF", "GODREJPROP", "OBEROIRLTY", "LODHA", "PRESTIGE", "ULTRACEMCO", "AMBUJACEM", "SHREECEM", "DALBHARAT", "PHOENIXLTD"],
     "NIFTY PSU BANK": ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK"],
     "NIFTY COMMODITIES": ["TATASTEEL", "JSWSTEEL", "HINDALCO", "COALINDIA", "VEDL", "JINDALSTEL", "NMDC", "AMBUJACEM", "ACC", "SHREECEM"],
@@ -17519,7 +17525,7 @@
   function getSectorHeatmapMetadata(sym) {
     const s = String(sym || "").trim().toUpperCase();
     const META_MAP = {
-      "NIFTY BANK": { name: "Banking & Financials", category: "Banking", weight: 120000, logoBg: "#1e3a8a", logoText: "BK" },
+      "NIFTY BANK": { name: "Nifty Bank Index", category: "Banking", weight: 120000, logoBg: "#1e3a8a", logoText: "BK" },
       "NIFTY IT": { name: "Information Technology", category: "Technology", weight: 105000, logoBg: "#2563eb", logoText: "IT" },
       "NIFTY AUTO": { name: "Automobile & Parts", category: "Auto", weight: 82000, logoBg: "#059669", logoText: "AU" },
       "NIFTY FMCG": { name: "Fast Moving Consumer Goods", category: "FMCG", weight: 80000, logoBg: "#d97706", logoText: "FG" },
