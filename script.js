@@ -9009,7 +9009,7 @@
     screenerCols: (function () {
       try {
         const saved = localStorage.getItem("momentum_screener_cols_v1");
-        if (saved) return JSON.parse(saved);
+        if (saved) return { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true, ...JSON.parse(saved) };
       } catch (e) { }
       return { cap: true, sector: true, price: true, chg: true, athDist: true, earnings: true, ema: true, cross: true };
     })(),
@@ -11443,61 +11443,15 @@
           <span class="match-counter-text">Index-wise Breadth Participation Breakdown (Threshold: >60% Green, 40-60% Amber, &lt;40% Red)</span>
           <span style="font-size:11px;color:var(--g);display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;"></span> ${escapeHtml(BREADTH_LAST_UPDATED)}</span>
         </div>
-        ${hasHiddenCols ? `
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;margin:8px 0 10px;font-size:12px;color:var(--ink);">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:14px;">✂️</span>
-              <span><strong>${hiddenColsList.length} column${hiddenColsList.length > 1 ? 's' : ''} removed</strong>: ${hiddenColsList.map(c => colLabels[c] || c).join(', ')}.</span>
-            </div>
-            <button data-action="restore-all-screener-cols" style="background:var(--g);color:#0a0e14;font-weight:700;font-size:11px;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
-              <span>↺</span>
-              <span>Restore All Columns</span>
-            </button>
-          </div>
-        ` : ''}
         <div class="table-scroll-wrapper">
           <table class="data-table-main">
             <thead>
               <tr>
-                <th class="${getThClass('star')}" style="width:36px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
-                ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
-                  <span>Cap</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                <th class="${getThClass('ticker')}" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
-                ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
-                  <span>Sector</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
-                  <span>Price (₹)</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
-                  <span>Day Chg</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
-                  <span>% From ATH 📈</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
-                  <span>Earnings 📅</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
-                  <span>EMA</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="event.stopPropagation()">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by 50×200 EMA Cross (Golden Cross first / Death Cross first)">
-                  <div style="display:inline-flex;align-items:center;gap:6px">
-                    <div>
-                      <div>50×200 EMA Cross</div>
-                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
-                    </div>
-                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="event.stopPropagation()">✕</button>
-                  </div>
-                </th>` : ''}
+                <th>Benchmark Universe</th>
+                <th style="text-align:right">% Above 10 EMA</th>
+                <th style="text-align:right">% Above 20 EMA</th>
+                <th style="text-align:right">% Above 50 EMA</th>
+                <th style="text-align:right">% Above 200 EMA</th>
               </tr>
             </thead>
             <tbody>
@@ -11979,20 +11933,6 @@
       return;
     }
 
-    const defaultColsList = ['cap', 'sector', 'price', 'chg', 'athDist', 'earnings', 'ema', 'cross'];
-    const colLabels = {
-      cap: "Cap",
-      sector: "Sector",
-      price: "Price",
-      chg: "Day Chg",
-      athDist: "% From ATH",
-      earnings: "Earnings",
-      ema: "EMA",
-      cross: "50×200 Cross"
-    };
-    const hiddenColsList = defaultColsList.filter(c => State.screenerCols && State.screenerCols[c] === false);
-    const hasHiddenCols = hiddenColsList.length > 0;
-
     const filteredStocks = getFilteredScreenerStocks();
     const pageSize = State.screenerPageSize || 50;
     const totalMatching = filteredStocks.length;
@@ -12064,6 +12004,20 @@
       }
       return "sortable-col";
     };
+
+    const defaultColsList = ['cap', 'sector', 'price', 'chg', 'athDist', 'earnings', 'ema', 'cross'];
+    const colLabels = {
+      cap: "Cap",
+      sector: "Sector",
+      price: "Price",
+      chg: "Day Chg",
+      athDist: "% From ATH",
+      earnings: "Earnings",
+      ema: "EMA",
+      cross: "50×200 Cross"
+    };
+    const hiddenColsList = defaultColsList.filter(c => State.screenerCols && State.screenerCols[c] === false);
+    const hasHiddenCols = hiddenColsList.length > 0;
 
     const filteredStocks = getFilteredScreenerStocks();
 
@@ -12330,7 +12284,7 @@
               </div>
             </div>
 
-            <!-- Quick Reset Columns Button -->
+            <!-- Dedicated Quick Reset Columns Button -->
             <button class="pill-segment-btn reset-cols-top-btn" 
                     data-action="restore-all-screener-cols" 
                     title="Restore all removed columns" 
@@ -12338,7 +12292,7 @@
               <span>↺</span>
               <span>Reset Columns</span>
               ${hasHiddenCols ? `<span style="font-size:10px;padding:1px 6px;background:rgba(34,197,94,0.25);border-radius:8px;font-weight:800;">${hiddenColsList.length} removed</span>` : ''}
-            </button></div>
+            </button>
 
             <div class="pill-segmented-control" role="group" aria-label="Sort Direction" style="height:30px;padding:2px;display:inline-flex;align-items:center;">
               <button class="pill-segment-btn ${activeSortDir === "desc" ? "active" : ""}" 
@@ -12366,22 +12320,60 @@
           </div>
         </div>
         
+        ${hasHiddenCols ? `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;margin:8px 0 10px;font-size:12px;color:var(--ink);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:14px;">✂️</span>
+              <span><strong>${hiddenColsList.length} column${hiddenColsList.length > 1 ? 's' : ''} removed</strong>: ${hiddenColsList.map(c => colLabels[c] || c).join(', ')}.</span>
+            </div>
+            <button data-action="restore-all-screener-cols" style="background:var(--g);color:#0a0e14;font-weight:700;font-size:11px;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+              <span>↺</span>
+              <span>Restore All Columns</span>
+            </button>
+          </div>
+        ` : ''}
         <div class="table-scroll-wrapper">
           <table class="data-table-main">
             <thead>
               <tr>
                 <th class="${getThClass('star')}" style="width:36px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
-                ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">Cap</th>` : ''}
+                ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
+                  <span>Cap</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
                 <th class="${getThClass('ticker')}" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
-                ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">Sector</th>` : ''}
-                <th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">Price (₹)</th>
-                <th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">Day Chg</th>
-                ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">% From ATH 📈</th>` : ''}
-                ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">Earnings 📅</th>` : ''}
-                ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">EMA</th>` : ''}
+                ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
+                  <span>Sector</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
+                  <span>Price (₹)</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
+                  <span>Day Chg</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
+                  <span>% From ATH 📈</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
+                  <span>Earnings 📅</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
+                ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
+                  <span>EMA</span>
+                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="event.stopPropagation()">✕</button>
+                </th>` : ''}
                 ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by 50×200 EMA Cross (Golden Cross first / Death Cross first)">
-                  <div>50×200 EMA Cross</div>
-                  <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
+                  <div style="display:inline-flex;align-items:center;gap:6px">
+                    <div>
+                      <div>50×200 EMA Cross</div>
+                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
+                    </div>
+                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="event.stopPropagation()">✕</button>
+                  </div>
                 </th>` : ''}
               </tr>
             </thead>
@@ -25306,7 +25298,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.0', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.1', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
