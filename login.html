@@ -3477,6 +3477,271 @@
         text-align: center
       }
     }
+  
+    /* === 4-CARD ANALYTICS SUITE STYLES === */
+    .analytics-suite-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      margin-top: 36px;
+    }
+    @media (max-width: 1200px) {
+      .analytics-suite-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+    @media (max-width: 640px) {
+      .analytics-suite-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+    .suite-card {
+      position: relative;
+      background: rgba(14, 22, 38, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+    .suite-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(45, 212, 191, 0.4);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 24px -4px rgba(45, 212, 191, 0.2);
+    }
+    .suite-card-preview {
+      height: 125px;
+      border-radius: 14px;
+      background: rgba(8, 14, 26, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 12px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .suite-chip-row {
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+    .suite-badge-tag {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .suite-chk {
+      font-size: 9px;
+      color: #10b981;
+    }
+    .suite-mini-chart {
+      margin-top: auto;
+    }
+    .suite-fno-pill {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #f59e0b;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .suite-fno-metrics {
+      display: flex;
+      gap: 10px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      z-index: 2;
+    }
+    .fno-stat b {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .fno-stat b.up {
+      color: #10b981;
+    }
+    .suite-bar-graphic {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 40px;
+      margin-top: auto;
+    }
+    .suite-bar-graphic span {
+      flex: 1;
+      background: rgba(245, 158, 11, 0.45);
+      border-radius: 3px 3px 0 0;
+    }
+    .suite-mmi-arc-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .mmi-inner-label {
+      position: absolute;
+      bottom: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+    }
+    .mmi-inner-label small {
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    .mmi-inner-label b {
+      font-size: 16px;
+      color: #22d3ee;
+      font-weight: 800;
+      margin: 2px 0;
+    }
+    .mmi-tag {
+      font-size: 8px;
+      color: #ef4444;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .suite-side-icons {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mini-ui-badge {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .suite-sector-matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5px;
+      height: 100%;
+      align-content: center;
+    }
+    .sector-tile {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      font-size: 9px;
+    }
+    .sector-tile span {
+      color: var(--muted);
+      font-size: 8px;
+    }
+    .sector-tile.green b {
+      color: #10b981;
+      font-weight: 700;
+    }
+    .sector-tile.red b {
+      color: #f87171;
+      font-weight: 700;
+    }
+    .suite-card-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .suite-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .suite-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .suite-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+      margin: 0;
+    }
+    .suite-card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0 0 16px 0;
+      min-height: 38px;
+    }
+    .suite-card-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .suite-feat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--tw);
+      font-weight: 600;
+    }
+    .feat-ico {
+      font-size: 13px;
+      width: 16px;
+      text-align: center;
+    }
+    .suite-explore-btn {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--cy);
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: gap 0.2s ease, color 0.2s ease;
+    }
+    .suite-explore-btn:hover {
+      color: #5eead4;
+      gap: 10px;
+    }
   </style>
 
   <!-- Supabase Auth Client Library & Integration -->
@@ -3501,16 +3766,16 @@
           alt=""><span>Momentum<b>Chasers</b></span></a>
       <nav class="links" aria-label="Main">
         <div class="has-menu">
-          <button class="lk" aria-haspopup="true">Courses &#9662;</button>
+          <button class="lk" aria-haspopup="true">Analytics &#9662;</button>
           <div class="menu glass" id="menu"></div>
         </div>
-        <a class="lk" href="#tour">Tools</a>
-        <a class="lk" href="#path">Learning path</a>
+        <a class="lk" href="#hub">Market Insights</a>
+        <a class="lk" href="#who">About</a>
         <a class="lk" href="#faq">FAQ</a>
       </nav>
       <div class="nr">
-        <a class="lg" href="login.html">Log in</a>
-        <a class="btn sm" href="login.html#signup">Get started</a>
+        <a class="lg" href="login.html" id="nav-login-link" onclick="handleCtaClick(event, 'signin')">Login</a>
+        <a class="btn sm" href="login.html#signup" id="nav-signin-btn" onclick="handleCtaClick(event, 'signup')">Sign In</a>
       </div>
     </div>
   </header>
@@ -3525,32 +3790,31 @@
     <canvas id="lanes" aria-hidden="true"></canvas>
     <div class="wrap">
       <div>
-        <h1>Learn to read momentum</h1>
-        <p class="lead">Step-by-step courses on price action, momentum and risk, made for traders in the Indian market
-          who want a clear process instead of tips. Practise with 14 market tools too, from the Smart Screener to Market
-          Mood.</p>
-        <div class="cta"><a class="btn pri" href="login.html">Start learning &rarr;</a><a class="btn ghost"
-            href="#courses">Browse courses</a></div>
+        <h1>Make Smarter Financial Decisions with Market Intelligence.</h1>
+        <p class="lead">Explore stock market analytics, advanced screening tools and real-time market insights. Analyse stocks, track sector performance, monitor market sentiment and understand market activity before making your financial decisions.</p>
+        <div class="cta">
+          <a class="btn pri" href="login.html#signup" id="hero-primary-cta" onclick="handleCtaClick(event, 'signup')">Sign In to Dashboard &rarr;</a>
+          <a class="btn ghost" href="#hub" id="hero-secondary-cta" onclick="handleExploreAnalytics(event)">Explore Analytics</a>
+        </div>
         <p class="note">Sign in with Google or email.</p>
       </div>
       <div class="vis" aria-hidden="true">
         <div class="win glass">
-          <div class="bar"><i></i><i></i><i></i><span>Lesson 3 &middot; Reading momentum candles</span></div>
+          <div class="bar"><i></i><i></i><i></i><span>Market Analytics Dashboard</span></div>
           <div class="lesson">
             <div class="chart"><svg id="candles" viewBox="0 0 400 230"></svg></div>
             <div class="list">
-              <div class="li done"><span class="dot">&#10003;</span>What is momentum</div>
-              <div class="li done"><span class="dot">&#10003;</span>Measuring strength</div>
-              <div class="li on"><span class="dot">&#9654;</span>Reading candles</div>
-              <div class="li"><span class="dot">4</span>Entries and exits</div>
+              <div class="li done"><span class="dot">&#10003;</span>Market Breadth</div>
+              <div class="li done"><span class="dot">&#10003;</span>Sector Performance</div>
+              <div class="li on"><span class="dot">&#9654;</span>Smart Screener</div>
+              <div class="li"><span class="dot">&#9889;</span>F&amp;O Order Flow</div>
             </div>
           </div>
           <div class="prog"><i></i></div>
         </div>
         <div class="fl f1 glass"><small>Market Mood (MMI)</small><b>79.23</b><em>EXTREME GREED</em></div>
-        <div class="fl f2 glass"><small>Nifty 50 &middot; ICICIBANK</small><b>&#8377;1,571.20</b><em>+4.75%</em></div>
-        <div class="fl f3 glass"><small>Today&rsquo;s lesson</small><b>Spot the pullback</b><em>12 min &middot;
-            Beginner</em></div>
+        <div class="fl f2 glass"><small>Nifty 50 &middot; Market Snapshot</small><b>&#8377;1,571.20</b><em>+4.75%</em></div>
+        <div class="fl f3 glass"><small>Today&rsquo;s Market Overview</small><b>Emerging Market Trends</b><em>Live Exchange Feed</em></div>
       </div>
     </div>
   </section>
@@ -3566,28 +3830,158 @@
 
   <section class="sec" id="hub">
     <div class="wrap">
-      <p class="eyebrow rv">One place to learn</p>
-      <h2 class="rv">Start anywhere. <span class="ser">Land on the right course.</span></h2>
-      <p class="sub rv">Whatever your starting point, from learner type to live market tool, every path leads into the
-        same five courses.</p>
-      <div class="hub rv" id="hubBox">
-        <svg class="hlines" id="hlines" aria-hidden="true"></svg>
-        <div class="hcol" id="hL"></div>
-        <div class="hcard glass" id="hCard">
-          <div class="hh"><img data-logo alt="">
-            <div><b>Momentum Chasers</b><small>self-paced courses</small></div>
-          </div>
-          <div class="code">
-            <div><b>POST</b> /lesson/start</div>
-            <div><i>from</i> <span id="cB"></span></div>
-            <div><i>course</i> <span id="cC"></span></div>
-            <div class="rs" id="cR"><b>READY</b> &middot; 12 min &middot; step 1 of 6</div>
-          </div>
-          <div class="chs"><span>5 courses</span><span>4 steps</span><span>Any device</span></div>
-        </div>
-        <div class="hcol" id="hR"></div>
+      <div style="text-align:center;max-width:880px;margin:0 auto 40px auto;">
+        <p class="eyebrow rv" style="color:var(--cy);letter-spacing:0.12em;font-weight:700;">&mdash; OUR ANALYTICS SUITE &mdash;</p>
+        <h2 class="rv" style="font-size:clamp(2rem, 3.8vw, 3.2rem);line-height:1.15;margin-bottom:16px;">Everything You Need to <span class="ser" style="font-style:italic;color:var(--cy);">Analyse the Market.</span></h2>
+        <p class="sub rv" style="font-size:1.08rem;color:var(--muted);line-height:1.6;margin-bottom:8px;">Explore a comprehensive collection of market analytics and screening tools designed to help you evaluate market conditions, identify trends and make informed financial decisions.</p>
+        <p class="sub rv" style="font-size:0.95rem;color:var(--tw);opacity:0.8;font-style:italic;">Go beyond market noise. Discover a smarter way to analyse stocks, track market movements and uncover opportunities through data-driven insights.</p>
       </div>
-      <p class="hcap rv">Works with the way you already trade. Pick any starting point.</p>
+
+      <!-- 4-Card Analytics Suite Grid -->
+      <div class="analytics-suite-grid rv">
+
+        <!-- Card 1: Analytics & Screening -->
+        <div class="suite-card glass">
+          <div class="suite-card-preview suite-preview-green">
+            <div class="suite-chip-row">
+              <span class="suite-badge-tag"><span class="suite-chk">&#10003;</span> EMA</span>
+              <span class="suite-badge-tag"><span class="suite-chk">&#10003;</span> RSI</span>
+              <span class="suite-badge-tag"><span class="suite-chk">&#10003;</span> VWAP</span>
+            </div>
+            <div class="suite-mini-chart">
+              <svg viewBox="0 0 160 55" width="100%" height="55" fill="none">
+                <path d="M 5 45 L 25 38 L 45 42 L 65 30 L 85 34 L 105 20 L 125 14 L 145 8" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Candlestick bars -->
+                <rect x="23" y="32" width="5" height="12" rx="1" fill="#10b981"/>
+                <line x1="25.5" y1="28" x2="25.5" y2="48" stroke="#10b981" stroke-width="1.2"/>
+                <rect x="63" y="24" width="5" height="14" rx="1" fill="#10b981"/>
+                <line x1="65.5" y1="20" x2="65.5" y2="42" stroke="#10b981" stroke-width="1.2"/>
+                <rect x="103" y="16" width="5" height="16" rx="1" fill="#10b981"/>
+                <line x1="105.5" y1="10" x2="105.5" y2="36" stroke="#10b981" stroke-width="1.2"/>
+                <rect x="142" y="6" width="5" height="16" rx="1" fill="#10b981"/>
+                <line x1="144.5" y1="2" x2="144.5" y2="26" stroke="#10b981" stroke-width="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <div class="suite-card-body">
+            <div class="suite-card-header">
+              <span class="suite-card-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">&#128202;</span>
+              <h3 class="suite-card-title">Analytics &amp; Screening</h3>
+            </div>
+            <p class="suite-card-desc">Analyse stocks and market activity with powerful screening tools.</p>
+            <div class="suite-card-features">
+              <div class="suite-feat-item"><span class="feat-ico">&#9889;</span> <span>Smart Screener</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#128202;</span> <span>Market Breadth</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#128200;</span> <span>A/D Net Flow</span></div>
+            </div>
+            <a class="suite-explore-btn" href="index.html#screener" onclick="handleCtaClick(event, 'signup')">
+              <span>Explore Tools</span> <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: Derivatives & Trading Activity -->
+        <div class="suite-card glass">
+          <div class="suite-card-preview suite-preview-amber">
+            <div class="suite-chip-row" style="justify-content:flex-start;">
+              <span class="suite-fno-pill"><span style="color:#f59e0b;">&#128196;</span> F&amp;O</span>
+            </div>
+            <div class="suite-fno-metrics">
+              <div class="fno-stat"><span>OI</span> <b class="up">&blacktriangle; +12.4%</b></div>
+              <div class="fno-stat"><span>Vol</span> <b class="up">&blacktriangle; +18.7%</b></div>
+              <div class="fno-stat"><span>PCR</span> <b>0.92</b></div>
+            </div>
+            <div class="suite-bar-graphic">
+              <span style="height:35%;"></span>
+              <span style="height:55%;"></span>
+              <span style="height:42%;"></span>
+              <span style="height:80%;"></span>
+              <span style="height:65%;"></span>
+              <span style="height:95%;background:#10b981;"></span>
+            </div>
+          </div>
+          <div class="suite-card-body">
+            <div class="suite-card-header">
+              <span class="suite-card-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">&#128200;</span>
+              <h3 class="suite-card-title">Derivatives &amp; Trading Activity</h3>
+            </div>
+            <p class="suite-card-desc">Track derivatives data and key trading activity across the market.</p>
+            <div class="suite-card-features">
+              <div class="suite-feat-item"><span class="feat-ico">&#128200;</span> <span>F&amp;O Order Flow</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#128202;</span> <span>Sector Turnover</span></div>
+            </div>
+            <a class="suite-explore-btn" href="index.html#orderflow" onclick="handleCtaClick(event, 'signup')">
+              <span>Explore Tools</span> <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3: Market Intelligence -->
+        <div class="suite-card glass">
+          <div class="suite-card-preview suite-preview-cyan">
+            <div class="suite-mmi-arc-box">
+              <svg viewBox="0 0 100 55" width="90" height="50">
+                <path d="M 10 50 A 40 40 0 0 1 90 50" stroke="#334155" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M 10 50 A 40 40 0 0 1 82 25" stroke="#22d3ee" stroke-width="6" fill="none" stroke-linecap="round"/>
+              </svg>
+              <div class="mmi-inner-label">
+                <small>MMI</small>
+                <b>79</b>
+                <span class="mmi-tag">Extreme Greed</span>
+              </div>
+            </div>
+            <div class="suite-side-icons">
+              <div class="mini-ui-badge">&#128240;</div>
+              <div class="mini-ui-badge">&#128197;</div>
+            </div>
+          </div>
+          <div class="suite-card-body">
+            <div class="suite-card-header">
+              <span class="suite-card-icon" style="background:rgba(34,211,238,0.15);color:#22d3ee;">&#128269;</span>
+              <h3 class="suite-card-title">Market Intelligence</h3>
+            </div>
+            <p class="suite-card-desc">Get broader market context with sentiment, news and key events.</p>
+            <div class="suite-card-features">
+              <div class="suite-feat-item"><span class="feat-ico">&#128201;</span> <span>Market Mood (MMI)</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#128240;</span> <span>Market News</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#128197;</span> <span>Events Calendar</span></div>
+            </div>
+            <a class="suite-explore-btn" href="index.html#mmi" onclick="handleCtaClick(event, 'signup')">
+              <span>Explore Tools</span> <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 4: Portfolio & Market Research -->
+        <div class="suite-card glass">
+          <div class="suite-card-preview suite-preview-gold">
+            <div class="suite-sector-matrix">
+              <div class="sector-tile green"><span>Banking</span> <b>+1.8%</b></div>
+              <div class="sector-tile green"><span>IT</span> <b>+1.4%</b></div>
+              <div class="sector-tile green"><span>Auto</span> <b>+0.9%</b></div>
+              <div class="sector-tile green"><span>Pharma</span> <b>+0.6%</b></div>
+              <div class="sector-tile red"><span>FMCG</span> <b>-0.3%</b></div>
+              <div class="sector-tile red"><span>Energy</span> <b>-0.7%</b></div>
+            </div>
+          </div>
+          <div class="suite-card-body">
+            <div class="suite-card-header">
+              <span class="suite-card-icon" style="background:rgba(234,179,8,0.15);color:#eab308;">&#128188;</span>
+              <h3 class="suite-card-title">Portfolio &amp; Market Research</h3>
+            </div>
+            <p class="suite-card-desc">Track your holdings and evaluate market valuations and sector performance.</p>
+            <div class="suite-card-features">
+              <div class="suite-feat-item"><span class="feat-ico">&#128194;</span> <span>Multi-Demat Tracker</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#9878;&#65039;</span> <span>Market Valuation</span></div>
+              <div class="suite-feat-item"><span class="feat-ico">&#9638;</span> <span>Market Heatmap</span></div>
+            </div>
+            <a class="suite-explore-btn" href="index.html#portfolio" onclick="handleCtaClick(event, 'signup')">
+              <span>Explore Tools</span> <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -3725,17 +4119,19 @@
 
   <section class="sec">
     <div class="wrap">
-      <div class="cta2 rv">
+      <div class="cta2 rv" style="text-align:center;">
         <div class="gl g1"></div>
         <div class="gl g2"></div>
         <div class="gl g3"></div>
         <div class="gg"></div>
-        <img class="clogo" data-logo alt="">
-        <p class="eyebrow">Ready in about a minute</p>
-        <h2>Your next lesson is <span class="ser">one sign-in</span> away.</h2>
-        <p class="sub">Sign in to open your dashboard, with 14 market tools and every course.</p>
-        <div class="cta"><a class="btn wh" href="login.html">Log in &rarr;</a><a class="btn gh2"
-            href="login.html#signup">Create free account</a></div>
+        <img class="clogo" data-logo alt="" style="margin:0 auto 16px auto;">
+        <p class="eyebrow">YOUR MARKET JOURNEY</p>
+        <h2 style="font-size:clamp(2rem, 3.5vw, 3rem);margin-bottom:12px;">Your Market Journey <span class="ser">Starts Here</span></h2>
+        <p class="sub" style="max-width:620px;margin:0 auto 24px auto;">Go beyond market noise. Discover a smarter way to analyse stocks, track market movements and uncover opportunities through data-driven insights.</p>
+        <div class="cta" style="justify-content:center;gap:14px;">
+          <a class="btn wh" href="login.html#signup" onclick="handleCtaClick(event, 'signup')">Get Started &rarr;</a>
+          <a class="btn gh2" href="mailto:chasersmomentum@gmail.com">Contact us</a>
+        </div>
       </div>
     </div>
   </section>
@@ -3746,18 +4142,18 @@
         <div class="fbrand">
           <a class="fwm" href="#top" aria-label="Momentum Chasers home"><img data-logo alt=""><span class="wm">Momentum
               <b>Chasers</b></span></a>
-          <p>Spot the move early.</p>
+          <p>Make Smarter Financial Decisions with Market Intelligence.</p>
         </div>
         <div class="fc">
-          <h4>Explore</h4><a href="#top">Home</a><a href="#courses">Courses</a><a href="#path">Learning path</a><a
-            href="#tour">A look inside</a>
+          <h4>Explore</h4><a href="#top">Home</a><a href="#hub">Analytics</a><a href="#tour">Market Insights</a><a
+            href="#features">Tools</a>
         </div>
         <div class="fc">
-          <h4>Information</h4><a href="#faq">FAQ</a><a href="#who">Who it is for</a><a href="#risk">Disclaimer</a><a
+          <h4>Information</h4><a href="#who">About</a><a href="#faq">FAQ</a><a href="#risk">Disclaimer</a><a
             href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a>
         </div>
         <div class="fc">
-          <h4>Connect</h4><a href="login.html">Log in</a><a href="login.html#signup">Create account</a>
+          <h4>Connect</h4><a href="login.html" onclick="handleCtaClick(event, 'signin')">Login</a><a href="login.html#signup" onclick="handleCtaClick(event, 'signup')">Sign In</a>
         </div>
         <div class="fc">
           <h4>Contact</h4><a class="mail"
@@ -3793,9 +4189,20 @@
     document.getElementById("courseGrid").innerHTML = COURSES.map(function (c) {
       return '<a class="card glass rv" href="login.html" style="--c:' + c.c + '">' + ico(c) + '<span class="lv">' + c.l + '</span><h3>' + c.t + '</h3><p>' + c.d + '</p><ul>' + c.b.map(function (x) { return '<li>' + x + '</li>' }).join("") + '</ul><span class="open">Open course &rarr;</span></a>';
     }).join("");
-    document.getElementById("menu").innerHTML = '<h3>Courses</h3>' + COURSES.slice(0, 4).map(function (c) {
-      return '<a class="mi" href="#courses">' + ico(c) + '<span><strong>' + c.t + '</strong><small>' + c.d + '</small></span></a>';
-    }).join("");
+    var ANALYTICS_MENU = [
+      { t: "Smart Screener", d: "Scan 2,000+ stocks across EMAs, RSI & volume breakouts", i: "&#9889;" },
+      { t: "F&O Order Flow", d: "Live institutional volume, delta & option imbalances", i: "&#128200;" },
+      { t: "Market Breadth & A/D", d: "Advance/Decline net momentum and 52W high/low ratio", i: "&#128202;" },
+      { t: "Sector Turnover", d: "Money flows & relative volume across 44 sectoral benchmarks", i: "&#128181;" },
+      { t: "Market Mood (MMI)", d: "Real-time market sentiment from Extreme Fear to Extreme Greed", i: "&#128201;" },
+      { t: "Market Intelligence", d: "Macro releases, earnings calendar, and live exchange news", i: "&#128240;" }
+    ];
+    var menuEl = document.getElementById("menu");
+    if (menuEl) {
+      menuEl.innerHTML = '<h3 style="grid-column:1/-1;margin-bottom:8px;">Analytics &amp; Screening Suite</h3>' + ANALYTICS_MENU.map(function (m) {
+        return '<a class="mi" href="#hub" onclick="handleExploreAnalytics(event)"><span class="ico" style="background:rgba(255,255,255,0.06);padding:6px;border-radius:8px;font-size:16px;">' + m.i + '</span><span><strong>' + m.t + '</strong><small>' + m.d + '</small></span></a>';
+      }).join("");
+    }
 
     // sample candle chart for the hero window
     (function () {
@@ -3951,7 +4358,7 @@
       { t: 'Market Heatmap', c: '#4fd1a1', i: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>' }];
       var ORD = [3, 0, 4, 1, 5, 2];
       function nd(x, m) { return '<div class="nd glass" style="--c:' + x.c + '">' + ico(x) + '<div class="nt"><b>' + x.t + '</b>' + (m ? '<em>' + m + '</em>' : '') + '</div>' + (m ? '<span class="bdg">Ready &middot; 12 min</span>' : '') + '</div>' }
-      var box = document.getElementById('hubBox'), svg = document.getElementById('hlines'), card = document.getElementById('hCard');
+      var box = document.getElementById('hubBox'), svg = document.getElementById('hlines'), card = document.getElementById('hCard'); if (!box || !card) return;
       var cB = document.getElementById('cB'), cC = document.getElementById('cC'), cR = document.getElementById('cR'), code = card.querySelector('.code');
       document.getElementById('hL').innerHTML = LF.map(function (x) { return nd(x) }).join('');
       document.getElementById('hR').innerHTML = COURSES.map(function (x) { return nd(x, x.l) }).join('');
@@ -5240,7 +5647,70 @@
       }
       checkExistingSession();
     })();
-  </script>
+  
+    // Centralized Smart CTA Redirection Engine
+    function isUserLoggedIn() {
+      try {
+        const u = localStorage.getItem('momentum_auth_user');
+        if (u && u.length > 5) return true;
+        const t = localStorage.getItem('supabase.auth.token');
+        if (t && t.length > 5) return true;
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i) || '';
+          if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+            const v = localStorage.getItem(k);
+            if (v && v.includes('access_token')) return true;
+          }
+        }
+        if (window.MomentumAuth && typeof window.MomentumAuth.getUser === 'function' && window.MomentumAuth.getUser()) return true;
+      } catch (e) {}
+      return false;
+    }
+
+    function handleCtaClick(e, defaultMode) {
+      if (e) e.preventDefault();
+      if (isUserLoggedIn()) {
+        window.location.href = 'index.html';
+      } else {
+        if (typeof openAuth === 'function') {
+          openAuth(defaultMode || 'signup');
+        } else {
+          window.location.href = 'login.html#' + (defaultMode || 'signup');
+        }
+      }
+    }
+
+    function handleExploreAnalytics(e) {
+      if (e) e.preventDefault();
+      if (isUserLoggedIn()) {
+        window.location.href = 'index.html';
+      } else {
+        const target = document.getElementById('hub');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.location.href = '#hub';
+        }
+      }
+    }
+
+    // Auto-update Nav button when already logged in
+    document.addEventListener('DOMContentLoaded', function () {
+      if (isUserLoggedIn()) {
+        const signinBtn = document.getElementById('nav-signin-btn');
+        if (signinBtn) {
+          signinBtn.textContent = 'Dashboard →';
+          signinBtn.href = 'index.html';
+          signinBtn.onclick = null;
+        }
+        const heroPri = document.getElementById('hero-primary-cta');
+        if (heroPri) {
+          heroPri.textContent = 'Go to Dashboard →';
+          heroPri.href = 'index.html';
+        }
+      }
+    });
+</script>
 
 </body>
 
