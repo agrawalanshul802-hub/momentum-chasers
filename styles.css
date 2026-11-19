@@ -3001,16 +3001,29 @@ body.theme-white .ticker-inline-suggestion-row:hover {
 }
 
 /* Color Threshold Helpers */
-.val-green {
-    color: var(--g);
+.val-green,
+.val-green *,
+.data-table-main td.val-green,
+.data-table-main td .val-green,
+.stock-chg-cell.val-green,
+.stock-ath-cell.val-green {
+    color: var(--g) !important;
 }
 
-.val-amber {
-    color: var(--am);
+.val-amber,
+.val-amber *,
+.data-table-main td.val-amber,
+.data-table-main td .val-amber {
+    color: var(--am) !important;
 }
 
-.val-red {
-    color: var(--r);
+.val-red,
+.val-red *,
+.data-table-main td.val-red,
+.data-table-main td .val-red,
+.stock-chg-cell.val-red,
+.stock-ath-cell.val-red {
+    color: var(--r) !important;
 }
 
 .bg-green {
@@ -3466,6 +3479,24 @@ body.theme-white .data-table-main th.sort-desc {
     padding: 12px 14px;
     border-bottom: 1px solid var(--ln);
     color: var(--ink);
+}
+
+.data-table-main td.val-green,
+.data-table-main td.val-green *,
+.data-table-main td .val-green {
+    color: var(--g) !important;
+}
+
+.data-table-main td.val-red,
+.data-table-main td.val-red *,
+.data-table-main td .val-red {
+    color: var(--r) !important;
+}
+
+.data-table-main td.val-amber,
+.data-table-main td.val-amber *,
+.data-table-main td .val-amber {
+    color: var(--am) !important;
 }
 
 .data-table-main tr:hover td {

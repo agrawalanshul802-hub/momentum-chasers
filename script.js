@@ -10419,15 +10419,18 @@
   };
 
   const formatPercent = (num, decimals = 2) => {
-    if (num === null || num === undefined || isNaN(num)) return "–";
-    const sign = num > 0 ? "+" : "";
-    return `${sign}${formatNumber(num, decimals)}%`;
+    if (num === null || num === undefined) return "–";
+    const val = typeof num === "number" ? num : parseFloat(String(num).replace(/[^0-9.-]/g, ""));
+    if (isNaN(val)) return "–";
+    const sign = val > 0 ? "+" : "";
+    return `${sign}${formatNumber(val, decimals)}%`;
   };
 
   const getColorClass = num => {
-    if (num > 0) return "val-green";
-    if (num < 0) return "val-red";
-    return "mu";
+    if (num === null || num === undefined) return "mu";
+    const val = typeof num === "number" ? num : parseFloat(String(num).replace(/[^0-9.-]/g, ""));
+    if (isNaN(val) || val === 0) return "mu";
+    return val > 0 ? "val-green" : "val-red";
   };
 
   const getEvaluationClass = val => {
@@ -10939,6 +10942,7 @@
       if (priceCell) priceCell.textContent = `₹${formatNumber(price)}`;
       if (chgCell) {
         chgCell.className = `font-mono ${getColorClass(chg)} stock-chg-cell`;
+        chgCell.style.color = chg >= 0 ? "var(--g)" : "var(--r)";
         chgCell.textContent = formatPercent(chg);
       }
       const athCell = row.querySelector(".stock-ath-cell");
@@ -10946,6 +10950,7 @@
         const ath = getStockAthDistance(s);
         const cls = ath.dist >= 0 ? 'val-green' : 'val-red';
         athCell.className = `font-mono ${cls} stock-ath-cell`;
+        athCell.style.color = ath.dist >= 0 ? "var(--g)" : "var(--r)";
         athCell.title = `All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}`;
         athCell.textContent = `${ath.dist.toFixed(2)}%`;
       }
@@ -11956,11 +11961,11 @@
             ₹${formatNumber(s[3])}
           </td>` : ''}
           ${State.screenerCols.chg !== false ? `
-          <td class="font-mono ${getColorClass(s[4])} stock-chg-cell" style="text-align:right;font-weight:700">
+          <td class="font-mono ${getColorClass(s[4])} stock-chg-cell" style="text-align:right;font-weight:700;color:${s[4] >= 0 ? 'var(--g)' : 'var(--r)'}">
             ${formatPercent(s[4])}
           </td>` : ''}
           ${State.screenerCols.athDist !== false ? `
-            <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
+            <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700;color:${ath.dist >= 0 ? 'var(--g)' : 'var(--r)'}" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
               ${ath.dist.toFixed(2)}%
             </td>` : ''}
           ${State.screenerCols.earnings !== false ? `
@@ -12934,7 +12939,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.1.9");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.0");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -13388,7 +13393,7 @@
                       </div>
                     </td>
                     <td class="font-mono" style="text-align:right">₹${formatNumber(sec.price, 1)}</td>
-                    <td class="font-mono ${getColorClass(sec.chg)}" style="text-align:right;font-weight:700">
+                    <td class="font-mono ${getColorClass(sec.chg)}" style="text-align:right;font-weight:700;color:${sec.chg >= 0 ? 'var(--g)' : 'var(--r)'}">
                       ${formatPercent(sec.chg)}
                     </td>
                     <td class="font-mono" style="text-align:right">
@@ -13535,7 +13540,7 @@
         <td>${escapeHtml(stock.name)}</td>
         <td>${escapeHtml(industry)}</td>
         <td class="font-mono" style="text-align:right">₹${formatNumber(stock.price, 2)}</td>
-        <td class="font-mono ${getColorClass(stock.chg)}" style="text-align:right;font-weight:700">${formatPercent(stock.chg)}</td>
+        <td class="font-mono ${getColorClass(stock.chg)}" style="text-align:right;font-weight:700;color:${(typeof stock.chg === 'number' ? stock.chg : parseFloat(stock.chg)) >= 0 ? 'var(--g)' : 'var(--r)'}">${formatPercent(stock.chg)}</td>
         <td class="font-mono" style="text-align:right">${escapeHtml(stock.volume || "—")}</td>
       </tr>`;
     }).join("");
@@ -25733,7 +25738,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.1.9"
+          "./data/authentic-sector-turnover.json?v=6.2.0"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -25778,7 +25783,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.9', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.0', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
