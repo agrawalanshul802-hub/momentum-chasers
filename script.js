@@ -9026,8 +9026,17 @@
         { id: `ec_${prefix}_10`, country: "🇮🇳 India", event: "Infrastructure Output (8 Core Sectors)", date: `${prefix}-28`, time: "05:00 PM IST", period: "Monthly", actual: "—", forecast: "3.80%", prior: "3.50%", impact: "medium" }
       ];
     } else if (category === "earnings") {
-      const match = MASTER_EVENTS_EARNINGS.filter(e => e.date.startsWith(prefix));
-      if (match.length > 0) return match;
+      const match = MASTER_EVENTS_EARNINGS.filter(e => e.date && e.date.startsWith(prefix));
+      const combined = [...match];
+      if (typeof ConcallLiveService !== "undefined" && Array.isArray(ConcallLiveService.resultsData) && ConcallLiveService.resultsData.length > 0) {
+        const liveResults = ConcallLiveService.resultsData.filter(e => e.date && e.date.startsWith(prefix));
+        for (const lr of liveResults) {
+          if (!combined.some(c => c.symbol === lr.symbol && c.date === lr.date)) {
+            combined.push(lr);
+          }
+        }
+      }
+      if (combined.length > 0) return combined.sort((a, b) => a.date.localeCompare(b.date));
       // Dynamic fallback for any other month
       const qNum = Math.floor(month / 3) + 1;
       return [
@@ -9038,8 +9047,17 @@
         { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries", date: `${prefix}-26`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹15.80", revEst: "₹14,300 Cr", status: "Tentative", cap: "LC", sector: "Pharma" }
       ];
     } else if (category === "concall") {
-      const match = MASTER_EVENTS_CONCALL.filter(e => e.date.startsWith(prefix));
-      if (match.length > 0) return match;
+      const match = MASTER_EVENTS_CONCALL.filter(e => e.date && e.date.startsWith(prefix));
+      const combined = [...match];
+      if (typeof ConcallLiveService !== "undefined" && Array.isArray(ConcallLiveService.data) && ConcallLiveService.data.length > 0) {
+        const liveConcalls = ConcallLiveService.data.filter(e => e.date && e.date.startsWith(prefix));
+        for (const lc of liveConcalls) {
+          if (!combined.some(c => c.symbol === lc.symbol && c.date === lc.date)) {
+            combined.push(lc);
+          }
+        }
+      }
+      if (combined.length > 0) return combined.sort((a, b) => a.date.localeCompare(b.date));
       return [
         { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: `${prefix}-10`, time: "07:00 PM IST", topic: "Quarterly Earnings & Strategy Briefing", dialIn: "+91 22 6280 1144", webcast: "https://tcs.com/investors", attendees: "K. Krithivasan (MD & CEO)" },
         { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: `${prefix}-14`, time: "08:30 AM IST", topic: "Financial Performance & Credit Quality Review", dialIn: "+91 22 6280 1321", webcast: "https://hdfcbank.com/investors", attendees: "Sashidhar Jagdishan (MD & CEO)" },
@@ -13070,7 +13088,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.5");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.6");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -20123,6 +20141,87 @@
     }
   };
 
+  // ==========================================================================
+  // CONCALL LIVE SERVICE (concall.in Real-Time Management Call Gateway)
+  // ==========================================================================
+  const ConcallLiveService = {
+    data: null,
+    resultsData: null,
+    lastSynced: null,
+    isSyncing: false,
+
+    async fetchUpcoming(interactive = false) {
+      if (this.isSyncing) return;
+      this.isSyncing = true;
+      try {
+        const apiBase = getApiBase() || "";
+        const url = `${apiBase}/api/concall/upcoming`;
+        const res = await fetch(url, { cache: "no-store" });
+        const cType = res.headers.get("content-type") || "";
+        if (res.ok && cType.includes("json")) {
+          const json = await res.json();
+          if (json && Array.isArray(json.concalls) && json.concalls.length > 0) {
+            this.data = json.concalls.map(c => {
+              const q = getEventStockLiveQuote(c.symbol);
+              return {
+                ...c,
+                price: q.price,
+                chg: q.chg,
+                cap: q.cap || "MC",
+                sector: q.sector || "Equities",
+                attendees: c.attendees || "Senior Leadership & IR Desk"
+              };
+            });
+            this.lastSynced = new Date();
+            if (State.view === "events") {
+              const container = document.getElementById("events-content-area") || document.getElementById("view-container");
+              if (container) renderActiveView();
+            }
+            if (interactive) {
+              showToast(`Synced ${this.data.length} live upcoming concalls from concall.in`, "🎧");
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("ConcallLiveService upcoming fetch notice:", err);
+      } finally {
+        this.isSyncing = false;
+      }
+    },
+
+    async fetchResults(interactive = false) {
+      try {
+        const apiBase = getApiBase() || "";
+        const url = `${apiBase}/api/concall/results?pages=2`;
+        const res = await fetch(url, { cache: "no-store" });
+        const cType = res.headers.get("content-type") || "";
+        if (res.ok && cType.includes("json")) {
+          const json = await res.json();
+          if (json && Array.isArray(json.results) && json.results.length > 0) {
+            this.resultsData = json.results.map(r => {
+              const q = getEventStockLiveQuote(r.symbol);
+              return {
+                ...r,
+                price: q.price,
+                chg: q.chg,
+                cap: q.cap || "MC",
+                sector: q.sector || "Equities",
+                epsEst: "—",
+                revEst: "—"
+              };
+            });
+            if (State.view === "events" && State.eventsTab === "earnings") {
+              const container = document.getElementById("events-content-area") || document.getElementById("view-container");
+              if (container) renderActiveView();
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("ConcallLiveService results fetch notice:", err);
+      }
+    }
+  };
+
   // 2. Earnings Calendar Table (Dynamic multi-month filtering)
   function renderEventsEarningsTable() {
     const q = State.eventsSearch.trim().toLowerCase();
@@ -20333,6 +20432,20 @@
                   title="Open on EarningsPulse.ai">
                   Pulse ↗
                 </a>
+                ${item.resultLink ? `
+                  <a href="${item.resultLink}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
+                    style="padding:3px 8px;font-size:11px;text-decoration:none;color:#38bdf8;border-color:rgba(56,189,248,0.4);"
+                    title="Open Official BSE Financial Result PDF Filing">
+                    <span>📄</span> BSE PDF ↗
+                  </a>
+                ` : ''}
+                ${item.presentationLink ? `
+                  <a href="${item.presentationLink}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
+                    style="padding:3px 8px;font-size:11px;text-decoration:none;color:#c084fc;border-color:rgba(168,85,247,0.4);"
+                    title="Open Investor Presentation PDF">
+                    <span>📊</span> PPT ↗
+                  </a>
+                ` : ''}
               </div>
             </td>
           </tr>`;
@@ -20401,6 +20514,11 @@
   }
 
   function renderEventsConcallTable() {
+    if (!ConcallLiveService.data && !ConcallLiveService.isSyncing) {
+      setTimeout(() => {
+        ConcallLiveService.fetchUpcoming(false);
+      }, 10);
+    }
     const q = State.eventsSearch.trim().toLowerCase();
     const resolvedSym = q ? resolveStockSymbol(q) : null;
     const cleanQ = q.toUpperCase();
@@ -20506,23 +20624,64 @@
             <td style="font-size:11px;color:var(--mu)">${item.attendees}</td>
             <td>${statusBadge}</td>
             <td>
-              <div style="display:flex;align-items:center;gap:6px">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                ${item.regLink ? `
+                  <a href="${item.regLink}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
+                    style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:3px;text-decoration:none;color:#c084fc;border-color:rgba(168,85,247,0.5);background:rgba(168,85,247,0.1);font-weight:700;"
+                    title="Register / Join Audio Conference Call on DiamondPass / ChorusCall">
+                    <span>⚡</span> Join ↗
+                  </a>
+                ` : (item.webcast ? `
+                  <a href="${item.webcast}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
+                    style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:3px;text-decoration:none;color:var(--accent);border-color:rgba(59,130,246,0.4);"
+                    title="Open Investor Audio/Webcast Stream">
+                    <span>🎧</span> Webcast ↗
+                  </a>
+                ` : '')}
+                ${item.bseDoc ? `
+                  <a href="${item.bseDoc}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
+                    style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:3px;text-decoration:none;color:#38bdf8;border-color:rgba(56,189,248,0.4);"
+                    title="Open Official BSE Announcement PDF Document">
+                    <span>📄</span> BSE PDF ↗
+                  </a>
+                ` : ''}
                 <a href="${tvUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
                   style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:3px;text-decoration:none;color:var(--g);border-color:rgba(16,185,129,0.4);"
                   title="Open ${item.symbol} Live Candlestick Chart on TradingView" onclick="event.stopPropagation()">
                   <span>📈</span> Chart ↗
-                </a>
-                <a href="${item.webcast}" target="_blank" rel="noopener noreferrer" class="row-action-btn"
-                  style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:3px;text-decoration:none;color:var(--accent);border-color:rgba(59,130,246,0.4);"
-                  title="Open Investor Audio/Webcast Stream">
-                  <span>🎧</span> Webcast ↗
                 </a>
               </div>
             </td>
           </tr>`;
     }).join("");
 
+    const concallToolbarHtml = `
+      <!-- concall.in Live Gateway Toolbar -->
+      <div class="concall-pulse-toolbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-md);margin-bottom:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;">
+            <span>🎧</span> <strong>concall.in Real-Time Gateway</strong>
+          </span>
+          <span style="font-size:11px;color:var(--mu);display:inline-flex;align-items:center;gap:4px;">
+            ● Direct DiamondPass / ChorusCall Registration, Dial-In Numbers &amp; BSE Official Filings
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="row-action-btn" data-action="sync-live-concalls" style="height:32px;padding:4px 12px;font-weight:700;color:var(--g);border-color:rgba(34,197,94,0.4);" title="Sync live concall data from concall.in">
+            <span>↻</span> <span>Sync Concall.in</span>
+          </button>
+          <a href="https://concall.in" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" style="background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);color:#c084fc;text-decoration:none;" title="Open concall.in official Indian Concall Portal">
+            <span>🎧</span> concall.in ↗
+          </a>
+          <a href="https://www.bseindia.com/corporates/ann.html" target="_blank" rel="noopener noreferrer" class="earnings-pulse-btn" style="background:rgba(255,255,255,0.06);border-color:var(--ln);color:var(--ink);text-decoration:none;" title="Open BSE India Official Corporate Announcements">
+            <span>🏛️</span> BSE Filings ↗
+          </a>
+        </div>
+      </div>
+    `;
+
     return `
+      ${concallToolbarHtml}
       <div class="table-card-container" style="margin-top:0">
         <div class="table-summary-bar">
           <span class="match-counter-text">Upcoming Earnings Concalls — ${data.length} Scheduled Briefings in ${monthLabel}</span>
@@ -21352,6 +21511,12 @@
                   </div>
                 </div>
                 <div class="events-day-card-right">
+                  ${c.regLink ? `
+                    <a href="${escapeHtml(c.regLink)}" target="_blank" rel="noopener noreferrer" class="row-action-btn" style="padding:4px 8px;font-size:11px;color:#c084fc;border-color:rgba(168,85,247,0.5);text-decoration:none">⚡ Join ↗</a>
+                  ` : ''}
+                  ${c.bseDoc ? `
+                    <a href="${escapeHtml(c.bseDoc)}" target="_blank" rel="noopener noreferrer" class="row-action-btn" style="padding:4px 8px;font-size:11px;color:#38bdf8;border-color:rgba(56,189,248,0.4);text-decoration:none">📄 PDF ↗</a>
+                  ` : ''}
                   <button class="row-action-btn" data-action="copy-dial-in" data-dial="${escapeHtml(c.dialIn)}" style="padding:4px 10px;font-size:11px;white-space:nowrap">
                     📞 Copy Dial-In
                   </button>
@@ -24426,6 +24591,11 @@
       else if (action === "events-tab") {
         State.eventsTab = target.dataset.tab;
         State.eventsSearch = "";
+        if (State.eventsTab === "concall" && !ConcallLiveService.data && !ConcallLiveService.isSyncing) {
+          ConcallLiveService.fetchUpcoming(false);
+        } else if (State.eventsTab === "earnings" && !ConcallLiveService.resultsData) {
+          ConcallLiveService.fetchResults(false);
+        }
         renderActiveView();
       }
       else if (action === "events-view-mode") {
@@ -24891,6 +25061,9 @@
       }
       else if (action === "sync-live-earnings") {
         EarningsLiveService.fetchEarnings(State.earningsRange, State.earningsDate, true);
+      }
+      else if (action === "sync-live-concalls") {
+        ConcallLiveService.fetchUpcoming(true);
       }
       else if (action === "open-add-holding") {
         openHoldingModal("add");
@@ -25786,7 +25959,7 @@
     async preloadStaticData() {
       // 1. Preload 1,630 authentic stock EMAs from local repository cache
       try {
-        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.5", { cache: "no-store" });
+        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.6", { cache: "no-store" });
         if (res.ok) {
           const map = await res.json();
           if (map && typeof map === "object") {
@@ -25802,7 +25975,7 @@
 
       // 2. Preload 46 authentic sector indices with live EMAs
       try {
-        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.5", { cache: "no-store" });
+        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.6", { cache: "no-store" });
         if (resSec.ok) {
           const secList = await resSec.json();
           if (Array.isArray(secList) && secList.length > 0) {
@@ -25835,7 +26008,7 @@
         const urls = [
           localBase ? (localBase + "/api/screeningmantis/sectors") : null,
           "https://www.screeningmantis.com/api/sector-indices",
-          "./data/screeningmantis-sectors.json?v=6.2.5"
+          "./data/screeningmantis-sectors.json?v=6.2.6"
         ].filter(Boolean);
 
         let data = null;
@@ -25896,7 +26069,7 @@
           localBase ? (localBase + "/api/screeningmantis/emas") : null,
           localBase ? (localBase + "/api/screeningmantis/snapshot") : null,
           "https://www.screeningmantis.com/api/scanner/snapshot",
-          "./data/screeningmantis-emas.json?v=6.2.5"
+          "./data/screeningmantis-emas.json?v=6.2.6"
         ].filter(Boolean);
 
         let snapshotResults = null;
@@ -26017,7 +26190,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.5"
+          "./data/authentic-sector-turnover.json?v=6.2.6"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -26063,7 +26236,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.5', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.6', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
@@ -26264,6 +26437,10 @@
     // Initial Live Sync from Yahoo Finance on startup
     setTimeout(() => {
       YahooFinanceLiveService.syncAll(false);
+      if (typeof ConcallLiveService !== "undefined") {
+        ConcallLiveService.fetchUpcoming(false);
+        ConcallLiveService.fetchResults(false);
+      }
     }, 1200);
 
     fetchOwnerIdeas();

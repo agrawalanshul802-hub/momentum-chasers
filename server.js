@@ -3829,6 +3829,234 @@ function fetchCSVFromNSE(urlStr) {
   });
 }
 
+// ==============================================================================
+// 5.5 CONCALL.IN GATEWAY & REAL-TIME INDIAN EARNINGS/CONCALL SERVICE
+// ==============================================================================
+let _cachedStocksUniverseForConcall = null;
+function getStocksUniverseForConcall() {
+  if (_cachedStocksUniverseForConcall) return _cachedStocksUniverseForConcall;
+  try {
+    const universePath = path.join(__dirname, 'data', 'stocks-universe.json');
+    if (fs.existsSync(universePath)) {
+      const raw = JSON.parse(fs.readFileSync(universePath, 'utf8'));
+      _cachedStocksUniverseForConcall = raw.map(s => ({
+        symbol: s[0],
+        cap: s[1],
+        sector: s[2],
+        price: s[3],
+        chg: s[4],
+        name: (s[8] && s[8].name) ? s[8].name : s[0]
+      }));
+    }
+  } catch (e) {
+    _cachedStocksUniverseForConcall = [];
+  }
+  return _cachedStocksUniverseForConcall || [];
+}
+
+function normalizeConcallCompanyName(s) {
+  return (s || '')
+    .toLowerCase()
+    .replace(/\b(ltd|limited|india|corporation|corp|technologies|tech|industries|ind|co|enterprises|services|finance|holdings|infra)\b/gi, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function resolveConcallStockSymbol(name) {
+  if (!name) return 'STOCK';
+  const clean = name.trim();
+  const stocks = getStocksUniverseForConcall();
+  if (stocks.length > 0) {
+    const norm = normalizeConcallCompanyName(clean);
+    if (norm) {
+      const exactSym = stocks.find(s => s.symbol.toLowerCase() === norm || s.symbol.toLowerCase() === clean.toLowerCase());
+      if (exactSym) return exactSym.symbol;
+
+      const exactName = stocks.find(s => normalizeConcallCompanyName(s.name) === norm);
+      if (exactName) return exactName.symbol;
+
+      const prefixMatch = stocks.find(s => {
+        const sn = normalizeConcallCompanyName(s.name);
+        return (sn.length > 3 && norm.length > 3) && (sn.startsWith(norm) || norm.startsWith(sn));
+      });
+      if (prefixMatch) return prefixMatch.symbol;
+
+      const subMatch = stocks.find(s => {
+        const sn = normalizeConcallCompanyName(s.name);
+        return (sn.length > 4 && norm.length > 4) && (sn.includes(norm) || norm.includes(sn));
+      });
+      if (subMatch) return subMatch.symbol;
+    }
+  }
+
+  const firstWord = clean.split(/[\s,.-]+/)[0].toUpperCase();
+  return firstWord.slice(0, 10) || 'STOCK';
+}
+
+function formatConcallTime(isoStr) {
+  if (!isoStr) return '04:00 PM IST';
+  const t = isoStr.includes('T') ? isoStr.split('T')[1] : isoStr;
+  const parts = t.split(':');
+  let hh = parseInt(parts[0], 10);
+  const mm = parts[1] || '00';
+  if (isNaN(hh)) return '04:00 PM IST';
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  hh = hh % 12;
+  if (hh === 0) hh = 12;
+  return `${String(hh).padStart(2, '0')}:${mm} ${ampm} IST`;
+}
+
+const concallService = {
+  cache: new Map(),
+  cacheTtlMs: 10 * 60 * 1000, // 10-minute cache TTL
+
+  async requestConcallApi(endpoint, body = {}) {
+    return new Promise((resolve) => {
+      const postData = JSON.stringify(body);
+      const req = https.request({
+        hostname: 'api.concall.in',
+        port: 443,
+        path: `/leap/fetch/${endpoint}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData),
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://concall.in',
+          'Referer': 'https://concall.in/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        timeout: 10000
+      }, res => {
+        let buf = '';
+        res.on('data', chunk => buf += chunk);
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(buf));
+          } catch (e) {
+            resolve(null);
+          }
+        });
+      });
+      req.on('error', err => {
+        console.warn('Concall API network notice:', err?.message || err);
+        resolve(null);
+      });
+      req.on('timeout', () => {
+        req.destroy();
+        resolve(null);
+      });
+      req.write(postData);
+      req.end();
+    });
+  },
+
+  async getUpcomingConcalls() {
+    const cacheKey = 'upcoming_concalls';
+    const cached = this.cache.get(cacheKey);
+    if (cached && (Date.now() - cached.time < this.cacheTtlMs)) {
+      return cached.data;
+    }
+
+    try {
+      const resp = await this.requestConcallApi('upcomingConcalls', { page: 1, limit: 50 });
+      const items = [];
+      if (resp && resp.content && Array.isArray(resp.content)) {
+        for (const group of resp.content) {
+          if (group.eventsWithDate && Array.isArray(group.eventsWithDate)) {
+            for (const dItem of group.eventsWithDate) {
+              const dateStr = (dItem.dateTime || '').slice(0, 10);
+              for (const ev of (dItem.eventList || [])) {
+                const itemDate = (ev.concallInviteDateTime || dateStr || '').slice(0, 10);
+                const timeStr = formatConcallTime(ev.concallInviteDateTime);
+                items.push({
+                  finCode: ev.finCode,
+                  company: ev.companyName,
+                  symbol: resolveConcallStockSymbol(ev.companyName),
+                  date: itemDate,
+                  time: timeStr,
+                  topic: ev.title ? `${ev.title} Conference Call` : 'Q2 FY27 Earnings Conference Call',
+                  rawTitle: ev.title || 'Earnings Call',
+                  dialIn: ev.dialInNumber || '+91 22 6280 1144 / +91 22 7115 8045',
+                  regLink: ev.registrationLink || null,
+                  bseDoc: ev.documentUrl || null,
+                  source: 'concall.in'
+                });
+              }
+            }
+          }
+        }
+      }
+
+      if (items.length > 0) {
+        this.cache.set(cacheKey, { time: Date.now(), data: items });
+        return items;
+      }
+    } catch (e) {
+      console.warn('ConcallService getUpcomingConcalls error:', e.message);
+    }
+
+    if (cached) return cached.data;
+    return [];
+  },
+
+  async getLiveResults(pages = 2) {
+    const cacheKey = `live_results_${pages}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached && (Date.now() - cached.time < this.cacheTtlMs)) {
+      return cached.data;
+    }
+
+    try {
+      const pagePromises = [];
+      for (let p = 1; p <= pages; p++) {
+        pagePromises.push(this.requestConcallApi('liveResults', { page: p, limit: 25 }));
+      }
+      const pageResults = await Promise.all(pagePromises);
+      const items = [];
+
+      for (const resp of pageResults) {
+        if (resp && resp.content && Array.isArray(resp.content)) {
+          for (const group of resp.content) {
+            if (group.eventsWithDate && Array.isArray(group.eventsWithDate)) {
+              for (const dItem of group.eventsWithDate) {
+                const groupDate = (dItem.dateTime || '').slice(0, 10);
+                for (const ev of (dItem.eventList || [])) {
+                  const evDate = (ev.dateTime || groupDate || '').slice(0, 10);
+                  const timeStr = formatConcallTime(ev.dateTime);
+                  items.push({
+                    finCode: ev.finCode,
+                    company: ev.companyName,
+                    symbol: resolveConcallStockSymbol(ev.companyName),
+                    date: evDate,
+                    time: timeStr,
+                    resultDescription: ev.resultDescription || 'Financial results filed with exchanges.',
+                    resultLink: ev.resultLink || null,
+                    pressLink: ev.pressLink || null,
+                    presentationLink: ev.presentationLink || null,
+                    quarter: 'Q2 FY27',
+                    status: 'Declared',
+                    source: 'concall.in'
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (items.length > 0) {
+        this.cache.set(cacheKey, { time: Date.now(), data: items });
+        return items;
+      }
+    } catch (e) {
+      console.warn('ConcallService getLiveResults error:', e.message);
+    }
+
+    if (cached) return cached.data;
+    return [];
+  }
+};
+
 async function fetchLiveDealsData() {
   const [bulkCsv, blockCsv] = await Promise.all([
     fetchCSVFromNSE('https://archives.nseindia.com/content/equities/bulk.csv').catch(() => ''),
@@ -5450,6 +5678,50 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(responseData);
     return;
+  }
+
+  // 6a-1. Concall.in Live Upcoming Concalls Gateway: /api/concall/upcoming
+  if (pathname === '/api/concall/upcoming') {
+    try {
+      const concalls = await concallService.getUpcomingConcalls();
+      const payload = {
+        status: 'success',
+        source: 'concall.in (Live Indian Equities Management Calls)',
+        count: concalls.length,
+        timestamp: new Date().toISOString(),
+        concalls: concalls
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify(payload));
+      return;
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'error', error: err?.message || 'Concall error', concalls: [] }));
+      return;
+    }
+  }
+
+  // 6a-2. Concall.in Live Corporate Earnings Results Gateway: /api/concall/results
+  if (pathname === '/api/concall/results') {
+    try {
+      const pages = Math.min(Math.max(parseInt(parsedUrl.query?.pages || '2', 10), 1), 5);
+      const results = await concallService.getLiveResults(pages);
+      const payload = {
+        status: 'success',
+        source: 'concall.in (Live Indian Equities Corporate Results & BSE PDFs)',
+        count: results.length,
+        pages: pages,
+        timestamp: new Date().toISOString(),
+        results: results
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify(payload));
+      return;
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'error', error: err?.message || 'Results error', results: [] }));
+      return;
+    }
   }
 
   // 6b. Live Bulk and Block Deals Endpoint: /api/deals (NSE Archives Live)
