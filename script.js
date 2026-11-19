@@ -25444,13 +25444,171 @@
   }
 
   // ==========================================================================
+  // 14B. SCREENINGMANTIS LIVE MARKET DATA SYNC SERVICE
+  // ==========================================================================
+  const ScreeningMantisClient = {
+    isSyncing: false,
+    lastSynced: null,
+
+    async syncSectorIndices() {
+      try {
+        const localBase = getApiBase();
+        const urls = [
+          localBase ? `${localBase}/api/screeningmantis/sectors` : null,
+          "https://www.screeningmantis.com/api/sector-indices"
+        ].filter(Boolean);
+
+        let data = null;
+        for (const url of urls) {
+          try {
+            const res = await fetch(url, { cache: "no-store" });
+            if (res.ok) {
+              const json = await res.json();
+              const list = Array.isArray(json) ? json : (json.sectors || []);
+              if (Array.isArray(list) && list.length > 0) {
+                data = list;
+                break;
+              }
+            }
+          } catch (_) { }
+        }
+
+        if (Array.isArray(data) && data.length > 0) {
+          let updatedCount = 0;
+          SC.forEach(sec => {
+            const sym = sec[0];
+            const sm = data.find(x => x.symbol === sym || x.displayName === sym);
+            if (sm && typeof sm.currentClose === "number") {
+              sec[1] = sm.currentClose;
+              sec[2] = typeof sm.chg1d === "number" ? sm.chg1d : sec[2];
+              sec[3] = typeof sm.rsi === "number" ? sm.rsi : sec[3];
+              sec[4] = [
+                sm.aboveEma10 ? 1 : 0,
+                sm.aboveEma20 ? 1 : 0,
+                sm.aboveEma50 ? 1 : 0,
+                sm.aboveEma200 ? 1 : 0
+              ];
+              sec[5] = typeof sm.emaDistPct === "number" ? sm.emaDistPct : sec[5];
+              sec[6] = typeof sm.emaCrossCandles === "number" ? sm.emaCrossCandles : sec[6];
+              updatedCount++;
+            }
+          });
+          console.log(`[ScreeningMantis] Successfully updated ${updatedCount} sector indices with live quotes.`);
+          if (State.view === "sectors") {
+            const container = document.getElementById("view-container");
+            if (container) {
+              container.innerHTML = renderSectorsView();
+              setupSectorEvents();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("[ScreeningMantis] Notice on sector sync:", e.message);
+      }
+    },
+
+    async syncScannerSnapshot() {
+      try {
+        const localBase = getApiBase();
+        const urls = [
+          localBase ? `${localBase}/api/screeningmantis/snapshot` : null,
+          "https://www.screeningmantis.com/api/scanner/snapshot"
+        ].filter(Boolean);
+
+        let snapshotResults = null;
+        for (const url of urls) {
+          try {
+            const res = await fetch(url, { cache: "no-store" });
+            if (res.ok) {
+              const json = await res.json();
+              const results = json.snapshot?.results || json.results;
+              if (Array.isArray(results) && results.length > 0) {
+                snapshotResults = results;
+                break;
+              }
+            }
+          } catch (_) { }
+        }
+
+        if (Array.isArray(snapshotResults) && snapshotResults.length > 0) {
+          let updatedCount = 0;
+          for (const s of snapshotResults) {
+            const sym = s.symbol;
+            const stock = (typeof ST_MAP !== "undefined" && ST_MAP[sym]) || (typeof ST !== "undefined" && ST.find(x => x[0] === sym));
+            if (stock) {
+              const mapObj = ST_MAP[sym] || {};
+              // Update live price and % change
+              if (typeof s.currentClose === "number") {
+                mapObj.price = s.currentClose;
+                if (Array.isArray(stock)) stock[3] = s.currentClose;
+              }
+              if (typeof s.chg1d === "number") {
+                mapObj.chg = s.chg1d;
+                if (Array.isArray(stock)) stock[4] = s.chg1d;
+              }
+              if (typeof s.rsi === "number") {
+                mapObj.rsi = s.rsi;
+              }
+              if (typeof s.volRatio === "number") {
+                mapObj.volRatio = s.volRatio;
+              }
+              if (typeof s.w52HighDist === "number") {
+                mapObj.high52Dist = s.w52HighDist;
+              }
+
+              // Update verified earnings data
+              if (s.pastEarningsDate) {
+                mapObj.results = s.pastEarningsDate;
+                mapObj.resultsStatus = "Confirmed";
+              }
+              if (s.earningsDate) {
+                mapObj.nextResults = s.earningsDate;
+              }
+              if (s.earningsDayChange != null) {
+                mapObj.earningsReaction = s.earningsDayChange;
+              }
+
+              // Invalidate cache
+              if (Array.isArray(stock) && stock[8]) {
+                if (s.pastEarningsDate) stock[8].results = s.pastEarningsDate;
+                if (s.earningsDate) stock[8].nextResults = s.earningsDate;
+                if (s.earningsDayChange != null) stock[8].earningsReaction = s.earningsDayChange;
+                stock._cachedEarnings = null;
+              }
+              mapObj._cachedEarnings = null;
+              updatedCount++;
+            }
+          }
+          console.log(`[ScreeningMantis] Synced ${updatedCount} stocks with verified earnings & live quotes.`);
+          if (State.view === "screener") {
+            updateScreenerLiveQuotes();
+          }
+        }
+      } catch (e) {
+        console.warn("[ScreeningMantis] Notice on snapshot sync:", e.message);
+      }
+    },
+
+    async syncAll() {
+      if (this.isSyncing) return;
+      this.isSyncing = true;
+      await Promise.allSettled([
+        this.syncSectorIndices(),
+        this.syncScannerSnapshot()
+      ]);
+      this.isSyncing = false;
+      this.lastSynced = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    }
+  };
+
+  // ==========================================================================
   // 15. INITIALIZATION & BOOTSTRAP
   // ==========================================================================
 
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.5', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.1.6', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
@@ -25590,6 +25748,12 @@
 
     // Fetch repository-synced daily Nifty 500 universe
     syncNifty500Catalog();
+
+    // Sync live ScreeningMantis verified market feeds (Sector Indices & Screener Earnings)
+    ScreeningMantisClient.syncAll();
+    setInterval(() => {
+      if (!document.hidden) ScreeningMantisClient.syncSectorIndices();
+    }, 60 * 1000);
 
     // Groww publishes FII/DII flows after the cash-market close; keep the
     // section refreshed without implying that it is an intraday feed.
