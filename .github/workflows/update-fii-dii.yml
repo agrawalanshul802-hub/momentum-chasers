@@ -26,6 +26,9 @@ jobs:
       - name: Fetch Latest FII / DII Data from Groww
         run: node scripts/fetch-fii-dii.js
 
+      - name: Sync Sector Turnover from ScreeningMantis
+        run: node scripts/update-sector-turnover.js
+
       - name: Start Market Proxy & Sync Nifty 500 Universe
         run: |
           node server.js &
