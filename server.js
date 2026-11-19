@@ -258,7 +258,7 @@ class YahooFinanceSession {
         resolve(setCookie ? setCookie.map(c => c.split(';')[0]).join('; ') : '');
       });
       req.on('error', () => resolve(''));
-      req.on('timeout', function() { this.destroy(); resolve(''); });
+      req.on('timeout', function () { this.destroy(); resolve(''); });
     });
   }
 
@@ -276,7 +276,7 @@ class YahooFinanceSession {
         res.on('end', () => resolve(d.trim()));
       });
       req.on('error', () => resolve(''));
-      req.on('timeout', function() { this.destroy(); resolve(''); });
+      req.on('timeout', function () { this.destroy(); resolve(''); });
     });
   }
 }
@@ -357,7 +357,7 @@ class DhanAuthManager {
 
     return new Promise((resolve) => {
       const authUrl = `https://auth.dhan.co/app/generateAccessToken?dhanClientId=${encodeURIComponent(this.clientId)}&pin=${encodeURIComponent(this.pin)}&totp=${encodeURIComponent(currentTotp)}`;
-      
+
       const req = https.request(authUrl, {
         method: 'POST',
         headers: {
@@ -665,13 +665,13 @@ function fetchJson(urlStr) {
         let d = '';
         res.on('data', c => d += c);
         res.on('end', () => {
-          try { resolve(JSON.parse(d)); } catch(e) { resolve(null); }
+          try { resolve(JSON.parse(d)); } catch (e) { resolve(null); }
         });
       });
       req.on('error', () => resolve(null));
       req.on('timeout', () => { req.destroy(); resolve(null); });
       req.end();
-    } catch(e) { resolve(null); }
+    } catch (e) { resolve(null); }
   });
 }
 
@@ -3466,13 +3466,13 @@ async function searchLiveIndianStock(query) {
           let d = '';
           res.on('data', c => d += c);
           res.on('end', () => {
-            try { resolve(JSON.parse(d)); } catch(e) { resolve(null); }
+            try { resolve(JSON.parse(d)); } catch (e) { resolve(null); }
           });
         });
         req.on('error', () => resolve(null));
         req.on('timeout', () => { req.destroy(); resolve(null); });
         req.end();
-      } catch(e) { resolve(null); }
+      } catch (e) { resolve(null); }
     });
   }
 
@@ -3495,8 +3495,8 @@ async function searchLiveIndianStock(query) {
   const searchData = await fetchJson(searchUrl);
   let quotes = (searchData && searchData.quotes) || [];
 
-  const discoveredIndian = quotes.filter(item => 
-    item.quoteType === 'EQUITY' && 
+  const discoveredIndian = quotes.filter(item =>
+    item.quoteType === 'EQUITY' &&
     (item.symbol.endsWith('.NS') || item.symbol.endsWith('.BO'))
   );
   candidateSymbols.push(...discoveredIndian);
@@ -3531,8 +3531,8 @@ async function searchLiveIndianStock(query) {
     const firstTradeSec = meta.firstTradeDate || (res0.timestamp && res0.timestamp[0]) || Math.floor(Date.now() / 1000);
     const firstDate = new Date(firstTradeSec * 1000);
     const year = firstDate.getFullYear();
-    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const dateStr = `${days[firstDate.getDay()]}, ${months[firstDate.getMonth()]} ${String(firstDate.getDate()).padStart(2, '0')}, ${year}`;
 
     const issueBaseline = meta.chartPreviousClose || opens[0] || (closes[0] ? closes[0] * 0.9 : currentPrice * 0.85);
@@ -3615,7 +3615,7 @@ const ScreeningMantisService = {
         console.log(`[ScreeningMantis] Synced ${data.length} live sector indices.`);
         try {
           fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-sectors.json'), JSON.stringify(data, null, 2));
-        } catch (_) {}
+        } catch (_) { }
         return data;
       }
     } catch (err) {
@@ -3627,7 +3627,7 @@ const ScreeningMantisService = {
         if (fs.existsSync(p)) {
           this.cachedSectors = JSON.parse(fs.readFileSync(p, 'utf8'));
         }
-      } catch (_) {}
+      } catch (_) { }
     }
     return this.cachedSectors || [];
   },
@@ -3669,7 +3669,7 @@ const ScreeningMantisService = {
             }
           }
           fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-emas.json'), JSON.stringify(map, null, 2));
-        } catch (_) {}
+        } catch (_) { }
         return data;
       }
     } catch (err) {
@@ -3683,7 +3683,7 @@ const ScreeningMantisService = {
           const results = Object.keys(map).map(sym => ({ symbol: sym, ...map[sym] }));
           this.cachedSnapshot = { success: true, snapshot: { results } };
         }
-      } catch (_) {}
+      } catch (_) { }
     }
     return this.cachedSnapshot || null;
   },
@@ -3724,7 +3724,7 @@ const ScreeningMantisService = {
       if (fs.existsSync(p)) {
         return JSON.parse(fs.readFileSync(p, 'utf8'));
       }
-    } catch (_) {}
+    } catch (_) { }
     return {};
   },
 
@@ -3897,582 +3897,582 @@ function formatIPOFeedDate(value) {
 
 async function fetchLiveIPOsData() {
   const cleanFallback = [
-  {
-    "id": "ZEPTEMP",
-    "company": "Zepto",
-    "symbol": "ZEPTEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jun-2026/zepto-limited-udrhp1_101929.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Zepto.png"
-  },
-  {
-    "id": "TEMPRZR",
-    "company": "Razorpay",
-    "symbol": "TEMPRZR",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Razorpay_logo.png"
-  },
-  {
-    "id": "TEMPTRU",
-    "company": "Truhome Finance",
-    "symbol": "TEMPTRU",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/mar-2026/truhome-finance-limited_100519.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/truhome_logo.png"
-  },
-  {
-    "id": "MARRI",
-    "company": "Marri Retail",
-    "symbol": "MARRI",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/feb-2026/marri-retail-limited-drhp_99483.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/marri_retail.png"
-  },
-  {
-    "id": "INCREDTEMP",
-    "company": "InCred Holdings",
-    "symbol": "INCREDTEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/incred_logo.png"
-  },
-  {
-    "id": "TEMPHERO",
-    "company": "Hero Fincorp",
-    "symbol": "TEMPHERO",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://hfcl-website-cms.s3.ap-south-1.amazonaws.com/DRHP_Hero_Fin_Corp_Limited_fe2e340ba3.pdf",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/hero_fincorp_logo.png"
-  },
-  {
-    "id": "TEMPALLCHEM",
-    "company": "Allchem Lifescience",
-    "symbol": "TEMPALLCHEM",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Allchecm_logo.png"
-  },
-  {
-    "id": "CDTEMP",
-    "company": "CarDekho",
-    "symbol": "CDTEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/cardekho.png"
-  },
-  {
-    "id": "HALDITEMP",
-    "company": "Haldiram's Snacks Foods",
-    "symbol": "HALDITEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/haldirams_logo.png"
-  },
-  {
-    "id": "TEMPPREST",
-    "company": "Prestige Hospitality",
-    "symbol": "TEMPPREST",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/logo-prestige.png"
-  },
-  {
-    "id": "TEMPCURE",
-    "company": "Curefoods",
-    "symbol": "TEMPCURE",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jul-2025/curefoods-india-limited_95013.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/curefoods_logo.png"
-  },
-  {
-    "id": "TEMPCULT",
-    "company": "Cult Fit",
-    "symbol": "TEMPCULT",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/cultfit_logo.png"
-  },
-  {
-    "id": "TEMPKENT",
-    "company": "Kent RO",
-    "symbol": "TEMPKENT",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2025/kent-r-o-systems-limited_91156.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/kent_ro_logo.png"
-  },
-  {
-    "id": "TEMPSYMBOL",
-    "company": "VLCC",
-    "symbol": "TEMPSYMBOL",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/vlcc_logo.png"
-  },
-  {
-    "id": "TEMPPHARM",
-    "company": "PharmEasy",
-    "symbol": "TEMPPHARM",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/Pharmeasy_logo.png"
-  },
-  {
-    "id": "TEMPSERV",
-    "company": "Servify",
-    "symbol": "TEMPSERV",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/Servify_logo.png"
-  },
-  {
-    "id": "HEROTEMP",
-    "company": "Hero Future Energies",
-    "symbol": "HEROTEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/hero_future_energies_logo.jpg"
-  },
-  {
-    "id": "FLIPTEMP",
-    "company": "Flipkart",
-    "symbol": "FLIPTEMP",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": null,
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/flipkart-logo.png"
-  },
-  {
-    "id": "PH123",
-    "company": "PhonePe",
-    "symbol": "PH123",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2026/phonepe-limited-udrhp-i_99285.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/phonepe_logo.png"
-  },
-  {
-    "id": "FABINDIA",
-    "company": "FabIndia",
-    "symbol": "FABINDIA",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2022/fabindia-limited_55532.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-135.png"
-  },
-  {
-    "id": "OYO",
-    "company": "OYO",
-    "symbol": "OYO",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/oct-2021/oravel-stays-limited_53084.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-88.png"
-  },
-  {
-    "id": "BOAT",
-    "company": "boAt ",
-    "symbol": "BOAT",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2022/imagine-marketing-limited_55666.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-131.png"
-  },
-  {
-    "id": "BAJAJENER",
-    "company": "Bajaj Energy",
-    "symbol": "BAJAJENER",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/apr-2019/bajaj-energy-limited_42638.html",
-    "logoUrl": "https://storage.googleapis.com/gw-prod-asset-netstorage/stocks-ipo/logos/logos_bajajelec-41.png"
-  },
-  {
-    "id": "AROHAN",
-    "company": "Arohan Financial",
-    "symbol": "AROHAN",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/feb-2021/arohan-financial-services-limited_49148.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-72.png"
-  },
-  {
-    "id": "DROOM",
-    "company": "Droom",
-    "symbol": "DROOM",
-    "status": "UPCOMING",
-    "opens": "TBA",
-    "closes": "TBA",
-    "listing": "TBA",
-    "allotment": "TBA",
-    "priceMin": null,
-    "priceMax": null,
-    "issuePrice": "TBA",
-    "lot": "TBA",
-    "size": "TBA",
-    "gmp": null,
-    "gmpPct": null,
-    "exchange": "NSE / BSE",
-    "type": "Mainboard",
-    "subscribed": "Draft Filed",
-    "category": "Mainboard",
-    "documentUrl": "https://www.sebi.gov.in/filings/public-issues/nov-2021/droom-technology-limited_53946.html",
-    "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-125.png"
-  }
-];
+    {
+      "id": "ZEPTEMP",
+      "company": "Zepto",
+      "symbol": "ZEPTEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jun-2026/zepto-limited-udrhp1_101929.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Zepto.png"
+    },
+    {
+      "id": "TEMPRZR",
+      "company": "Razorpay",
+      "symbol": "TEMPRZR",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Razorpay_logo.png"
+    },
+    {
+      "id": "TEMPTRU",
+      "company": "Truhome Finance",
+      "symbol": "TEMPTRU",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/mar-2026/truhome-finance-limited_100519.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/truhome_logo.png"
+    },
+    {
+      "id": "MARRI",
+      "company": "Marri Retail",
+      "symbol": "MARRI",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/feb-2026/marri-retail-limited-drhp_99483.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/marri_retail.png"
+    },
+    {
+      "id": "INCREDTEMP",
+      "company": "InCred Holdings",
+      "symbol": "INCREDTEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/incred_logo.png"
+    },
+    {
+      "id": "TEMPHERO",
+      "company": "Hero Fincorp",
+      "symbol": "TEMPHERO",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://hfcl-website-cms.s3.ap-south-1.amazonaws.com/DRHP_Hero_Fin_Corp_Limited_fe2e340ba3.pdf",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/hero_fincorp_logo.png"
+    },
+    {
+      "id": "TEMPALLCHEM",
+      "company": "Allchem Lifescience",
+      "symbol": "TEMPALLCHEM",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/Allchecm_logo.png"
+    },
+    {
+      "id": "CDTEMP",
+      "company": "CarDekho",
+      "symbol": "CDTEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/cardekho.png"
+    },
+    {
+      "id": "HALDITEMP",
+      "company": "Haldiram's Snacks Foods",
+      "symbol": "HALDITEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/haldirams_logo.png"
+    },
+    {
+      "id": "TEMPPREST",
+      "company": "Prestige Hospitality",
+      "symbol": "TEMPPREST",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stock-assets/logos2/logo-prestige.png"
+    },
+    {
+      "id": "TEMPCURE",
+      "company": "Curefoods",
+      "symbol": "TEMPCURE",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jul-2025/curefoods-india-limited_95013.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/curefoods_logo.png"
+    },
+    {
+      "id": "TEMPCULT",
+      "company": "Cult Fit",
+      "symbol": "TEMPCULT",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/cultfit_logo.png"
+    },
+    {
+      "id": "TEMPKENT",
+      "company": "Kent RO",
+      "symbol": "TEMPKENT",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2025/kent-r-o-systems-limited_91156.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/kent_ro_logo.png"
+    },
+    {
+      "id": "TEMPSYMBOL",
+      "company": "VLCC",
+      "symbol": "TEMPSYMBOL",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/vlcc_logo.png"
+    },
+    {
+      "id": "TEMPPHARM",
+      "company": "PharmEasy",
+      "symbol": "TEMPPHARM",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/Pharmeasy_logo.png"
+    },
+    {
+      "id": "TEMPSERV",
+      "company": "Servify",
+      "symbol": "TEMPSERV",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/Servify_logo.png"
+    },
+    {
+      "id": "HEROTEMP",
+      "company": "Hero Future Energies",
+      "symbol": "HEROTEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/hero_future_energies_logo.jpg"
+    },
+    {
+      "id": "FLIPTEMP",
+      "company": "Flipkart",
+      "symbol": "FLIPTEMP",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": null,
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/flipkart-logo.png"
+    },
+    {
+      "id": "PH123",
+      "company": "PhonePe",
+      "symbol": "PH123",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2026/phonepe-limited-udrhp-i_99285.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/phonepe_logo.png"
+    },
+    {
+      "id": "FABINDIA",
+      "company": "FabIndia",
+      "symbol": "FABINDIA",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2022/fabindia-limited_55532.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-135.png"
+    },
+    {
+      "id": "OYO",
+      "company": "OYO",
+      "symbol": "OYO",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/oct-2021/oravel-stays-limited_53084.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-88.png"
+    },
+    {
+      "id": "BOAT",
+      "company": "boAt ",
+      "symbol": "BOAT",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/jan-2022/imagine-marketing-limited_55666.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-131.png"
+    },
+    {
+      "id": "BAJAJENER",
+      "company": "Bajaj Energy",
+      "symbol": "BAJAJENER",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/apr-2019/bajaj-energy-limited_42638.html",
+      "logoUrl": "https://storage.googleapis.com/gw-prod-asset-netstorage/stocks-ipo/logos/logos_bajajelec-41.png"
+    },
+    {
+      "id": "AROHAN",
+      "company": "Arohan Financial",
+      "symbol": "AROHAN",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/feb-2021/arohan-financial-services-limited_49148.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-72.png"
+    },
+    {
+      "id": "DROOM",
+      "company": "Droom",
+      "symbol": "DROOM",
+      "status": "UPCOMING",
+      "opens": "TBA",
+      "closes": "TBA",
+      "listing": "TBA",
+      "allotment": "TBA",
+      "priceMin": null,
+      "priceMax": null,
+      "issuePrice": "TBA",
+      "lot": "TBA",
+      "size": "TBA",
+      "gmp": null,
+      "gmpPct": null,
+      "exchange": "NSE / BSE",
+      "type": "Mainboard",
+      "subscribed": "Draft Filed",
+      "category": "Mainboard",
+      "documentUrl": "https://www.sebi.gov.in/filings/public-issues/nov-2021/droom-technology-limited_53946.html",
+      "logoUrl": "https://assets-netstorage.groww.in/stocks-ipo/logos/logos-125.png"
+    }
+  ];
   const cleanPerf = IPO_PERFORMANCE_REGISTRY;
 
   try {
@@ -4586,7 +4586,7 @@ async function fetchLiveIPOsData() {
     const current = openDataList.map(mapOpen);
     const upcoming = upcomingDataList.length ? upcomingDataList.map(mapUpcoming) : cleanFallback;
     const closedMapped = closedDataList.map(mapClosed);
-    
+
     // Merge closedMapped with cleanPerf (avoid duplicates)
     const seen = new Set();
     const performance = [];
@@ -4755,7 +4755,7 @@ function fetchRssFeed(feedUrl, fallbackSource = 'Moneycontrol') {
             const link = decodeRssText(linkHref ? linkHref[1] : (linkTag ? linkTag[2] : ''));
             const pubDate = textTag(block, 'pubDate') || textTag(block, 'published') || textTag(block, 'updated') || textTag(block, 'date');
             const source = 'Moneycontrol';
-            
+
             // Clean trailing Moneycontrol tag from title
             title = title.replace(/\s*[-–|]\s*Moneycontrol(?:\.com)?$/i, '').trim();
 
@@ -4772,7 +4772,7 @@ function fetchRssFeed(feedUrl, fallbackSource = 'Moneycontrol') {
       });
     });
     const _rssTimer = setTimeout(() => {
-      try { req.destroy(new Error('RSS feed timeout')); } catch (_) {}
+      try { req.destroy(new Error('RSS feed timeout')); } catch (_) { }
       reject(new Error('RSS feed timeout'));
     }, 3500);
     req.on('error', err => {
@@ -4894,16 +4894,16 @@ function getSectorTurnoverPayload(baseline = 8) {
 function categorizeValuationIndex(name) {
   const n = String(name || '').toLowerCase();
   if (n.includes('shariah') || n.includes('esg') || n.includes('ahimsa')) return 'Thematic & Strategy';
-  if (n === 'nifty 50' || n === 'nifty next 50' || n === 'nifty 100' || n === 'nifty 200' || n === 'nifty 500' || 
-      n.includes('midcap 150') || n.includes('smallcap 250') || n.includes('microcap 250') || n.includes('total market') || 
-      n === 'nifty midcap 50' || n === 'nifty smallcap 50' || n === 'nifty largemidcap 250' || n === 'nifty 1000' || n === 'nifty smallcap 500') {
+  if (n === 'nifty 50' || n === 'nifty next 50' || n === 'nifty 100' || n === 'nifty 200' || n === 'nifty 500' ||
+    n.includes('midcap 150') || n.includes('smallcap 250') || n.includes('microcap 250') || n.includes('total market') ||
+    n === 'nifty midcap 50' || n === 'nifty smallcap 50' || n === 'nifty largemidcap 250' || n === 'nifty 1000' || n === 'nifty smallcap 500') {
     return 'Broad Market';
   }
-  if (n.includes('bank') || n.includes('it') || n.includes('pharma') || n.includes('auto') || n.includes('fmcg') || 
-      n.includes('metal') || n.includes('energy') || n.includes('oil & gas') || n.includes('realty') || n.includes('media') || 
-      n.includes('financial') || n.includes('consumer durables') || n.includes('healthcare') || n.includes('telecom') || 
-      n.includes('chemicals') || n.includes('capital goods') || n.includes('cement') || n.includes('construction') || 
-      n.includes('hospitals') || n.includes('insurance') || n.includes('housing') || n.includes('nbfc')) {
+  if (n.includes('bank') || n.includes('it') || n.includes('pharma') || n.includes('auto') || n.includes('fmcg') ||
+    n.includes('metal') || n.includes('energy') || n.includes('oil & gas') || n.includes('realty') || n.includes('media') ||
+    n.includes('financial') || n.includes('consumer durables') || n.includes('healthcare') || n.includes('telecom') ||
+    n.includes('chemicals') || n.includes('capital goods') || n.includes('cement') || n.includes('construction') ||
+    n.includes('hospitals') || n.includes('insurance') || n.includes('housing') || n.includes('nbfc')) {
     return 'Sectoral';
   }
   return 'Thematic & Strategy';
@@ -5077,11 +5077,11 @@ const server = http.createServer(async (req, res) => {
                   try {
                     const j = JSON.parse(body);
                     resolve(j?.quoteResponse?.result || []);
-                  } catch(e) { resolve([]); }
+                  } catch (e) { resolve([]); }
                 });
               });
               req.on('error', () => resolve([]));
-              req.on('timeout', function() { this.destroy(); resolve([]); });
+              req.on('timeout', function () { this.destroy(); resolve([]); });
             }));
           }
 
@@ -5240,10 +5240,12 @@ const server = http.createServer(async (req, res) => {
     // Oriz feed shape was unsupported and silently produced a fake hardcoded score.
     const fetchPage = (targetUrl, redirects = 0) => new Promise((resolve, reject) => {
       const u = new URL(targetUrl);
-      const req = https.get({ hostname: u.hostname, port: 443, path: u.pathname + u.search, headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml'
-      } }, (resp) => {
+      const req = https.get({
+        hostname: u.hostname, port: 443, path: u.pathname + u.search, headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml'
+        }
+      }, (resp) => {
         if ([301, 302, 303, 307, 308].includes(resp.statusCode) && resp.headers.location && redirects < 3) {
           resp.resume();
           resolve(fetchPage(new URL(resp.headers.location, u).toString(), redirects + 1));
@@ -6339,11 +6341,11 @@ server.listen(PORT, async () => {
               try {
                 const j = JSON.parse(body);
                 resolve(j?.quoteResponse?.result || []);
-              } catch(e) { resolve([]); }
+              } catch (e) { resolve([]); }
             });
           });
           req.on('error', () => resolve([]));
-          req.on('timeout', function() { this.destroy(); resolve([]); });
+          req.on('timeout', function () { this.destroy(); resolve([]); });
         }));
       }
       const chunkResults = await Promise.all(chunkPromises);
@@ -6369,7 +6371,7 @@ server.listen(PORT, async () => {
   await dhanAuth.startAutoRefresh();
 
   // Warm up ScreeningMantis live market data caches in background
-  ScreeningMantisService.getSectorIndices().catch(() => {});
-  ScreeningMantisService.getScannerSnapshot().catch(() => {});
-  ScreeningMantisService.getBreadthHistory().catch(() => {});
+  ScreeningMantisService.getSectorIndices().catch(() => { });
+  ScreeningMantisService.getScannerSnapshot().catch(() => { });
+  ScreeningMantisService.getBreadthHistory().catch(() => { });
 });

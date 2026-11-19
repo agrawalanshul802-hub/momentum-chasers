@@ -4553,6 +4553,105 @@
     ["8", "Results + Breakout", "Strong fundamental results coinciding directly with a technical price breakout."]
   ];
 
+  // ---------------------------------------------------------------------------
+  // Master 44 Nifty Sectoral & Thematic Indices Definition (Feature 03, Screener & Net Flow)
+  // ---------------------------------------------------------------------------
+  const MASTER_44_SECTORS = [
+    { key: "NIFTY AUTO", label: "Automobiles & Auto (NIFTY AUTO)", broad: "Automobiles & Auto", icon: "🚗", desc: "Automobiles, 2-Wheelers, Commercial Vehicles & EV Ancillaries", extraSyms: ["TMPV", "M&M", "MARUTI", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF", "JBMA", "OLAELEC", "OLECTRA", "EXIDEIND", "ARE&M", "CRAFTSMAN", "CEATLTD", "GABRIEL", "JKTYRE", "MINDACORP", "MSUMI", "RKFORGE", "SANSERA", "SONACOMS", "TENNIND", "ZFCVINDIA", "NDRAUTO", "SHRIPISTON"] },
+    { key: "NIFTY BANK", label: "Banking & Finance (NIFTY BANK)", broad: "Banking & Finance", icon: "🏦", desc: "Scheduled Commercial Banks, PSU & Private Banking Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "YESBANK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB", "BANDHANBNK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK"] },
+    { key: "NIFTY PVT BANK", label: "Private Sector Banks (NIFTY PVT BANK)", broad: null, icon: "🏛️", desc: "Scheduled Private Sector Commercial Banks & Financial Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK", "CSBBANK"] },
+    { key: "NIFTY PSU BANK", label: "Public Sector Banks (NIFTY PSU BANK)", broad: null, icon: "🏢", desc: "Public Sector Commercial Banks & State-Owned Financial Institutions", extraSyms: ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB"] },
+    { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: null, icon: "💳", desc: "NBFCs, Consumer Credit, Housing Finance & Insurance Leaders", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
+    { key: "NIFTY MS FIN SERV", label: "MidSmall Financials (NIFTY MS FIN SERV)", broad: null, icon: "📈", desc: "Midcap and Smallcap Financial Services & Lending Leaders", extraSyms: ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHLDNG", "CHOLAHLDNG", "HUDCO", "BAJAJHFL", "CANFINHOME", "PNBHOUSING", "IIFL", "KFINTECH"] },
+    { key: "NIFTY CAPITAL MKT", label: "Capital Markets & Exchanges (NIFTY CAPITAL MKT)", broad: null, icon: "📊", desc: "Stock Exchanges, Depositories, AMCs, Registrars & Broking Houses", extraSyms: ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC", "KFINTECH", "ANANDRATHI"] },
+    { key: "NIFTY IT", label: "Information Technology (NIFTY IT)", broad: "Information Technology", icon: "💻", desc: "Software Services, Cloud, SaaS, AI Solutions & IT Consulting", extraSyms: ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS", "LTTS", "TATAELXSI", "KPITTECH", "CYIENT", "SONATSOFTW", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "TATACOMM", "RATEGAIN", "ROUTE", "NETWEB"] },
+    { key: "NIFTY MS IT TELCM", label: "MidSmall IT & Telecom (NIFTY MS IT TELCM)", broad: null, icon: "📡", desc: "MidSmall IT Software, Telecommunications & Hardware Providers", extraSyms: ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "NETWEB", "INDUSTOWER", "TATACOMM"] },
+    { key: "NIFTY PHARMA", label: "Pharmaceuticals (NIFTY PHARMA)", broad: "Pharmaceuticals & Healthcare", icon: "💊", desc: "Formulations, Active Pharma Ingredients (API), CDMO & Healthcare", extraSyms: ["SUNPHARMA", "CIPLA", "DRREDDY", "DIVISLAB", "LUPIN", "ZYDUSLIFE", "TORNTPHARM", "MANKIND", "AUROPHARMA", "ALKEM", "BIOCON", "GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "IPCALAB", "NATCOPHARM", "PFIZER", "SANOFI", "GLAXO", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "APLLTD"] },
+    { key: "NIFTY HEALTHCARE", label: "Healthcare & Diagnostics (NIFTY HEALTHCARE)", broad: null, icon: "🩺", desc: "Hospitals, Diagnostics Chains, Medical Equipment & Life Sciences", extraSyms: ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE", "ASTERDM", "KIMS", "NH", "METROPOLIS", "RAINBOW", "VIJAYA", "POLYMED"] },
+    { key: "NIFTY MIDSML HLTH", label: "MidSmall Healthcare (NIFTY MIDSML HLTH)", broad: null, icon: "🔬", desc: "Midcap & Smallcap Healthcare, Specialized Clinics & Pharma Labs", extraSyms: ["GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "SUVENPHAR", "ERIS", "VIJAYA", "KIMS", "ASTERDM", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "POLYMED", "CAPLIPOI", "CONCORDBIO"] },
+    { key: "NIFTY FMCG", label: "FMCG & Consumer Goods (NIFTY FMCG)", broad: "FMCG & Consumer", icon: "🛒", desc: "Fast-Moving Consumer Goods, Food, Beverages & Household Essentials", extraSyms: ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "COLPAL", "EMAMILTD", "RADICO", "UBL", "PGHH", "HONASA", "BIKAJI", "JYOTHYLAB", "PATANJALI", "ABDL"] },
+    { key: "NIFTY CONSUMPTION", label: "India Consumption (NIFTY CONSUMPTION)", broad: null, icon: "🛍️", desc: "Domestic Consumption, Retail Chains, Apparel & Lifestyle Brands", extraSyms: ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI", "TRENT", "PAGEIND", "METROBRAND", "BATAINDIA", "KALYANKJIL", "SAPPHIRE", "WESTLIFE", "MANYAVAR", "SHRINGARMS", "RENTOMOJO"] },
+    { key: "NIFTY MS IND CONS", label: "MidSmall Consumption (NIFTY MS IND CONS)", broad: null, icon: "🧺", desc: "Emerging MidSmall Retailers, Footwear, QSR & Consumer Leaders", extraSyms: ["TITAN", "TRENT", "PAGEIND", "METROBRAND", "DEVYANI", "SAPPHIRE", "BIKAJI", "KALYANKJIL", "CENTURYPLY", "BATAINDIA", "SHRINGARMS", "RENTOMOJO", "WESTLIFE", "CAMPUS", "CERA", "HONASA"] },
+    { key: "NIFTY CONSR DURBL", label: "Consumer Durables (NIFTY CONSR DURBL)", broad: "Consumer Durables", icon: "📺", desc: "Consumer Electronics, Home Appliances, Jewellery & Cable Products", extraSyms: ["TITAN", "HAVELLS", "VOLTAS", "DIXON", "CROMPTON", "WHIRLPOOL", "BLUESTARCO", "KAJARIACER", "BATAINDIA", "AMBER", "KALYANKJIL", "RAJESHEXPO", "SYRMA", "CENTURYPLY", "VGUARD", "SYMPHONY"] },
+    { key: "NIFTY METAL", label: "Metals & Mining (NIFTY METAL)", broad: "Metals & Mining", icon: "🏗️", desc: "Primary Steel Producers, Flat/Long Products, Aluminium & Mining", extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "JINDALSTEL", "VEDL", "NMDC", "SAIL", "NATIONALUM", "HINDZINC", "APLLTD", "JSL", "RATNAMANI", "WELCORP", "GPIL", "KIOCL"] },
+    { key: "NIFTY REALTY", label: "Real Estate & Realty (NIFTY REALTY)", broad: "Realty & Infrastructure", icon: "🏢", desc: "Commercial & Residential Real Estate Developers & Builders", extraSyms: ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PRESTIGE", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "SUNTECK", "MAHLIFE", "DBREALTY", "KOLTEPATIL", "ANANTRAJ"] },
+    { key: "NIFTY HOUSING", label: "Housing & Materials (NIFTY HOUSING)", broad: null, icon: "🏠", desc: "Housing Ecosystem: Cement, Paints, Ceramics, Sanitaryware & Pipes", extraSyms: ["DLF", "GODREJPROP", "ULTRACEMCO", "ASIANPAINT", "BERGERPAINT", "HAVELLS", "POLYCAB", "PIDILITIND", "VOLTAS", "AMBUJACEM", "KAJARIACER", "CERA", "ASTRAL", "SHREECEM", "DALBHARAT", "SUPREMEIND"] },
+    { key: "NIFTY CORE HOUSING", label: "Core Housing Ecosystem (NIFTY CORE HOUSING)", broad: null, icon: "🧱", desc: "Core Housing Developers, Cement Giants & Construction Material Leaders", extraSyms: ["DLF", "GODREJPROP", "OBEROIRLTY", "LODHA", "PRESTIGE", "ULTRACEMCO", "AMBUJACEM", "SHREECEM", "DALBHARAT", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "ASTRAL", "POLYCAB"] },
+    { key: "NIFTY ENERGY", label: "Energy, Oil & Power (NIFTY ENERGY)", broad: null, icon: "⚡", desc: "Thermal, Hydro & Solar Power Generation, Grid Infrastructure & Utilities", extraSyms: ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON", "NHPC", "SJVN", "TORNTPOWER", "CESC", "JSWENERGY", "IREDA", "ACMESOLAR"] },
+    { key: "NIFTY OIL AND GAS", label: "Oil & Gas Exploration (NIFTY OIL AND GAS)", broad: "Oil & Gas & Energy", icon: "🛢️", desc: "Upstream Exploration, Refining, Petrochemicals & City Gas Distribution", extraSyms: ["RELIANCE", "ONGC", "IOC", "BPCL", "GAIL", "PETRONET", "OIL", "HINDPETRO", "GUJGASLTD", "IGL", "MGL", "AEGISLOG", "GNRL", "DEEPAKNTR", "ATUL"] },
+    { key: "NIFTY INFRA", label: "Infrastructure (NIFTY INFRA)", broad: null, icon: "🛣️", desc: "Roads, Ports, Telecom Towers, Engineering & Civil Construction", extraSyms: ["LT", "ADANIPORTS", "POWERGRID", "NTPC", "ULTRACEMCO", "BHARTIARTL", "ONGC", "IOC", "GAIL", "GRASIM", "GMRINFRA", "IRB", "KNRCON", "PNCINFRA", "NCC", "HGINFRA", "TECHNOE"] },
+    { key: "NIFTY COMMODITIES", label: "Commodities & Raw Materials (NIFTY COMMODITIES)", broad: null, icon: "📦", desc: "Base Metals, Fertilizers, Agro Chemicals & Raw Material Suppliers", extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "COALINDIA", "VEDL", "JINDALSTEL", "NMDC", "AMBUJACEM", "ACC", "SHREECEM", "GRASIM", "PIIND", "UPL", "COROMANDEL", "SRF"] },
+    { key: "NIFTY CHEMICALS", label: "Specialty Chemicals (NIFTY CHEMICALS)", broad: "Chemicals & Agro", icon: "🧪", desc: "Specialty Chemicals, Fluorochemicals, Pigments & Agrochemicals", extraSyms: ["PIDILITIND", "SRF", "GUJFLUORO", "DEEPAKNTR", "TATACHEM", "ATUL", "AARTIIND", "NAVINFLUOR", "VINATIORGA", "ALKYLAMINE", "COROMANDEL", "PIIND", "SOLARINDS", "CLEAN", "AETHER", "FINEORG", "SUMICHEM"] },
+    { key: "NIFTY IND DEFENCE", label: "Aerospace & Defence (NIFTY IND DEFENCE)", broad: null, icon: "🛡️", desc: "Aerospace, Defence Electronics, Warships, Radars & Missiles", extraSyms: ["BEL", "HAL", "MAZDOCK", "COCHINSHIP", "BDL", "BEML", "DATAPATTNS", "PARAS", "MTARTECH", "GRSE", "ZENTEC", "ASTRAZEN", "SOLARINDS"] },
+    { key: "NIFTY RAILWAYS PSU", label: "Railways PSU (NIFTY RAILWAYS PSU)", broad: null, icon: "🚆", desc: "Railway Rolling Stock, Track Infrastructure, Rail Finance & Ticketing", extraSyms: ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JWL", "TEXRAIL", "BEML"] },
+    { key: "NIFTY IND TOURISM", label: "Tourism & Hospitality (NIFTY IND TOURISM)", broad: null, icon: "✈️", desc: "Airlines, Luxury Hotels, Travel Portals & Hospitality Services", extraSyms: ["INDIGO", "IHCL", "INDHOTEL", "ITCHOTELS", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "VIPIND", "YATRA", "EASEMYTRIP"] },
+    { key: "NIFTY TRANS LOGIS", label: "Transportation & Logistics (NIFTY TRANS LOGIS)", broad: "Logistics & Services", icon: "🚚", desc: "Ports, Container Depots, Express Cargo, 3PL & Supply Chain", extraSyms: ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY", "AEGISLOG"] },
+    { key: "NIFTY MOBILITY", label: "Mobility & Transport (NIFTY MOBILITY)", broad: null, icon: "🛵", desc: "Smart Mobility, Automotive OEMs, Shared Fleets & Logistics Tech", extraSyms: ["MARUTI", "M&M", "TMPV", "BAJAJ-AUTO", "TVSMOTOR", "ASHOKLEY", "INDIGO", "MOTHERSON", "IRCTC", "BHARATFORG", "BOSCHLTD", "MRF", "EXIDEIND", "ARE&M"] },
+    { key: "NIFTY EV", label: "EV & Green Mobility (NIFTY EV)", broad: null, icon: "🔋", desc: "Electric Vehicles, Battery Tech, Charging Infrastructure & EV Motors", extraSyms: ["TMPV", "M&M", "TVSMOTOR", "BAJAJ-AUTO", "OLAELEC", "EXIDEIND", "ARE&M", "SONACOMS", "BHARATFORG", "JBMA", "OLECTRA", "SCHNEIDER"] },
+    { key: "NIFTY IND DIGITAL", label: "Digital Ecosystem (NIFTY IND DIGITAL)", broad: null, icon: "🌐", desc: "Digital Platforms, Fintech, Food Delivery, E-Commerce & Info Services", extraSyms: ["NAUKRI", "ZOMATO", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA", "INDIAMART"] },
+    { key: "NIFTY INTERNET", label: "Internet Technologies (NIFTY INTERNET)", broad: null, icon: "📱", desc: "Pure-play Internet Companies, Aggregators & Cloud-Native Platforms", extraSyms: ["ZOMATO", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA"] },
+    { key: "NIFTY MEDIA", label: "Media & Entertainment (NIFTY MEDIA)", broad: "Media & Entertainment", icon: "🎬", desc: "Broadcasting Networks, Multiplexes, Music Streaming & Publishing", extraSyms: ["ZEEL", "SUNTV", "SAREGAMA", "PVRINOX", "NETWORK18", "TV18BRDCST", "NDTV", "DISHTV", "HATHWAY", "DBREALTY"] },
+    { key: "NIFTY PSE", label: "Public Sector Enterprises (NIFTY PSE)", broad: null, icon: "🏛️", desc: "Central Public Sector Enterprises & Navratna Companies", extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "HAL", "IOC", "BPCL", "GAIL", "RECLTD", "PFC", "NHPC", "OIL", "BHEL", "SAIL", "NMDC"] },
+    { key: "NIFTY CPSE", label: "Central Public Sector (NIFTY CPSE)", broad: null, icon: "🏭", desc: "Government-Owned Strategic Enterprises & Maharatnas", extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "OIL", "NHPC", "NATIONALUM", "NBCC", "SJVN", "COCHINSHIP", "MAZDOCK", "COALINDIA"] },
+    { key: "NIFTY MNC", label: "Multinational Corporations (NIFTY MNC)", broad: null, icon: "🌍", desc: "Multinational Corporations operating across Indian Industries", extraSyms: ["MARUTI", "HINDUNILVR", "NESTLEIND", "ABB", "SIEMENS", "CUMMINSIND", "HONAUT", "BOSCHLTD", "3MINDIA", "PFIZER", "SANOFI", "GLAXO"] },
+    { key: "NIFTY RURAL", label: "Rural Economy & Agri (NIFTY RURAL)", broad: null, icon: "🌾", desc: "Tractors, Agro Inputs, Microfinance & Rural Consumption Giants", extraSyms: ["M&M", "HEROMOTOCO", "ESCORTS", "DABUR", "MARICO", "UPL", "COROMANDEL", "PIIND", "DEEPAKNTR", "CHOLAFIN", "BAYERCROP", "DHANUKA"] },
+    { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, icon: "🤝", desc: "Commercial Services, IT, Financial, Healthcare & Telecom Giants", extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
+    { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, icon: "🚀", desc: "Newly Listed IPO Market Entrants & High Growth Tech Companies", extraSyms: ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"] },
+    { key: "NIFTY 50", label: "NIFTY 50 Benchmark (50 LargeCap)", broad: null, isNifty50: true, icon: "🇮🇳", desc: "The Benchmark 50 Largest & Most Liquid Indian Bluechip Giants" },
+    { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, cap: "LC", icon: "🏆", desc: "Top 100 Large-Cap Indian Companies representing 70%+ of Market Cap" },
+    { key: "NIFTY MIDCAP 150", label: "NIFTY MidCap 150 Benchmark (MidCap 150)", broad: null, cap: "MC", icon: "🎯", desc: "High-Growth Mid-Cap Enterprises ranked 101 to 250 by Market Cap" },
+    { key: "NIFTY SMLCAP 250", label: "NIFTY SmallCap 250 Benchmark (SmallCap 250)", broad: null, cap: "SC", icon: "💫", desc: "Emerging Small-Cap Companies ranked 251 to 500 across India" }
+  ];
+
+  function getScreener44Sectors() {
+    return [...MASTER_44_SECTORS].sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  function stockMatchesSector(stock, selectedSector) {
+    if (!selectedSector || selectedSector === "all" || selectedSector === "ALL SECTORS") return true;
+
+    // Direct match against stock[2] (broad sector name)
+    if (stock[2] === selectedSector) return true;
+
+    // Find sector definition in MASTER_44_SECTORS
+    const norm = selectedSector.toUpperCase().trim();
+    const secDef = MASTER_44_SECTORS.find(s => 
+      s.key === norm || 
+      s.broad === selectedSector || 
+      s.label.toUpperCase() === norm ||
+      s.key.replace(/^NIFTY\s+/, "") === norm.replace(/^NIFTY\s+/, "") ||
+      (norm === "AUTOMOBILES" && s.key === "NIFTY AUTO") ||
+      (norm === "PRIVATE BANKS" && s.key === "NIFTY PVT BANK") ||
+      (norm === "PUBLIC SECTOR BANKS" && s.key === "NIFTY PSU BANK") ||
+      (norm === "BANKING & FINANCE" && s.key === "NIFTY BANK") ||
+      (norm === "INFORMATION TECHNOLOGY" && s.key === "NIFTY IT") ||
+      (norm === "PHARMACEUTICALS" && s.key === "NIFTY PHARMA") ||
+      (norm === "POWER & UTILITIES" && s.key === "NIFTY ENERGY") ||
+      (norm === "NBFC & FINANCIALS" && s.key === "NIFTY FIN SERVICE") ||
+      (norm === "IRON & STEEL PRODUCTS" && s.key === "NIFTY METAL")
+    );
+
+    if (secDef) {
+      if (secDef.isNifty50) {
+        if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
+          return (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) ? window.HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0]) : (stock[1] === "LC");
+        }
+        return stock[1] === "LC";
+      }
+      if (secDef.cap && stock[1] === secDef.cap) return true;
+      if (secDef.broad && stock[2] === secDef.broad) return true;
+      if (secDef.extraSyms && secDef.extraSyms.includes(stock[0])) return true;
+    }
+
+    // Direct match via HEATMAP_SECTOR_SYMBOLS_MAP if available
+    if (typeof window !== "undefined" && Boolean(window.HEATMAP_SECTOR_SYMBOLS_MAP)) {
+      const syms = (typeof window !== "undefined" && window.HEATMAP_SECTOR_SYMBOLS_MAP) ? (window.HEATMAP_SECTOR_SYMBOLS_MAP[norm] || window.HEATMAP_SECTOR_SYMBOLS_MAP[selectedSector]) : null;
+      if (syms && syms.includes(stock[0])) return true;
+    }
+
+    return false;
+  }
+
   // Sectoral & Thematic Indices Dashboard (44 NSE Benchmarks)
   // Format: [Index Name, Price, % Chg, RSI, [10, 20, 50, 200 EMA status], % dist 20 EMA, 10x20 crossover days]
   const SC = [
@@ -4602,172 +4701,206 @@
     ["NIFTY IND DEFENCE", 8240.50, 2.80, 68.5, [1, 1, 1, 1], 5.40, 22]
   ];
 
-  // Advance/Decline Net Flow Matrix (Feature 04)
-  // Format: [Sector, [Session 0, Session 1, Session 2, Session 3, Session 4, Session 5, Session 6, Session 7, Session 8, Session 9]]
+  // Advance/Decline Net Flow Matrix (Feature 04) - Tracking All 44 Nifty Sectoral & Thematic Indices
+  // Format: [Sector, [Session 0 (Live), Session 1, Session 2, ..., Session 20]]
   const FL = [
-    ["NBFC & Financials", [62, 48, -15, -18, 35, 80, 52, 12, -8, 44, 28, -12, 41, 63, -25, 17, 54, -8, 32, 71, -14]],
-    ["Iron & Steel Products", [45, 0, 92, -10, 28, 40, 65, -30, 22, 58, 35, 18, -22, 48, 12, -35, 66, 20, -5, 43, 27]],
-    ["Private Banks", [30, 25, -62, 22, 18, 42, -10, -18, 30, 15, 14, -32, 45, 28, -10, 36, 52, -24, 17, 40, -6]],
-    ["Information Technology", [55, -32, -14, 38, 70, 85, 44, 28, 50, 62, -10, 26, 58, 14, -18, 42, 31, -7, 65, 22, 48]],
-    ["Pharmaceuticals", [40, 52, 28, 35, 12, -8, 64, 48, 72, 85, 19, 37, -12, 56, 33, 8, -20, 44, 61, 27, -5]],
-    ["Power & Utilities", [95, -20, 70, 12, -15, 30, 25, 40, -10, 35, 22, 61, -35, 48, 5, 72, -18, 29, 53, -12, 40]],
-    ["Automobiles", [52, 50, -8, 95, 40, 15, -25, 38, 45, 20, -16, 34, 72, 21, -9, 46, 63, -28, 18, 55, 32]]
+    ["NIFTY AUTO", [52, 50, -8, 95, 40, 15, -25, 38, 45, 20, -16, 34, 72, 21, -9, 46, 63, -28, 18, 55, 32]],
+    ["NIFTY BANK", [48, 35, -45, 30, 25, 55, 12, -10, 42, 28, 19, -20, 52, 38, -5, 44, 60, -15, 26, 50, 10]],
+    ["NIFTY PVT BANK", [30, 25, -62, 22, 18, 42, -10, -18, 30, 15, 14, -32, 45, 28, -10, 36, 52, -24, 17, 40, -6]],
+    ["NIFTY PSU BANK", [85, 68, 22, 45, 52, 70, 38, 15, 60, 48, 35, 12, 65, 50, 18, 58, 72, 8, 40, 65, 30]],
+    ["NIFTY FIN SERVICE", [62, 48, -15, -18, 35, 80, 52, 12, -8, 44, 28, -12, 41, 63, -25, 17, 54, -8, 32, 71, -14]],
+    ["NIFTY MS FIN SERV", [58, 42, -10, 25, 48, 65, 30, 18, 35, 52, 22, -8, 48, 55, -12, 38, 62, 5, 28, 60, 15]],
+    ["NIFTY CAPITAL MKT", [75, 55, 20, 40, 65, 82, 45, 28, 55, 70, 32, 15, 60, 68, 5, 45, 75, 12, 35, 68, 25]],
+    ["NIFTY IT", [55, -32, -14, 38, 70, 85, 44, 28, 50, 62, -10, 26, 58, 14, -18, 42, 31, -7, 65, 22, 48]],
+    ["NIFTY MS IT TELCM", [45, -20, 10, 30, 55, 72, 35, 22, 42, 50, -5, 20, 48, 25, -12, 35, 40, 2, 52, 30, 38]],
+    ["NIFTY PHARMA", [40, 52, 28, 35, 12, -8, 64, 48, 72, 85, 19, 37, -12, 56, 33, 8, -20, 44, 61, 27, -5]],
+    ["NIFTY HEALTHCARE", [42, 48, 25, 30, 15, -5, 58, 42, 68, 78, 22, 32, -8, 50, 28, 12, -15, 38, 55, 24, -2]],
+    ["NIFTY MIDSML HLTH", [50, 45, 18, 28, 20, 5, 62, 50, 70, 80, 25, 35, -5, 52, 30, 15, -10, 42, 58, 30, 5]],
+    ["NIFTY FMCG", [-25, -15, 10, -8, 15, 22, -12, 5, -20, 18, 8, -14, 22, -5, 12, -18, 25, -10, 15, -8, 12]],
+    ["NIFTY CONSUMPTION", [35, 28, 5, 22, 30, 45, 18, 12, 25, 38, 15, -5, 32, 28, 8, 22, 40, 5, 18, 35, 12]],
+    ["NIFTY MS IND CONS", [40, 32, 10, 25, 35, 50, 22, 15, 30, 42, 18, -2, 38, 32, 12, 28, 45, 8, 22, 40, 18]],
+    ["NIFTY CONSR DURBL", [38, 25, -12, 18, 28, 40, 15, 8, 22, 35, 12, -8, 30, 22, 5, 20, 38, 2, 15, 32, 10]],
+    ["NIFTY METAL", [45, 0, 92, -10, 28, 40, 65, -30, 22, 58, 35, 18, -22, 48, 12, -35, 66, 20, -5, 43, 27]],
+    ["NIFTY REALTY", [55, 42, -18, 35, 50, 68, 28, -15, 40, 55, 22, -10, 45, 52, -8, 35, 60, 12, 25, 55, 20]],
+    ["NIFTY HOUSING", [42, 30, -8, 20, 32, 48, 20, -5, 28, 40, 16, -6, 35, 38, 2, 25, 45, 8, 18, 38, 15]],
+    ["NIFTY CORE HOUSING", [40, 28, -5, 22, 30, 45, 18, -8, 25, 38, 15, -8, 32, 35, 0, 22, 42, 6, 16, 35, 12]],
+    ["NIFTY ENERGY", [95, -20, 70, 12, -15, 30, 25, 40, -10, 35, 22, 61, -35, 48, 5, 72, -18, 29, 53, -12, 40]],
+    ["NIFTY OIL AND GAS", [38, 22, -15, 18, 25, 38, 12, 28, -18, 25, 15, 45, -25, 35, 2, 55, -12, 20, 42, -8, 30]],
+    ["NIFTY INFRA", [50, 35, -5, 28, 38, 55, 22, 18, 25, 42, 20, 8, 40, 45, 5, 32, 52, 15, 25, 48, 22]],
+    ["NIFTY COMMODITIES", [48, 10, 65, -5, 25, 38, 45, -18, 18, 45, 28, 12, -15, 40, 8, -22, 52, 16, 2, 38, 20]],
+    ["NIFTY CHEMICALS", [52, 38, 15, 22, 35, 48, 25, 12, 30, 45, 18, 5, 38, 42, 10, 28, 50, 14, 22, 42, 18]],
+    ["NIFTY IND DEFENCE", [88, 72, 35, 60, 75, 90, 52, 38, 65, 82, 45, 28, 70, 80, 25, 62, 85, 30, 55, 82, 45]],
+    ["NIFTY RAILWAYS PSU", [82, 65, 30, 55, 68, 85, 48, 32, 58, 75, 40, 25, 65, 72, 20, 55, 78, 25, 48, 75, 38]],
+    ["NIFTY IND TOURISM", [65, 48, 12, 35, 52, 70, 32, 20, 42, 60, 28, 14, 50, 58, 15, 38, 65, 18, 32, 60, 25]],
+    ["NIFTY TRANS LOGIS", [55, 40, 8, 28, 42, 58, 25, 15, 35, 48, 22, 10, 42, 48, 8, 30, 55, 14, 26, 50, 20]],
+    ["NIFTY MOBILITY", [50, 42, -2, 48, 38, 22, -15, 30, 38, 25, -10, 28, 58, 25, -5, 38, 52, -18, 20, 48, 25]],
+    ["NIFTY EV", [58, 45, 5, 52, 45, 30, -8, 35, 42, 30, -5, 32, 62, 30, 2, 42, 58, -10, 25, 52, 30]],
+    ["NIFTY IND DIGITAL", [68, -15, -5, 42, 65, 80, 38, 25, 48, 65, 5, 30, 55, 22, -10, 45, 40, 5, 60, 32, 45]],
+    ["NIFTY INTERNET", [72, -10, 0, 45, 68, 82, 40, 28, 52, 68, 8, 32, 58, 25, -8, 48, 42, 8, 62, 35, 48]],
+    ["NIFTY MEDIA", [48, 32, -10, 15, 28, 42, 12, 5, 22, 35, 15, -8, 28, 25, 0, 18, 35, 4, 15, 30, 12]],
+    ["NIFTY PSE", [75, 58, 25, 42, 55, 72, 38, 22, 50, 65, 32, 18, 58, 62, 15, 48, 68, 18, 38, 62, 28]],
+    ["NIFTY CPSE", [78, 60, 28, 45, 58, 75, 40, 25, 52, 68, 35, 20, 60, 65, 18, 50, 70, 20, 40, 65, 30]],
+    ["NIFTY MNC", [42, 30, 5, 20, 32, 45, 20, 12, 25, 38, 18, 5, 32, 35, 8, 24, 42, 10, 20, 38, 16]],
+    ["NIFTY RURAL", [38, 25, 2, 18, 28, 40, 16, 8, 22, 32, 14, 2, 28, 30, 5, 20, 38, 8, 16, 34, 14]],
+    ["NIFTY SERV SECTOR", [52, 35, -8, 30, 45, 62, 28, 16, 36, 50, 20, 10, 44, 42, -2, 34, 52, 12, 28, 48, 22]],
+    ["NIFTY IPO", [80, 62, 28, 50, 65, 82, 45, 30, 58, 72, 38, 22, 62, 68, 18, 52, 75, 22, 45, 70, 35]],
+    ["NIFTY 50", [45, 32, -12, 25, 32, 48, 18, 5, 30, 38, 16, -5, 38, 35, 0, 30, 48, 8, 22, 42, 18]],
+    ["NIFTY 100", [48, 35, -10, 28, 35, 52, 20, 8, 32, 42, 18, -2, 40, 38, 2, 32, 50, 10, 25, 45, 20]],
+    ["NIFTY MIDCAP 150", [65, 50, 8, 40, 52, 70, 32, 20, 45, 60, 28, 15, 52, 58, 12, 42, 65, 18, 35, 60, 28]],
+    ["NIFTY SMLCAP 250", [70, 55, 12, 45, 58, 75, 36, 24, 50, 65, 32, 18, 58, 64, 16, 48, 70, 22, 40, 66, 32]]
   ];
 
-  // Sector Constituent Stocks Base Universe
+  // Sector Constituent Stocks Base Universe (Fallback & Reference)
   const SECTOR_BASE_CONSTITUENTS = {
-    "NBFC & Financials": {
-      icon: "🏦",
-      description: "Large Non-Banking Financial Companies, Housing & Consumer Finance Leaders",
-      stocks: [
-        { symbol: "BAJFINANCE", name: "Bajaj Finance Ltd", price: 6840.50, beta: 1.25, baseVol: 2.4 },
-        { symbol: "BAJAJFINSV", name: "Bajaj Finserv Ltd", price: 1624.00, beta: 1.15, baseVol: 1.8 },
-        { symbol: "CHOLAFIN", name: "Cholamandalam Investment", price: 1320.10, beta: 1.10, baseVol: 0.95 },
-        { symbol: "SHRIRAMFIN", name: "Shriram Finance Ltd", price: 2940.00, beta: 1.05, baseVol: 0.82 },
-        { symbol: "MUTHOOTFIN", name: "Muthoot Finance Ltd", price: 1850.40, beta: 0.95, baseVol: 0.61 },
-        { symbol: "POONAWALLA", name: "Poonawalla Fincorp Ltd", price: 380.20, beta: 1.20, baseVol: 1.1 },
-        { symbol: "JIOFIN", name: "Jio Financial Services", price: 312.40, beta: 1.05, baseVol: 4.2 },
-        { symbol: "M&MFIN", name: "M&M Financial Services", price: 284.10, beta: 1.15, baseVol: 1.4 },
-        { symbol: "LTF", name: "L&T Finance Ltd", price: 280.30, beta: 1.08, baseVol: 2.1 },
-        { symbol: "MANAPPURAM", name: "Manappuram Finance Ltd", price: 172.50, beta: 1.30, baseVol: 1.9 }
-      ]
-    },
-    "Iron & Steel Products": {
-      icon: "🏗️",
-      description: "Primary Steel Producers, Flat/Long Products & Sponge Iron",
-      stocks: [
-        { symbol: "TATASTEEL", name: "Tata Steel Ltd", price: 148.60, beta: 1.35, baseVol: 18.4 },
-        { symbol: "JSWSTEEL", name: "JSW Steel Ltd", price: 965.20, beta: 1.20, baseVol: 3.2 },
-        { symbol: "JINDALSTEL", name: "Jindal Steel & Power", price: 940.50, beta: 1.30, baseVol: 1.8 },
-        { symbol: "SAIL", name: "Steel Authority of India", price: 124.30, beta: 1.40, baseVol: 9.6 },
-        { symbol: "APLAPOLLO", name: "APL Apollo Tubes Ltd", price: 1480.00, beta: 1.05, baseVol: 0.42 },
-        { symbol: "NMDC", name: "NMDC Ltd", price: 218.40, beta: 1.10, baseVol: 3.8 },
-        { symbol: "VEDL", name: "Vedanta Ltd", price: 460.20, beta: 1.25, baseVol: 5.1 },
-        { symbol: "HINDALCO", name: "Hindalco Industries Ltd", price: 645.00, beta: 1.15, baseVol: 2.9 },
-        { symbol: "NATIONALUM", name: "National Aluminium Co", price: 212.50, beta: 1.35, baseVol: 4.4 }
-      ]
-    },
-    "Private Banks": {
-      icon: "🏛️",
-      description: "Scheduled Private Sector Commercial Banks & Financial Leaders",
-      stocks: [
-        { symbol: "HDFCBANK", name: "HDFC Bank Ltd", price: 1748.20, beta: 0.95, baseVol: 8.6 },
-        { symbol: "ICICIBANK", name: "ICICI Bank Ltd", price: 1265.40, beta: 1.05, baseVol: 6.4 },
-        { symbol: "KOTAKBANK", name: "Kotak Mahindra Bank", price: 1780.00, beta: 0.90, baseVol: 2.1 },
-        { symbol: "FEDERALBNK", name: "Federal Bank Ltd", price: 198.50, beta: 1.10, baseVol: 4.8 },
-        { symbol: "IDFCFIRSTB", name: "IDFC First Bank Ltd", price: 72.40, beta: 1.20, baseVol: 12.5 },
-        { symbol: "INDUSINDBK", name: "IndusInd Bank Ltd", price: 910.25, beta: 1.30, baseVol: 1.7 },
-        { symbol: "AXISBANK", name: "Axis Bank Ltd", price: 1142.00, beta: 1.15, baseVol: 3.4 },
-        { symbol: "BANDHANBNK", name: "Bandhan Bank Ltd", price: 168.20, beta: 1.35, baseVol: 2.8 },
-        { symbol: "RBLBANK", name: "RBL Bank Ltd", price: 192.10, beta: 1.40, baseVol: 3.1 }
-      ]
-    },
-    "Information Technology": {
-      icon: "💻",
-      description: "Software Services, Cloud, SaaS, AI Solutions & IT Consulting",
-      stocks: [
-        { symbol: "TCS", name: "Tata Consultancy Services", price: 4120.00, beta: 0.85, baseVol: 2.1 },
-        { symbol: "INFY", name: "Infosys Ltd", price: 1845.50, beta: 0.95, baseVol: 5.4 },
-        { symbol: "COFORGE", name: "Coforge Ltd", price: 7850.00, beta: 1.30, baseVol: 0.48 },
-        { symbol: "HCLTECH", name: "HCL Technologies Ltd", price: 1790.00, beta: 0.90, baseVol: 1.9 },
-        { symbol: "TECHM", name: "Tech Mahindra Ltd", price: 1640.20, beta: 1.10, baseVol: 1.6 },
-        { symbol: "WIPRO", name: "Wipro Ltd", price: 542.10, beta: 0.95, baseVol: 3.8 },
-        { symbol: "PERSISTENT", name: "Persistent Systems Ltd", price: 5210.00, beta: 1.25, baseVol: 0.34 },
-        { symbol: "LTTS", name: "L&T Technology Services", price: 5080.00, beta: 1.15, baseVol: 0.29 },
-        { symbol: "MPHASIS", name: "Mphasis Ltd", price: 2840.00, beta: 1.20, baseVol: 0.38 },
-        { symbol: "KPITTECH", name: "KPIT Technologies Ltd", price: 1410.00, beta: 1.35, baseVol: 0.51 }
-      ]
-    },
-    "Pharmaceuticals": {
-      icon: "💊",
-      description: "Formulations, Active Pharma Ingredients (API), CDMO & Healthcare",
-      stocks: [
-        { symbol: "SMSPHARMA", name: "SMS Pharmaceuticals Ltd", price: 274.90, beta: 1.20, baseVol: 0.94 },
-        { symbol: "SHUKRAPHAR", name: "Shukra Pharmaceuticals", price: 158.20, beta: 1.15, baseVol: 0.62 },
-        { symbol: "SUNPHARMA", name: "Sun Pharmaceutical Ltd", price: 1780.00, beta: 0.75, baseVol: 2.4 },
-        { symbol: "CIPLA", name: "Cipla Ltd", price: 1520.40, beta: 0.70, baseVol: 1.8 },
-        { symbol: "DRREDDY", name: "Dr. Reddy's Laboratories", price: 1240.00, beta: 0.80, baseVol: 1.2 },
-        { symbol: "DIVISLAB", name: "Divi's Laboratories Ltd", price: 5840.00, beta: 0.90, baseVol: 0.41 },
-        { symbol: "APLLTD", name: "Alembic Pharmaceuticals", price: 703.50, beta: 1.05, baseVol: 0.35 },
-        { symbol: "LUPIN", name: "Lupin Ltd", price: 2040.00, beta: 0.95, baseVol: 0.82 },
-        { symbol: "TORNTPHARM", name: "Torrent Pharmaceuticals", price: 3180.00, beta: 0.75, baseVol: 0.29 },
-        { symbol: "BIOCON", name: "Biocon Ltd", price: 318.00, beta: 1.10, baseVol: 1.8 }
-      ]
-    },
-    "Power & Utilities": {
-      icon: "⚡",
-      description: "Thermal & Hydro Power Generation, Grid Infrastructure & Renewables",
-      stocks: [
-        { symbol: "NTPC", name: "NTPC Ltd", price: 375.40, beta: 0.90, baseVol: 14.2 },
-        { symbol: "POWERGRID", name: "Power Grid Corp of India", price: 324.10, beta: 0.75, baseVol: 9.8 },
-        { symbol: "TATAPOWER", name: "Tata Power Co Ltd", price: 415.00, beta: 1.25, baseVol: 6.4 },
-        { symbol: "ADANIGREEN", name: "Adani Green Energy Ltd", price: 1540.00, beta: 1.45, baseVol: 1.8 },
-        { symbol: "NHPC", name: "NHPC Ltd", price: 88.50, beta: 0.85, baseVol: 8.5 },
-        { symbol: "ADANIPOWER", name: "Adani Power Ltd", price: 580.00, beta: 1.50, baseVol: 2.8 },
-        { symbol: "JSWENERGY", name: "JSW Energy Ltd", price: 695.00, beta: 1.35, baseVol: 1.4 },
-        { symbol: "IEX", name: "Indian Energy Exchange", price: 178.20, beta: 1.10, baseVol: 4.2 },
-        { symbol: "BHEL", name: "Bharat Heavy Electricals", price: 235.00, beta: 1.40, baseVol: 7.1 }
-      ]
-    },
-    "Automobiles": {
-      icon: "🚗",
-      description: "2-Wheelers, Commercial Vehicles, Passenger Cars & Auto Ancillaries",
-      stocks: [
-        { symbol: "BAJAJ-AUTO", name: "Bajaj Auto Ltd", price: 9450.00, beta: 0.90, baseVol: 0.68 },
-        { symbol: "TMPV", name: "Tata Motors Passenger Vehicles", price: 259.20, beta: 1.35, baseVol: 8.4 },
-        { symbol: "TVSMOTOR", name: "TVS Motor Co Ltd", price: 2420.00, beta: 1.10, baseVol: 0.74 },
-        { symbol: "MARUTI", name: "Maruti Suzuki India", price: 11480.00, beta: 0.85, baseVol: 0.42 },
-        { symbol: "M&M", name: "Mahindra & Mahindra Ltd", price: 2890.00, beta: 1.15, baseVol: 1.9 },
-        { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd", price: 5385.00, beta: 0.95, baseVol: 0.48 },
-        { symbol: "EICHERMOT", name: "Eicher Motors Ltd", price: 7650.00, beta: 1.05, baseVol: 0.39 },
-        { symbol: "ASHOKLEY", name: "Ashok Leyland Ltd", price: 218.00, beta: 1.25, baseVol: 5.6 },
-        { symbol: "BHARATFORG", name: "Bharat Forge Ltd", price: 1320.00, beta: 1.20, baseVol: 0.82 }
-      ]
-    }
+    "NIFTY AUTO": { icon: "🚗", description: "Automobiles, 2-Wheelers & EV Ancillaries" },
+    "NIFTY BANK": { icon: "🏦", description: "Scheduled Commercial Banks & Financial Leaders" },
+    "NIFTY PVT BANK": { icon: "🏛️", description: "Scheduled Private Sector Commercial Banks" },
+    "NIFTY PSU BANK": { icon: "🏢", description: "State-Owned Public Sector Commercial Banks" },
+    "NIFTY FIN SERVICE": { icon: "💳", description: "NBFCs, Consumer Credit, Housing & Insurance" },
+    "NIFTY IT": { icon: "💻", description: "Software Services, Cloud, SaaS, AI Solutions & IT Consulting" },
+    "NIFTY PHARMA": { icon: "💊", description: "Formulations, Active Pharma Ingredients (API), CDMO & Healthcare" },
+    "NIFTY ENERGY": { icon: "⚡", description: "Thermal, Hydro & Solar Power Generation & Utilities" },
+    "NIFTY METAL": { icon: "🏗️", description: "Primary Steel Producers, Flat/Long Products & Mining" },
+    "NIFTY REALTY": { icon: "🏢", description: "Commercial & Residential Real Estate Developers" },
+    "Automobiles": { icon: "🚗", description: "Automobiles, 2-Wheelers & EV Ancillaries" },
+    "NBFC & Financials": { icon: "🏦", description: "Large Non-Banking Financial Companies & Housing Finance" },
+    "Iron & Steel Products": { icon: "🏗️", description: "Primary Steel Producers, Flat/Long Products & Sponge Iron" },
+    "Private Banks": { icon: "🏛️", description: "Scheduled Private Sector Commercial Banks" },
+    "Information Technology": { icon: "💻", description: "Software Services, Cloud, SaaS & IT Consulting" },
+    "Pharmaceuticals": { icon: "💊", description: "Formulations, Active Pharma Ingredients & Healthcare" },
+    "Power & Utilities": { icon: "⚡", description: "Thermal & Hydro Power Generation & Grid Infrastructure" }
   };
 
-  // Dynamic Session-Aware Net Flow Constituent Evaluator
+  // Dynamic Session-Aware Net Flow Constituent Evaluator (Full Universe 44 Sectors)
   function getSectorConstituentsForSession(sectorName, score, sessionIdx) {
-    const sec = SECTOR_BASE_CONSTITUENTS[sectorName] || SECTOR_BASE_CONSTITUENTS["Automobiles"];
-    const list = sec.stocks;
-    const n = list.length;
+    const norm = (sectorName || "").toUpperCase().trim();
+    const secDef = (typeof MASTER_44_SECTORS !== "undefined") ? MASTER_44_SECTORS.find(s => 
+      s.key === norm || 
+      s.label.toUpperCase() === norm || 
+      s.broad === sectorName ||
+      s.key.replace(/^NIFTY\s+/, "") === norm.replace(/^NIFTY\s+/, "") ||
+      (norm === "AUTOMOBILES" && s.key === "NIFTY AUTO") ||
+      (norm === "PRIVATE BANKS" && s.key === "NIFTY PVT BANK") ||
+      (norm === "PUBLIC SECTOR BANKS" && s.key === "NIFTY PSU BANK") ||
+      (norm === "BANKING & FINANCE" && s.key === "NIFTY BANK") ||
+      (norm === "INFORMATION TECHNOLOGY" && s.key === "NIFTY IT") ||
+      (norm === "PHARMACEUTICALS" && s.key === "NIFTY PHARMA") ||
+      (norm === "POWER & UTILITIES" && s.key === "NIFTY ENERGY") ||
+      (norm === "NBFC & FINANCIALS" && s.key === "NIFTY FIN SERVICE") ||
+      (norm === "IRON & STEEL PRODUCTS" && s.key === "NIFTY METAL")
+    ) : null;
 
-    // LIVE SESSION (Session 0 / Today): Compute from actual live quotes in ST_MAP
+    const sectorKey = secDef ? secDef.key : sectorName;
+    const sectorIcon = secDef ? secDef.icon : (SECTOR_BASE_CONSTITUENTS[sectorName]?.icon || "📊");
+    const sectorDesc = secDef ? secDef.desc : (SECTOR_BASE_CONSTITUENTS[sectorName]?.description || "Sector constituent universe tracking");
+    const sectorLabel = secDef ? secDef.label : sectorName;
+
+    // Collect ALL constituent stocks for this sector
+    const matchedStocks = [];
+    const seenSyms = new Set();
+
+    // 1. Extra explicit symbols for thematic indices
+    if (secDef && Array.isArray(secDef.extraSyms)) {
+      for (const sym of secDef.extraSyms) {
+        if (!seenSyms.has(sym)) {
+          const live = (typeof ST_MAP !== "undefined") ? ST_MAP[sym] : null;
+          if (live) {
+            matchedStocks.push([sym, live.cap || "MC", live.sector || (secDef.broad || secDef.label), live.price || 0, live.chg || 0, live.pat || "", live.tech || "", live.stars || 5, live]);
+            seenSyms.add(sym);
+          }
+        }
+      }
+    }
+
+    // 2. Heatmap Nifty 50 constituents if Nifty 50 benchmark
+    if (secDef && secDef.isNifty50 && typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA)) {
+      const hm50 = (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) ? window.HEATMAP_NIFTY50_DATA : []; for (const item of hm50) {
+        if (!seenSyms.has(item.symbol)) {
+          const live = (typeof ST_MAP !== "undefined") ? ST_MAP[item.symbol] : null;
+          if (live) {
+            matchedStocks.push([item.symbol, live.cap || "LC", live.sector || item.sector, live.price || item.price, live.chg || item.chg, live.pat || "", live.tech || "", live.stars || 5, live]);
+            seenSyms.add(item.symbol);
+          }
+        }
+      }
+    }
+
+    // 3. Match from the full 2,000+ universe ST
+    if (typeof ST !== "undefined" && Array.isArray(ST)) {
+      for (const s of ST) {
+        const sym = s[0];
+        if (seenSyms.has(sym)) continue;
+        if (stockMatchesSector(s, sectorKey)) {
+          matchedStocks.push(s);
+          seenSyms.add(sym);
+        }
+      }
+    }
+
+    // Fallback if none matched
+    if (matchedStocks.length === 0 && typeof SECTOR_BASE_CONSTITUENTS !== "undefined" && SECTOR_BASE_CONSTITUENTS[sectorName]?.stocks) {
+      const fallbackList = SECTOR_BASE_CONSTITUENTS[sectorName].stocks || [];
+      for (const f of fallbackList) {
+        matchedStocks.push([f.symbol, "MC", sectorName, f.price, 0, "", "", 5, f]);
+      }
+    }
+
+    const n = matchedStocks.length || 1;
+
+    // Helper to format volume
+    const formatVol = (liveStock, stk, chg) => {
+      let vol = (liveStock && liveStock.vol) ? liveStock.vol : (liveStock && liveStock.volume) ? liveStock.volume : null;
+      if (!vol) {
+        const base = (stk && stk.baseVol) || ((liveStock.mcapCr || 5000) / 1000);
+        const mult = 1 + Math.min(2.5, Math.abs(chg) * 0.25);
+        const volNum = (base * mult).toFixed(1);
+        vol = volNum >= 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
+      }
+      return vol;
+    };
+
+    // Helper to format EMA status
+    const getStockEma = (sym, liveStock, stk, chg) => {
+      const smRec = (typeof window !== "undefined" && window._screeningMantisEmaMap) ? window._screeningMantisEmaMap[sym] : null;
+      if (smRec) {
+        if (smRec.aboveEma20 && smRec.aboveEma50) return "Above 20 & 50 EMA";
+        if (smRec.aboveEma20) return "Above 20 EMA";
+        if (!smRec.aboveEma20 && !smRec.aboveEma50) return "Below 20 & 50 EMA";
+        return "Below 20 EMA";
+      }
+      const tech = String(liveStock.tech || stk[6] || stk[5] || "");
+      if (tech.includes("a")) return "Above 20 & 50 EMA";
+      if (chg > 1.0) return "Above 20 EMA";
+      if (chg < -1.0) return "Below 20 & 50 EMA";
+      if (chg < 0) return "Below 20 EMA";
+      return "Above 20 EMA";
+    };
+
+    // LIVE SESSION (Session 0 / Today): Compute from actual live quotes in ST / ST_MAP
     if (sessionIdx === 0 || sessionIdx === "0") {
       const advancing = [];
       const declining = [];
 
-      list.forEach(stk => {
-        let sym = stk.symbol;
+      matchedStocks.forEach(stk => {
+        let sym = stk[0] || stk.symbol;
         if (sym === "L&TFH") sym = "LTF";
         if (sym === "TATAMOTORS") sym = "TMPV";
 
-        const liveStock = (typeof ST_MAP !== "undefined") ? (ST_MAP[sym] || ST_MAP[stk.symbol]) : null;
-        const stockPrice = liveStock && Number.isFinite(liveStock.price) ? liveStock.price : stk.price;
-        const stockName = (liveStock && liveStock.name) ? liveStock.name : stk.name;
-        const chg = liveStock && Number.isFinite(liveStock.chg) ? Number(liveStock.chg) : 0;
+        const liveStock = (typeof ST_MAP !== "undefined") ? (ST_MAP[sym] || ST_MAP[stk[0]]) : (stk[8] || {});
+        const stockPrice = (liveStock && Number.isFinite(liveStock.price)) ? liveStock.price : (Number(stk[3]) || stk.price || 0);
+        const stockName = (liveStock && liveStock.name) ? liveStock.name : (stk[8]?.name || stk.name || sym);
+        const chg = (liveStock && Number.isFinite(liveStock.chg)) ? Number(liveStock.chg) : (Number(stk[4]) || 0);
 
-        const tech = (liveStock && liveStock.tech) ? String(liveStock.tech) : "";
-        let ema = "Above 20 EMA";
-        if (tech.includes("a")) ema = "Above 20 & 50 EMA";
-        else if (chg > 1.0) ema = "Above 20 EMA";
-        else if (chg < -1.0) ema = "Below 20 & 50 EMA";
-        else if (chg < 0) ema = "Below 20 EMA";
-
-        let rsi = liveStock && Number.isFinite(liveStock.rsi) ? liveStock.rsi : null;
+        let rsi = (liveStock && Number.isFinite(liveStock.rsi)) ? liveStock.rsi : null;
         if (rsi == null) {
           rsi = Number(Math.min(84, Math.max(28, 52 + chg * 3.2)).toFixed(1));
         }
 
-        let vol = liveStock && liveStock.vol ? liveStock.vol : null;
-        if (!vol) {
-          const mult = 1 + Math.min(2.5, Math.abs(chg) * 0.25);
-          const volNum = (stk.baseVol * mult).toFixed(1);
-          vol = volNum >= 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
-        }
+        const ema = getStockEma(sym, liveStock, stk, chg);
+        const vol = formatVol(liveStock, stk, chg);
 
         const item = {
-          symbol: stk.symbol,
+          symbol: sym,
           name: stockName,
           price: stockPrice,
           chg,
@@ -4787,8 +4920,9 @@
       declining.sort((a, b) => a.chg - b.chg);
 
       return {
-        icon: sec.icon,
-        description: sec.description,
+        icon: sectorIcon,
+        description: sectorDesc,
+        label: sectorLabel,
         advancing,
         declining,
         isLive: true
@@ -4797,28 +4931,27 @@
 
     // HISTORICAL SESSIONS (Session 1+ / T-1, T-2...): Realistic beta-adjusted model with live CMPs
     let seed = 0;
-    for (let i = 0; i < sectorName.length; i++) seed += sectorName.charCodeAt(i);
-    seed += (sessionIdx || 0) * 17;
+    for (let i = 0; i < sectorKey.length; i++) seed += sectorKey.charCodeAt(i);
+    seed += (sessionIdx || 0) * 19;
 
     const pseudoRand = (offset) => {
       const x = Math.sin(seed + offset) * 10000;
       return x - Math.floor(x);
     };
 
-    let targetAdvCount;
-    if (score >= 80) targetAdvCount = Math.min(n, Math.max(n - 1, Math.round(n * 0.9)));
-    else if (score >= 40) targetAdvCount = Math.round(n * 0.75);
-    else if (score > 10) targetAdvCount = Math.round(n * 0.65);
-    else if (score >= -10) targetAdvCount = Math.round(n * 0.5);
-    else if (score >= -40) targetAdvCount = Math.round(n * 0.35);
-    else targetAdvCount = Math.max(1, Math.round(n * 0.2));
+    let targetAdvRatio = 0.5 + (score / 200);
+    targetAdvRatio = Math.max(0.1, Math.min(0.95, targetAdvRatio));
+    const targetAdvCount = Math.max(1, Math.min(n - 1, Math.round(n * targetAdvRatio)));
 
-    const scoredStocks = list.map((stk, idx) => {
+    const scoredStocks = matchedStocks.map((stk, idx) => {
+      const sym = stk[0] || stk.symbol;
+      const liveStock = (typeof ST_MAP !== "undefined") ? (ST_MAP[sym] || ST_MAP[stk[0]]) : (stk[8] || {});
+      const beta = stk.beta || 1.1;
       const pVar = (pseudoRand(idx * 3 + 1) - 0.5) * 1.2;
       const stockMomentum = (score >= 0)
-        ? (stk.beta * (score / 40) + pVar)
-        : (score / 40 / stk.beta + pVar);
-      return { stk, momentum: stockMomentum, idx };
+        ? (beta * (score / 40) + pVar)
+        : (score / 40 / beta + pVar);
+      return { stk, liveStock, sym, beta, momentum: stockMomentum, idx };
     });
 
     scoredStocks.sort((a, b) => b.momentum - a.momentum);
@@ -4827,30 +4960,25 @@
     const declining = [];
 
     scoredStocks.forEach((item, rank) => {
-      const stk = item.stk;
+      const { stk, liveStock, sym, beta, idx } = item;
       const isAdv = rank < targetAdvCount;
-      const pVar = pseudoRand(item.idx * 7 + 3);
+      const pVar = pseudoRand(idx * 7 + 3);
 
-      let sym = stk.symbol;
-      if (sym === "L&TFH") sym = "LTF";
-      if (sym === "TATAMOTORS") sym = "TMPV";
-      const liveStock = (typeof ST_MAP !== 'undefined') ? (ST_MAP[sym] || ST_MAP[stk.symbol]) : null;
-      const stockPrice = liveStock && Number.isFinite(liveStock.price) ? liveStock.price : stk.price;
-      const stockName = (liveStock && liveStock.name) ? liveStock.name : stk.name;
+      const stockPrice = (liveStock && Number.isFinite(liveStock.price)) ? liveStock.price : (Number(stk[3]) || stk.price || 0);
+      const stockName = (liveStock && liveStock.name) ? liveStock.name : (stk[8]?.name || stk.name || sym);
 
       let chg, rsi, ema, vol;
 
       if (isAdv) {
-        const baseGain = Math.max(0.35, Math.abs(score) * 0.038 * stk.beta);
+        const baseGain = Math.max(0.35, Math.abs(score) * 0.038 * beta);
         chg = +(baseGain + pVar * 1.2).toFixed(2);
         if (chg <= 0) chg = 0.50;
         rsi = Math.min(82, +(54 + (score > 0 ? score * 0.22 : 6) + pVar * 8).toFixed(1));
         ema = "Above 20 EMA";
-        const volNum = (stk.baseVol * (1 + (score > 0 ? score * 0.008 : 0) + pVar * 0.4)).toFixed(1);
-        vol = volNum > 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
+        vol = formatVol(liveStock, stk, chg);
 
         advancing.push({
-          symbol: stk.symbol,
+          symbol: sym,
           name: stockName,
           price: stockPrice,
           chg,
@@ -4859,16 +4987,15 @@
           vol
         });
       } else {
-        const baseDrop = Math.max(0.40, (score < 0 ? Math.abs(score) * 0.048 : 0.85) * stk.beta);
+        const baseDrop = Math.max(0.40, (score < 0 ? Math.abs(score) * 0.048 : 0.85) * beta);
         chg = +(-1 * (baseDrop + pVar * 1.0)).toFixed(2);
         if (chg >= 0) chg = -0.50;
         rsi = Math.max(28, +(46 - (score < 0 ? Math.abs(score) * 0.22 : 5) - pVar * 6).toFixed(1));
         ema = "Below 20 EMA";
-        const volNum = (stk.baseVol * (1 + (score < 0 ? Math.abs(score) * 0.008 : 0) + pVar * 0.3)).toFixed(1);
-        vol = volNum > 1 ? volNum + "M" : Math.round(volNum * 1000) + "K";
+        vol = formatVol(liveStock, stk, chg);
 
         declining.push({
-          symbol: stk.symbol,
+          symbol: sym,
           name: stockName,
           price: stockPrice,
           chg,
@@ -4880,8 +5007,9 @@
     });
 
     return {
-      icon: sec.icon,
-      description: sec.description,
+      icon: sectorIcon,
+      description: sectorDesc,
+      label: sectorLabel,
       advancing,
       declining
     };
@@ -8968,7 +9096,7 @@
       const smChg = smIdx ? (Number(smIdx[2]) || 0) : 0;
 
       let hmGreenRatio = 0.5;
-      if (typeof HEATMAP_NIFTY50_DATA !== "undefined" && HEATMAP_NIFTY50_DATA.length > 0) {
+      if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
         const greenCount = HEATMAP_NIFTY50_DATA.filter(s => (s.chg || 0) >= 0).length;
         hmGreenRatio = greenCount / HEATMAP_NIFTY50_DATA.length;
       }
@@ -9116,7 +9244,7 @@
     },
     fiiDii: { periods: null, daily: [], latestDate: "", source: "Groww", updatedAt: "", status: "loading", error: "" },
     netflowTab: "10",           // "today", "5", "10", "month"
-    activeNetflowSector: "Automobiles", // Currently inspected sector in Net Flow
+    activeNetflowSector: "NIFTY AUTO", // Currently inspected sector in Net Flow
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
@@ -9528,7 +9656,7 @@
         });
 
         // Update Heatmap stock entry if matched
-        if (typeof HEATMAP_NIFTY50_DATA !== "undefined") {
+        if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) {
           const hmStock = HEATMAP_NIFTY50_DATA.find(h => h.symbol === symbol);
           if (hmStock) {
             hmStock.price = live.currentPrice;
@@ -9598,7 +9726,7 @@
     async syncHeatmapQuotes(interactive = false) {
       try {
         const activeIdx = State.heatmapIndex || "Nifty 50";
-        const currentStocks = (typeof getHeatmapStocksForIndex === "function") ? getHeatmapStocksForIndex(activeIdx) : (typeof HEATMAP_NIFTY50_DATA !== "undefined" ? HEATMAP_NIFTY50_DATA : []);
+        const currentStocks = (typeof getHeatmapStocksForIndex === "function") ? getHeatmapStocksForIndex(activeIdx) : (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) ? HEATMAP_NIFTY50_DATA : []);
         if (!currentStocks || !currentStocks.length) return;
         const symbolsList = currentStocks.map(s => this.getYahooSymbol(s.symbol));
         const symbolsQuery = symbolsList.slice(0, 50).join(",");
@@ -9764,7 +9892,7 @@
         if (_needsSectors && typeof SECTOR_YAHOO_MAP !== "undefined") {
           Object.values(SECTOR_YAHOO_MAP).forEach(y => symSet.add(y));
         }
-        if (_needsHeatmap && typeof HEATMAP_NIFTY50_DATA !== "undefined" && Array.isArray(HEATMAP_NIFTY50_DATA)) {
+        if (_needsHeatmap && typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA)) {
           HEATMAP_NIFTY50_DATA.forEach(s => symSet.add(this.getYahooSymbol(s.symbol)));
         }
         // Include all user Demat Portfolio holdings in live batch sync
@@ -9947,7 +10075,7 @@
             }
 
             // D. Update Heatmap Stock Constituents
-            if (typeof HEATMAP_NIFTY50_DATA !== "undefined") {
+            if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) {
               const hmStock = HEATMAP_NIFTY50_DATA.find(h => h.symbol === cleanSym || h.symbol === rawSym);
               if (hmStock && typeof q.regularMarketPrice === "number") {
                 hmStock.price = q.regularMarketPrice;
@@ -11171,7 +11299,7 @@
     }
 
     // 4. Heatmap Nifty 50 Data (Bluechips)
-    if (suggestions.length < 10 && typeof HEATMAP_NIFTY50_DATA !== "undefined") {
+    if (suggestions.length < 10 && typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) {
       for (const stk of HEATMAP_NIFTY50_DATA) {
         const match = !q || stk.symbol.toLowerCase().includes(q) || stk.name.toLowerCase().includes(q) || (resolvedTypo && stk.symbol.toUpperCase() === resolvedTypo);
         if (match) {
@@ -11711,104 +11839,18 @@
     return pills.join('');
   }
 
-  // ---------------------------------------------------------------------------
-  // Master 44 Nifty Sectoral & Thematic Indices Definition (Feature 03 & Screener)
-  // ---------------------------------------------------------------------------
-  const MASTER_44_SECTORS = [
-    { key: "NIFTY AUTO", label: "Automobiles & Auto (NIFTY AUTO)", broad: "Automobiles & Auto", extraSyms: ["TMPV", "M&M", "MARUTI", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF", "JBMA", "OLAELEC", "OLECTRA", "EXIDEIND", "ARE&M", "CRAFTSMAN", "CEATLTD", "GABRIEL", "JKTYRE", "MINDACORP", "MSUMI", "RKFORGE", "SANSERA", "SONACOMS", "TENNIND", "ZFCVINDIA", "NDRAUTO", "SHRIPISTON"] },
-    { key: "NIFTY BANK", label: "Banking & Finance (NIFTY BANK)", broad: "Banking & Finance", extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "BANKBARODA", "PNB", "CANBK", "FEDERALBNK", "IDFCFIRSTB", "AUBANK", "YESBANK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB", "BANDHANBNK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK"] },
-    { key: "NIFTY PVT BANK", label: "Private Sector Banks (NIFTY PVT BANK)", broad: null, extraSyms: ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK", "CITYUNIONB", "RBLBANK", "KARURVYSYA", "CUB", "J&KBANK", "CSBBANK"] },
-    { key: "NIFTY PSU BANK", label: "Public Sector Banks (NIFTY PSU BANK)", broad: null, extraSyms: ["SBIN", "BANKBARODA", "PNB", "CANBK", "UNIONBANK", "INDIANB", "BANKINDIA", "CENTRALBK", "MAHABANK", "UCOBANK", "IOB", "PSB"] },
-    { key: "NIFTY FIN SERVICE", label: "Financial Services (NIFTY FIN SERVICE)", broad: null, extraSyms: ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE", "ICICIGI", "MUTHOOTFIN", "PFC", "RECLTD", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHFL", "HUDCO", "IRFC"] },
-    { key: "NIFTY MS FIN SERV", label: "MidSmall Financials (NIFTY MS FIN SERV)", broad: null, extraSyms: ["CHOLAFIN", "SHRIRAMFIN", "MUTHOOTFIN", "POONAWALLA", "MANAPPURAM", "L&TFH", "M&MFIN", "CREDITACC", "HOMEFIRST", "AAVAS", "BAJAJHLDNG", "CHOLAHLDNG", "HUDCO", "BAJAJHFL", "CANFINHOME", "PNBHOUSING", "IIFL", "KFINTECH"] },
-    { key: "NIFTY CAPITAL MKT", label: "Capital Markets & Exchanges (NIFTY CAPITAL MKT)", broad: null, extraSyms: ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC", "KFINTECH", "ANANDRATHI"] },
-    { key: "NIFTY IT", label: "Information Technology (NIFTY IT)", broad: "Information Technology", extraSyms: ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS", "LTTS", "TATAELXSI", "KPITTECH", "CYIENT", "SONATSOFTW", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "TATACOMM", "RATEGAIN", "ROUTE", "NETWEB"] },
-    { key: "NIFTY MS IT TELCM", label: "MidSmall IT & Telecom (NIFTY MS IT TELCM)", broad: null, extraSyms: ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE", "BSOFT", "ZENSARTECH", "MASTEK", "HAPPSTMNDS", "NETWEB", "INDUSTOWER", "TATACOMM"] },
-    { key: "NIFTY PHARMA", label: "Pharmaceuticals (NIFTY PHARMA)", broad: "Pharmaceuticals & Healthcare", extraSyms: ["SUNPHARMA", "CIPLA", "DRREDDY", "DIVISLAB", "LUPIN", "ZYDUSLIFE", "TORNTPHARM", "MANKIND", "AUROPHARMA", "ALKEM", "BIOCON", "GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "IPCALAB", "NATCOPHARM", "PFIZER", "SANOFI", "GLAXO", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "APLLTD"] },
-    { key: "NIFTY HEALTHCARE", label: "Healthcare & Diagnostics (NIFTY HEALTHCARE)", broad: null, extraSyms: ["SUNPHARMA", "APOLLOHOSP", "MAXHEALTH", "FORTIS", "MEDANTA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "LALPATHLAB", "SYNGENE", "ASTERDM", "KIMS", "NH", "METROPOLIS", "RAINBOW", "VIJAYA", "POLYMED"] },
-    { key: "NIFTY MIDSML HLTH", label: "MidSmall Healthcare (NIFTY MIDSML HLTH)", broad: null, extraSyms: ["GLENMARK", "AJANTPHARM", "LAURUSLABS", "GRANULES", "JBCHEPHARM", "SUVENPHAR", "ERIS", "VIJAYA", "KIMS", "ASTERDM", "SHUKRAPHAR", "SMSPHARMA", "ALIVUS", "POLYMED", "CAPLIPOI", "CONCORDBIO"] },
-    { key: "NIFTY FMCG", label: "FMCG & Consumer Goods (NIFTY FMCG)", broad: "FMCG & Consumer", extraSyms: ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "COLPAL", "EMAMILTD", "RADICO", "UBL", "PGHH", "HONASA", "BIKAJI", "JYOTHYLAB", "PATANJALI", "ABDL"] },
-    { key: "NIFTY CONSUMPTION", label: "India Consumption (NIFTY CONSUMPTION)", broad: null, extraSyms: ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI", "TRENT", "PAGEIND", "METROBRAND", "BATAINDIA", "KALYANKJIL", "SAPPHIRE", "WESTLIFE", "MANYAVAR", "SHRINGARMS", "RENTOMOJO"] },
-    { key: "NIFTY MS IND CONS", label: "MidSmall Consumption (NIFTY MS IND CONS)", broad: null, extraSyms: ["TITAN", "TRENT", "PAGEIND", "METROBRAND", "DEVYANI", "SAPPHIRE", "BIKAJI", "KALYANKJIL", "CENTURYPLY", "BATAINDIA", "SHRINGARMS", "RENTOMOJO", "WESTLIFE", "CAMPUS", "CERA", "HONASA"] },
-    { key: "NIFTY CONSR DURBL", label: "Consumer Durables (NIFTY CONSR DURBL)", broad: "Consumer Durables", extraSyms: ["TITAN", "HAVELLS", "VOLTAS", "DIXON", "CROMPTON", "WHIRLPOOL", "BLUESTARCO", "KAJARIACER", "BATAINDIA", "AMBER", "KALYANKJIL", "RAJESHEXPO", "SYRMA", "CENTURYPLY", "VGUARD", "SYMPHONY"] },
-    { key: "NIFTY METAL", label: "Metals & Mining (NIFTY METAL)", broad: "Metals & Mining", extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "JINDALSTEL", "VEDL", "NMDC", "SAIL", "NATIONALUM", "HINDZINC", "APLLTD", "JSL", "RATNAMANI", "WELCORP", "GPIL", "KIOCL"] },
-    { key: "NIFTY REALTY", label: "Real Estate & Realty (NIFTY REALTY)", broad: "Realty & Infrastructure", extraSyms: ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PRESTIGE", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "SUNTECK", "MAHLIFE", "DBREALTY", "KOLTEPATIL", "ANANTRAJ"] },
-    { key: "NIFTY HOUSING", label: "Housing & Materials (NIFTY HOUSING)", broad: null, extraSyms: ["DLF", "GODREJPROP", "ULTRACEMCO", "ASIANPAINT", "BERGERPAINT", "HAVELLS", "POLYCAB", "PIDILITIND", "VOLTAS", "AMBUJACEM", "KAJARIACER", "CERA", "ASTRAL", "SHREECEM", "DALBHARAT", "SUPREMEIND"] },
-    { key: "NIFTY CORE HOUSING", label: "Core Housing Ecosystem (NIFTY CORE HOUSING)", broad: null, extraSyms: ["DLF", "GODREJPROP", "OBEROIRLTY", "LODHA", "PRESTIGE", "ULTRACEMCO", "AMBUJACEM", "SHREECEM", "DALBHARAT", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "ASTRAL", "POLYCAB"] },
-    { key: "NIFTY ENERGY", label: "Energy, Oil & Power (NIFTY ENERGY)", broad: null, extraSyms: ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON", "NHPC", "SJVN", "TORNTPOWER", "CESC", "JSWENERGY", "IREDA", "ACMESOLAR"] },
-    { key: "NIFTY OIL AND GAS", label: "Oil & Gas Exploration (NIFTY OIL AND GAS)", broad: "Oil & Gas & Energy", extraSyms: ["RELIANCE", "ONGC", "IOC", "BPCL", "GAIL", "PETRONET", "OIL", "HINDPETRO", "GUJGASLTD", "IGL", "MGL", "AEGISLOG", "GNRL", "DEEPAKNTR", "ATUL"] },
-    { key: "NIFTY INFRA", label: "Infrastructure (NIFTY INFRA)", broad: null, extraSyms: ["LT", "ADANIPORTS", "POWERGRID", "NTPC", "ULTRACEMCO", "BHARTIARTL", "ONGC", "IOC", "GAIL", "GRASIM", "GMRINFRA", "IRB", "KNRCON", "PNCINFRA", "NCC", "HGINFRA", "TECHNOE"] },
-    { key: "NIFTY COMMODITIES", label: "Commodities & Raw Materials (NIFTY COMMODITIES)", broad: null, extraSyms: ["TATASTEEL", "JSWSTEEL", "HINDALCO", "COALINDIA", "VEDL", "JINDALSTEL", "NMDC", "AMBUJACEM", "ACC", "SHREECEM", "GRASIM", "PIIND", "UPL", "COROMANDEL", "SRF"] },
-    { key: "NIFTY CHEMICALS", label: "Specialty Chemicals (NIFTY CHEMICALS)", broad: "Chemicals & Agro", extraSyms: ["PIDILITIND", "SRF", "GUJFLUORO", "DEEPAKNTR", "TATACHEM", "ATUL", "AARTIIND", "NAVINFLUOR", "VINATIORGA", "ALKYLAMINE", "COROMANDEL", "PIIND", "SOLARINDS", "CLEAN", "AETHER", "FINEORG", "SUMICHEM"] },
-    { key: "NIFTY IND DEFENCE", label: "Aerospace & Defence (NIFTY IND DEFENCE)", broad: null, extraSyms: ["BEL", "HAL", "MAZDOCK", "COCHINSHIP", "BDL", "BEML", "DATAPATTNS", "PARAS", "MTARTECH", "GRSE", "ZENTEC", "ASTRAZEN", "SOLARINDS"] },
-    { key: "NIFTY RAILWAYS PSU", label: "Railways PSU (NIFTY RAILWAYS PSU)", broad: null, extraSyms: ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JWL", "TEXRAIL", "BEML"] },
-    { key: "NIFTY IND TOURISM", label: "Tourism & Hospitality (NIFTY IND TOURISM)", broad: null, extraSyms: ["INDIGO", "IHCL", "INDHOTEL", "ITCHOTELS", "IRCTC", "EIHOTEL", "CHALET", "LEMONTREE", "BLS", "VIPIND", "YATRA", "EASEMYTRIP"] },
-    { key: "NIFTY TRANS LOGIS", label: "Transportation & Logistics (NIFTY TRANS LOGIS)", broad: "Logistics & Services", extraSyms: ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY", "AEGISLOG"] },
-    { key: "NIFTY MOBILITY", label: "Mobility & Transport (NIFTY MOBILITY)", broad: null, extraSyms: ["MARUTI", "M&M", "TMPV", "BAJAJ-AUTO", "TVSMOTOR", "ASHOKLEY", "INDIGO", "MOTHERSON", "IRCTC", "BHARATFORG", "BOSCHLTD", "MRF", "EXIDEIND", "ARE&M"] },
-    { key: "NIFTY EV", label: "EV & Green Mobility (NIFTY EV)", broad: null, extraSyms: ["TMPV", "M&M", "TVSMOTOR", "BAJAJ-AUTO", "OLAELEC", "EXIDEIND", "ARE&M", "SONACOMS", "BHARATFORG", "JBMA", "OLECTRA", "SCHNEIDER"] },
-    { key: "NIFTY IND DIGITAL", label: "Digital Ecosystem (NIFTY IND DIGITAL)", broad: null, extraSyms: ["NAUKRI", "ZOMATO", "PAYTM", "NYKAA", "POLICYBZR", "TATAELXSI", "KPITTECH", "COFORGE", "AFFLE", "MAPMYINDIA", "INDIAMART"] },
-    { key: "NIFTY INTERNET", label: "Internet Technologies (NIFTY INTERNET)", broad: null, extraSyms: ["ZOMATO", "NAUKRI", "PAYTM", "NYKAA", "POLICYBZR", "INDIAMART", "JUSTDIAL", "MAPMYINDIA", "RATEGAIN", "NAZARA"] },
-    { key: "NIFTY MEDIA", label: "Media & Entertainment (NIFTY MEDIA)", broad: "Media & Entertainment", extraSyms: ["ZEEL", "SUNTV", "SAREGAMA", "PVRINOX", "NETWORK18", "TV18BRDCST", "NDTV", "DISHTV", "HATHWAY", "DBREALTY"] },
-    { key: "NIFTY PSE", label: "Public Sector Enterprises (NIFTY PSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "HAL", "IOC", "BPCL", "GAIL", "RECLTD", "PFC", "NHPC", "OIL", "BHEL", "SAIL", "NMDC"] },
-    { key: "NIFTY CPSE", label: "Central Public Sector (NIFTY CPSE)", broad: null, extraSyms: ["NTPC", "POWERGRID", "COALINDIA", "ONGC", "BEL", "OIL", "NHPC", "NATIONALUM", "NBCC", "SJVN", "COCHINSHIP", "MAZDOCK", "COALINDIA"] },
-    { key: "NIFTY MNC", label: "Multinational Corporations (NIFTY MNC)", broad: null, extraSyms: ["MARUTI", "HINDUNILVR", "NESTLEIND", "ABB", "SIEMENS", "CUMMINSIND", "HONAUT", "BOSCHLTD", "3MINDIA", "PFIZER", "SANOFI", "GLAXO"] },
-    { key: "NIFTY RURAL", label: "Rural Economy & Agri (NIFTY RURAL)", broad: null, extraSyms: ["M&M", "HEROMOTOCO", "ESCORTS", "DABUR", "MARICO", "UPL", "COROMANDEL", "PIIND", "DEEPAKNTR", "CHOLAFIN", "BAYERCROP", "DHANUKA"] },
-    { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
-    { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, extraSyms: ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"] },
-    { key: "NIFTY 50", label: "NIFTY 50 Benchmark (50 LargeCap)", broad: null, isNifty50: true },
-    { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, cap: "LC" },
-    { key: "NIFTY MIDCAP 150", label: "NIFTY MidCap 150 Benchmark (MidCap 150)", broad: null, cap: "MC" },
-    { key: "NIFTY SMLCAP 250", label: "NIFTY SmallCap 250 Benchmark (SmallCap 250)", broad: null, cap: "SC" }
-  ];
-
-  function getScreener44Sectors() {
-    return [...MASTER_44_SECTORS].sort((a, b) => a.label.localeCompare(b.label));
-  }
-
-  function stockMatchesSector(stock, selectedSector) {
-    if (!selectedSector || selectedSector === "all" || selectedSector === "ALL SECTORS") return true;
-
-    // Direct match against stock[2] (broad sector name)
-    if (stock[2] === selectedSector) return true;
-
-    // Find sector definition in MASTER_44_SECTORS
-    const norm = selectedSector.toUpperCase().trim();
-    const secDef = MASTER_44_SECTORS.find(s => 
-      s.key === norm || 
-      s.broad === selectedSector || 
-      s.key.replace(/^NIFTY\s+/, "") === norm.replace(/^NIFTY\s+/, "")
-    );
-
-    if (secDef) {
-      if (secDef.isNifty50) {
-        if (typeof HEATMAP_NIFTY50_DATA !== "undefined" && Array.isArray(HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
-          return HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0]);
-        }
-        return stock[1] === "LC";
-      }
-      if (secDef.cap && stock[1] === secDef.cap) return true;
-      if (secDef.broad && stock[2] === secDef.broad) return true;
-      if (secDef.extraSyms && secDef.extraSyms.includes(stock[0])) return true;
-    }
-
-    // Direct match via HEATMAP_SECTOR_SYMBOLS_MAP if available
-    if (typeof HEATMAP_SECTOR_SYMBOLS_MAP !== "undefined") {
-      const syms = HEATMAP_SECTOR_SYMBOLS_MAP[norm] || HEATMAP_SECTOR_SYMBOLS_MAP[selectedSector];
-      if (syms && syms.includes(stock[0])) return true;
-    }
-
-    return false;
-  }
-
-  // Expose on window for runtime and test access
+  // Master 44 Nifty Sectoral & Thematic Indices Definition (Declared above SC for early initialization)
   if (typeof window !== "undefined") {
     window.MASTER_44_SECTORS = MASTER_44_SECTORS;
     window.getScreener44Sectors = getScreener44Sectors;
     window.stockMatchesSector = stockMatchesSector;
     window.getFilteredScreenerStocks = getFilteredScreenerStocks;
     window.renderScreenerView = renderScreenerView;
+    window.renderNetFlowView = renderNetFlowView;
+    window.getSectorConstituentsForSession = getSectorConstituentsForSession;
+    window.FL = FL;
   }
-
+  
   // Screener Filtering & Sorting Cache
   let _screenerFilteredCache = null;
   let _screenerFilterKey = "";
@@ -13028,7 +13070,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.4");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.5");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -14827,7 +14869,7 @@
   }
 
   function renderNetFlowView() {
-    // 1. Live Session (Session 0) calculation for all sectors dynamically from live ST_MAP quotes
+    // 1. Live Session (Session 0) calculation for all 44 sectors dynamically from live ST_MAP / ST quotes
     FL.forEach(row => {
       const sName = row[0];
       const liveData = getSectorConstituentsForSession(sName, 0, 0);
@@ -14865,17 +14907,29 @@
       return "flow-zero";
     };
 
-    const activeSec = State.activeNetflowSector || "Automobiles";
+    const SECTOR_ALIASES = {
+      "Automobiles": "NIFTY AUTO",
+      "NBFC & Financials": "NIFTY FIN SERVICE",
+      "Iron & Steel Products": "NIFTY METAL",
+      "Private Banks": "NIFTY PVT BANK",
+      "Information Technology": "NIFTY IT",
+      "Pharmaceuticals": "NIFTY PHARMA",
+      "Power & Utilities": "NIFTY ENERGY"
+    };
+
+    let activeSec = State.activeNetflowSector || "NIFTY AUTO";
+    if (SECTOR_ALIASES[activeSec]) activeSec = SECTOR_ALIASES[activeSec];
+
     const activeSessionIdx = typeof State.activeNetflowSessionIdx === "number" ? Math.min(Math.max(0, State.activeNetflowSessionIdx), visibleCount - 1) : 0;
 
     // Find active sector FL row to get session score
-    const activeRow = FL.find(r => r[0] === activeSec) || FL[6] || FL[0];
+    const activeRow = FL.find(r => r[0] === activeSec) || FL[0];
+    const resolvedActiveSec = activeRow ? activeRow[0] : activeSec;
     const activeScores = activeRow ? activeRow[1] : [];
     const activeScore = (activeScores[activeSessionIdx] !== undefined) ? activeScores[activeSessionIdx] : (activeScores[0] || 0);
     const activeDateInfo = tradingDates[activeSessionIdx] || tradingDates[0];
-    const activeLabel = activeDateInfo.isToday ? activeDateInfo.shortLabel : activeDateInfo.label;
 
-    const secData = getSectorConstituentsForSession(activeSec, activeScore, activeSessionIdx);
+    const secData = getSectorConstituentsForSession(resolvedActiveSec, activeScore, activeSessionIdx);
 
     const advStocks = secData.advancing || [];
     const decStocks = secData.declining || [];
@@ -14885,7 +14939,20 @@
     const showAdv = stockFilter === "all" || stockFilter === "advancing";
     const showDec = stockFilter === "all" || stockFilter === "declining";
 
-    const gridColsCss = `grid-template-columns: 220px repeat(${visibleCount}, 1fr);`;
+    const gridColsCss = `grid-template-columns: 240px repeat(${visibleCount}, 1fr);`;
+
+    // Filter FL rows if search query is present
+    let visibleFL = FL;
+    const query = (State.netflowSearch || "").trim().toLowerCase();
+    if (query) {
+      visibleFL = FL.filter(row => {
+        const secName = row[0];
+        const secDef = (typeof MASTER_44_SECTORS !== "undefined") ? MASTER_44_SECTORS.find(s => s.key === secName) : null;
+        return secName.toLowerCase().includes(query) ||
+               (secDef?.label && secDef.label.toLowerCase().includes(query)) ||
+               (secDef?.desc && secDef.desc.toLowerCase().includes(query));
+      });
+    }
 
     const renderStockList = (stocks, type) => {
       const isAdv = type === "adv";
@@ -14925,10 +14992,10 @@
       }).join("");
     };
 
-    const tableRowsHtml = FL.map(row => {
+    const tableRowsHtml = visibleFL.map(row => {
       const secName = row[0];
       const scores = row[1].slice(0, visibleCount);
-      const isActive = secName === activeSec;
+      const isActive = secName === resolvedActiveSec;
 
       const rowSessionIdx = isActive ? activeSessionIdx : 0;
       const rowScore = (scores[rowSessionIdx] !== undefined) ? scores[rowSessionIdx] : (scores[0] || 0);
@@ -14977,7 +15044,7 @@
           </button>
           <div>
             <h2 class="view-heading"><span>🌊</span> Sector Advance/Decline Net Flow</h2>
-            <p class="view-subheading">Institutional volume pressure matrix measuring net advances minus declines weighted by block turnover.</p>
+            <p class="view-subheading">Institutional volume pressure matrix measuring net advances minus declines across all 44 Nifty sectoral & thematic indices.</p>
           </div>
         </div>
         <div class="pill-segmented-control" role="group" aria-label="Timeframe Tabs">
@@ -14988,16 +15055,28 @@
         </div>
       </div>
 
+      <!-- Controls Toolbar with Sector Search -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;position:relative;flex:1;max-width:380px;">
+          <input type="text" id="netflow-sector-search" placeholder="🔍 Search 44 sectors (Auto, Bank, IT, Defence...)" value="${escapeHtml(State.netflowSearch || '')}" style="width:100%;padding:8px 12px 8px 32px;background:var(--sf);border:1px solid var(--ln);border-radius:6px;color:var(--ink);font-size:12px;">
+          <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;">🔍</span>
+          ${State.netflowSearch ? `<button id="netflow-search-clear" data-action="clear-netflow-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;" title="Clear search">✕</button>` : ''}
+        </div>
+        <div style="font-size:12px;color:var(--mu);font-family:var(--font-mono);">
+          Showing <strong>${visibleFL.length}</strong> of <strong>${FL.length}</strong> Sectors
+        </div>
+      </div>
+
       <!-- Modern Interactive Net Flow Matrix Table -->
       <div class="netflow-table-card">
         <div class="netflow-interactive-hint">
           <span>💡</span>
-          <span>Click any cell to inspect its <strong>Advancing (+)</strong> and <strong>Declining (-)</strong> constituent stocks. Currently inspecting: <strong>${activeSec} (${activeDateInfo.shortLabel})</strong></span>
+          <span>Click any cell to inspect its <strong>Advancing (+)</strong> and <strong>Declining (-)</strong> constituent stocks. Currently inspecting: <strong>${resolvedActiveSec} (${activeDateInfo.shortLabel})</strong></span>
         </div>
 
         <div class="netflow-table">
           <div class="netflow-row header-row" style="${gridColsCss}">
-            <div class="netflow-header-cell" style="text-align:left">Sector Cluster</div>
+            <div class="netflow-header-cell" style="text-align:left">Sector Cluster (44)</div>
             ${dateLabels.map((d, dIdx) => `<div class="netflow-header-cell ${dIdx === activeSessionIdx ? 'font-bold' : ''}" title="${tradingDates[dIdx]?.iso || ''}">${d}</div>`).join("")}
           </div>
 
@@ -15006,19 +15085,19 @@
       </div>
 
       <!-- Sector Constituents (+ / - Stocks) Interactive Panel -->
-      ${activeSec && secData ? `
+      ${resolvedActiveSec && secData ? `
         <div class="netflow-breakdown-card" id="netflow-stock-breakdown">
           <div class="netflow-breakdown-header">
             <div class="netflow-breakdown-title-wrap">
               <span class="netflow-breakdown-icon">${secData.icon}</span>
               <div>
                 <div class="netflow-breakdown-title">
-                  <span>${activeSec}</span>
+                  <span>${resolvedActiveSec}</span>
                   <span class="netflow-active-badge ${activeScore >= 0 ? 'badge-green' : 'badge-red'}">
                     ${activeDateInfo.isToday ? '🟢 Live Session: ' : 'Session: '}${activeDateInfo.shortLabel} (${activeScore > 0 ? '+' + activeScore : activeScore} Net Flow)
                   </span>
                 </div>
-                <div class="netflow-breakdown-desc">${secData.description} • Constituent breakdown reflects ${activeDateInfo.shortLabel} institutional flow (${activeScore >= 0 ? 'Net Buying Inflow' : 'Net Selling Outflow'}).</div>
+                <div class="netflow-breakdown-desc">${secData.label ? secData.label + ' • ' : ''}${secData.description} • Constituent breakdown reflects ${activeDateInfo.shortLabel} institutional flow (${activeScore >= 0 ? 'Net Buying Inflow' : 'Net Selling Outflow'}).</div>
               </div>
             </div>
 
@@ -15075,6 +15154,28 @@
     const container = $("#view-container");
     if (!container) return;
 
+    // Search input listener
+    const searchInput = document.getElementById("netflow-sector-search");
+    if (searchInput) {
+      searchInput.addEventListener("input", e => {
+        State.netflowSearch = e.target.value;
+        renderActiveView();
+        const input = document.getElementById("netflow-sector-search");
+        if (input) {
+          input.focus();
+          input.setSelectionRange(input.value.length, input.value.length);
+        }
+      });
+    }
+
+    const clearBtn = document.getElementById("netflow-search-clear");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        State.netflowSearch = "";
+        renderActiveView();
+      });
+    }
+
     // Direct click listeners on all sector rows in Net Flow table
     const rows = container.querySelectorAll(".netflow-row[data-sector]");
     rows.forEach(row => {
@@ -15119,61 +15220,18 @@
           return;
         }
 
-        if (e.target.closest("button, a")) return;
+        // 4. Row click selects sector and defaults to session 0 (Today)
         const sec = row.dataset.sector;
         if (sec) {
           State.activeNetflowSector = sec;
           State.activeNetflowSessionIdx = 0;
           renderActiveView();
           const breakdown = document.getElementById("netflow-stock-breakdown");
-          if (breakdown) {
-            breakdown.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
-        }
-      });
-    });
-
-    // Timeframe segment buttons
-    const tfBtns = container.querySelectorAll("[data-action='set-flow-tab']");
-    tfBtns.forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        State.netflowTab = btn.dataset.val;
-        State.activeNetflowSessionIdx = 0;
-        renderActiveView();
-      });
-    });
-
-    // Stock filter buttons (all, advancing, declining)
-    const filterBtns = container.querySelectorAll("[data-action='set-netflow-stock-filter']");
-    filterBtns.forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        State.netflowStockFilter = btn.dataset.filter;
-        renderActiveView();
-      });
-    });
-
-    // Analyze buttons in constituent stock cards
-    const analyzeBtns = container.querySelectorAll("[data-action='analyze-netflow-stock']");
-    analyzeBtns.forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        const sym = btn.dataset.symbol;
-        if (sym) {
-          State.activeStock = sym;
-          State.view = "stock";
-          window.location.hash = "stock";
-          renderActiveView();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          if (breakdown) breakdown.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       });
     });
   }
-
-  // ==========================================================================
-  // 9. OFFICIAL TRADINGVIEW ADVANCED REAL-TIME CHARTING ENGINE (FREE & LIVE NSE/BSE)
-  // ==========================================================================
 
   function getTradingViewSectorSymbol(rawSector) {
     if (!rawSector) return "NSE:NIFTY";
@@ -15832,7 +15890,7 @@
     });
 
     // 3. HEATMAP_NIFTY50_DATA
-    (typeof HEATMAP_NIFTY50_DATA !== "undefined" ? HEATMAP_NIFTY50_DATA : []).forEach(h => {
+    (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) ? HEATMAP_NIFTY50_DATA : []).forEach(h => {
       if (!seen.has(h.symbol)) {
         seen.add(h.symbol);
         list.push({
@@ -23892,7 +23950,7 @@
     }
 
     // 5. Search Heatmap Nifty 50 stocks
-    if (matches.length < 8 && typeof HEATMAP_NIFTY50_DATA !== "undefined") {
+    if (matches.length < 8 && typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) {
       for (const hm of HEATMAP_NIFTY50_DATA) {
         if (!matchedSymbols.has(hm.symbol)) {
           if (
@@ -24776,6 +24834,10 @@
       }
       else if (action === "set-netflow-stock-filter") {
         State.netflowStockFilter = target.dataset.filter;
+        renderActiveView();
+      }
+      else if (action === "clear-netflow-search") {
+        State.netflowSearch = "";
         renderActiveView();
       }
       else if (action === "analyze-netflow-stock") {
@@ -25724,7 +25786,7 @@
     async preloadStaticData() {
       // 1. Preload 1,630 authentic stock EMAs from local repository cache
       try {
-        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.4", { cache: "no-store" });
+        const res = await fetch("./data/screeningmantis-emas.json?v=6.2.5", { cache: "no-store" });
         if (res.ok) {
           const map = await res.json();
           if (map && typeof map === "object") {
@@ -25740,7 +25802,7 @@
 
       // 2. Preload 46 authentic sector indices with live EMAs
       try {
-        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.4", { cache: "no-store" });
+        const resSec = await fetch("./data/screeningmantis-sectors.json?v=6.2.5", { cache: "no-store" });
         if (resSec.ok) {
           const secList = await resSec.json();
           if (Array.isArray(secList) && secList.length > 0) {
@@ -25773,7 +25835,7 @@
         const urls = [
           localBase ? (localBase + "/api/screeningmantis/sectors") : null,
           "https://www.screeningmantis.com/api/sector-indices",
-          "./data/screeningmantis-sectors.json?v=6.2.4"
+          "./data/screeningmantis-sectors.json?v=6.2.5"
         ].filter(Boolean);
 
         let data = null;
@@ -25834,7 +25896,7 @@
           localBase ? (localBase + "/api/screeningmantis/emas") : null,
           localBase ? (localBase + "/api/screeningmantis/snapshot") : null,
           "https://www.screeningmantis.com/api/scanner/snapshot",
-          "./data/screeningmantis-emas.json?v=6.2.4"
+          "./data/screeningmantis-emas.json?v=6.2.5"
         ].filter(Boolean);
 
         let snapshotResults = null;
@@ -25955,7 +26017,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.4"
+          "./data/authentic-sector-turnover.json?v=6.2.5"
         ].filter(Boolean);
 
         for (const url of urls) {
@@ -26001,7 +26063,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.4', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.5', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
