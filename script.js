@@ -9178,6 +9178,31 @@
   let savedUser = null;
   try {
     savedUser = JSON.parse(localStorage.getItem("momentum_user") || "null");
+    if (!savedUser || !savedUser.email) {
+      // Check Supabase cached session in localStorage (sb-*-auth-token)
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i) || "";
+        if (k.startsWith("sb-") && k.endsWith("-auth-token")) {
+          const raw = JSON.parse(localStorage.getItem(k) || "null");
+          const u = (raw && raw.user) ? raw.user : (raw && raw.currentSession && raw.currentSession.user) ? raw.currentSession.user : null;
+          if (u && u.email) {
+            const meta = u.user_metadata || {};
+            const name = meta.full_name || meta.name || (u.email ? u.email.split("@")[0] : "Trader");
+            savedUser = {
+              id: u.id,
+              email: u.email,
+              name: name,
+              plan: "PRO Terminal",
+              avatar: name.charAt(0).toUpperCase() || "A",
+              broker: "Demat Linked",
+              provider: u.app_metadata?.provider || "supabase"
+            };
+            localStorage.setItem("momentum_user", JSON.stringify(savedUser));
+            break;
+          }
+        }
+      }
+    }
   } catch (e) {
     savedUser = null;
   }
@@ -24383,6 +24408,15 @@
             btn.classList.toggle("active", isOpen);
             btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
           }
+          return;
+        }
+        // If already logged in, show user profile; otherwise navigate to login.html
+        if (State.user) {
+          renderUserProfileModal();
+          const modal = document.getElementById("user-profile-modal");
+          if (modal) { modal.style.display = "flex"; modal.classList.add("show"); }
+        } else {
+          window.location.href = "login.html";
         }
         return;
       }
@@ -26263,7 +26297,7 @@
   }
 
   function init() {
-    // 0. Detect and process Supabase Google OAuth callback tokens
+    // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
     if (window.MOMENTUM_SUPABASE) {
       window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
         if (!result) return;
@@ -26274,6 +26308,7 @@
         if (result.email) {
           State.user = result;
           savedUser = result;
+          try { localStorage.setItem("momentum_user", JSON.stringify(result)); } catch (e) {}
           renderUserAuthUI();
           loadTickerPreferences();
           if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
@@ -26282,6 +26317,59 @@
           showToast(`Welcome, ${result.name}! Signed in with Google.`, "🚀");
         }
       });
+
+      // Check existing Supabase session asynchronously on startup
+      if (window.MOMENTUM_SUPABASE.client && window.MOMENTUM_SUPABASE.client.auth) {
+        window.MOMENTUM_SUPABASE.client.auth.getSession().then(({ data: { session } }) => {
+          if (session && session.user && (!State.user || !State.user.email)) {
+            const u = session.user;
+            const meta = u.user_metadata || {};
+            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
+            const profile = {
+              id: u.id,
+              email: u.email,
+              name: name,
+              plan: "PRO Terminal",
+              avatar: name.charAt(0).toUpperCase() || "A",
+              broker: "Demat Linked",
+              provider: u.app_metadata?.provider || "supabase"
+            };
+            State.user = profile;
+            savedUser = profile;
+            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) {}
+            renderUserAuthUI();
+            if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+              PortfolioService.syncFromCloud();
+            }
+          }
+        }).catch(() => {});
+
+        // Listen for live auth state changes (login, logout, token refresh)
+        window.MOMENTUM_SUPABASE.client.auth.onAuthStateChange((event, session) => {
+          if (session && session.user) {
+            const u = session.user;
+            const meta = u.user_metadata || {};
+            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
+            const profile = {
+              id: u.id,
+              email: u.email,
+              name: name,
+              plan: "PRO Terminal",
+              avatar: name.charAt(0).toUpperCase() || "A",
+              broker: "Demat Linked",
+              provider: u.app_metadata?.provider || "supabase"
+            };
+            State.user = profile;
+            savedUser = profile;
+            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) {}
+            renderUserAuthUI();
+          } else if (event === "SIGNED_OUT") {
+            State.user = null;
+            savedUser = null;
+            renderUserAuthUI();
+          }
+        });
+      }
     }
 
     // Load persisted theme preference (White or Midnight)
