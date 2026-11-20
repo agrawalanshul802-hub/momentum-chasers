@@ -3975,14 +3975,7 @@
   </section>
 
 
-  <section class="sec" id="courses">
-    <div class="wrap">
-      <h2 class="rv">Courses, in the order that works</h2>
-      <p class="sub rv">Start at the beginning or jump to the skill you need. Every course builds on the one before it.
-      </p>
-      <div class="grid" id="courseGrid"></div>
-    </div>
-  </section>
+
 
   <section class="sec" id="tour">
     <div class="wrap">
@@ -4137,7 +4130,7 @@
   </footer>
 
   <nav class="tabs" aria-label="Page sections">
-    <a href="#overview" class="on">Overview</a><a href="#courses">Courses</a><a href="#tour">Tour</a><a
+    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#tour">Tour</a><a
       href="#path">Path</a><a href="#faq">FAQ</a>
   </nav>
 
@@ -4152,9 +4145,12 @@
     ];
     function ico(c) { return '<span class="ic" style="--c:' + c.c + '"><svg viewBox="0 0 24 24">' + c.i + '</svg></span>'; }
     COURSES.forEach(function (c, i) { c.b = BUL[i] });
-    document.getElementById("courseGrid").innerHTML = COURSES.map(function (c) {
-      return '<a class="card glass rv" href="login.html" style="--c:' + c.c + '">' + ico(c) + '<span class="lv">' + c.l + '</span><h3>' + c.t + '</h3><p>' + c.d + '</p><ul>' + c.b.map(function (x) { return '<li>' + x + '</li>' }).join("") + '</ul><span class="open">Open course &rarr;</span></a>';
-    }).join("");
+    var courseGridEl = document.getElementById("courseGrid");
+    if (courseGridEl) {
+      courseGridEl.innerHTML = COURSES.map(function (c) {
+        return '<a class="card glass rv" href="login.html" style="--c:' + c.c + '">' + ico(c) + '<span class="lv">' + c.l + '</span><h3>' + c.t + '</h3><p>' + c.d + '</p><ul>' + c.b.map(function (x) { return '<li>' + x + '</li>' }).join("") + '</ul><span class="open">Open course &rarr;</span></a>';
+      }).join("");
+    }
     var ANALYTICS_MENU = [
       { t: "Smart Screener", d: "Scan 2,000+ stocks across EMAs, RSI & volume breakouts", i: "&#9889;" },
       { t: "F&O Order Flow", d: "Live institutional volume, delta & option imbalances", i: "&#128200;" },
