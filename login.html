@@ -3770,7 +3770,7 @@
           <div class="menu glass" id="menu"></div>
         </div>
         <a class="lk" href="#hub">Market Insights</a>
-        <a class="lk" href="#features">About</a>
+        <a class="lk" href="#faq">About</a>
         <a class="lk" href="#faq">FAQ</a>
       </nav>
       <div class="nr">
@@ -3974,20 +3974,6 @@
     </div>
   </section>
 
-
-
-
-
-
-  <section class="sec" id="features">
-    <div class="wrap">
-      <p class="eyebrow rv">What is inside</p>
-      <h2 class="rv">Everything you need. <span class="ser">Nothing you don't.</span></h2>
-      <p class="sub rv">Simple tools that keep you moving from one lesson to the next.</p>
-      <div class="bento" id="featGrid"></div>
-    </div>
-  </section>
-
   <section class="sec" id="path">
     <div class="wrap">
       <h2 class="rv">Your learning path</h2>
@@ -4093,10 +4079,10 @@
         </div>
         <div class="fc">
           <h4>Explore</h4><a href="#top">Home</a><a href="#hub">Analytics</a><a href="#hub">Market Insights</a><a
-            href="#features">Tools</a>
+            href="#hub">Tools</a>
         </div>
         <div class="fc">
-          <h4>Information</h4><a href="#features">About</a><a href="#faq">FAQ</a><a href="#risk">Disclaimer</a><a
+          <h4>Information</h4><a href="#faq">About</a><a href="#faq">FAQ</a><a href="#risk">Disclaimer</a><a
             href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a>
         </div>
         <div class="fc">
@@ -4118,8 +4104,7 @@
   </footer>
 
   <nav class="tabs" aria-label="Page sections">
-    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#features">Features</a><a
-      href="#path">Path</a><a href="#faq">FAQ</a>
+    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#path">Path</a><a href="#faq">FAQ</a>
   </nav>
 
   <script>
@@ -4198,20 +4183,6 @@
     var LOGO = document.querySelector('.brand img').src;
     document.querySelectorAll('img[data-logo]').forEach(function (i) { i.src = LOGO });
 
-    // animated feature bento
-    (function () {
-      var H = [30, 44, 38, 56, 48, 64, 52, 72, 60, 80, 66, 88], U = [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1];
-      var cdl = '<div class="cdl">' + H.map(function (h, k) { return '<i class="cd ' + (U[k] ? 'u' : 'd') + '" style="--h:' + h + '%;--d:' + (k * .12).toFixed(2) + 's"></i>' }).join('') + '</div><span class="chipx pk">Wait for pullback &#10003;</span>';
-      var F = [
-        { s: 4, c: '#f5b544', t: 'Short, focused lessons', d: 'One idea per lesson with a chart example, so each one fits in a single sitting.', h: '<div class="lsn"><div class="li done" style="--k:0"><span class="dot">&#10003;</span>What is momentum</div><div class="li done" style="--k:1"><span class="dot">&#10003;</span>Measuring strength</div><div class="li on" style="--k:2"><span class="dot">&#9654;</span>Reading candles</div><div class="prog"><i></i></div></div>' },
-        { s: 2, c: '#6b8cff', t: 'Quizzes after each module', d: 'Quick questions that check you understood before you move on.', h: '<div class="qq">Price is extended. Best move?</div><div class="qo">Enter now</div><div class="qo pick">Wait for a pullback</div><div class="qo">Add to position</div>' },
-        { s: 2, c: '#c58bff', t: 'Progress tracking', d: 'See which lessons you finished and what comes next.', h: '<b class="big">62%</b><span class="chipx sy">4-day streak</span><svg class="gr" viewBox="0 0 240 90" preserveAspectRatio="none"><path class="a" d="M0 80L30 70 60 74 90 52 120 56 150 34 180 38 210 18 240 10V90H0z"/><path class="l" d="M0 80L30 70 60 74 90 52 120 56 150 34 180 38 210 18 240 10"/></svg>' },
-        { s: 4, c: '#4fd1a1', t: 'Practice on chart patterns', d: 'Test what you learned on sample charts before you ever risk money.', h: cdl },
-        { s: 3, c: '#f2788f', t: 'Saved notes', d: 'Write notes beside any lesson and find them again later.', h: '<div style="padding-top:6px"><span class="tp">Wait for the pullback.</span></div><div class="nb" style="--w:82%"></div><div class="nb" style="--w:58%"></div><div class="nb" style="--w:70%"></div>' },
-        { s: 3, c: '#4fd1a1', t: 'Works on any device', d: 'Open it in your browser on a phone, tablet or laptop. Nothing to install.', h: '<div class="dv"><div class="lp"><i></i><i></i><i></i></div><div class="ph"><i></i><i></i><i></i></div></div><span class="chipx sy">Synced</span>' }];
-      document.getElementById('featGrid').innerHTML = F.map(function (f) { return '<div class="bc glass rv" style="--c:' + f.c + ';grid-column:span ' + f.s + '"><div class="demo">' + f.h + '</div><h3>' + f.t + '</h3><p>' + f.d + '</p></div>' }).join('');
-    })();
-
     // pause animations for sections that are off-screen
     (function () {
       var t = document.querySelectorAll(".hero,.sec,.cta2,#hubBox,.bento,#stage,footer");
@@ -4270,7 +4241,7 @@
       var pal = document.getElementById('pal'), pin = document.getElementById('pin'), pl = document.getElementById('plist'), open = false, sel = 0, vis = [];
       if (/Mac|iPhone|iPad/.test(navigator.platform || '')) { var k = document.getElementById('kbd'); if (k) k.textContent = '\u2318 K' }
       var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#faq'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#hub'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
-      var SEC = [['Learning path', '#path'], ['Features', '#features'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
+      var SEC = [['Learning path', '#path'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
       var ALL = [].concat(TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
       function render() {
         var q = pin.value.trim().toLowerCase(), h = '', g = ''; vis = [];
@@ -4325,7 +4296,7 @@
       if (!("IntersectionObserver" in window)) { rv.forEach(function (e) { e.classList.add("in") }); return; }
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target) } }) }, { threshold: .12 });
       rv.forEach(function (e) { io.observe(e) });
-      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "features", "path", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
+      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "path", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
       var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { tabs.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id) }) } }) }, { rootMargin: "-45% 0px -50% 0px" });
       secs.forEach(function (s) { so.observe(s) });
     })();
