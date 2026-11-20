@@ -29624,6 +29624,23 @@
     return Number(num).toLocaleString("en-IN");
   }
 
+  function parseDealDate(str) {
+    if (!str) return null;
+    const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+    const parts = String(str).trim().split(/[-/ ]/);
+    if (parts.length === 3) {
+      let d = parseInt(parts[0], 10);
+      let m = months[parts[1].toLowerCase().slice(0, 3)];
+      let y = parseInt(parts[2], 10);
+      if (y < 100) y += 2000;
+      if (!isNaN(d) && m !== undefined && !isNaN(y)) {
+        return new Date(y, m, d);
+      }
+    }
+    const fallback = new Date(str);
+    return isNaN(fallback.getTime()) ? null : fallback;
+  }
+
   const DealsLiveService = {
     syncDeals: async function () {
       const syncBtn = document.getElementById("deals-sync-btn");
@@ -29653,7 +29670,7 @@
         if (State.view === "deals") {
           renderDealsContent();
         }
-        showToast(`Synced ${liveDealsData.length} Bulk & Block deals (Direct Redirection to NSE Ready)`, "🤝");
+        showToast(`Synced ${liveDealsData.length} Bulk, Block & Insider deals`, "🤝");
       } catch (err) {
         console.warn("DealsLiveService sync notice:", err);
       } finally {
@@ -29707,23 +29724,52 @@
       list = list.filter(d => d.action.toLowerCase() === State.dealsActionFilter.toLowerCase());
     }
 
-    // Type filter (all, Block, Bulk)
+    // Type filter (all, Block, Bulk, Insider)
     if (State.dealsTypeFilter && State.dealsTypeFilter !== "all") {
-      list = list.filter(d => d.type.toLowerCase() === State.dealsTypeFilter.toLowerCase());
+      list = list.filter(d => (d.type || "").toLowerCase() === State.dealsTypeFilter.toLowerCase());
     }
 
     // Min deal size filter (Cr)
     if (State.dealsMinSize && State.dealsMinSize > 0) {
-      list = list.filter(d => d.valueCr >= State.dealsMinSize);
+      list = list.filter(d => (d.valueCr || 0) >= State.dealsMinSize);
     }
 
-    // Search query filter (stock, symbol, client)
+    // Duration filter (all, today, yesterday, week, month)
+    if (State.dealsDuration && State.dealsDuration !== "all") {
+      const uniqueDates = [...new Set(liveDealsData.map(d => d.date))];
+      const latestDateStr = uniqueDates[0] || "";
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+
+      if (State.dealsDuration === "today") {
+        if (latestDateStr) list = list.filter(d => d.date === latestDateStr);
+      } else if (State.dealsDuration === "yesterday") {
+        const prevDateStr = uniqueDates.length > 1 ? uniqueDates[1] : latestDateStr;
+        if (prevDateStr) list = list.filter(d => d.date === prevDateStr);
+      } else if (State.dealsDuration === "week") {
+        const parsedLatest = parseDealDate(latestDateStr);
+        const latestTime = parsedLatest ? parsedLatest.getTime() : Date.now();
+        list = list.filter(d => {
+          const dt = parseDealDate(d.date);
+          return dt ? (latestTime - dt.getTime() <= 7 * ONE_DAY) : true;
+        });
+      } else if (State.dealsDuration === "month") {
+        const parsedLatest = parseDealDate(latestDateStr);
+        const latestTime = parsedLatest ? parsedLatest.getTime() : Date.now();
+        list = list.filter(d => {
+          const dt = parseDealDate(d.date);
+          return dt ? (latestTime - dt.getTime() <= 31 * ONE_DAY) : true;
+        });
+      }
+    }
+
+    // Search query filter (stock, symbol, client, insiderRole)
     if (State.dealsSearch && State.dealsSearch.trim() !== "") {
       const q = State.dealsSearch.trim().toLowerCase();
       list = list.filter(d =>
         (d.stock && d.stock.toLowerCase().includes(q)) ||
         (d.symbol && d.symbol.toLowerCase().includes(q)) ||
-        (d.client && d.client.toLowerCase().includes(q))
+        (d.client && d.client.toLowerCase().includes(q)) ||
+        (d.insiderRole && d.insiderRole.toLowerCase().includes(q))
       );
     }
 
@@ -29752,6 +29798,9 @@
     if (State.dealsActionFilter && State.dealsActionFilter !== "all") {
       cardsData = cardsData.filter(d => d.action.toLowerCase() === State.dealsActionFilter.toLowerCase());
     }
+    if (State.dealsTypeFilter && State.dealsTypeFilter !== "all") {
+      cardsData = cardsData.filter(d => (d.type || "").toLowerCase() === State.dealsTypeFilter.toLowerCase());
+    }
     // Sort highest deal value first for highlight carousel
     cardsData.sort((a, b) => b.valueCr - a.valueCr);
     const topDeals = cardsData.slice(0, 10);
@@ -29761,7 +29810,8 @@
     }
 
     return topDeals.map(d => {
-      const actionClass = d.action.toLowerCase() === "buy" ? "buy" : "sell";
+      const actionClass = (d.action || "buy").toLowerCase() === "buy" ? "buy" : "sell";
+      const typeClass = (d.type || "bulk").toLowerCase();
       return `
         <div class="deals-highlight-card" data-action="deal-card-click" data-symbol="${d.symbol}" title="Click to view chart for ${d.stock}">
           <div class="deals-card-top">
@@ -29769,11 +29819,14 @@
               <div class="deals-card-avatar">${d.avatar || d.stock.charAt(0)}</div>
               <div class="deals-card-stock-name">${d.stock}</div>
             </div>
-            <span class="deal-badge-pill ${actionClass}">${d.action}</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <span class="deal-type-badge ${typeClass}" style="margin:0;font-size:9.5px;padding:2px 5px;">${d.type}</span>
+              <span class="deal-badge-pill ${actionClass}">${d.action}</span>
+            </div>
           </div>
           <div class="deals-card-size-label">Deal Size</div>
           <div class="deals-card-size-val">₹${formatIndianCurrency(d.valueCr)} Cr</div>
-          <div class="deals-card-client" title="${d.client}">by ${d.client}</div>
+          <div class="deals-card-client" title="${d.client}">${d.type === 'Insider' ? '👤 ' : ''}by ${d.client}</div>
         </div>
       `;
     }).join("");
@@ -29787,16 +29840,17 @@
         <tr>
           <td colspan="7" style="text-align:center;padding:36px;color:var(--mu);">
             <div style="font-size:24px;margin-bottom:8px;">🔍</div>
-            <div style="font-weight:600;">No bulk or block deals found matching your criteria.</div>
-            <div style="font-size:12px;margin-top:4px;">Try clearing search or selecting "All Stocks".</div>
+            <div style="font-weight:600;">No bulk, block, or insider deals found matching your criteria.</div>
+            <div style="font-size:12px;margin-top:4px;">Try selecting "Duration: All Dates" or "All Deal Types".</div>
           </td>
         </tr>
       `;
     }
 
     return deals.map(d => {
-      const actionClass = d.action.toLowerCase() === "buy" ? "buy" : "sell";
-      const typeClass = d.type.toLowerCase();
+      const actionClass = (d.action || "buy").toLowerCase() === "buy" ? "buy" : "sell";
+      const typeClass = (d.type || "bulk").toLowerCase();
+      const isInsider = typeClass === "insider";
       return `
         <tr class="deals-table-row" data-action="deal-row-click" data-symbol="${d.symbol}" style="cursor:pointer;" title="Click row to open chart for ${d.stock}">
           <td>
@@ -29808,8 +29862,19 @@
               </button>
             </div>
           </td>
-          <td style="color:var(--mu);white-space:nowrap;">${d.date}</td>
-          <td style="color:var(--ink);max-width:280px;white-space:normal;" title="${d.client}">${d.client}</td>
+          <td style="color:var(--mu);white-space:nowrap;font-weight:600;">${d.date}</td>
+          <td style="color:var(--ink);max-width:320px;white-space:normal;" title="${d.client}">
+            <div>
+              <span style="font-weight:600;">${d.client}</span>
+              ${isInsider ? `<span class="insider-role-pill" title="${d.mode || 'SEBI PIT Continual Disclosure'}">${d.insiderRole || d.clientCategory || 'Insider'}</span>` : ''}
+            </div>
+            ${isInsider && (d.mode || d.postHoldingPct) ? `
+              <div style="font-size:11px;color:var(--mu);margin-top:2px;display:flex;gap:6px;align-items:center;">
+                ${d.mode ? `<span>${d.mode}</span>` : ''}
+                ${d.postHoldingPct ? `<span>• Post Stake: <strong style="color:var(--ink);">${d.postHoldingPct}</strong></span>` : ''}
+              </div>
+            ` : ''}
+          </td>
           <td>
             <span class="deal-action-text ${actionClass}">${d.action}</span>
           </td>
@@ -29972,7 +30037,7 @@
                 <span>🎯</span> <span>Active Stock:</span>
               </span>
               <span style="font-weight:700;color:var(--ink);">${activeStock}</span>
-              <span style="color:var(--mu);font-size:12px;">• ${count} bulk/block deals matching</span>
+              <span style="color:var(--mu);font-size:12px;">• ${count} deals matching</span>
             </div>
             <button id="deals-reset-banner-btn" style="background:none;border:none;color:var(--g);cursor:pointer;text-decoration:underline;font-size:12px;font-weight:600;">
               Show All Stocks
@@ -30026,6 +30091,16 @@
 
   function renderDealsView() {
     const deals = getFilteredDeals();
+    const uniqueDates = [...new Set(liveDealsData.map(d => d.date))];
+    const latestDateStr = uniqueDates[0] || "Today";
+    const prevDateStr = uniqueDates.length > 1 ? uniqueDates[1] : "";
+
+    const typeCounts = {
+      all: liveDealsData.length,
+      bulk: liveDealsData.filter(d => (d.type || "").toLowerCase() === "bulk").length,
+      block: liveDealsData.filter(d => (d.type || "").toLowerCase() === "block").length,
+      insider: liveDealsData.filter(d => (d.type || "").toLowerCase() === "insider").length
+    };
 
     return `
       <div class="deals-container">
@@ -30037,11 +30112,11 @@
             </button>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
               <h2 style="font-size:20px;font-weight:700;color:var(--ink);margin:0;display:flex;align-items:center;gap:6px;">
-                Bulk/Block Deals <span style="font-size:14px;color:var(--mu);cursor:help;" title="Direct institutional NSE & BSE Bulk / Block transactions">ⓘ</span>
+                Bulk, Block & Insider Deals <span style="font-size:14px;color:var(--mu);cursor:help;" title="Direct institutional NSE & BSE Bulk / Block transactions and SEBI PIT Insider Trading disclosures">ⓘ</span>
               </h2>
               <span class="nav-badge-pill" style="background:rgba(34,197,94,0.15);color:#22c55e;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
                 <span class="live-pulse" style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
-                Live NSE Deals Feed
+                Live Deals & Insider Feed
               </span>
               <span id="deals-count-badge" class="nav-badge-pill">${deals.length} Deals</span>
               <span id="deals-last-updated" style="font-size:12px;color:var(--mu);">Live</span>
@@ -30080,16 +30155,20 @@
               ${renderDealsStockSelectOptionsHtml()}
             </select>
 
-            <!-- Deal Type Dropdown -->
-            <select class="screener-select" id="deals-type-select" style="min-width:120px;">
-              <option value="all" ${State.dealsTypeFilter === 'all' ? 'selected' : ''}>All Deal Types</option>
-              <option value="Block" ${State.dealsTypeFilter === 'Block' ? 'selected' : ''}>Block Deals</option>
-              <option value="Bulk" ${State.dealsTypeFilter === 'Bulk' ? 'selected' : ''}>Bulk Deals</option>
+            <!-- Deal Type Dropdown (Bulk, Block, Insider) -->
+            <select class="screener-select" id="deals-type-select" style="min-width:140px;">
+              <option value="all" ${State.dealsTypeFilter === 'all' ? 'selected' : ''}>All Deal Types (${typeCounts.all})</option>
+              <option value="Bulk" ${State.dealsTypeFilter === 'Bulk' ? 'selected' : ''}>Bulk Deals (${typeCounts.bulk})</option>
+              <option value="Block" ${State.dealsTypeFilter === 'Block' ? 'selected' : ''}>Block Deals (${typeCounts.block})</option>
+              <option value="Insider" ${State.dealsTypeFilter === 'Insider' ? 'selected' : ''}>Insider Trades (${typeCounts.insider})</option>
             </select>
 
             <!-- Min Deal Size Dropdown -->
             <select class="screener-select" id="deals-min-size-select" style="min-width:120px;">
               <option value="0" ${State.dealsMinSize === 0 ? 'selected' : ''}>All Deal Sizes</option>
+              <option value="1" ${State.dealsMinSize === 1 ? 'selected' : ''}>> ₹1 Cr</option>
+              <option value="5" ${State.dealsMinSize === 5 ? 'selected' : ''}>> ₹5 Cr</option>
+              <option value="10" ${State.dealsMinSize === 10 ? 'selected' : ''}>> ₹10 Cr</option>
               <option value="50" ${State.dealsMinSize === 50 ? 'selected' : ''}>> ₹50 Cr</option>
               <option value="100" ${State.dealsMinSize === 100 ? 'selected' : ''}>> ₹100 Cr</option>
               <option value="250" ${State.dealsMinSize === 250 ? 'selected' : ''}>> ₹250 Cr</option>
@@ -30098,18 +30177,19 @@
           </div>
 
           <div class="deals-filter-right">
-            <!-- Duration Selector matching "Duration: Start Date - End Date v" -->
+            <!-- Duration Selector supporting All Dates, Latest Session, Prev Session, Last 7 Days, Last 30 Days -->
             <select class="screener-select deals-duration-select" id="deals-duration-select" style="min-width:190px;">
-              <option value="all" ${State.dealsDuration === 'all' ? 'selected' : ''}>Duration: All Dates</option>
-              <option value="today" ${State.dealsDuration === 'today' ? 'selected' : ''}>Duration: 06 Nov 2026 (Today)</option>
-              <option value="week" ${State.dealsDuration === 'week' ? 'selected' : ''}>Duration: This Week</option>
+              <option value="all" ${State.dealsDuration === 'all' ? 'selected' : ''}>Duration: All Dates (${uniqueDates.length} Days)</option>
+              <option value="today" ${State.dealsDuration === 'today' ? 'selected' : ''}>Duration: Latest (${latestDateStr})</option>
+              ${prevDateStr ? `<option value="yesterday" ${State.dealsDuration === 'yesterday' ? 'selected' : ''}>Duration: Previous (${prevDateStr})</option>` : ''}
+              <option value="week" ${State.dealsDuration === 'week' ? 'selected' : ''}>Duration: Last 7 Days</option>
               <option value="month" ${State.dealsDuration === 'month' ? 'selected' : ''}>Duration: Last 30 Days</option>
             </select>
 
             <!-- Client or Keyword Search Input -->
             <div style="display:inline-flex;align-items:center;position:relative;">
               <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;display:flex;align-items:center;" aria-hidden="true">🔍</span>
-              <input type="text" class="screener-input" id="deals-search-input" placeholder="Search client or counterparty..." value="${State.dealsSearch}" style="padding-left:28px;">
+              <input type="text" class="screener-input" id="deals-search-input" placeholder="Search client, insider, role..." value="${State.dealsSearch}" style="padding-left:28px;">
             </div>
           </div>
         </div>
@@ -30122,7 +30202,7 @@
               <tr>
                 <th style="padding:12px 16px;">Stock</th>
                 <th style="padding:12px 16px;">Date</th>
-                <th style="padding:12px 16px;">Client</th>
+                <th style="padding:12px 16px;">Client / Insider</th>
                 <th style="padding:12px 16px;">Action</th>
                 <th style="text-align:right;padding:12px 16px;">Qty</th>
                 <th style="text-align:right;padding:12px 16px;">Avg price</th>
@@ -30386,17 +30466,19 @@
       showToast("No deals available to export", "⚠️");
       return;
     }
-    const headers = ["Stock", "Symbol", "Type", "Date", "Client", "Action", "Qty", "Avg Price (INR)", "Value (Cr)"];
+    const headers = ["Stock", "Symbol", "Type", "Date", "Client", "Role / Category", "Action", "Qty", "Avg Price (INR)", "Value (Cr)", "Mode / Remarks"];
     const rows = deals.map(d => [
-      `"${d.stock.replace(/"/g, '""')}"`,
-      `"${d.symbol}"`,
-      `"${d.type}"`,
-      `"${d.date}"`,
-      `"${d.client.replace(/"/g, '""')}"`,
-      `"${d.action}"`,
-      d.qty,
-      d.avgPrice,
-      d.valueCr
+      `"${(d.stock || "").replace(/"/g, '""')}"`,
+      `"${d.symbol || ""}"`,
+      `"${d.type || ""}"`,
+      `"${d.date || ""}"`,
+      `"${(d.client || "").replace(/"/g, '""')}"`,
+      `"${(d.insiderRole || d.clientCategory || "").replace(/"/g, '""')}"`,
+      `"${d.action || ""}"`,
+      d.qty || 0,
+      d.avgPrice || 0,
+      d.valueCr || 0,
+      `"${(d.mode || "").replace(/"/g, '""')}"`
     ]);
 
     const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
@@ -30404,7 +30486,7 @@
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Bulk_Block_Deals_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `Bulk_Block_Insider_Deals_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -3798,13 +3798,13 @@ function parseCSV(text) {
 
 function categorizeDealClient(name) {
   const n = (name || '').toLowerCase();
-  if (n.includes('fund') || n.includes('mutual') || n.includes('insurance') || n.includes('lic') || n.includes('sbi ') || n.includes('icici') || n.includes('kotak') || n.includes('hdfc') || n.includes('nippon')) {
+  if (n.includes('fund') || n.includes('mutual') || n.includes('insurance') || n.includes('lic') || n.includes('sbi ') || n.includes('icici') || n.includes('kotak') || n.includes('hdfc') || n.includes('nippon') || n.includes('uti') || n.includes('dsp') || n.includes('tata amc') || n.includes('mirae') || n.includes('bandhan') || n.includes('axis amc') || n.includes('canara')) {
     return 'DII';
   }
-  if (n.includes('capital') || n.includes('securities') || n.includes('singapore') || n.includes('morgan') || n.includes('goldman') || n.includes('blackrock') || n.includes('societe') || n.includes('vanguard') || n.includes('norway') || n.includes('norges') || n.includes('mauritius') || n.includes('cayman')) {
+  if (n.includes('capital') || n.includes('securities') || n.includes('singapore') || n.includes('morgan') || n.includes('goldman') || n.includes('blackrock') || n.includes('societe') || n.includes('vanguard') || n.includes('norway') || n.includes('norges') || n.includes('mauritius') || n.includes('cayman') || n.includes('fih') || n.includes('fpi') || n.includes('citigroup') || n.includes('bnp') || n.includes('ubs') || n.includes('nomura') || n.includes('clsa') || n.includes('jefferies') || n.includes('macquarie') || n.includes('hsbc') || n.includes('fidelity')) {
     return 'FII';
   }
-  if (n.includes('trust') || n.includes('promoter') || n.includes('holding') || n.includes('family')) {
+  if (n.includes('trust') || n.includes('promoter') || n.includes('holding') || n.includes('family') || n.includes('sons') || n.includes('director') || n.includes('insider') || n.includes('chairman') || n.includes('ceo') || n.includes('cmd') || n.includes('md & ceo')) {
     return 'Promoter';
   }
   return 'HNI';
@@ -4058,60 +4058,124 @@ const concallService = {
 };
 
 async function fetchLiveDealsData() {
-  const [bulkCsv, blockCsv] = await Promise.all([
-    fetchCSVFromNSE('https://archives.nseindia.com/content/equities/bulk.csv').catch(() => ''),
-    fetchCSVFromNSE('https://archives.nseindia.com/content/equities/block.csv').catch(() => '')
-  ]);
+  const historyPath = path.join(__dirname, 'data', 'deals-history.json');
+  let accumulatedDeals = [];
+  try {
+    if (fs.existsSync(historyPath)) {
+      accumulatedDeals = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
+    }
+  } catch (err) {
+    console.warn('Deals history load warning:', err.message);
+  }
+  if (!Array.isArray(accumulatedDeals)) accumulatedDeals = [];
 
-  const bulkRows = parseCSV(bulkCsv);
-  const blockRows = parseCSV(blockCsv);
-  const deals = [];
+  try {
+    const [bulkCsv, blockCsv] = await Promise.all([
+      fetchCSVFromNSE('https://archives.nseindia.com/content/equities/bulk.csv').catch(() => ''),
+      fetchCSVFromNSE('https://archives.nseindia.com/content/equities/block.csv').catch(() => '')
+    ]);
 
-  bulkRows.forEach((r, idx) => {
-    if (r.length < 7) return;
-    const [date, symbol, stock, client, action, qtyStr, priceStr] = r;
-    const qty = parseInt(qtyStr.replace(/,/g, ''), 10) || 0;
-    const avgPrice = parseFloat(priceStr.replace(/,/g, '')) || 0;
-    const valueCr = Math.round(((qty * avgPrice) / 10000000) * 100) / 100;
-    deals.push({
-      id: `bulk_${idx}_${symbol}`,
-      stock: stock || symbol,
-      symbol: (symbol || '').toUpperCase(),
-      type: 'Bulk',
-      date: date || 'Today',
-      client: client || 'Undisclosed Participant',
-      action: (action || 'BUY').toUpperCase() === 'BUY' ? 'Buy' : 'Sell',
-      qty,
-      avgPrice,
-      valueCr,
-      avatar: (stock || symbol || 'S').charAt(0).toUpperCase(),
-      clientCategory: categorizeDealClient(client)
+    const bulkRows = parseCSV(bulkCsv);
+    const blockRows = parseCSV(blockCsv);
+    const liveDeals = [];
+
+    bulkRows.forEach((r, idx) => {
+      if (r.length < 7) return;
+      const [date, symbol, stock, client, action, qtyStr, priceStr] = r;
+      const qty = parseInt(qtyStr.replace(/,/g, ''), 10) || 0;
+      const avgPrice = parseFloat(priceStr.replace(/,/g, '')) || 0;
+      const valueCr = Math.round(((qty * avgPrice) / 10000000) * 100) / 100;
+      liveDeals.push({
+        id: `bulk_${idx}_${symbol}`,
+        stock: stock || symbol,
+        symbol: (symbol || '').toUpperCase(),
+        type: 'Bulk',
+        date: date || '19-NOV-2026',
+        client: client || 'Undisclosed Participant',
+        action: (action || 'BUY').toUpperCase() === 'BUY' ? 'Buy' : 'Sell',
+        qty,
+        avgPrice,
+        valueCr,
+        avatar: (stock || symbol || 'S').charAt(0).toUpperCase(),
+        clientCategory: categorizeDealClient(client)
+      });
     });
+
+    blockRows.forEach((r, idx) => {
+      if (r.length < 7) return;
+      const [date, symbol, stock, client, action, qtyStr, priceStr] = r;
+      const qty = parseInt(qtyStr.replace(/,/g, ''), 10) || 0;
+      const avgPrice = parseFloat(priceStr.replace(/,/g, '')) || 0;
+      const valueCr = Math.round(((qty * avgPrice) / 10000000) * 100) / 100;
+      liveDeals.push({
+        id: `block_${idx}_${symbol}`,
+        stock: stock || symbol,
+        symbol: (symbol || '').toUpperCase(),
+        type: 'Block',
+        date: date || '19-NOV-2026',
+        client: client || 'Undisclosed Participant',
+        action: (action || 'BUY').toUpperCase() === 'BUY' ? 'Buy' : 'Sell',
+        qty,
+        avgPrice,
+        valueCr,
+        avatar: (stock || symbol || 'S').charAt(0).toUpperCase(),
+        clientCategory: categorizeDealClient(client)
+      });
+    });
+
+    if (liveDeals.length > 0) {
+      const seen = new Set();
+      const merged = [];
+      for (const d of liveDeals) {
+        const key = `${d.date}_${d.symbol}_${d.client}_${d.type}_${d.action}_${d.qty}_${d.avgPrice}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(d);
+        }
+      }
+      for (const d of accumulatedDeals) {
+        const key = `${d.date}_${d.symbol}_${d.client}_${d.type}_${d.action}_${d.qty}_${d.avgPrice}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(d);
+        }
+      }
+      accumulatedDeals = merged;
+      try {
+        fs.writeFileSync(historyPath, JSON.stringify(accumulatedDeals, null, 2), 'utf8');
+      } catch (err) {
+        console.warn('Deals history write warning:', err.message);
+      }
+    }
+  } catch (err) {
+    console.warn('NSE live deals fetch warning:', err.message);
+  }
+
+  const monthsMap = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function parseDateForSort(dateStr) {
+    if (!dateStr) return 0;
+    const parts = String(dateStr).trim().split(/[-/ ]/);
+    if (parts.length === 3) {
+      let d = parseInt(parts[0], 10);
+      let m = monthsMap[parts[1].toLowerCase().slice(0, 3)];
+      let y = parseInt(parts[2], 10);
+      if (y < 100) y += 2000;
+      if (!isNaN(d) && m !== undefined && !isNaN(y)) {
+        return new Date(y, m, d).getTime();
+      }
+    }
+    const dt = new Date(dateStr);
+    return isNaN(dt.getTime()) ? 0 : dt.getTime();
+  }
+
+  accumulatedDeals.sort((a, b) => {
+    const tA = parseDateForSort(a.date);
+    const tB = parseDateForSort(b.date);
+    if (tB !== tA) return tB - tA;
+    return (b.valueCr || 0) - (a.valueCr || 0);
   });
 
-  blockRows.forEach((r, idx) => {
-    if (r.length < 7) return;
-    const [date, symbol, stock, client, action, qtyStr, priceStr] = r;
-    const qty = parseInt(qtyStr.replace(/,/g, ''), 10) || 0;
-    const avgPrice = parseFloat(priceStr.replace(/,/g, '')) || 0;
-    const valueCr = Math.round(((qty * avgPrice) / 10000000) * 100) / 100;
-    deals.push({
-      id: `block_${idx}_${symbol}`,
-      stock: stock || symbol,
-      symbol: (symbol || '').toUpperCase(),
-      type: 'Block',
-      date: date || 'Today',
-      client: client || 'Undisclosed Participant',
-      action: (action || 'BUY').toUpperCase() === 'BUY' ? 'Buy' : 'Sell',
-      qty,
-      avgPrice,
-      valueCr,
-      avatar: (stock || symbol || 'S').charAt(0).toUpperCase(),
-      clientCategory: categorizeDealClient(client)
-    });
-  });
-
-  return deals;
+  return accumulatedDeals;
 }
 
 function formatIPOFeedDate(value) {
@@ -5724,7 +5788,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // 6b. Live Bulk and Block Deals Endpoint: /api/deals (NSE Archives Live)
+  // 6b. Live Bulk, Block & Insider Deals Endpoint: /api/deals (NSE Archives Live + Persistent History)
   if (pathname === '/api/deals') {
     const cacheKey = 'deals_live';
     const cached = CACHE.get(cacheKey);
@@ -5739,11 +5803,16 @@ const server = http.createServer(async (req, res) => {
       if (liveDeals && liveDeals.length > 0) {
         const payload = {
           status: "success",
-          source: "NSE Official Bulk & Block Deals Feed (Live)",
+          source: "NSE Official Bulk, Block & Insider Deals Feed",
           timestamp: new Date().toISOString(),
           marketSession: "NSE Equities Trading Session",
           totalDeals: liveDeals.length,
           totalValueCr: Math.round(liveDeals.reduce((acc, d) => acc + (d.valueCr || 0), 0) * 100) / 100,
+          breakdown: {
+            bulk: liveDeals.filter(d => d.type === 'Bulk').length,
+            block: liveDeals.filter(d => d.type === 'Block').length,
+            insider: liveDeals.filter(d => d.type === 'Insider').length
+          },
           deals: liveDeals
         };
         const outStr = JSON.stringify(payload);
