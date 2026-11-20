@@ -26417,13 +26417,12 @@
                 <th class="sortable-col" data-action="sort-valuation" data-col="divYield" style="text-align:right;cursor:pointer;" title="Sort by Dividend Yield">
                   Dividend Yield${getThSortArrow("divYield")}
                 </th>
-                <th style="text-align:center;">Valuation Assessment</th>
               </tr>
             </thead>
             <tbody>
               ${list.length === 0 ? `
                 <tr>
-                  <td colspan="5" style="text-align:center;padding:32px;color:var(--mu);">
+                  <td colspan="4" style="text-align:center;padding:32px;color:var(--mu);">
                     No indices match your search criteria.
                   </td>
                 </tr>
@@ -26453,11 +26452,6 @@
                     </td>
                     <td class="font-mono" style="text-align:right;color:#22c55e;">
                       ${row.divYield !== null ? "+" + row.divYield.toFixed(2) + "%" : '<span style="color:var(--mu)">0.00%</span>'}
-                    </td>
-                    <td style="text-align:center;">
-                      <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;background:var(--sf2);color:${peBadgeColor};border:1px solid var(--ln);">
-                        ${escapeHtml(row.context || 'Official NSE Metric')}
-                      </span>
                     </td>
                   </tr>
                 `;
