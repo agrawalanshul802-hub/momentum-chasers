@@ -13773,3 +13773,14 @@ body.theme-white .data-table-main th .col-close-btn:hover {
     border-color: rgba(239, 68, 68, 0.4);
     color: #dc2626;
 }
+/* Interactive Screener Stock Row */
+.screener-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+.screener-row:hover {
+    background-color: var(--sf2) !important;
+}
+.screener-row td {
+    user-select: text;
+}

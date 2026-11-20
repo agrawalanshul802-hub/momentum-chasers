@@ -12667,7 +12667,7 @@
       const cls = ath.dist >= 0 ? 'val-green' : 'val-red';
       const earn = getStockEarningsDates(s);
       return `
-        <tr data-symbol="${s[0]}">
+        <tr class="screener-row" data-action="open-stock" data-symbol="${s[0]}" style="cursor:pointer" title="Click to open ${s[0]} (${escapeHtml(s[8]?.name || s[0])}) chart and details">
           <td>
             <button class="ticker-star ${isStarred ? "active" : ""}" data-action="toggle-star" data-symbol="${s[0]}" title="Toggle Watchlist">
               ${isStarred ? "★" : "☆"}
@@ -12685,7 +12685,7 @@
                 <span>📈</span>
               </a>
             </div>
-            <div style="font-size:11px;color:var(--mu)">${s[8].name}</div>
+            <div style="font-size:11px;color:var(--mu);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}">${s[8].name}</div>
           </td>
           ${State.screenerCols.sector !== false ? `<td>
             ${(() => {
@@ -32590,7 +32590,17 @@
         return;
       }
 
-      const target = e.target.closest("[data-action], [data-view], [data-target]");
+      // Direct Click on any Stock Row or Tile across Screener & Tables
+      const stockRow = e.target.closest("tr[data-symbol], .screener-row, [data-action='open-stock']");
+      if (stockRow && !e.target.closest("[data-action='toggle-star'], .ticker-star, .stock-tv-pill, [data-action='filter-sector'], .clickable-sector-badge, .col-close-btn, .col-action-btn, [data-action='select-netflow-session'], [data-action='filter-netflow-adv'], [data-action='filter-netflow-dec']")) {
+        const sym = stockRow.dataset.symbol || stockRow.querySelector("[data-symbol]")?.dataset?.symbol;
+        if (sym) {
+          openStockDetail(sym);
+          return;
+        }
+      }
+
+            const target = e.target.closest("[data-action], [data-view], [data-target]");
       if (!target) return;
 
       const view = target.dataset.view || target.dataset.target;
@@ -32826,14 +32836,9 @@
         if (modal) modal.style.display = "flex";
       }
       else if (action === "open-stock") {
-        const sym = target.dataset.symbol;
+        const sym = target.dataset.symbol || target.closest("[data-symbol]")?.dataset?.symbol || target.querySelector("[data-symbol]")?.dataset?.symbol;
         if (sym) {
-          if (State.view !== "stock" && State.view !== "login") State.previousView = State.view;
-          State.activeStock = sym;
-          State.view = "stock";
-          window.location.hash = "stock";
-          renderActiveView();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          openStockDetail(sym);
         }
       }
       else if (action === "ticker-click") {
