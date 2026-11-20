@@ -188,7 +188,7 @@
             redirectTo: redirectTo,
             queryParams: {
               access_type: 'offline',
-              prompt: 'consent'
+              prompt: 'select_account'
             }
           }
         });
@@ -383,7 +383,12 @@
           console.warn('⚠️ OAuth redirect returned error:', cleanErr);
           const cleanPath = window.location.pathname.includes('login') ? '/index.html' : window.location.pathname;
           history.replaceState(null, '', window.location.origin + cleanPath + '#screener');
-          return { error: cleanErr };
+          const isExchangeError = cleanErr.toLowerCase().includes('external code') || cleanErr.toLowerCase().includes('exchange');
+          return {
+            error: cleanErr,
+            isOAuthExchangeError: isExchangeError,
+            code: params.get('error') || 'server_error'
+          };
         }
       } catch (_) {}
 

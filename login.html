@@ -5071,7 +5071,7 @@
                   const target = window.location.origin + '/index.html';
                   const { data, error } = await fallbackClient.auth.signInWithOAuth({
                     provider: 'google',
-                    options: { redirectTo: target, queryParams: { access_type: 'offline', prompt: 'consent' } }
+                    options: { redirectTo: target, queryParams: { access_type: 'offline', prompt: 'select_account' } }
                   });
                   if (error) return { success: false, error: error.message };
                   return { success: true, data };
@@ -5296,7 +5296,37 @@
             const err = params.get('error_description') || params.get('error');
             if (err) {
               const cleanErr = decodeURIComponent(err).replace(/\+/g, ' ');
-              showMsg(`Google sign-in notice: ${cleanErr}`, false);
+              openAuth("signin");
+              if (cleanErr.toLowerCase().includes('external code') || cleanErr.toLowerCase().includes('exchange')) {
+                showMsg(`
+                  <div style="font-weight:700;color:#f87171;margin-bottom:5px;font-size:13px;">⚠️ Google Sign-In: Setup Step Required</div>
+                  <div style="font-size:11.5px;color:#cbd5e1;line-height:1.5;">
+                    Supabase could not exchange the authorization code with Google. Please check two settings:
+                    <div style="margin:6px 0 2px 0;">1. In <strong>Google Cloud Console</strong> &rarr; Credentials &rarr; OAuth Client ID, add Authorized redirect URI:</div>
+                    <code style="background:#0f172a;padding:3px 6px;border-radius:4px;color:#38bdf8;font-size:10.5px;display:block;margin:2px 0 6px 0;word-break:break-all;user-select:all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
+                    <div>2. In <strong>Supabase Dashboard</strong> &rarr; Providers &rarr; Google, ensure Client Secret has no trailing spaces.</div>
+                  </div>
+                  <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;">
+                    <button type="button" id="auth-err-guest-btn" style="background:#10b981;border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">🚀 Skip &amp; Enter as Guest Trader</button>
+                  </div>
+                `, false, true);
+                setTimeout(() => {
+                  const bBtn = document.getElementById("auth-err-guest-btn");
+                  if (bBtn) {
+                    bBtn.onclick = () => {
+                      const guestProfile = { id: "trader_" + Date.now().toString(36), name: "Trader", email: "trader@momentumchasers.com", plan: "PRO Terminal", avatar: "T" };
+                      try {
+                        localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
+                        localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
+                        localStorage.removeItem("momentum_signed_out");
+                      } catch (_) {}
+                      window.location.href = "index.html#screener";
+                    };
+                  }
+                }, 50);
+              } else {
+                showMsg(`Google sign-in notice: ${cleanErr}`, false);
+              }
               history.replaceState(null, '', window.location.pathname);
             }
           } catch (_) {}

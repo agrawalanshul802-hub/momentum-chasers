@@ -35423,12 +35423,113 @@
     });
     [200, 600, 1500, 3000].forEach(delay => setTimeout(syncLiveAuthState, delay));
 
+    // Diagnostic modal for Supabase & Google OAuth exchange configuration
+    function showOAuthDiagnosticModal(rawErr) {
+      let existing = document.getElementById("oauth-diagnostic-modal");
+      if (existing) existing.remove();
+
+      const modal = document.createElement("div");
+      modal.id = "oauth-diagnostic-modal";
+      modal.className = "modal-backdrop active";
+      modal.style.cssText = "display:flex;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);z-index:999999;padding:16px;";
+
+      modal.innerHTML = `
+        <div style="background:#0f172a;border:1px solid rgba(239,68,68,0.35);border-radius:14px;max-width:560px;width:100%;padding:24px;color:#f8fafc;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);font-family:var(--font-sans, system-ui, sans-serif);position:relative;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:24px;">⚠️</span>
+            <div>
+              <h3 style="margin:0;font-size:17px;font-weight:700;color:#f8fafc;">Google Sign-In: Setup Check Required</h3>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Supabase was unable to exchange external token with Google</div>
+            </div>
+            <button id="close-oauth-diag-btn" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:4px;" title="Close">✕</button>
+          </div>
+
+          <p style="font-size:12.5px;color:#cbd5e1;line-height:1.5;margin:0 0 14px 0;">
+            Google successfully authenticated your account, but Supabase could not trade the code for a session. This happens when the redirect URI or Client Secret is mismatched.
+          </p>
+
+          <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;">
+            <div style="font-weight:700;color:#f87171;margin-bottom:6px;">Two Quick Verifications:</div>
+            <ol style="margin:0 0 0 16px;padding:0;color:#cbd5e1;line-height:1.6;font-size:11.5px;">
+              <li style="margin-bottom:8px;">
+                <strong>Google Cloud Console &rarr; Credentials &rarr; OAuth 2.0 Client ID</strong><br>
+                Under <em>Authorized redirect URIs</em>, make sure this exact Supabase callback URL is added:
+                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                  <code id="oauth-diag-cb-url" style="background:#1e293b;padding:3px 7px;border-radius:4px;color:#38bdf8;font-family:var(--font-mono, monospace);font-size:11px;border:1px solid #334155;word-break:break-all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
+                  <button id="copy-oauth-cb-btn" style="background:#334155;border:1px solid #475569;color:#fff;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Copy</button>
+                </div>
+              </li>
+              <li>
+                <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong><br>
+                Verify your <em>Client Secret</em> was pasted without extra spaces or linebreaks.
+              </li>
+            </ol>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="font-size:11.5px;color:#94a3b8;">
+              Want to use the app right now?
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button id="oauth-diag-guest-btn" style="background:#10b981;border:none;color:#fff;padding:8px 14px;border-radius:6px;font-weight:600;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 8px rgba(16,185,129,0.3);">
+                🚀 Continue as Guest Trader &rarr;
+              </button>
+              <a href="login.html" style="background:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:8px 12px;border-radius:6px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;">
+                Email Login
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      modal.querySelector("#close-oauth-diag-btn").onclick = () => modal.remove();
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+      const copyBtn = modal.querySelector("#copy-oauth-cb-btn");
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText("https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback").then(() => {
+          copyBtn.textContent = "Copied! ✓";
+          copyBtn.style.background = "#10b981";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy";
+            copyBtn.style.background = "#334155";
+          }, 2000);
+        });
+      };
+
+      modal.querySelector("#oauth-diag-guest-btn").onclick = () => {
+        const guestProfile = {
+          id: "trader_" + Date.now().toString(36),
+          name: "Trader",
+          email: "trader@momentumchasers.com",
+          plan: "PRO Terminal",
+          avatar: "T"
+        };
+        State.user = guestProfile;
+        try {
+          localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
+          localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
+          localStorage.removeItem("momentum_signed_out");
+        } catch (_) {}
+        renderUserAuthUI();
+        modal.remove();
+        showToast("Signed in as Guest Trader with full PRO Terminal access!", "🎉");
+      };
+    }
+
     // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
     if (window.MOMENTUM_SUPABASE) {
       window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
         if (!result) return;
         if (result.error) {
-          showToast(`Google Sign-In notice: ${result.error}`, "⚠️");
+          if (result.isOAuthExchangeError || (result.error && (result.error.includes("external code") || result.error.includes("exchange")))) {
+            showToast("Google OAuth check needed. Tap for details or continue as Guest.", "⚠️", 7000);
+            showOAuthDiagnosticModal(result.error);
+          } else {
+            showToast(`Google Sign-In notice: ${result.error}`, "⚠️");
+          }
           return;
         }
         if (result.email) {
