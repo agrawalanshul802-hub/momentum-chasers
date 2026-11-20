@@ -3977,19 +3977,7 @@
 
 
 
-  <section class="sec" id="tour">
-    <div class="wrap">
-      <h2 class="rv">A look inside</h2>
-      <p class="sub rv">Lessons, practice, a trade journal and live market tools, all in one place. Screens are samples.
-      </p>
-      <div class="tour rv">
-        <div class="stage" id="stage"></div>
-        <div class="tcap" id="tcap" aria-live="polite"></div>
-        <div class="ctl"><button id="prev" aria-label="Previous screen">&larr;</button><span class="dots"
-            id="dots"></span><button id="next" aria-label="Next screen">&rarr;</button></div>
-      </div>
-    </div>
-  </section>
+
 
   <section class="sec" id="features">
     <div class="wrap">
@@ -4130,7 +4118,7 @@
   </footer>
 
   <nav class="tabs" aria-label="Page sections">
-    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#tour">Tour</a><a
+    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#features">Features</a><a
       href="#path">Path</a><a href="#faq">FAQ</a>
   </nav>
 
@@ -4268,6 +4256,7 @@
         { t: "Nifty 50 heatmap", d: "Every stock sized by market cap and coloured by today\u2019s move, so leaders and laggards stand out at once.", h: bar("Nifty 50 heatmap") + hmp }
       ]);
       var st = document.getElementById("stage"), dots = document.getElementById("dots"), cap = document.getElementById("tcap"), cur = 0, n = S.length, hov = false;
+      if (!st || !dots || !cap) return;
       var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       S.forEach(function (x, i) {
         var e = document.createElement("div"); e.className = "sl glass"; e.innerHTML = x.h; e.addEventListener("click", function () { go(i) }); st.appendChild(e);
