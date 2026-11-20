@@ -643,6 +643,105 @@
         </div>
     </div>
 
+    <!-- Stock Alert & Tracker Modal -->
+    <div class="modal-overlay-backdrop" id="stock-alert-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modal-stock-alert-title" style="display:none;">
+        <div class="modal-content-window" style="max-width: 520px;">
+            <div class="modal-header-row">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:20px;">🔔</span>
+                    <h3 id="modal-stock-alert-title" style="font-size:18px;font-weight:700;color:var(--ink);margin:0;">
+                        Set Stock Alert & Tracker
+                    </h3>
+                </div>
+                <button type="button" class="modal-close-trigger" id="stock-alert-modal-close-btn" data-action="close-stock-alert-modal" aria-label="Close">&times;</button>
+            </div>
+
+            <form id="stock-alert-form" style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
+                <input type="hidden" id="stock-alert-edit-id" value="">
+
+                <!-- Stock Selection Row -->
+                <div style="position:relative;">
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
+                        Select Stock Symbol <span style="color:var(--r)">*</span>
+                    </label>
+                    <input type="text" id="stock-alert-symbol-input" required placeholder="Type symbol or name (e.g. RELIANCE, TCS, BAJAJ-AUTO)..." autocomplete="off"
+                        style="width:100%;text-transform:uppercase;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
+                    <div id="stock-alert-symbol-autocomplete"
+                        style="display:none;position:absolute;top:100%;left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--ln-light);border-radius:6px;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                    </div>
+                </div>
+
+                <!-- Live CMP & Stock Info Card -->
+                <div id="stock-alert-cmp-card" style="display:none;padding:10px 14px;background:var(--sf2);border:1px solid var(--ln);border-radius:6px;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div id="stock-alert-cmp-name" style="font-size:12px;color:var(--mu);font-weight:500;">Reliance Industries Ltd</div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+                            <span id="stock-alert-cmp-price" style="font-size:16px;font-weight:700;color:var(--ink);">₹2,950.00</span>
+                            <span id="stock-alert-cmp-chg" style="font-size:12px;font-weight:600;color:var(--g);">+1.25%</span>
+                            <span id="stock-alert-cmp-52w" style="font-size:11px;color:var(--mu);margin-left:4px;">52W H: ₹3,024</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <a id="stock-alert-tv-link" href="#" target="_blank" rel="noopener noreferrer" class="watchlist-tv-link" title="Open chart" style="display:inline-flex;align-items:center;gap:3px;padding:4px 8px;font-size:11px;border-radius:4px;background:var(--sf3);color:var(--ink);text-decoration:none;border:1px solid var(--ln);">
+                            <span>Chart ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Alert Condition Type -->
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
+                        Alert Trigger Condition <span style="color:var(--r)">*</span>
+                    </label>
+                    <select id="stock-alert-type-select" style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:600;box-sizing:border-box;">
+                        <option value="price_above">Price Crosses Above (Target / Resistance) 📈</option>
+                        <option value="price_below">Price Crosses Below (Stop Loss / Support) 📉</option>
+                        <option value="pct_gain">Day % Gain Exceeds (+% Momentum Thrust) 🚀</option>
+                        <option value="pct_drop">Day % Drop Exceeds (-% Drawdown Alert) ⚠️</option>
+                        <option value="breakout_52w">52-Week High Breakout (Within 2% of ATH) ⚡</option>
+                        <option value="ema_bullish">All 4 EMAs Bullish Aligned (10>20>50>200) 🟢</option>
+                    </select>
+                </div>
+
+                <!-- Target Price / Value Row -->
+                <div id="stock-alert-value-wrap">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label id="stock-alert-value-label" style="font-size:12px;font-weight:600;color:var(--ink);">
+                            Target Level (₹) <span style="color:var(--r)">*</span>
+                        </label>
+                        <div id="stock-alert-quick-presets" style="display:flex;gap:4px;">
+                            <button type="button" class="preset-calc-btn" data-pct="2">+2%</button>
+                            <button type="button" class="preset-calc-btn" data-pct="5">+5%</button>
+                            <button type="button" class="preset-calc-btn" data-pct="10">+10%</button>
+                            <button type="button" class="preset-calc-btn" data-pct="-2">-2%</button>
+                            <button type="button" class="preset-calc-btn" data-pct="-5">-5%</button>
+                        </div>
+                    </div>
+                    <input type="number" id="stock-alert-target-value" step="any" placeholder="Enter target price (e.g. 3050.00)" required
+                        style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:14px;font-weight:700;box-sizing:border-box;">
+                </div>
+
+                <!-- Alert Note / Thesis -->
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
+                        Custom Note / Trading Rationale <span style="color:var(--mu);font-weight:400;">(Optional)</span>
+                    </label>
+                    <input type="text" id="stock-alert-note" placeholder="e.g. Take profit 1, VCP breakout retest, trail stop..."
+                        style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;box-sizing:border-box;">
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;padding-top:12px;border-top:1px solid var(--ln);">
+                    <button type="button" class="pill-segment-btn" id="stock-alert-cancel-btn" data-action="close-stock-alert-modal" style="padding:8px 16px;">Cancel</button>
+                    <button type="submit" id="stock-alert-submit-btn" style="padding:8px 20px;background:var(--g);color:#000;font-weight:700;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity 0.2s;">
+                        <span>🔔</span> <span>Save & Track Alert</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification Shelf -->
     <div class="toast-notification-shelf" id="toast-shelf" aria-live="polite"></div>
 

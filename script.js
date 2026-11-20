@@ -9816,6 +9816,50 @@
   }
   let savedUser = getStoredUser();
 
+  function getStoredStockAlerts() {
+    try {
+      const stored = localStorage.getItem("mc_user_stock_alerts");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn("getStoredStockAlerts error:", e);
+    }
+    const defaultAlerts = [
+      {
+        id: "alert_init_1",
+        symbol: "RELIANCE",
+        name: "Reliance Industries Ltd",
+        type: "price_above",
+        targetValue: 3050,
+        note: "Key swing resistance breakout",
+        createdAt: new Date().toISOString(),
+        createdPrice: 2950,
+        isActive: true,
+        isTriggered: false,
+        lastTriggeredAt: null
+      },
+      {
+        id: "alert_init_2",
+        symbol: "HDFCBANK",
+        name: "HDFC Bank Ltd",
+        type: "ema_bullish",
+        targetValue: 0,
+        note: "4-EMA Bullish Alignment Setup",
+        createdAt: new Date().toISOString(),
+        createdPrice: 1720,
+        isActive: true,
+        isTriggered: false,
+        lastTriggeredAt: null
+      }
+    ];
+    try {
+      localStorage.setItem("mc_user_stock_alerts", JSON.stringify(defaultAlerts));
+    } catch (_) {}
+    return defaultAlerts;
+  }
+
   let State = {
     view: "screener",           // Default view: Smart Screener with real-time momentum & ATH tracking
     previousView: "home",       // Tracks previous view for back navigation
@@ -9824,6 +9868,8 @@
     timeframe: "ath",           // "ath" = All-Time High, "d" = Daily, "w" = Weekly
     marketCap: "all",           // "all", "LC", "MC", "SC"
     sector: "all",              // "all" or specific sector
+    stockAlerts: getStoredStockAlerts(), // User configured stock alerts
+    alertsFilter: "all",        // "all", "active", "triggered"
     selectedPresets: [],        // Active technical or financial preset keys
     presetsCollapsed: true,
     ownerIdeas: [],             // Live owner ideas published from Owner Studio
@@ -17059,6 +17105,12 @@
           </div>
 
           <div class="tv-topbar-right">
+            <!-- Stock Alert Trigger Button -->
+            <button class="tv-alert-btn" data-action="open-stock-alert" data-symbol="${s[0]}" title="Set price or breakout alert for ${s[0]}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:var(--g);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">
+              <span>🔔</span>
+              <span>Set Alert</span>
+            </button>
+
             <!-- Full Width / Split View Toggle -->
             <button class="tv-view-toggle-btn" data-action="toggle-chart-width" title="${State.chartFullWidth ? 'Restore Watchlist & Stats Panel' : 'Expand to Full Width'}">
               <span>${State.chartFullWidth ? '◫ Split View' : '⛶ Full Width'}</span>
@@ -17412,7 +17464,7 @@
 
             <div style="display:flex;align-items:center;gap:12px">
               <span class="confirmed-status-badge">${earnInfo.status}</span>
-              <button class="earnings-alert-btn" id="earnings-alert-trigger" data-symbol="${s[0]}">
+              <button class="earnings-alert-btn" id="earnings-alert-trigger" data-action="open-stock-alert" data-symbol="${s[0]}">
                 <span>🔔</span>
                 <span>Set Earnings Alert</span>
               </button>
@@ -31433,8 +31485,114 @@
   window.loadStockNews = loadStockNews;
 
   // ==========================================================================
-  // 12B. FEATURE HOME: LANDING DASHBOARD HERO
+  // 12B. FEATURE HOME: LANDING DASHBOARD HERO & STOCK ALERTS TRACKER
   // ==========================================================================
+
+  function playAlertChime() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(784, ctx.currentTime); // G5 note
+      osc.frequency.setValueAtTime(1046.5, ctx.currentTime + 0.12); // C6 note
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+    } catch (_) {}
+  }
+
+  function saveStockAlerts() {
+    try {
+      localStorage.setItem("mc_user_stock_alerts", JSON.stringify(State.stockAlerts || []));
+    } catch (e) {
+      console.warn("saveStockAlerts error:", e);
+    }
+    updateDashboardAlertBadge();
+  }
+
+  function updateDashboardAlertBadge() {
+    const activeCount = (State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length;
+    const badge = document.querySelector(".dashboard-hero-alert-btn .hero-alert-badge");
+    if (badge) {
+      badge.textContent = activeCount > 0 ? `${activeCount} Active` : "+ Add";
+      badge.classList.toggle("has-active", activeCount > 0);
+    }
+  }
+
+  function evaluateStockAlerts(silent = false) {
+    if (!Array.isArray(State.stockAlerts) || State.stockAlerts.length === 0) return;
+    let hasChanges = false;
+    const triggeredList = [];
+
+    State.stockAlerts.forEach(alert => {
+      if (!alert.isActive || alert.isTriggered) return;
+      const s = getStockBySymbol(alert.symbol);
+      if (!s) return;
+      const price = Number(s[3]) || 0;
+      const chg = Number(s[4]) || 0;
+      const meta = s[8] || {};
+      let isHit = false;
+
+      switch (alert.type) {
+        case "price_above":
+          isHit = price >= Number(alert.targetValue);
+          break;
+        case "price_below":
+          isHit = price <= Number(alert.targetValue);
+          break;
+        case "pct_gain":
+          isHit = chg >= Number(alert.targetValue);
+          break;
+        case "pct_drop":
+          isHit = chg <= -Math.abs(Number(alert.targetValue));
+          break;
+        case "breakout_52w": {
+          const h52 = Number(meta.high52) || 0;
+          isHit = h52 > 0 && price >= h52 * 0.98;
+          break;
+        }
+        case "ema_bullish": {
+          const emas = typeof getStockEmaStatus === "function" ? getStockEmaStatus(s) : null;
+          isHit = Array.isArray(emas) && emas[0] && emas[1] && emas[2] && emas[3];
+          break;
+        }
+      }
+
+      if (isHit) {
+        alert.isTriggered = true;
+        alert.lastTriggeredAt = new Date().toISOString();
+        alert.triggeredPrice = price;
+        hasChanges = true;
+        triggeredList.push({ alert, price, chg });
+      }
+    });
+
+    if (hasChanges) {
+      saveStockAlerts();
+      if (!silent && triggeredList.length > 0) {
+        playAlertChime();
+        triggeredList.forEach(item => {
+          const condDesc = item.alert.type.includes("price") ? `₹${formatNumber(item.alert.targetValue)}` : item.alert.type;
+          showToast(`🔔 ALERT TRIGGERED: ${item.alert.symbol} hit ${condDesc}! (LTP: ₹${formatNumber(item.price)})`, "🚨");
+        });
+      }
+      if (State.view === "home") {
+        const list = document.getElementById("dashboard-alerts-container");
+        if (list) {
+          list.innerHTML = renderAlertsGridHTML();
+        }
+      }
+    }
+  }
 
   function renderHomeView() {
     // Quick chip stocks
@@ -31442,9 +31600,11 @@
           <button class="home-quick-chip" data-action="home-chip-search" data-symbol="${sym}">${sym}</button>
         `).join("");
 
+    const activeCount = (State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length;
+
     return `
       <!-- Home View: Dashboard -->
-      <div style="min-height:100%">
+      <div style="min-height:100%;padding-bottom:48px;">
         <!-- Hero Section -->
         <div class="home-hero-wrap">
           <!-- Hero Center -->
@@ -31460,13 +31620,20 @@
                 <span class="dms-sep">•</span>
                 <span class="dms-delay">15m Delay</span>
               </div>
+
+              <!-- Dashboard Alert Button on Hero -->
+              <button class="dashboard-hero-alert-btn" data-action="open-stock-alert" title="Manage your stock alerts and track live price triggers">
+                <span class="hero-alert-icon">🔔</span>
+                <span class="hero-alert-label">Stock Alerts</span>
+                <span class="hero-alert-badge ${activeCount > 0 ? 'has-active' : ''}">${activeCount > 0 ? activeCount + ' Active' : '+ Add'}</span>
+              </button>
             </div>
             <h1 class="home-hero-title">
-              <span class="home-hero-accent">Stock Screener</span> for Indian Markets
+              <span class="home-hero-accent">Stock Screener</span> & Live Alerts Dashboard
             </h1>
             <p class="home-hero-subtitle">
-              Built for technical momentum research — EMA breadth, sector rotation,<br>
-              live market data, and AI stock analysis.
+              Built for technical momentum research — track breakout price levels,<br>
+              moving average crossovers, and real-time stock alert triggers.
             </p>
 
             <!-- Hero Search Bar -->
@@ -31491,6 +31658,255 @@
             </div>
           </div>
         </div>
+
+        <!-- Dashboard Stock Alerts & Price Tracker Section -->
+        <div class="dashboard-alerts-section">
+          ${renderDashboardAlertsSectionHTML()}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDashboardAlertsSectionHTML() {
+    const alerts = State.stockAlerts || [];
+    const activeCount = alerts.filter(a => a.isActive && !a.isTriggered).length;
+    const triggeredCount = alerts.filter(a => a.isTriggered).length;
+    const totalCount = alerts.length;
+    const curFilter = State.alertsFilter || "all";
+
+    return `
+      <div class="dashboard-alerts-tracker-card">
+        <div class="dashboard-alerts-header">
+          <div class="dashboard-alerts-title-wrap">
+            <div class="alerts-icon">🔔</div>
+            <div>
+              <h3 class="dashboard-alerts-title">Stock Alerts & Live Price Tracker</h3>
+              <p class="dashboard-alerts-subtitle">Set custom price levels, breakout targets, stop losses, and 4-EMA bullish momentum to track any stock live</p>
+            </div>
+          </div>
+
+          <div class="dashboard-alerts-controls">
+            <!-- Filter Pills -->
+            <button class="alerts-filter-btn ${curFilter === 'all' ? 'active' : ''}" data-action="filter-alerts" data-filter="all">
+              All (${totalCount})
+            </button>
+            <button class="alerts-filter-btn ${curFilter === 'active' ? 'active' : ''}" data-action="filter-alerts" data-filter="active">
+              Active (${activeCount})
+            </button>
+            <button class="alerts-filter-btn ${curFilter === 'triggered' ? 'active' : ''}" data-action="filter-alerts" data-filter="triggered">
+              Triggered (${triggeredCount})
+            </button>
+
+            <!-- Primary Action Button -->
+            <button class="create-alert-action-btn" data-action="open-stock-alert" title="Create a new stock price alert">
+              <span style="font-size:14px;font-weight:900;">＋</span>
+              <span>Set Alert</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="dashboard-alerts-container">
+          ${renderAlertsGridHTML()}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAlertsGridHTML() {
+    const alerts = State.stockAlerts || [];
+    const curFilter = State.alertsFilter || "all";
+    const filtered = alerts.filter(a => {
+      if (curFilter === "active") return a.isActive && !a.isTriggered;
+      if (curFilter === "triggered") return a.isTriggered;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      if (alerts.length === 0) {
+        return `
+          <div class="dashboard-alerts-empty-card">
+            <div class="empty-alerts-icon">🔔</div>
+            <h4 class="empty-alerts-title">No Stock Alerts Configured Yet</h4>
+            <p class="empty-alerts-desc">
+              Track breakouts, target prices, stop loss levels, and 4-EMA bullish momentum in real time. We monitor live market ticks and notify you the instant your setup triggers.
+            </p>
+            <div>
+              <button class="create-alert-action-btn" data-action="open-stock-alert" style="padding:10px 22px;font-size:13px;">
+                <span>🔔 Set Your First Stock Alert</span>
+              </button>
+            </div>
+            <div class="empty-alerts-suggestions">
+              <span class="suggestion-heading">Or track these high-momentum setups with 1 click:</span>
+              <div class="suggestion-chips">
+                <button class="preset-suggestion-chip" data-action="quick-seed-alert" data-symbol="RELIANCE" data-type="price_above" data-target="3050" data-note="Key swing breakout">
+                  + RELIANCE > ₹3,050
+                </button>
+                <button class="preset-suggestion-chip" data-action="quick-seed-alert" data-symbol="HDFCBANK" data-type="ema_bullish" data-target="0" data-note="4-EMA Bullish Alignment">
+                  + HDFCBANK 4-EMA Aligned
+                </button>
+                <button class="preset-suggestion-chip" data-action="quick-seed-alert" data-symbol="BAJAJ-AUTO" data-type="breakout_52w" data-target="0" data-note="52W High Breakout">
+                  + BAJAJ-AUTO 52W High
+                </button>
+                <button class="preset-suggestion-chip" data-action="quick-seed-alert" data-symbol="TCS" data-type="pct_gain" data-target="3.0" data-note="+3% Momentum Spike">
+                  + TCS +3% Momentum
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      return `
+        <div style="text-align:center;padding:36px;color:var(--mu);font-size:13px;background:var(--sf2);border-radius:var(--radius-md);border:1px solid var(--ln);">
+          No alerts match the "${curFilter.toUpperCase()}" filter.
+        </div>
+      `;
+    }
+
+    return `
+      <div class="dashboard-alerts-grid">
+        ${filtered.map(a => {
+          const s = getStockBySymbol(a.symbol);
+          const price = s ? (Number(s[3]) || a.createdPrice || 0) : (a.createdPrice || 0);
+          const chg = s ? (Number(s[4]) || 0) : 0;
+          const meta = s ? (s[8] || {}) : {};
+          const isTriggered = Boolean(a.isTriggered);
+          const isActive = Boolean(a.isActive);
+          const isGainTrigger = isTriggered && (a.type === "price_above" || a.type === "pct_gain" || a.type === "breakout_52w" || a.type === "ema_bullish");
+
+          let condText = "";
+          let distText = "";
+          let progressPct = 0;
+          const targetVal = Number(a.targetValue) || 0;
+
+          if (a.type === "price_above") {
+            condText = `Price ≥ ₹${formatNumber(targetVal)}`;
+            if (isTriggered) {
+              distText = `Triggered at ₹${formatNumber(a.triggeredPrice || price)}`;
+              progressPct = 100;
+            } else {
+              const diff = targetVal - price;
+              const pctAway = price > 0 ? ((diff / price) * 100).toFixed(1) : "0";
+              distText = diff <= 0 ? "Target Met!" : `${pctAway}% away (₹${formatNumber(diff)} to go)`;
+              progressPct = Math.min(100, Math.max(10, (price / targetVal) * 100));
+            }
+          } else if (a.type === "price_below") {
+            condText = `Stop Loss ≤ ₹${formatNumber(targetVal)}`;
+            if (isTriggered) {
+              distText = `Stop triggered at ₹${formatNumber(a.triggeredPrice || price)}`;
+              progressPct = 100;
+            } else {
+              const diff = price - targetVal;
+              const pctAway = price > 0 ? ((diff / price) * 100).toFixed(1) : "0";
+              distText = diff <= 0 ? "Stop Loss Hit!" : `${pctAway}% above stop (buffer: ₹${formatNumber(diff)})`;
+              progressPct = Math.min(100, Math.max(10, ((price - targetVal) / price) * 100));
+            }
+          } else if (a.type === "pct_gain") {
+            condText = `Day Gain ≥ +${targetVal}%`;
+            distText = isTriggered ? `Triggered with +${chg.toFixed(2)}%` : `Current: ${chg >= 0 ? '+' : ''}${chg.toFixed(2)}% (${(targetVal - chg).toFixed(1)}% to threshold)`;
+            progressPct = Math.min(100, Math.max(10, (chg / targetVal) * 100));
+          } else if (a.type === "pct_drop") {
+            condText = `Day Drop ≤ -${Math.abs(targetVal)}%`;
+            distText = isTriggered ? `Triggered with ${chg.toFixed(2)}%` : `Current: ${chg.toFixed(2)}%`;
+            progressPct = Math.min(100, Math.max(10, (Math.abs(chg) / Math.abs(targetVal)) * 100));
+          } else if (a.type === "breakout_52w") {
+            condText = `52W High Breakout (ATH)`;
+            const h52 = Number(meta.high52) || price;
+            distText = isTriggered ? `Breakout reached (52W H: ₹${formatNumber(h52)})` : `52W High: ₹${formatNumber(h52)} (${(((h52 - price)/h52)*100).toFixed(1)}% away)`;
+            progressPct = h52 > 0 ? Math.min(100, (price / h52) * 100) : 50;
+          } else if (a.type === "ema_bullish") {
+            condText = `4 EMAs Bullish (10>20>50>200)`;
+            distText = isTriggered ? "All 4 EMAs Bullish Aligned" : "Monitoring EMAs alignment";
+            progressPct = isTriggered ? 100 : 75;
+          }
+
+          const statusBadge = isTriggered
+            ? `<span class="alert-status-badge triggered">🚨 TRIGGERED</span>`
+            : isActive
+              ? `<span class="alert-status-badge active">🟢 ACTIVE</span>`
+              : `<span class="alert-status-badge paused">⏸️ PAUSED</span>`;
+
+          const progressBarClass = isTriggered
+            ? (isGainTrigger ? "" : "danger")
+            : (a.type === "price_below" ? "danger" : "");
+
+          return `
+            <div class="stock-alert-card ${isTriggered ? (isGainTrigger ? 'triggered gain' : 'triggered') : ''}" data-alert-id="${a.id}">
+              <div class="alert-card-top">
+                <div class="alert-stock-meta">
+                  <span class="alert-stock-symbol" data-action="open-stock" data-symbol="${a.symbol}" title="Open stock chart">${a.symbol}</span>
+                  <span class="market-cap-pill ${s ? s[1] : 'MC'}" style="font-size:10px;padding:1px 5px;">${s ? s[1] : 'Stock'}</span>
+                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(a.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open TradingView" onclick="event.stopPropagation()">
+                    <span>📈</span>
+                  </a>
+                </div>
+                ${statusBadge}
+              </div>
+
+              <div style="font-size:11px;color:var(--mu);margin-top:-6px;">
+                ${escapeHtml(a.name || meta.name || a.symbol)} · ${escapeHtml(s ? s[2] : 'Indian Equities')}
+              </div>
+
+              <!-- Price & Target Banner -->
+              <div class="alert-condition-banner">
+                <div style="font-weight:700;color:var(--ink);">
+                  ${condText}
+                </div>
+                <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:${chg >= 0 ? 'var(--g)' : 'var(--r)'};">
+                  ₹${formatNumber(price)} <span style="font-size:11px;font-weight:600;">(${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%)</span>
+                </div>
+              </div>
+
+              <!-- Distance & Progress Bar -->
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-bottom:2px;">
+                  <span>${distText}</span>
+                  <span style="font-family:var(--font-mono);font-weight:600;">${Math.round(progressPct)}%</span>
+                </div>
+                <div class="alert-progress-bar-wrap">
+                  <div class="alert-progress-bar ${progressBarClass}" style="width:${progressPct}%"></div>
+                </div>
+              </div>
+
+              ${a.note ? `
+                <div style="font-size:11px;color:var(--ink-secondary);font-style:italic;background:rgba(255,255,255,0.03);padding:4px 8px;border-radius:4px;border-left:2px solid var(--accent);">
+                  "${escapeHtml(a.note)}"
+                </div>
+              ` : ''}
+
+              <!-- Card Action Footer -->
+              <div class="alert-card-footer">
+                <div>
+                  ${isTriggered && a.lastTriggeredAt ? `
+                    <span style="color:var(--am);font-weight:600;">Triggered ${new Date(a.lastTriggeredAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                  ` : `
+                    <span>Created ${new Date(a.createdAt).toLocaleDateString([], {month:'short', day:'numeric'})}</span>
+                  `}
+                </div>
+
+                <div class="alert-card-actions">
+                  ${isTriggered ? `
+                    <button type="button" class="alert-btn-icon" data-action="rearm-alert" data-alert-id="${a.id}" title="Re-arm and track again">
+                      <span>🔄 Re-Arm</span>
+                    </button>
+                  ` : `
+                    <button type="button" class="alert-btn-icon" data-action="toggle-alert-active" data-alert-id="${a.id}" title="${isActive ? 'Pause monitoring' : 'Resume monitoring'}">
+                      <span>${isActive ? '⏸ Pause' : '▶ Track'}</span>
+                    </button>
+                  `}
+                  <button type="button" class="alert-btn-icon" data-action="edit-stock-alert" data-alert-id="${a.id}" title="Edit alert">
+                    <span>✏️ Edit</span>
+                  </button>
+                  <button type="button" class="alert-btn-icon" data-action="test-trigger-alert" data-alert-id="${a.id}" title="Test alert trigger notification">
+                    <span>⚡ Test</span>
+                  </button>
+                  <button type="button" class="alert-btn-icon delete" data-action="delete-stock-alert" data-alert-id="${a.id}" title="Delete alert">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
   }
@@ -32486,34 +32902,421 @@
     }, 200);
   }
 
-  // Home view events (search bar + live autocomplete + chips)
+  // ---------------------------------------------------------------------------
+  // Stock Alert & Tracking Modal Management
+  // ---------------------------------------------------------------------------
+
+  function openStockAlertModal(symbol = "", alertId = null) {
+    initStockAlertModalEvents();
+    const modal = document.getElementById("stock-alert-modal");
+    if (!modal) return;
+    const form = document.getElementById("stock-alert-form");
+    if (form) form.reset();
+
+    const editIdInput = document.getElementById("stock-alert-edit-id");
+    const symInput = document.getElementById("stock-alert-symbol-input");
+    const typeSelect = document.getElementById("stock-alert-type-select");
+    const valInput = document.getElementById("stock-alert-target-value");
+    const valWrap = document.getElementById("stock-alert-value-wrap");
+    const valLabel = document.getElementById("stock-alert-value-label");
+    const noteInput = document.getElementById("stock-alert-note");
+    const titleEl = document.getElementById("modal-stock-alert-title");
+    const submitBtn = document.getElementById("stock-alert-submit-btn");
+
+    if (alertId) {
+      const existing = (State.stockAlerts || []).find(a => a.id === alertId);
+      if (existing) {
+        if (editIdInput) editIdInput.value = existing.id;
+        if (symInput) symInput.value = existing.symbol;
+        if (typeSelect) typeSelect.value = existing.type || "price_above";
+        if (valInput) valInput.value = existing.targetValue || "";
+        if (noteInput) noteInput.value = existing.note || "";
+        if (titleEl) titleEl.textContent = `Edit Alert: ${existing.symbol}`;
+        if (submitBtn) submitBtn.innerHTML = `<span>💾</span> <span>Update Alert</span>`;
+        updateStockAlertModalCMP(existing.symbol);
+      }
+    } else {
+      if (editIdInput) editIdInput.value = "";
+      if (titleEl) titleEl.textContent = "Set Stock Alert & Tracker";
+      if (submitBtn) submitBtn.innerHTML = `<span>🔔</span> <span>Save & Track Alert</span>`;
+      const targetSym = symbol || (State.activeStock || "RELIANCE");
+      if (symInput) symInput.value = targetSym;
+      if (typeSelect) typeSelect.value = "price_above";
+      updateStockAlertModalCMP(targetSym);
+    }
+
+    if (typeSelect && valWrap) {
+      const cond = typeSelect.value;
+      if (cond === "ema_bullish" || cond === "breakout_52w") {
+        valWrap.style.display = "none";
+        if (valInput) valInput.removeAttribute("required");
+      } else {
+        valWrap.style.display = "block";
+        if (valInput) valInput.setAttribute("required", "required");
+      }
+    }
+
+    modal.style.display = "flex";
+    modal.classList.add("show");
+    if (symInput) {
+      setTimeout(() => symInput.focus(), 80);
+    }
+  }
+
+  function closeStockAlertModal() {
+    const modal = document.getElementById("stock-alert-modal");
+    if (modal) {
+      modal.style.display = "none";
+      modal.classList.remove("show");
+    }
+    const ac = document.getElementById("stock-alert-symbol-autocomplete");
+    if (ac) ac.style.display = "none";
+  }
+
+  function updateStockAlertModalCMP(symbol) {
+    if (!symbol) return;
+    const cleanSym = symbol.toUpperCase().trim();
+    const s = getStockBySymbol(cleanSym);
+    const card = document.getElementById("stock-alert-cmp-card");
+    if (!card) return;
+
+    if (s) {
+      card.style.display = "flex";
+      const nameEl = document.getElementById("stock-alert-cmp-name");
+      const priceEl = document.getElementById("stock-alert-cmp-price");
+      const chgEl = document.getElementById("stock-alert-cmp-chg");
+      const h52El = document.getElementById("stock-alert-cmp-52w");
+      const tvLink = document.getElementById("stock-alert-tv-link");
+
+      const price = Number(s[3]) || 0;
+      const chg = Number(s[4]) || 0;
+      const meta = s[8] || {};
+
+      if (nameEl) nameEl.textContent = `${meta.name || s[0]} · ${s[2] || 'NSE'}`;
+      if (priceEl) priceEl.textContent = `₹${formatNumber(price)}`;
+      if (chgEl) {
+        chgEl.textContent = `${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%`;
+        chgEl.style.color = chg >= 0 ? "var(--g)" : "var(--r)";
+      }
+      if (h52El && meta.high52) {
+        h52El.textContent = `52W H: ₹${formatNumber(meta.high52)}`;
+      }
+      if (tvLink) {
+        tvLink.href = `https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}`;
+      }
+
+      // Auto-suggest target price if target input is currently empty
+      const valInput = document.getElementById("stock-alert-target-value");
+      const editIdInput = document.getElementById("stock-alert-edit-id");
+      if (valInput && !valInput.value && (!editIdInput || !editIdInput.value)) {
+        valInput.value = (price * 1.05).toFixed(2);
+      }
+    } else {
+      card.style.display = "none";
+    }
+  }
+
+  let _stockAlertModalInitialized = false;
+  function initStockAlertModalEvents() {
+    if (_stockAlertModalInitialized) return;
+    _stockAlertModalInitialized = true;
+
+    const symInput = document.getElementById("stock-alert-symbol-input");
+    const ac = document.getElementById("stock-alert-symbol-autocomplete");
+    const typeSelect = document.getElementById("stock-alert-type-select");
+    const valWrap = document.getElementById("stock-alert-value-wrap");
+    const valLabel = document.getElementById("stock-alert-value-label");
+    const valInput = document.getElementById("stock-alert-target-value");
+    const form = document.getElementById("stock-alert-form");
+
+    if (symInput && ac) {
+      symInput.addEventListener("input", e => {
+        const q = e.target.value.trim().toUpperCase();
+        if (!q) {
+          ac.style.display = "none";
+          return;
+        }
+        const matches = ST.filter(s => s[0].toUpperCase().includes(q) || (s[8]?.name && s[8].name.toUpperCase().includes(q))).slice(0, 8);
+        if (matches.length === 0) {
+          ac.style.display = "none";
+          return;
+        }
+        ac.innerHTML = matches.map(m => `
+          <div class="symbol-search-item" data-action="pick-alert-symbol" data-symbol="${m[0]}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--ln);">
+            <div>
+              <strong style="color:var(--ink);">${m[0]}</strong>
+              <span style="font-size:11px;color:var(--mu);margin-left:6px;">${escapeHtml(m[8]?.name || '')}</span>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink);">
+              ₹${formatNumber(m[3])}
+            </div>
+          </div>
+        `).join("");
+        ac.style.display = "block";
+      });
+
+      ac.addEventListener("click", e => {
+        const item = e.target.closest("[data-action='pick-alert-symbol']");
+        if (item) {
+          const sym = item.dataset.symbol;
+          symInput.value = sym;
+          ac.style.display = "none";
+          updateStockAlertModalCMP(sym);
+          if (valInput) valInput.focus();
+        }
+      });
+
+      document.addEventListener("click", e => {
+        if (!e.target.closest("#stock-alert-symbol-input") && !e.target.closest("#stock-alert-symbol-autocomplete")) {
+          ac.style.display = "none";
+        }
+      });
+    }
+
+    if (typeSelect) {
+      typeSelect.addEventListener("change", () => {
+        const val = typeSelect.value;
+        const sym = (symInput ? symInput.value : "").trim().toUpperCase();
+        const s = getStockBySymbol(sym);
+        const price = s ? Number(s[3]) || 0 : 0;
+
+        if (val === "ema_bullish" || val === "breakout_52w") {
+          if (valWrap) valWrap.style.display = "none";
+          if (valInput) {
+            valInput.removeAttribute("required");
+            valInput.value = "0";
+          }
+        } else {
+          if (valWrap) valWrap.style.display = "block";
+          if (valInput) valInput.setAttribute("required", "required");
+          if (valLabel) {
+            valLabel.innerHTML = (val.startsWith("pct_") ? "Threshold Percentage (%)" : "Target Level (₹)") + ` <span style="color:var(--r)">*</span>`;
+          }
+          if (val === "price_above" && price > 0) {
+            valInput.value = (price * 1.05).toFixed(2);
+          } else if (val === "price_below" && price > 0) {
+            valInput.value = (price * 0.95).toFixed(2);
+          } else if (val === "pct_gain") {
+            valInput.value = "3.0";
+          } else if (val === "pct_drop") {
+            valInput.value = "-3.0";
+          }
+        }
+      });
+    }
+
+    document.querySelectorAll(".preset-calc-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const pct = parseFloat(btn.dataset.pct);
+        const sym = (symInput ? symInput.value : "").trim().toUpperCase();
+        const s = getStockBySymbol(sym);
+        if (s && valInput) {
+          const price = Number(s[3]) || 0;
+          valInput.value = (price * (1 + pct / 100)).toFixed(2);
+        }
+      });
+    });
+
+    if (form) {
+      form.addEventListener("submit", e => {
+        e.preventDefault();
+        const sym = (symInput ? symInput.value : "").trim().toUpperCase();
+        if (!sym) {
+          showToast("Please enter a stock symbol", "⚠️");
+          return;
+        }
+        const s = getStockBySymbol(sym);
+        const stockName = s ? (s[8]?.name || s[2] || sym) : sym;
+        const curPrice = s ? (Number(s[3]) || 0) : 0;
+        const condType = typeSelect ? typeSelect.value : "price_above";
+        const targetVal = parseFloat(valInput ? valInput.value : "0") || 0;
+        const note = (document.getElementById("stock-alert-note")?.value || "").trim();
+        const editId = (document.getElementById("stock-alert-edit-id")?.value || "").trim();
+
+        if (editId) {
+          const existing = (State.stockAlerts || []).find(a => a.id === editId);
+          if (existing) {
+            existing.symbol = sym;
+            existing.name = stockName;
+            existing.type = condType;
+            existing.targetValue = targetVal;
+            existing.note = note;
+            existing.isTriggered = false;
+            existing.isActive = true;
+          }
+        } else {
+          const newAlert = {
+            id: "alert_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+            symbol: sym,
+            name: stockName,
+            type: condType,
+            targetValue: targetVal,
+            note: note,
+            createdAt: new Date().toISOString(),
+            createdPrice: curPrice,
+            isActive: true,
+            isTriggered: false,
+            lastTriggeredAt: null
+          };
+          if (!Array.isArray(State.stockAlerts)) State.stockAlerts = [];
+          State.stockAlerts.unshift(newAlert);
+        }
+
+        saveStockAlerts();
+        evaluateStockAlerts(true);
+        closeStockAlertModal();
+        showToast(`🔔 Alert saved for ${sym}! Tracking live.`, "✅");
+
+        if (State.view === "home") {
+          const container = document.getElementById("dashboard-alerts-container");
+          if (container) {
+            container.innerHTML = renderAlertsGridHTML();
+          }
+        }
+      });
+    }
+
+    const closeBtn = document.getElementById("stock-alert-modal-close-btn");
+    const cancelBtn = document.getElementById("stock-alert-cancel-btn");
+    if (closeBtn) closeBtn.addEventListener("click", closeStockAlertModal);
+    if (cancelBtn) cancelBtn.addEventListener("click", closeStockAlertModal);
+    const modal = document.getElementById("stock-alert-modal");
+    if (modal) {
+      modal.addEventListener("click", e => {
+        if (e.target === modal) closeStockAlertModal();
+      });
+    }
+  }
+
+  // Home view events (search bar + live autocomplete + chips + stock alerts)
   function setupHomeEvents() {
     const heroInput = document.getElementById("home-hero-search");
     const heroBtn = document.getElementById("home-hero-search-btn");
     const searchDropdown = document.getElementById("home-search-autocomplete");
-    if (!heroInput || !heroBtn) return;
+    if (heroInput && heroBtn) {
+      const doSearch = (query) => {
+        const val = (query || heroInput.value).trim();
+        if (!val) return;
+        if (searchDropdown) searchDropdown.classList.remove("show");
+        YahooFinanceLiveService.searchAndAddStock(val.toUpperCase());
+      };
 
-    const doSearch = (query) => {
-      const val = (query || heroInput.value).trim();
-      if (!val) return;
-      if (searchDropdown) searchDropdown.classList.remove("show");
-      YahooFinanceLiveService.searchAndAddStock(val.toUpperCase());
-    };
-
-    heroBtn.addEventListener("click", () => doSearch());
-    heroInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") doSearch();
-      else if (e.key === "Escape" && searchDropdown) searchDropdown.classList.remove("show");
-    });
-
-    if (searchDropdown) {
-      heroInput.addEventListener("input", e => {
-        renderSearchAutocomplete(e.target.value, searchDropdown);
+      heroBtn.addEventListener("click", () => doSearch());
+      heroInput.addEventListener("keydown", e => {
+        if (e.key === "Enter") doSearch();
+        else if (e.key === "Escape" && searchDropdown) searchDropdown.classList.remove("show");
       });
 
-      document.addEventListener("click", e => {
-        if (!e.target.closest(".home-hero-search-container")) {
-          searchDropdown.classList.remove("show");
+      if (searchDropdown) {
+        heroInput.addEventListener("input", e => {
+          renderSearchAutocomplete(e.target.value, searchDropdown);
+        });
+
+        document.addEventListener("click", e => {
+          if (!e.target.closest(".home-hero-search-container")) {
+            searchDropdown.classList.remove("show");
+          }
+        });
+      }
+    }
+
+    // Dashboard Alerts Tracker Event Listeners
+    const alertsSection = document.querySelector(".dashboard-alerts-section");
+    if (alertsSection) {
+      alertsSection.addEventListener("click", e => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+
+        if (action === "filter-alerts") {
+          State.alertsFilter = btn.dataset.filter || "all";
+          alertsSection.querySelectorAll(".alerts-filter-btn").forEach(b => {
+            b.classList.toggle("active", b.dataset.filter === State.alertsFilter);
+          });
+          const container = document.getElementById("dashboard-alerts-container");
+          if (container) container.innerHTML = renderAlertsGridHTML();
+        }
+        else if (action === "toggle-alert-active") {
+          const id = btn.dataset.alertId;
+          const alert = (State.stockAlerts || []).find(a => a.id === id);
+          if (alert) {
+            alert.isActive = !alert.isActive;
+            saveStockAlerts();
+            const container = document.getElementById("dashboard-alerts-container");
+            if (container) container.innerHTML = renderAlertsGridHTML();
+            showToast(alert.isActive ? `▶ Resumed tracking ${alert.symbol}` : `⏸ Paused tracking ${alert.symbol}`, "⏱️");
+          }
+        }
+        else if (action === "rearm-alert") {
+          const id = btn.dataset.alertId;
+          const alert = (State.stockAlerts || []).find(a => a.id === id);
+          if (alert) {
+            alert.isTriggered = false;
+            alert.isActive = true;
+            saveStockAlerts();
+            const container = document.getElementById("dashboard-alerts-container");
+            if (container) container.innerHTML = renderAlertsGridHTML();
+            showToast(`🔄 Re-armed alert for ${alert.symbol}`, "⚡");
+          }
+        }
+        else if (action === "edit-stock-alert") {
+          const id = btn.dataset.alertId;
+          openStockAlertModal(null, id);
+        }
+        else if (action === "test-trigger-alert") {
+          const id = btn.dataset.alertId;
+          const alert = (State.stockAlerts || []).find(a => a.id === id);
+          if (alert) {
+            alert.isTriggered = true;
+            alert.lastTriggeredAt = new Date().toISOString();
+            const s = getStockBySymbol(alert.symbol);
+            alert.triggeredPrice = s ? Number(s[3]) : alert.createdPrice;
+            saveStockAlerts();
+            playAlertChime();
+            showToast(`🔔 TEST ALERT TRIGGERED: ${alert.symbol} condition met!`, "🚨");
+            const container = document.getElementById("dashboard-alerts-container");
+            if (container) container.innerHTML = renderAlertsGridHTML();
+          }
+        }
+        else if (action === "delete-stock-alert") {
+          const id = btn.dataset.alertId;
+          const idx = (State.stockAlerts || []).findIndex(a => a.id === id);
+          if (idx >= 0) {
+            const sym = State.stockAlerts[idx].symbol;
+            State.stockAlerts.splice(idx, 1);
+            saveStockAlerts();
+            const container = document.getElementById("dashboard-alerts-container");
+            if (container) container.innerHTML = renderAlertsGridHTML();
+            showToast(`🗑️ Deleted alert for ${sym}`, "🗑️");
+          }
+        }
+        else if (action === "quick-seed-alert") {
+          const sym = btn.dataset.symbol;
+          const type = btn.dataset.type || "price_above";
+          const target = parseFloat(btn.dataset.target) || 0;
+          const note = btn.dataset.note || "";
+          const s = getStockBySymbol(sym);
+          const price = s ? Number(s[3]) || 0 : 0;
+          const newAlert = {
+            id: "alert_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+            symbol: sym,
+            name: s ? (s[8]?.name || s[2] || sym) : sym,
+            type: type,
+            targetValue: target || (type === "price_above" ? price * 1.05 : 0),
+            note: note,
+            createdAt: new Date().toISOString(),
+            createdPrice: price,
+            isActive: true,
+            isTriggered: false,
+            lastTriggeredAt: null
+          };
+          if (!Array.isArray(State.stockAlerts)) State.stockAlerts = [];
+          State.stockAlerts.unshift(newAlert);
+          saveStockAlerts();
+          evaluateStockAlerts(true);
+          const container = document.getElementById("dashboard-alerts-container");
+          if (container) container.innerHTML = renderAlertsGridHTML();
+          showToast(`🔔 Added ${sym} alert to tracker!`, "✅");
         }
       });
     }
@@ -33155,6 +33958,14 @@
         State.screenerPage = 1;
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
+      }
+      else if (action === "open-stock-alert") {
+        const btn = target.closest("[data-action='open-stock-alert']") || target;
+        const sym = (btn && btn.dataset.symbol) || State.activeStock;
+        openStockAlertModal(sym);
+      }
+      else if (action === "close-stock-alert-modal") {
+        closeStockAlertModal();
       }
       else if (action === "toggle-screener-presets") {
         State.presetsCollapsed = !State.presetsCollapsed;
@@ -34774,6 +35585,13 @@
       }
     });
 
+    // Initialize stock alert modal events & evaluate alerts on startup
+    initStockAlertModalEvents();
+    evaluateStockAlerts(true);
+    setInterval(() => {
+      if (!document.hidden) evaluateStockAlerts();
+    }, 8000);
+
     // Connect to real-time multi-key WebSocket stream
     LiveWebSocketService.connect();
 
@@ -34850,7 +35668,16 @@
     }, 1200);
 
     fetchOwnerIdeas();
-    window.State = State; window.getHeatmapStocksForIndex = getHeatmapStocksForIndex; window.renderHeatmapView = renderHeatmapView;
+    window.State = State;
+    window.getHeatmapStocksForIndex = getHeatmapStocksForIndex;
+    window.renderHeatmapView = renderHeatmapView;
+    window.openStockAlertModal = openStockAlertModal;
+    window.closeStockAlertModal = closeStockAlertModal;
+    window.evaluateStockAlerts = evaluateStockAlerts;
+    window.saveStockAlerts = saveStockAlerts;
+    window.renderHomeView = renderHomeView;
+    window.renderDashboardAlertsSectionHTML = renderDashboardAlertsSectionHTML;
+    window.renderAlertsGridHTML = renderAlertsGridHTML;
     console.log("Momentum Chasers v2.5 initialized with Yahoo Finance Live Data Engine & BananaPatterns architecture.");
   }
 
