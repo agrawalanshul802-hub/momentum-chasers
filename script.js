@@ -9749,37 +9749,72 @@
     provider: "terminal"
   };
 
-  let savedUser = null;
-  try {
-    savedUser = JSON.parse(localStorage.getItem("momentum_user") || "null");
-    if (!savedUser || !savedUser.email) {
-      // Check Supabase cached session in localStorage (sb-*-auth-token)
+  function getStoredUser() {
+    try {
+      // 1. Check direct momentum_user
+      let u = JSON.parse(localStorage.getItem("momentum_user") || "null");
+      if (u && (u.email || u.id || u.name)) {
+        try { localStorage.removeItem("momentum_signed_out"); } catch (_) {}
+        return u;
+      }
+
+      // 2. Check momentum_auth_user
+      let au = JSON.parse(localStorage.getItem("momentum_auth_user") || "null");
+      if (au && (au.email || au.id || au.name)) {
+        try { localStorage.removeItem("momentum_signed_out"); } catch (_) {}
+        const normalized = {
+          id: au.id || "user_" + Date.now(),
+          email: au.email || "",
+          name: au.name || (au.email ? au.email.split("@")[0] : "Trader"),
+          plan: au.plan || "PRO Terminal",
+          avatar: (au.name || au.email || "T").charAt(0).toUpperCase(),
+          broker: au.broker || "Demat Linked",
+          provider: au.provider || "supabase"
+        };
+        try { localStorage.setItem("momentum_user", JSON.stringify(normalized)); } catch (_) {}
+        return normalized;
+      }
+
+      const signedOut = localStorage.getItem("momentum_signed_out");
+      if (signedOut === "true" || signedOut === "1") {
+        return null;
+      }
+
+      // 3. Check Supabase cached session in localStorage (sb-*-auth-token or supabase.auth.token)
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i) || "";
-        if (k.startsWith("sb-") && k.endsWith("-auth-token")) {
-          const raw = JSON.parse(localStorage.getItem(k) || "null");
-          const u = (raw && raw.user) ? raw.user : (raw && raw.currentSession && raw.currentSession.user) ? raw.currentSession.user : null;
-          if (u && u.email) {
-            const meta = u.user_metadata || {};
-            const name = meta.full_name || meta.name || (u.email ? u.email.split("@")[0] : "Trader");
-            savedUser = {
-              id: u.id,
-              email: u.email,
-              name: name,
-              plan: "PRO Terminal",
-              avatar: name.charAt(0).toUpperCase() || "A",
-              broker: "Demat Linked",
-              provider: u.app_metadata?.provider || "supabase"
-            };
-            localStorage.setItem("momentum_user", JSON.stringify(savedUser));
-            break;
-          }
+        if ((k.startsWith("sb-") && k.endsWith("-auth-token")) || k === "supabase.auth.token") {
+          try {
+            const rawSession = JSON.parse(localStorage.getItem(k) || "null");
+            const su = (rawSession && rawSession.user) ? rawSession.user : (rawSession && rawSession.currentSession && rawSession.currentSession.user) ? rawSession.currentSession.user : null;
+            if (su && (su.email || su.id)) {
+              const meta = su.user_metadata || {};
+              const name = meta.full_name || meta.name || (su.email ? su.email.split("@")[0] : "Trader");
+              const userObj = {
+                id: su.id,
+                email: su.email || "",
+                name: name,
+                plan: "PRO Terminal",
+                avatar: name.charAt(0).toUpperCase() || "T",
+                broker: "Demat Linked",
+                provider: su.app_metadata?.provider || "supabase"
+              };
+              try {
+                localStorage.setItem("momentum_user", JSON.stringify(userObj));
+                localStorage.setItem("momentum_auth_user", JSON.stringify(userObj));
+                localStorage.removeItem("momentum_signed_out");
+              } catch (_) {}
+              return userObj;
+            }
+          } catch (_) {}
         }
       }
+    } catch (e) {
+      console.warn("getStoredUser error:", e);
     }
-  } catch (e) {
-    savedUser = null;
+    return null;
   }
+  let savedUser = getStoredUser();
 
   let State = {
     view: "screener",           // Default view: Smart Screener with real-time momentum & ATH tracking
@@ -31584,6 +31619,13 @@
   function renderUserAuthUI() {
     const headerAuth = document.getElementById("header-auth-container");
     if (!headerAuth) return;
+    if (!State.user || !State.user.email) {
+      const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
+      if (stored) {
+        State.user = stored;
+        savedUser = stored;
+      }
+    }
 
     if (State.user) {
       if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.syncProfile) {
@@ -32232,6 +32274,7 @@
       }
 
       if (e.target.closest("#header-login-btn, [data-action='toggle-login-dropdown']")) {
+        if (e && e.preventDefault) e.preventDefault();
         const dropdown = document.getElementById("header-signin-dropdown-menu");
         const btn = document.getElementById("header-login-btn");
         if (dropdown) {
@@ -32242,8 +32285,17 @@
           }
           return;
         }
-        // If already logged in, show user profile; otherwise navigate to login.html
-        if (State.user) {
+        // Re-check stored user in case login happened in another tab or just finished
+        if (!State.user || !State.user.email) {
+          const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
+          if (stored) {
+            State.user = stored;
+            savedUser = stored;
+            renderUserAuthUI();
+          }
+        }
+        // If logged in, open the user profile modal; otherwise navigate to login.html
+        if (State.user && (State.user.email || State.user.id)) {
           renderUserProfileModal();
           const modal = document.getElementById("user-profile-modal");
           if (modal) { modal.style.display = "flex"; modal.classList.add("show"); }
@@ -34139,6 +34191,33 @@
   }
 
   function init() {
+    // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
+    function syncLiveAuthState() {
+      const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
+      if (stored && (!State.user || State.user.email !== stored.email)) {
+        State.user = stored;
+        savedUser = stored;
+        renderUserAuthUI();
+        if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+          PortfolioService.syncFromCloud();
+        }
+      } else if (!stored && State.user) {
+        const signedOut = localStorage.getItem("momentum_signed_out");
+        if (signedOut === "true" || signedOut === "1") {
+          State.user = null;
+          savedUser = null;
+          renderUserAuthUI();
+        }
+      }
+    }
+    syncLiveAuthState();
+    window.addEventListener("storage", (ev) => {
+      if (!ev || !ev.key || ev.key.includes("momentum_") || ev.key.includes("auth-token") || ev.key.includes("supabase")) {
+        syncLiveAuthState();
+      }
+    });
+    [200, 600, 1500, 3000].forEach(delay => setTimeout(syncLiveAuthState, delay));
+
     // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
     if (window.MOMENTUM_SUPABASE) {
       window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {

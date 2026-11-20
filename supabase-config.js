@@ -214,6 +214,8 @@
         if (data && data.user) {
           const profile = mapSupabaseUser(data.user, data.session);
           localStorage.setItem('momentum_user', JSON.stringify(profile));
+          localStorage.setItem('momentum_auth_user', JSON.stringify(profile));
+          try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
           if (window.MomentumCloudSync) {
             window.MomentumCloudSync.syncProfile(profile);
           }
@@ -318,6 +320,8 @@
      */
     async signOut() {
       localStorage.removeItem('momentum_user');
+      localStorage.removeItem('momentum_auth_user');
+      try { localStorage.setItem('momentum_signed_out', '1'); } catch (_) {}
       const client = this.client;
       if (client) {
         try {
@@ -378,17 +382,35 @@
       if (!client) return null;
 
       try {
-        const { data, error } = await client.auth.getSession();
-        if (error) {
-          console.warn('OAuth session extraction error:', error);
-          return null;
+        let session = null;
+        if (search.includes('code=')) {
+          const params = new URLSearchParams(search);
+          const code = params.get('code');
+          if (code && typeof client.auth.exchangeCodeForSession === 'function') {
+            console.log('🔄 Exchanging PKCE authorization code for session...');
+            const { data: exData, error: exErr } = await client.auth.exchangeCodeForSession(code);
+            if (!exErr && exData && exData.session) {
+              session = exData.session;
+            } else if (exErr) {
+              console.warn('PKCE exchange error:', exErr);
+            }
+          }
         }
 
-        if (data && data.session && data.session.user) {
-          const profile = mapSupabaseUser(data.session.user, data.session);
-          localStorage.setItem('momentum_user', JSON.stringify(profile));
+        if (!session) {
+          const { data, error } = await client.auth.getSession();
+          if (!error && data && data.session) {
+            session = data.session;
+          }
+        }
 
-          // Clean up tokens from URL without reloading
+        if (session && session.user) {
+          const profile = mapSupabaseUser(session.user, session);
+          localStorage.setItem('momentum_user', JSON.stringify(profile));
+          localStorage.setItem('momentum_auth_user', JSON.stringify(profile));
+          try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
+
+          // Clean up tokens and codes from URL without reloading
           const cleanUrl = window.location.origin + window.location.pathname + '#screener';
           history.replaceState(null, '', cleanUrl);
 

@@ -3746,7 +3746,7 @@
 
   <!-- Supabase Auth Client Library & Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=4.7.1"></script>
+  <script src="supabase-config.js?v=4.7.3"></script>
 
 </head>
 
@@ -5412,7 +5412,7 @@
                   if (error) return { success: false, error: error.message };
                   if (data && data.user) {
                     const u = { id: data.user.id, email: data.user.email, name: data.user.email.split('@')[0], plan: 'PRO Terminal' };
-                    localStorage.setItem('momentum_user', JSON.stringify(u));
+                    localStorage.setItem('momentum_user', JSON.stringify(u)); localStorage.setItem('momentum_auth_user', JSON.stringify(u)); try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
                   }
                   return { success: true, data };
                 } catch (e) {
@@ -5429,7 +5429,7 @@
                   if (error) return { success: false, error: error.message };
                   if (data && data.user) {
                     const u = { id: data.user.id, email: data.user.email, name: name || data.user.email.split('@')[0], plan: 'PRO Terminal' };
-                    localStorage.setItem('momentum_user', JSON.stringify(u));
+                    localStorage.setItem('momentum_user', JSON.stringify(u)); localStorage.setItem('momentum_auth_user', JSON.stringify(u)); try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
                   }
                   return { success: true, data };
                 } catch (e) {
@@ -5651,7 +5651,7 @@
     // Centralized Smart CTA Redirection Engine
     function isUserLoggedIn() {
       try {
-        const u = localStorage.getItem('momentum_auth_user');
+        const u = localStorage.getItem('momentum_user') || localStorage.getItem('momentum_auth_user');
         if (u && u.length > 5) return true;
         const t = localStorage.getItem('supabase.auth.token');
         if (t && t.length > 5) return true;
