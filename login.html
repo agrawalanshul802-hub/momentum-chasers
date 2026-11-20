@@ -3770,8 +3770,6 @@
           <div class="menu glass" id="menu"></div>
         </div>
         <a class="lk" href="#hub">Market Insights</a>
-        <a class="lk" href="#faq">About</a>
-        <a class="lk" href="#faq">FAQ</a>
       </nav>
       <div class="nr">
         <a class="lg" href="login.html" id="nav-login-link" onclick="handleCtaClick(event, 'signin')">Login</a>
@@ -3780,7 +3778,7 @@
     </div>
   </header>
   <div class="pal" id="pal" role="dialog" aria-modal="true" aria-label="Search">
-    <div class="pbox"><input id="pin" type="text" placeholder="Search courses, market tools and sections"
+    <div class="pbox"><input id="pin" type="text" placeholder="Search market analytics and tools"
         aria-label="Search" autocomplete="off">
       <div class="plist" id="plist"></div>
     </div>
@@ -3974,53 +3972,6 @@
     </div>
   </section>
 
-  <section class="sec" id="faq">
-    <div class="wrap" style="max-width:820px">
-      <h2 class="rv">Questions before you start</h2>
-      <p class="sub rv">Short answers to what most learners ask first.</p>
-      <details class="glass rv">
-        <summary>Do I need trading experience?</summary>
-        <p>No. The first courses start from zero and explain every term. Later courses are for people who already place
-          trades.</p>
-      </details>
-      <details class="glass rv">
-        <summary>Will you tell me what to buy or sell?</summary>
-        <p>No. These are learning courses. They teach you how to read the market and manage risk so you can make your
-          own decisions.</p>
-      </details>
-      <details class="glass rv">
-        <summary>How do I sign in?</summary>
-        <p>Use your Google account, or sign in with your email and password. If you forget the password, choose Forgot
-          password and we email you a reset link.</p>
-      </details>
-      <details class="glass rv">
-        <summary>Can I learn on my phone?</summary>
-        <p>Yes. The site works in the browser on phones, tablets and computers, so there is nothing to install.</p>
-      </details>
-      <details class="glass rv">
-        <summary>How long does it take to finish?</summary>
-        <p>It is self-paced, so it depends on how often you study. Most people work through one short lesson at a time,
-          a few times a week.</p>
-      </details>
-      <details class="glass rv">
-        <summary>Do I need a trading account to learn?</summary>
-        <p>No. You can learn the ideas and practise on sample charts without opening an account or risking money.</p>
-      </details>
-      <details class="glass rv">
-        <summary>What market tools are included?</summary>
-        <p>There are 14 tools. Core tools: Smart Screener, Sector Indices, Sector Turnover, Market Mood (MMI), A/D Net
-          Flow and AI Stock Analysis. Market intel and demat: Events Calendar, Bulk / Block Deals, Market News, Market
-          Heatmap, Market Valuation and Multi-Demat Tracker. Mainboard IPO info: IPO Timetable and IPO Performance
-          Tracker. You can also star stocks to keep a watchlist.</p>
-      </details>
-      <details class="glass rv">
-        <summary>Which markets do the examples use?</summary>
-        <p>The examples focus on Indian stocks and index derivatives, so the charts and terms look familiar if you trade
-          in India.</p>
-      </details>
-    </div>
-  </section>
-
   <section class="sec">
     <div class="wrap">
       <div class="cta2 rv" style="text-align:center;">
@@ -4053,7 +4004,7 @@
             href="#hub">Tools</a>
         </div>
         <div class="fc">
-          <h4>Information</h4><a href="#faq">About</a><a href="#faq">FAQ</a><a href="#risk">Disclaimer</a><a
+          <h4>Information</h4><a href="#hub">About</a><a href="#risk">Disclaimer</a><a
             href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a>
         </div>
         <div class="fc">
@@ -4075,7 +4026,7 @@
   </footer>
 
   <nav class="tabs" aria-label="Page sections">
-    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#faq">FAQ</a>
+    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a>
   </nav>
 
   <script>
@@ -4211,8 +4162,8 @@
     (function () {
       var pal = document.getElementById('pal'), pin = document.getElementById('pin'), pl = document.getElementById('plist'), open = false, sel = 0, vis = [];
       if (/Mac|iPhone|iPad/.test(navigator.platform || '')) { var k = document.getElementById('kbd'); if (k) k.textContent = '\u2318 K' }
-      var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#faq'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#hub'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
-      var SEC = [['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
+      var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#hub'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#hub'], ['AI Stock Analysis', '#hub'], ['Events Calendar', '#hub'], ['Bulk / Block Deals', '#hub'], ['Market News', '#hub'], ['Market Heatmap', '#hub'], ['Market Valuation', '#hub'], ['Multi-Demat Tracker', '#hub'], ['IPO Timetable', '#hub'], ['IPO Performance Tracker', '#hub']];
+      var SEC = [['Analytics Suite', '#hub'], ['Log in or create an account', 'login.html']];
       var ALL = [].concat(TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
       function render() {
         var q = pin.value.trim().toLowerCase(), h = '', g = ''; vis = [];
@@ -4267,7 +4218,7 @@
       if (!("IntersectionObserver" in window)) { rv.forEach(function (e) { e.classList.add("in") }); return; }
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target) } }) }, { threshold: .12 });
       rv.forEach(function (e) { io.observe(e) });
-      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
+      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
       var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { tabs.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id) }) } }) }, { rootMargin: "-45% 0px -50% 0px" });
       secs.forEach(function (s) { so.observe(s) });
     })();
