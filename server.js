@@ -6534,11 +6534,24 @@ const server = http.createServer(async (req, res) => {
       }
 
       const ideas = getStoredOwnerIdeas();
+      const rawStocks = Array.isArray(body.stocks) ? body.stocks : [];
+      const normalizedStocks = rawStocks.map(s => ({
+        symbol: (s.symbol || '').trim().toUpperCase(),
+        entry: (s.entry || body.entry || 'CMP').trim(),
+        target: (s.target || body.target || '').trim(),
+        stopLoss: (s.stopLoss || body.stopLoss || '').trim()
+      })).filter(s => s.symbol);
+
+      const symbolsList = Array.isArray(body.symbols) && body.symbols.length > 0
+        ? body.symbols.map(s => s.trim().toUpperCase()).filter(Boolean)
+        : normalizedStocks.map(s => s.symbol);
+
       const newIdea = {
         id: body.id || ('idea_' + Date.now()),
         title: body.title.trim(),
         category: (body.category || 'High Conviction').trim(),
-        symbols: Array.isArray(body.symbols) ? body.symbols.map(s => s.trim().toUpperCase()).filter(Boolean) : [],
+        symbols: symbolsList,
+        stocks: normalizedStocks,
         timeframe: (body.timeframe || '2-4 Weeks').trim(),
         entry: (body.entry || 'CMP').trim(),
         target: (body.target || '').trim(),

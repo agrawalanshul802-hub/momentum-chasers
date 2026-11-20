@@ -13591,11 +13591,55 @@
           </button>
         </div>
 
-        <div class="idea-metrics-row">
-          <div class="idea-metric-pill"><span>Entry Range:</span> <strong>${escapeHtml(activeIdea.entry || 'CMP')}</strong></div>
-          <div class="idea-metric-pill"><span>Target:</span> <strong style="color:var(--g)">${escapeHtml(activeIdea.target || 'TBD')}</strong></div>
-          <div class="idea-metric-pill"><span>Stop Loss:</span> <strong style="color:var(--r)">${escapeHtml(activeIdea.stopLoss || 'TBD')}</strong></div>
-        </div>
+        ${Array.isArray(activeIdea.stocks) && activeIdea.stocks.length > 0 ? `
+          <div class="idea-stocks-table-wrap" style="margin:12px 0;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;overflow-x:auto;">
+            <div style="font-size:11px;font-weight:700;color:var(--mu);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">
+              🎯 Constituent Stocks & Individual Price Levels (${activeIdea.stocks.length} Stocks)
+            </div>
+            <table class="idea-stocks-table" style="width:100%;border-collapse:collapse;font-size:12px;text-align:left;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.08);color:var(--mu);font-size:11px;">
+                  <th style="padding:6px 8px;">Stock</th>
+                  <th style="padding:6px 8px;">Entry Range</th>
+                  <th style="padding:6px 8px;color:var(--g);">Target Price</th>
+                  <th style="padding:6px 8px;color:var(--r);">Stop Loss</th>
+                  <th style="padding:6px 8px;text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${activeIdea.stocks.map(st => `
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <td style="padding:7px 8px;font-weight:700;">
+                      <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open stock details">
+                        ${escapeHtml(st.symbol)}
+                      </span>
+                    </td>
+                    <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
+                    <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
+                    <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
+                    <td style="padding:7px 8px;text-align:right;">
+                      <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 10px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;">Chart &rarr;</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : `
+          <div class="idea-metrics-row">
+            <div class="idea-metric-pill"><span>Entry Range:</span> <strong>${escapeHtml(activeIdea.entry || 'CMP')}</strong></div>
+            <div class="idea-metric-pill"><span>Target:</span> <strong style="color:var(--g)">${escapeHtml(activeIdea.target || 'TBD')}</strong></div>
+            <div class="idea-metric-pill"><span>Stop Loss:</span> <strong style="color:var(--r)">${escapeHtml(activeIdea.stopLoss || 'TBD')}</strong></div>
+          </div>
+          <div class="idea-stocks-list">
+            <span style="font-size:11px;color:var(--mu);font-weight:600;">Constituent Stocks (${count}):</span>
+            ${(activeIdea.symbols || []).map(sym => `
+              <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" title="Click to view deep dive on ${escapeHtml(sym)}">
+                ${escapeHtml(sym)}
+              </span>
+            `).join('')}
+          </div>
+        `}
 
         ${activeIdea.thesis ? `
           <div class="idea-thesis-box">
@@ -13603,15 +13647,6 @@
             ${escapeHtml(activeIdea.thesis)}
           </div>
         ` : ''}
-
-        <div class="idea-stocks-list">
-          <span style="font-size:11px;color:var(--mu);font-weight:600;">Constituent Stocks (${count}):</span>
-          ${(activeIdea.symbols || []).map(sym => `
-            <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" title="Click to view deep dive on ${escapeHtml(sym)}">
-              ${escapeHtml(sym)}
-            </span>
-          `).join('')}
-        </div>
       </div>
     `;
   }

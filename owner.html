@@ -307,6 +307,61 @@
       border-radius: 3px;
     }
 
+    /* Stock Levels Per-Stock Table & Cards */
+    .stock-levels-container {
+      margin-top: 12px;
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .stock-levels-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .stock-level-card {
+      background: #111726;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .stock-level-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .stock-level-symbol-badge {
+      font-weight: 800;
+      font-size: 13px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stock-level-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .stock-level-fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* Buttons */
     .btn-submit {
       width: 100%;
@@ -581,18 +636,34 @@
           </div>
         </div>
 
-        <!-- Trade Levels: Entry, Target, Stop Loss -->
+        <!-- Individual Stock-wise Price Levels Section -->
+        <div id="stock-levels-wrapper" class="stock-levels-container" style="display:none;margin-bottom:16px;">
+          <div class="stock-levels-header">
+            <div>
+              <span style="color:#38bdf8;">🎯 Individual Stock Price Levels & Targets</span>
+              <span style="font-size:11px;color:var(--text-muted);font-weight:normal;margin-left:6px;">(Set custom entry, target & stop loss for each stock)</span>
+            </div>
+            <button type="button" class="btn-outline" style="padding:2px 8px;font-size:10.5px;" onclick="copyGeneralPricesToAll()" title="Copy default levels below into all constituent stocks">
+              ⚡ Fill Default to All
+            </button>
+          </div>
+          <div id="stock-levels-list">
+            <!-- Dynamic rows generated per stock -->
+          </div>
+        </div>
+
+        <!-- Trade Levels: Entry, Target, Stop Loss (Default / Common) -->
         <div class="form-row-3">
           <div class="form-group">
-            <label class="form-label" for="idea-entry">Entry Range / Level</label>
+            <label class="form-label" for="idea-entry">Default Entry Level</label>
             <input type="text" id="idea-entry" class="form-input" placeholder="e.g. ₹2,950 - ₹3,050" oninput="updateLivePreview()">
           </div>
           <div class="form-group">
-            <label class="form-label" for="idea-target">Target Price / %</label>
+            <label class="form-label" for="idea-target">Default Target Price / %</label>
             <input type="text" id="idea-target" class="form-input" placeholder="e.g. +16% (₹3,450)" oninput="updateLivePreview()">
           </div>
           <div class="form-group">
-            <label class="form-label" for="idea-sl">Stop Loss / %</label>
+            <label class="form-label" for="idea-sl">Default Stop Loss / %</label>
             <input type="text" id="idea-sl" class="form-input" placeholder="e.g. -4.5% (₹2,820)" oninput="updateLivePreview()">
           </div>
         </div>
@@ -695,6 +766,7 @@
     // State
     var stockUniverse = [];
     var selectedSymbols = [];
+    var selectedStocks = []; // [{ symbol: 'BLSPOLY', name: '...', entry: '', target: '', stopLoss: '' }]
     var publishedIdeas = [];
     var ownerPin = sessionStorage.getItem('mc_owner_pin') || '';
 
@@ -866,7 +938,20 @@
       sym = (sym || '').trim().toUpperCase();
       if (sym && selectedSymbols.indexOf(sym) === -1) {
         selectedSymbols.push(sym);
+        var match = stockUniverse.find(function(s) { return s.symbol === sym; });
+        var stockName = match ? match.name : '';
+        var defEntry = document.getElementById('idea-entry').value.trim();
+        var defTarget = document.getElementById('idea-target').value.trim();
+        var defSl = document.getElementById('idea-sl').value.trim();
+        selectedStocks.push({
+          symbol: sym,
+          name: stockName,
+          entry: defEntry,
+          target: defTarget,
+          stopLoss: defSl
+        });
         renderStockTags();
+        renderStockPriceRows();
         updateLivePreview();
       }
       var input = document.getElementById('stock-search-input');
@@ -877,8 +962,82 @@
 
     function removeStockTag(sym) {
       selectedSymbols = selectedSymbols.filter(function(s) { return s !== sym; });
+      selectedStocks = selectedStocks.filter(function(s) { return s.symbol !== sym; });
       renderStockTags();
+      renderStockPriceRows();
       updateLivePreview();
+    }
+
+    function renderStockPriceRows() {
+      var wrap = document.getElementById('stock-levels-wrapper');
+      var list = document.getElementById('stock-levels-list');
+      if (!wrap || !list) return;
+
+      if (selectedStocks.length === 0) {
+        wrap.style.display = 'none';
+        list.innerHTML = '';
+        return;
+      }
+
+      wrap.style.display = 'block';
+      var html = '';
+      for (var i = 0; i < selectedStocks.length; i++) {
+        var st = selectedStocks[i];
+        var sym = escapeHtml(st.symbol);
+        var name = escapeHtml(st.name || '');
+        var ent = escapeHtml(st.entry || '');
+        var tgt = escapeHtml(st.target || '');
+        var sl = escapeHtml(st.stopLoss || '');
+
+        html += '<div class="stock-level-card" id="stock-card-' + sym + '">' +
+          '<div class="stock-level-top">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+              '<span class="stock-level-symbol-badge">📈 ' + sym + '</span>' +
+              (name ? '<span style="font-size:11.5px;color:#94a3b8;">' + name + '</span>' : '') +
+            '</div>' +
+            '<button type="button" onclick="removeStockTag(\'' + sym + '\')" class="btn-outline" style="padding:2px 8px;font-size:11px;color:#f43f5e;border-color:rgba(244,63,94,0.3);" title="Remove ' + sym + '">' +
+              '✕ Remove' +
+            '</button>' +
+          '</div>' +
+          '<div class="stock-level-fields">' +
+            '<div>' +
+              '<label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Entry Range</label>' +
+              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;" placeholder="e.g. ₹2,950 - ₹3,050" value="' + ent + '" oninput="updateStockPrice(\'' + sym + '\', \'entry\', this.value)">' +
+            '</div>' +
+            '<div>' +
+              '<label style="font-size:11px;color:#22c55e;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Target Price / %</label>' +
+              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(34,197,94,0.3);" placeholder="e.g. +16% (₹3,450)" value="' + tgt + '" oninput="updateStockPrice(\'' + sym + '\', \'target\', this.value)">' +
+            '</div>' +
+            '<div>' +
+              '<label style="font-size:11px;color:#ef4444;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Stop Loss / %</label>' +
+              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(239,68,68,0.3);" placeholder="e.g. -4.5% (₹2,820)" value="' + sl + '" oninput="updateStockPrice(\'' + sym + '\', \'stopLoss\', this.value)">' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+      list.innerHTML = html;
+    }
+
+    function updateStockPrice(sym, field, val) {
+      var st = selectedStocks.find(function(s) { return s.symbol === sym; });
+      if (st) {
+        st[field] = val;
+        updateLivePreview();
+      }
+    }
+
+    function copyGeneralPricesToAll() {
+      var ent = document.getElementById('idea-entry').value.trim();
+      var tgt = document.getElementById('idea-target').value.trim();
+      var sl = document.getElementById('idea-sl').value.trim();
+      for (var i = 0; i < selectedStocks.length; i++) {
+        if (ent) selectedStocks[i].entry = ent;
+        if (tgt) selectedStocks[i].target = tgt;
+        if (sl) selectedStocks[i].stopLoss = sl;
+      }
+      renderStockPriceRows();
+      updateLivePreview();
+      showToast('Copied default levels to all stocks!');
     }
 
     function renderStockTags() {
@@ -922,11 +1081,25 @@
       document.getElementById('prev-card-thesis').textContent = thesis;
 
       var stocksEl = document.getElementById('prev-card-stocks');
-      if (selectedSymbols.length > 0) {
-        var html = '';
-        for (var i = 0; i < selectedSymbols.length; i++) {
-          html += '<span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">' + escapeHtml(selectedSymbols[i]) + '</span>';
+      if (selectedStocks.length > 0) {
+        var html = '<div style="display:flex;flex-direction:column;gap:6px;width:100%;">';
+        for (var i = 0; i < selectedStocks.length; i++) {
+          var st = selectedStocks[i];
+          var stEntry = st.entry || entry;
+          var stTarget = st.target || target;
+          var stSl = st.stopLoss || sl;
+          html += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;">' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+              '<span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;">' + escapeHtml(st.symbol) + '</span>' +
+              '<span style="color:#94a3b8;">Entry: ' + escapeHtml(stEntry) + '</span>' +
+            '</div>' +
+            '<div style="display:flex;gap:10px;">' +
+              '<span style="color:#22c55e;font-weight:700;">🎯 ' + escapeHtml(stTarget) + '</span>' +
+              '<span style="color:#ef4444;font-weight:700;">🛑 ' + escapeHtml(stSl) + '</span>' +
+            '</div>' +
+          '</div>';
         }
+        html += '</div>';
         stocksEl.innerHTML = html;
       } else {
         stocksEl.innerHTML = '<span style="color:#64748b;font-size:11px;">No stocks added yet</span>';
@@ -959,9 +1132,17 @@
       for (var i = 0; i < publishedIdeas.length; i++) {
         var idea = publishedIdeas[i];
         var stocksHtml = '';
-        var syms = idea.symbols || [];
-        for (var j = 0; j < syms.length; j++) {
-          stocksHtml += '<span style="background:rgba(56,189,248,0.1);color:#38bdf8;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;">' + escapeHtml(syms[j]) + '</span>';
+        var stks = (idea.stocks && idea.stocks.length > 0) ? idea.stocks : (idea.symbols || []).map(function(s) { return { symbol: s, entry: idea.entry, target: idea.target, stopLoss: idea.stopLoss }; });
+        for (var j = 0; j < stks.length; j++) {
+          var st = stks[j];
+          var sym = st.symbol;
+          var tgt = st.target || idea.target || '';
+          var ent = st.entry || idea.entry || '';
+          stocksHtml += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:6px;">' +
+            '<strong style="color:#38bdf8;">' + escapeHtml(sym) + '</strong>' +
+            (ent ? '<span style="color:#94a3b8;">Entry: ' + escapeHtml(ent) + '</span>' : '') +
+            (tgt ? '<span style="color:#22c55e;font-weight:700;">Tgt: ' + escapeHtml(tgt) + '</span>' : '') +
+          '</div>';
         }
 
         html += '<div class="idea-item-card">' +
@@ -1023,6 +1204,14 @@
         category: category,
         timeframe: timeframe,
         symbols: selectedSymbols,
+        stocks: selectedStocks.map(function(s) {
+          return {
+            symbol: s.symbol,
+            entry: s.entry || entry || 'CMP',
+            target: s.target || target || 'TBD',
+            stopLoss: s.stopLoss || stopLoss || 'TBD'
+          };
+        }),
         entry: entry,
         target: target,
         stopLoss: stopLoss,
@@ -1065,8 +1254,32 @@
       document.getElementById('idea-thesis').value = idea.thesis || '';
       document.getElementById('idea-active').checked = idea.active !== false;
 
-      selectedSymbols = (idea.symbols || []).slice();
+      if (idea.stocks && Array.isArray(idea.stocks) && idea.stocks.length > 0) {
+        selectedStocks = idea.stocks.map(function(s) {
+          var match = stockUniverse.find(function(u) { return u.symbol === s.symbol; });
+          return {
+            symbol: s.symbol,
+            name: match ? match.name : '',
+            entry: s.entry || idea.entry || '',
+            target: s.target || idea.target || '',
+            stopLoss: s.stopLoss || idea.stopLoss || ''
+          };
+        });
+      } else {
+        selectedStocks = (idea.symbols || []).map(function(sym) {
+          var match = stockUniverse.find(function(u) { return u.symbol === sym; });
+          return {
+            symbol: sym,
+            name: match ? match.name : '',
+            entry: idea.entry || '',
+            target: idea.target || '',
+            stopLoss: idea.stopLoss || ''
+          };
+        });
+      }
+      selectedSymbols = selectedStocks.map(function(s) { return s.symbol; });
       renderStockTags();
+      renderStockPriceRows();
       updateLivePreview();
 
       document.getElementById('form-heading').textContent = 'Edit Trading Idea';
@@ -1082,8 +1295,10 @@
     function resetForm() {
       document.getElementById('idea-id').value = '';
       document.getElementById('idea-form').reset();
+      selectedStocks = [];
       selectedSymbols = [];
       renderStockTags();
+      renderStockPriceRows();
       updateLivePreview();
       document.getElementById('form-heading').textContent = 'Publish New Trading Idea';
       document.getElementById('btn-submit-idea').innerHTML = '<span>🚀 Publish Idea to Screener</span>';
