@@ -552,15 +552,7 @@
         <div class="form-row-2">
           <div class="form-group">
             <label class="form-label" for="idea-category">Setup Category / Tag</label>
-            <select id="idea-category" class="form-select" onchange="updateLivePreview()">
-              <option value="High Conviction Breakout">High Conviction Breakout</option>
-              <option value="Swing Long">Swing Long</option>
-              <option value="VCP Compression">VCP Compression</option>
-              <option value="Volume Breakout">Volume Breakout</option>
-              <option value="Earnings Momentum">Earnings Momentum</option>
-              <option value="Positional Multibagger">Positional Multibagger</option>
-              <option value="Reversal Setup">Reversal Setup</option>
-            </select>
+            <input type="text" id="idea-category" class="form-input" placeholder="e.g. High Conviction Breakout, Swing Long, VCP..." oninput="updateLivePreview()">
           </div>
           <div class="form-group">
             <label class="form-label" for="idea-timeframe">Target Timeframe</label>
@@ -912,7 +904,7 @@
     // Live Preview
     function updateLivePreview() {
       var title = document.getElementById('idea-title').value.trim() || 'Your Idea Title';
-      var cat = document.getElementById('idea-category').value;
+      var cat = document.getElementById('idea-category').value.trim() || 'Setup';
       var tf = document.getElementById('idea-timeframe').value;
       var entry = document.getElementById('idea-entry').value.trim() || 'CMP';
       var target = document.getElementById('idea-target').value.trim() || 'TBD';
@@ -1016,7 +1008,7 @@
 
       var id = document.getElementById('idea-id').value;
       var title = document.getElementById('idea-title').value.trim();
-      var category = document.getElementById('idea-category').value;
+      var category = document.getElementById('idea-category').value.trim() || 'General';
       var timeframe = document.getElementById('idea-timeframe').value;
       var entry = document.getElementById('idea-entry').value.trim();
       var target = document.getElementById('idea-target').value.trim();
@@ -1065,7 +1057,7 @@
 
       document.getElementById('idea-id').value = idea.id;
       document.getElementById('idea-title').value = idea.title || '';
-      document.getElementById('idea-category').value = idea.category || 'High Conviction Breakout';
+      document.getElementById('idea-category').value = idea.category || '';
       document.getElementById('idea-timeframe').value = idea.timeframe || '2-4 Weeks';
       document.getElementById('idea-entry').value = idea.entry || '';
       document.getElementById('idea-target').value = idea.target || '';
