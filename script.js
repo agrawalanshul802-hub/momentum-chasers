@@ -34430,7 +34430,11 @@
         if (result.email) {
           State.user = result;
           savedUser = result;
-          try { localStorage.setItem("momentum_user", JSON.stringify(result)); } catch (e) {}
+          try {
+            localStorage.setItem("momentum_user", JSON.stringify(result));
+            localStorage.setItem("momentum_auth_user", JSON.stringify(result));
+            localStorage.removeItem("momentum_signed_out");
+          } catch (e) {}
           renderUserAuthUI();
           loadTickerPreferences();
           if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {

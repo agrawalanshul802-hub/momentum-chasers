@@ -49,6 +49,20 @@
           flowType: 'pkce'
         }
       });
+      // Automatically keep momentum_user in sync with Supabase Auth state changes
+      try {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (session && session.user) {
+            const profile = mapSupabaseUser(session.user, session);
+            localStorage.setItem('momentum_user', JSON.stringify(profile));
+            localStorage.setItem('momentum_auth_user', JSON.stringify(profile));
+            try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
+            if (window.MomentumCloudSync && window.MomentumCloudSync.syncProfile) {
+              window.MomentumCloudSync.syncProfile(profile);
+            }
+          }
+        });
+      } catch (_) {}
       console.log('✅ Supabase Auth Client successfully initialized.');
       return supabaseClient;
     } catch (err) {
@@ -98,12 +112,8 @@
    */
   function getOAuthRedirectUrl() {
     const origin = window.location.origin;
-    const pathname = window.location.pathname;
-    // Redirect to index.html dashboard
-    if (pathname.includes('login.html')) {
-      return origin + pathname.replace('login.html', 'index.html');
-    }
-    return origin + pathname;
+    // Always redirect back to /index.html on current origin for unified session exchange
+    return origin + '/index.html';
   }
 
   /**
@@ -371,8 +381,8 @@
         if (errDesc) {
           const cleanErr = decodeURIComponent(errDesc).replace(/\+/g, ' ');
           console.warn('⚠️ OAuth redirect returned error:', cleanErr);
-          const cleanUrl = window.location.origin + window.location.pathname + '#screener';
-          history.replaceState(null, '', cleanUrl);
+          const cleanPath = window.location.pathname.includes('login') ? '/index.html' : window.location.pathname;
+          history.replaceState(null, '', window.location.origin + cleanPath + '#screener');
           return { error: cleanErr };
         }
       } catch (_) {}
@@ -383,24 +393,45 @@
 
       try {
         let session = null;
-        if (search.includes('code=')) {
+
+        // 1. Check if Supabase detectSessionInUrl or existing session already resolved
+        try {
+          const { data: initialData } = await client.auth.getSession();
+          if (initialData && initialData.session && initialData.session.user) {
+            session = initialData.session;
+          }
+        } catch (_) {}
+
+        // 2. If not yet resolved and code is present, try manual PKCE exchange
+        if (!session && search.includes('code=')) {
           const params = new URLSearchParams(search);
           const code = params.get('code');
           if (code && typeof client.auth.exchangeCodeForSession === 'function') {
-            console.log('🔄 Exchanging PKCE authorization code for session...');
-            const { data: exData, error: exErr } = await client.auth.exchangeCodeForSession(code);
-            if (!exErr && exData && exData.session) {
-              session = exData.session;
-            } else if (exErr) {
-              console.warn('PKCE exchange error:', exErr);
+            try {
+              console.log('🔄 Exchanging PKCE authorization code for session...');
+              const { data: exData, error: exErr } = await client.auth.exchangeCodeForSession(code);
+              if (!exErr && exData && exData.session) {
+                session = exData.session;
+              } else if (exErr) {
+                console.warn('PKCE exchange note (may be handled concurrently by detectSessionInUrl):', exErr);
+              }
+            } catch (exchangeEx) {
+              console.warn('PKCE exchange caught exception:', exchangeEx);
             }
           }
         }
 
+        // 3. If session still not resolved, poll getSession for up to 3s (handles async detectSessionInUrl on slow connections)
         if (!session) {
-          const { data, error } = await client.auth.getSession();
-          if (!error && data && data.session) {
-            session = data.session;
+          for (let i = 0; i < 15; i++) {
+            await new Promise(r => setTimeout(r, 200));
+            try {
+              const { data: pollData } = await client.auth.getSession();
+              if (pollData && pollData.session && pollData.session.user) {
+                session = pollData.session;
+                break;
+              }
+            } catch (_) {}
           }
         }
 
@@ -411,7 +442,8 @@
           try { localStorage.removeItem('momentum_signed_out'); } catch (_) {}
 
           // Clean up tokens and codes from URL without reloading
-          const cleanUrl = window.location.origin + window.location.pathname + '#screener';
+          const cleanPath = window.location.pathname.includes('login') ? '/index.html' : window.location.pathname;
+          const cleanUrl = window.location.origin + cleanPath + '#screener';
           history.replaceState(null, '', cleanUrl);
 
           console.log('🎉 Google OAuth sign-in verified via Supabase:', profile.email);

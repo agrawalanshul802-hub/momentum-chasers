@@ -508,42 +508,7 @@ footer .risk{margin:0 0 22px;max-width:none;font-size:.8rem;color:var(--muted)}
   </div>
 </section>
 
-<section class="sec" id="features">
-  <div class="wrap">
-    <p class="eyebrow rv">What is inside</p>
-    <h2 class="rv">Everything you need. <span class="ser">Nothing you don't.</span></h2>
-    <p class="sub rv">Simple tools that keep you moving from one lesson to the next.</p>
-    <div class="bento" id="featGrid"></div>
-  </div>
-</section>
 
-<section class="sec" id="path">
-  <div class="wrap">
-    <h2 class="rv">Your learning path</h2>
-    <p class="sub rv">Four steps from first chart to a repeatable routine.</p>
-    <div class="steps">
-      <div class="step rv"><div class="n">1</div><h3>Learn the basics</h3><p>What momentum is and how to measure it.</p></div>
-      <div class="step rv"><div class="n">2</div><h3>Read the chart</h3><p>Candles, levels and where moves begin.</p></div>
-      <div class="step rv"><div class="n">3</div><h3>Protect your capital</h3><p>Position size, stop-loss and risk per trade.</p></div>
-      <div class="step rv"><div class="n">4</div><h3>Build a routine</h3><p>Journal every trade and review it weekly.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="faq">
-  <div class="wrap" style="max-width:820px">
-    <h2 class="rv">Questions before you start</h2>
-    <p class="sub rv">Short answers to what most learners ask first.</p>
-    <details class="glass rv"><summary>Do I need trading experience?</summary><p>No. The first courses start from zero and explain every term. Later courses are for people who already place trades.</p></details>
-    <details class="glass rv"><summary>Will you tell me what to buy or sell?</summary><p>No. These are learning courses. They teach you how to read the market and manage risk so you can make your own decisions.</p></details>
-    <details class="glass rv"><summary>How do I sign in?</summary><p>Use your Google account, or sign in with your email and password. If you forget the password, choose Forgot password and we email you a reset link.</p></details>
-    <details class="glass rv"><summary>Can I learn on my phone?</summary><p>Yes. The site works in the browser on phones, tablets and computers, so there is nothing to install.</p></details>
-    <details class="glass rv"><summary>How long does it take to finish?</summary><p>It is self-paced, so it depends on how often you study. Most people work through one short lesson at a time, a few times a week.</p></details>
-    <details class="glass rv"><summary>Do I need a trading account to learn?</summary><p>No. You can learn the ideas and practise on sample charts without opening an account or risking money.</p></details>
-    <details class="glass rv"><summary>What market tools are included?</summary><p>There are 14 tools. Core tools: Smart Screener, Sector Indices, Sector Turnover, Market Mood (MMI), A/D Net Flow and AI Stock Analysis. Market intel and demat: Events Calendar, Bulk / Block Deals, Market News, Market Heatmap, Market Valuation and Multi-Demat Tracker. Mainboard IPO info: IPO Timetable and IPO Performance Tracker. You can also star stocks to keep a watchlist.</p></details>
-      <details class="glass rv"><summary>Which markets do the examples use?</summary><p>The examples focus on Indian stocks and index derivatives, so the charts and terms look familiar if you trade in India.</p></details>
-  </div>
-</section>
 
 <section class="sec">
   <div class="wrap">
@@ -565,8 +530,8 @@ footer .risk{margin:0 0 22px;max-width:none;font-size:.8rem;color:var(--muted)}
         <a class="fwm" href="#top" aria-label="Momentum Chasers home"><img data-logo alt=""><span class="wm">Momentum <b>Chasers</b></span></a>
         <p>Spot the move early.</p>
       </div>
-      <div class="fc"><h4>Explore</h4><a href="#top">Home</a><a href="#courses">Courses</a><a href="#path">Learning path</a><a href="#tour">A look inside</a></div>
-      <div class="fc"><h4>Information</h4><a href="#faq">FAQ</a><a href="#who">Who it is for</a><a href="#risk">Disclaimer</a><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a></div>
+      <div class="fc"><h4>Explore</h4><a href="#top">Home</a><a href="#courses">Courses</a><a href="#tour">A look inside</a></div>
+      <div class="fc"><h4>Information</h4><a href="#who">Who it is for</a><a href="#risk">Disclaimer</a><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a></div>
       <div class="fc"><h4>Connect</h4><a href="login.html">Log in</a><a href="login.html#signup">Create account</a></div>
       <div class="fc"><h4>Contact</h4><a class="mail" href="mailto:chasersmomentum@gmail.com">chasersmomentum@gmail.com</a><small>Questions, feedback, collaborations</small></div>
     </div>
@@ -576,7 +541,7 @@ footer .risk{margin:0 0 22px;max-width:none;font-size:.8rem;color:var(--muted)}
 </footer>
 
 <nav class="tabs" aria-label="Page sections">
-  <a href="#overview" class="on">Overview</a><a href="#courses">Courses</a><a href="#tour">Tour</a><a href="#path">Path</a><a href="#faq">FAQ</a>
+  <a href="#overview" class="on">Overview</a><a href="#courses">Courses</a><a href="#tour">Tour</a>
 </nav>
 
 <script>
@@ -659,7 +624,7 @@ document.getElementById("menu").innerHTML='<h3>Courses</h3>'+COURSES.slice(0,4).
   var S=[
    {t:"Short, focused lessons",d:"Each lesson teaches one idea with a chart example, with a clear next step at the end.",h:bar("Lesson 3 · Reading momentum candles")+'<div class="sb">'+cs(24)+'<div class="row2"><span>Step 3 of 6</span><span>12 min</span></div><div class="prog" style="margin:10px 0 0"><i></i></div></div>'},
    {t:"Practice before you risk money",d:"Look at a sample chart, make your call, then see why it was good or not.",h:bar("Practice · Where would you enter?")+'<div class="sb">'+cs(20)+'<div class="pb"><span>Enter now</span><span class="go">Wait for pullback &#10003;</span></div><div class="row2"><span class="chipx">Good call</span><span>Price was extended. A pullback gave a better entry.</span></div></div>'},
-   {t:"A trade journal you will actually use",d:"Log each trade and its risk, then review what worked every week.",h:bar("Trade journal · sample entries")+'<div class="sb"><table class="jt"><tr><th>Date</th><th>Stock</th><th>Setup</th><th>Risk</th><th>Result</th></tr><tr><td>12 Nov</td><td>SBIN</td><td>Pullback</td><td>1R</td><td class="pos">+1.8R</td></tr><tr><td>11 Nov</td><td>INFY</td><td>Breakout</td><td>1R</td><td class="neg">&minus;1.0R</td></tr><tr><td>10 Nov</td><td>TITAN</td><td>Pullback</td><td>0.5R</td><td class="pos">+0.9R</td></tr></table><div class="row2"><span>Win rate and average R are worked out for you.</span></div></div>'},
+   
    {t:"See your progress at a glance",d:"Track every course, pick up where you left off, and keep a learning streak going.",h:bar("Your progress")+'<div class="sb">'+P.map(function(p){return '<div class="pr"><span>'+p[0]+'</span><span class="b"><i style="width:'+p[1]+'%"></i></span><span>'+p[1]+'%</span></div>'}).join("")+'<div class="row2"><span class="chipx">4-day streak</span><span>Next: Lesson 4 · Entries and exits</span></div></div>'}
   ];
   // ---- product slides (from the live tools) ----
