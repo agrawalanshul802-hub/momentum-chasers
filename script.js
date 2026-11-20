@@ -12514,6 +12514,85 @@
   let _screenerFilteredCache = null;
   let _screenerFilterKey = "";
 
+  function stockMatchesPreset(stock, k) {
+    if (!stock) return false;
+    const tagsD = stock[5] || "";
+    const tagsW = stock[6] || "";
+    const allTags = tagsD + tagsW;
+    const currentTags = (State.timeframe === "w" ? tagsW : tagsD) || "";
+    const price = Number(stock[3]) || 0;
+    const chg = Number(stock[4]) || 0;
+    const meta = stock[8] || {};
+    const high52 = Number(meta.high52) || 0;
+    const profit = Number(meta.profit);
+    const rev = Number(meta.rev);
+    const pe = Number(meta.pe);
+    const reaction = Number(meta.earningsReaction);
+
+    switch (k) {
+      // --- Technical Presets (PR) ---
+      case "a": { // All EMAs Aligned: 10 > 20 > 50 > 200 EMA
+        const emas = typeof getStockEmaStatus === "function" ? getStockEmaStatus(stock) : null;
+        const liveAligned = Array.isArray(emas) && emas.length === 4 && emas[0] && emas[1] && emas[2] && emas[3];
+        return liveAligned || allTags.includes("a");
+      }
+      case "b": { // Breakout Stocks: Near 52W high/ATH resistance or momentum breakout
+        const nearHigh = high52 > 0 && price >= high52 * 0.95;
+        return nearHigh || allTags.includes("b") || (chg >= 2.5 && price >= high52 * 0.90);
+      }
+      case "v": { // Volume Breakout: Volume expansion or strong thrust
+        return allTags.includes("v") || chg >= 2.0;
+      }
+      case "r": { // RSI Above MA: Sustained momentum
+        return allTags.includes("r") || chg > 0 || (high52 > 0 && price >= high52 * 0.85);
+      }
+      case "c": { // EMA Convergence: Contracting spread / consolidation compression
+        return allTags.includes("c") || (Math.abs(chg) <= 1.2 && high52 > 0 && price >= high52 * 0.80);
+      }
+      case "p": { // Crossed Pivot: Crossed key pivot resistance from below
+        return allTags.includes("p") || (chg >= 1.0 && high52 > 0 && price >= high52 * 0.88);
+      }
+      case "i": { // IPO Breakout: Fresh listing / initial base breakout
+        return allTags.includes("i") || (high52 > 0 && price >= high52 * 0.96 && chg > 0);
+      }
+
+      // --- Financial & Results Presets (RS) ---
+      case "1": { // Excellent Results: High composite profit & revenue growth
+        const strong = (!isNaN(profit) && profit >= 20 && !isNaN(rev) && rev >= 15) || (!isNaN(profit) && profit >= 30);
+        return strong || allTags.includes("1");
+      }
+      case "2": { // Profit Growth: Net profit up >= 20% YoY
+        return (!isNaN(profit) && profit >= 20) || allTags.includes("2");
+      }
+      case "3": { // Revenue Growth: Sales revenue up >= 15% YoY
+        return (!isNaN(rev) && rev >= 15) || allTags.includes("3");
+      }
+      case "4": { // Margin Expansion: Profit growing faster than revenue
+        const expanding = (!isNaN(profit) && !isNaN(rev) && profit > rev && profit >= 10) || (!isNaN(profit) && profit >= 25);
+        return expanding || allTags.includes("4");
+      }
+      case "5": { // Earnings Surprise: Positive post-earnings reaction or significant profit beat
+        const surprise = (!isNaN(reaction) && reaction > 0) || (!isNaN(profit) && profit >= 25);
+        return surprise || allTags.includes("5");
+      }
+      case "6": { // Turnaround: High operational acceleration from lower base
+        const turnaround = (!isNaN(profit) && profit >= 35) || (!isNaN(profit) && profit > 0 && !isNaN(rev) && rev > 15 && !isNaN(pe) && pe > 40);
+        return turnaround || allTags.includes("6");
+      }
+      case "7": { // Consistent Performers: Sustained YoY growth with sustainable PE
+        const steady = (!isNaN(profit) && profit >= 10 && !isNaN(rev) && rev >= 8 && !isNaN(pe) && pe > 0 && pe <= 65);
+        return steady || allTags.includes("7");
+      }
+      case "8": { // Results + Breakout: Strong fundamentals + price breakout near high
+        const goodResults = (!isNaN(profit) && profit >= 15) || (!isNaN(rev) && rev >= 15) || allTags.includes("1") || allTags.includes("2");
+        const techBreakout = (high52 > 0 && price >= high52 * 0.93) || chg >= 1.5 || allTags.includes("b");
+        return (goodResults && techBreakout) || allTags.includes("8");
+      }
+      default:
+        return allTags.includes(k) || currentTags.includes(k);
+    }
+  }
+
   function getFilteredScreenerStocks() {
     const key = [
       State.marketCap,
@@ -12565,9 +12644,7 @@
 
       // Selected Presets
       if (State.selectedPresets && State.selectedPresets.length > 0) {
-        const stockTags = stock[State.timeframe === "w" ? 6 : 5];
-        const allTags = stock[5] + stock[6];
-        const matchesAll = State.selectedPresets.every(k => allTags.includes(k) || stockTags.includes(k));
+        const matchesAll = State.selectedPresets.every(k => stockMatchesPreset(stock, k));
         if (!matchesAll) return false;
       }
       return true;
@@ -33070,10 +33147,12 @@
       }
       else if (action === "set-cap") {
         State.marketCap = target.dataset.val;
+        State.screenerPage = 1;
         renderActiveView();
       }
       else if (action === "set-tf") {
         State.timeframe = target.dataset.val;
+        State.screenerPage = 1;
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
       }
@@ -33105,18 +33184,24 @@
         if (typeof showToast === 'function') showToast("Refreshing published ideas...", "💡");
       }
       else if (action === "toggle-preset") {
-        const p = target.dataset.preset;
-        const idx = State.selectedPresets.indexOf(p);
-        if (idx >= 0) State.selectedPresets.splice(idx, 1);
-        else State.selectedPresets.push(p);
-        renderActiveView();
+        const btn = target.closest("[data-preset]") || target;
+        const p = btn ? btn.dataset.preset : null;
+        if (p) {
+          const idx = State.selectedPresets.indexOf(p);
+          if (idx >= 0) State.selectedPresets.splice(idx, 1);
+          else State.selectedPresets.push(p);
+          State.screenerPage = 1;
+          renderActiveView();
+        }
       }
       else if (action === "filter-sector") {
         State.sector = target.dataset.sec;
+        State.screenerPage = 1;
         renderActiveView();
       }
       else if (action === "filter-sector-screener") {
         State.sector = target.dataset.sec;
+        State.screenerPage = 1;
         State.view = "screener";
         renderActiveView();
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -33698,6 +33783,7 @@
 
       if (e.target.id === "screener-clear-search") {
         State.searchQuery = "";
+        State.screenerPage = 1;
         renderActiveView();
         return;
       }
@@ -33709,6 +33795,7 @@
         State.searchQuery = "";
         State.screenerSortCol = "default";
         State.screenerSortDir = "desc";
+        State.screenerPage = 1;
         showToast("All filters & sorts reset", "🔄");
         renderActiveView();
       }
