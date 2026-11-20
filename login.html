@@ -3974,35 +3974,6 @@
     </div>
   </section>
 
-  <section class="sec" id="path">
-    <div class="wrap">
-      <h2 class="rv">Your learning path</h2>
-      <p class="sub rv">Four steps from first chart to a repeatable routine.</p>
-      <div class="steps">
-        <div class="step rv">
-          <div class="n">1</div>
-          <h3>Learn the basics</h3>
-          <p>What momentum is and how to measure it.</p>
-        </div>
-        <div class="step rv">
-          <div class="n">2</div>
-          <h3>Read the chart</h3>
-          <p>Candles, levels and where moves begin.</p>
-        </div>
-        <div class="step rv">
-          <div class="n">3</div>
-          <h3>Protect your capital</h3>
-          <p>Position size, stop-loss and risk per trade.</p>
-        </div>
-        <div class="step rv">
-          <div class="n">4</div>
-          <h3>Build a routine</h3>
-          <p>Journal every trade and review it weekly.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="sec" id="faq">
     <div class="wrap" style="max-width:820px">
       <h2 class="rv">Questions before you start</h2>
@@ -4104,7 +4075,7 @@
   </footer>
 
   <nav class="tabs" aria-label="Page sections">
-    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#path">Path</a><a href="#faq">FAQ</a>
+    <a href="#overview" class="on">Overview</a><a href="#hub">Analytics</a><a href="#faq">FAQ</a>
   </nav>
 
   <script>
@@ -4241,7 +4212,7 @@
       var pal = document.getElementById('pal'), pin = document.getElementById('pin'), pl = document.getElementById('plist'), open = false, sel = 0, vis = [];
       if (/Mac|iPhone|iPad/.test(navigator.platform || '')) { var k = document.getElementById('kbd'); if (k) k.textContent = '\u2318 K' }
       var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#faq'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#hub'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
-      var SEC = [['Learning path', '#path'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
+      var SEC = [['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
       var ALL = [].concat(TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
       function render() {
         var q = pin.value.trim().toLowerCase(), h = '', g = ''; vis = [];
@@ -4296,7 +4267,7 @@
       if (!("IntersectionObserver" in window)) { rv.forEach(function (e) { e.classList.add("in") }); return; }
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target) } }) }, { threshold: .12 });
       rv.forEach(function (e) { io.observe(e) });
-      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "path", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
+      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
       var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { tabs.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id) }) } }) }, { rootMargin: "-45% 0px -50% 0px" });
       secs.forEach(function (s) { so.observe(s) });
     })();
