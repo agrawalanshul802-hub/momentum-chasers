@@ -6421,6 +6421,83 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // 6.6 User Feedback & Inquiries Direct Gateway
+  if (pathname === '/api/feedback' && req.method === 'POST') {
+    try {
+      const body = await parseRequestBody(req);
+      const name = (body.name || 'Anonymous User').toString().trim().slice(0, 100);
+      const email = (body.email || '').toString().trim().slice(0, 150);
+      const topic = (body.topic || 'General Feedback').toString().trim().slice(0, 100);
+      const sentiment = (body.sentiment || '').toString().trim().slice(0, 50);
+      const message = (body.message || body.feedback || '').toString().trim().slice(0, 3000);
+
+      if (!message) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Feedback message is required' }));
+        return;
+      }
+
+      const feedbackItem = {
+        id: 'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name,
+        email,
+        topic,
+        sentiment,
+        message,
+        receivedAt: new Date().toISOString(),
+        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'
+      };
+
+      const feedbackPath = path.join(__dirname, 'data', 'feedback.json');
+      let list = [];
+      try {
+        if (fs.existsSync(feedbackPath)) {
+          list = JSON.parse(fs.readFileSync(feedbackPath, 'utf8'));
+        }
+      } catch (_) { list = []; }
+      list.unshift(feedbackItem);
+      if (list.length > 500) list = list.slice(0, 500);
+      fs.writeFileSync(feedbackPath, JSON.stringify(list, null, 2), 'utf8');
+
+      console.log(`📩 [Direct Feedback] from ${name} (${email || 'No email'}) [${topic}]: ${message.slice(0, 80)}...`);
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(JSON.stringify({
+        success: true,
+        message: 'Feedback received and archived. Sent to chasersmomentum@gmail.com',
+        id: feedbackItem.id
+      }));
+      return;
+    } catch (err) {
+      console.error('Error handling feedback submission:', err);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Internal server error processing feedback' }));
+      return;
+    }
+  }
+
+  if (pathname === '/api/feedback' && req.method === 'GET') {
+    const pin = (parsedUrl.query.pin || req.headers['x-owner-pin'] || '').toString().trim();
+    if (!isAuthorizedOwnerPin(pin)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+      return;
+    }
+    const feedbackPath = path.join(__dirname, 'data', 'feedback.json');
+    let list = [];
+    try {
+      if (fs.existsSync(feedbackPath)) {
+        list = JSON.parse(fs.readFileSync(feedbackPath, 'utf8'));
+      }
+    } catch (_) { list = []; }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, count: list.length, feedback: list }));
+    return;
+  }
+
   // 7. Static File Serving
   const reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
   let decodedPath;

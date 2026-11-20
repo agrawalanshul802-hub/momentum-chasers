@@ -1,0 +1,12 @@
+[
+  {
+    "id": "fb_1795159177553_wznh",
+    "name": "Test Trader",
+    "email": "trader@example.com",
+    "topic": "Feature Request",
+    "sentiment": "Awesome 🔥",
+    "message": "This is a test feedback message to verify direct storage and forwarding.",
+    "receivedAt": "2026-11-20T07:19:37.553Z",
+    "ip": "::1"
+  }
+]

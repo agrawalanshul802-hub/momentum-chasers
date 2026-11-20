@@ -4004,16 +4004,24 @@
             href="#hub">Tools</a>
         </div>
         <div class="fc">
-          <h4>Information</h4><a href="#hub">About</a><a href="#risk">Disclaimer</a><a
-            href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a>
+          <h4>Information &amp; Legal</h4>
+          <a href="#hub">About</a>
+          <a href="/terms.html">Terms &amp; Conditions (T&amp;C)</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html#risk">Risk Disclaimer</a>
         </div>
         <div class="fc">
-          <h4>Connect</h4><a href="login.html" onclick="handleCtaClick(event, 'signin')">Login</a><a href="login.html#signup" onclick="handleCtaClick(event, 'signup')">Sign In</a>
+          <h4>Connect</h4>
+          <a href="login.html" onclick="handleCtaClick(event, 'signin')">Login</a>
+          <a href="login.html#signup" onclick="handleCtaClick(event, 'signup')">Create Account</a>
         </div>
         <div class="fc">
-          <h4>Contact</h4><a class="mail"
-            href="mailto:chasersmomentum@gmail.com">chasersmomentum@gmail.com</a><small>Questions, feedback,
-            collaborations</small>
+          <h4>Direct Contact &amp; Feedback</h4>
+          <a class="mail" href="mailto:chasersmomentum@gmail.com">chasersmomentum@gmail.com</a>
+          <button type="button" class="footer-fb-trigger" onclick="openFeedbackModal()">
+            <span>💬</span> Send Feedback Directly &rarr;
+          </button>
+          <small>Reaches our inbox directly &bull; Ideas &amp; bug reports</small>
         </div>
       </div>
       <p class="risk" id="risk"><strong>Risk disclosure.</strong> Momentum Chasers provides education only. Nothing on
@@ -5376,6 +5384,496 @@
       }
     });
 </script>
+
+
+  <!-- ================= DIRECT EMAIL FEEDBACK MODAL ================= -->
+  <style>
+    .footer-fb-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      background: rgba(245, 181, 68, 0.12);
+      border: 1px solid rgba(245, 181, 68, 0.35);
+      color: #fbd38d;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    .footer-fb-trigger:hover {
+      background: rgba(245, 181, 68, 0.24);
+      border-color: var(--amber);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    .floating-feedback-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(13, 20, 36, 0.92);
+      border: 1px solid rgba(245, 181, 68, 0.4);
+      color: #fbd38d;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(245, 181, 68, 0.15);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+    }
+    .floating-feedback-pill:hover {
+      background: #1a2542;
+      border-color: var(--amber);
+      color: #ffffff;
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(245, 181, 68, 0.3);
+    }
+    .feedback-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10005;
+      background: rgba(7, 11, 23, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .feedback-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .feedback-card {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      box-sizing: border-box;
+      background: #0d1424;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 30px 28px 26px;
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(245, 181, 68, 0.15);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      color: #e8ecf6;
+      font-family: "Manrope", system-ui, -apple-system, sans-serif;
+    }
+    .feedback-backdrop.active .feedback-card {
+      transform: translateY(0) scale(1);
+    }
+    .feedback-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .feedback-close:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .feedback-header {
+      margin-bottom: 20px;
+    }
+    .feedback-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(245, 181, 68, 0.14);
+      color: #fbd38d;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .feedback-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .feedback-sub {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .feedback-sub strong {
+      color: #cbd5e1;
+    }
+    .feedback-status-msg {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .feedback-status-msg.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #a7f3d0;
+    }
+    .feedback-status-msg.error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .feedback-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 480px) {
+      .feedback-row { grid-template-columns: 1fr; }
+    }
+    .feedback-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .feedback-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+    .feedback-input {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .feedback-input:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 2px rgba(245, 181, 68, 0.2);
+    }
+    .feedback-select {
+      cursor: pointer;
+    }
+    .feedback-select option {
+      background: #0f172a;
+      color: #ffffff;
+    }
+    .feedback-textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+    .feedback-sentiment-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .sentiment-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 4px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11.5px;
+      color: #94a3b8;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .sentiment-pill input {
+      display: none;
+    }
+    .sentiment-pill:has(input:checked) {
+      background: rgba(245, 181, 68, 0.15);
+      border-color: var(--amber);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .feedback-legal-note {
+      font-size: 11.5px;
+      color: #64748b;
+      margin-top: -2px;
+    }
+    .feedback-legal-note a {
+      color: #94a3b8;
+      text-decoration: underline;
+    }
+    .feedback-legal-note a:hover {
+      color: var(--amber);
+    }
+    .feedback-submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #f5b544 0%, #e69d24 100%);
+      color: #070b17;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 4px;
+    }
+    .feedback-submit-btn:hover:not(:disabled) {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .feedback-submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .fb-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(7, 11, 23, 0.3);
+      border-top-color: #070b17;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <!-- Floating Pill -->
+  <button type="button" class="floating-feedback-pill" onclick="openFeedbackModal()" title="Send feedback directly to chasersmomentum@gmail.com">
+    <span>💬</span> Feedback
+  </button>
+
+  <!-- Feedback Modal Window -->
+  <div class="feedback-backdrop" id="feedback-modal" aria-hidden="true">
+    <div class="feedback-card" role="dialog" aria-labelledby="feedback-card-title">
+      <button class="feedback-close" id="feedback-close-btn" onclick="closeFeedbackModal()" aria-label="Close dialog">&times;</button>
+
+      <div class="feedback-header">
+        <div class="feedback-badge">
+          <span>💬</span> DIRECT EMAIL FEEDBACK
+        </div>
+        <h2 class="feedback-title" id="feedback-card-title">Share Your Thoughts</h2>
+        <p class="feedback-sub">Your message, feature request, or report is delivered directly to our founder's inbox at <strong>chasersmomentum@gmail.com</strong>.</p>
+      </div>
+
+      <div class="feedback-status-msg" id="feedback-status-msg"></div>
+
+      <form class="feedback-form" id="feedback-form" onsubmit="handleFeedbackSubmit(event)">
+        <div class="feedback-row">
+          <div class="feedback-field">
+            <label class="feedback-label" for="fb-name">Your Name</label>
+            <input class="feedback-input" id="fb-name" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name">
+          </div>
+          <div class="feedback-field">
+            <label class="feedback-label" for="fb-email">Your Email <span style="color:#ef4444">*</span></label>
+            <input class="feedback-input" id="fb-email" type="email" placeholder="you@example.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="feedback-field">
+          <label class="feedback-label" for="fb-topic">Category</label>
+          <select class="feedback-input feedback-select" id="fb-topic">
+            <option value="General Feedback">💡 General Feedback &amp; Suggestions</option>
+            <option value="Feature Request">🚀 Feature Request (New Screener/Indicator)</option>
+            <option value="Bug Report">🐛 Report an Issue / Bug</option>
+            <option value="Market Data Query">📊 Market Data or Calculation Query</option>
+            <option value="Terms & Legal Query">📜 Terms &amp; Conditions (T&amp;C) Query</option>
+            <option value="Collaboration / Business">🤝 Collaboration / Inquiry</option>
+          </select>
+        </div>
+
+        <div class="feedback-field">
+          <label class="feedback-label">Experience Rating</label>
+          <div class="feedback-sentiment-row">
+            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Awesome 🔥" checked> <span>Awesome 🔥</span></label>
+            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Good 👍"> <span>Good 👍</span></label>
+            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Needs Work 🤔"> <span>Needs Work 🤔</span></label>
+            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Found Bug 🐛"> <span>Found Bug 🐛</span></label>
+          </div>
+        </div>
+
+        <div class="feedback-field">
+          <label class="feedback-label" for="fb-message">Message <span style="color:#ef4444">*</span></label>
+          <textarea class="feedback-input feedback-textarea" id="fb-message" rows="4" placeholder="Tell us what you like, what we should improve, or any issue you encountered..." required></textarea>
+        </div>
+
+        <p class="feedback-legal-note">By submitting, you agree to our <a href="/terms.html" target="_blank">Terms &amp; Conditions</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>.</p>
+
+        <button class="feedback-submit-btn" id="fb-submit-btn" type="submit">
+          <span id="fb-submit-btn-text">Send Feedback Directly &rarr;</span>
+          <span class="fb-spinner" id="fb-spinner" style="display:none;"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openFeedbackModal() {
+      const modal = document.getElementById('feedback-modal');
+      if (modal) {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+          const firstInp = document.getElementById('fb-email');
+          if (firstInp) firstInp.focus();
+        }, 100);
+      }
+    }
+
+    function closeFeedbackModal() {
+      const modal = document.getElementById('feedback-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Close on outside click or Escape
+    document.addEventListener('click', function (e) {
+      const modal = document.getElementById('feedback-modal');
+      if (modal && e.target === modal) {
+        closeFeedbackModal();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeFeedbackModal();
+      }
+    });
+
+    // Auto open if #feedback in URL
+    if (window.location.hash === '#feedback') {
+      setTimeout(openFeedbackModal, 200);
+    }
+
+    async function handleFeedbackSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('fb-name').value.trim() || 'Anonymous Trader';
+      const email = document.getElementById('fb-email').value.trim();
+      const topic = document.getElementById('fb-topic').value;
+      const sentimentEl = document.querySelector('input[name="fb-sentiment"]:checked');
+      const sentiment = sentimentEl ? sentimentEl.value : 'Awesome 🔥';
+      const message = document.getElementById('fb-message').value.trim();
+
+      if (!message) return;
+
+      const btn = document.getElementById('fb-submit-btn');
+      const btnText = document.getElementById('fb-submit-btn-text');
+      const spinner = document.getElementById('fb-spinner');
+      const statusMsg = document.getElementById('feedback-status-msg');
+
+      btn.disabled = true;
+      btnText.textContent = 'Sending to chasersmomentum@gmail.com...';
+      spinner.style.display = 'inline-block';
+      statusMsg.style.display = 'none';
+
+      const payload = {
+        name: name,
+        email: email,
+        topic: topic,
+        sentiment: sentiment,
+        message: message,
+        _subject: '⚡ Momentum Chasers Feedback: ' + topic + ' (' + name + ')',
+        _template: 'table',
+        _captcha: 'false',
+        _replyto: email
+      };
+
+      try {
+        // 1. Send via FormSubmit directly to chasersmomentum@gmail.com
+        let sentMail = false;
+        try {
+          const res = await fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) sentMail = true;
+        } catch (netErr) {
+          console.warn('FormSubmit external notification warning:', netErr);
+        }
+
+        // 2. Archive locally in backend API
+        try {
+          await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (_) {}
+
+        statusMsg.className = 'feedback-status-msg success';
+        statusMsg.innerHTML = '<strong>✓ Feedback Delivered!</strong> Your message was sent directly to <code>chasersmomentum@gmail.com</code>. Thank you for helping us improve!';
+        statusMsg.style.display = 'block';
+
+        document.getElementById('feedback-form').reset();
+        btnText.textContent = 'Feedback Sent Successfully ✓';
+        spinner.style.display = 'none';
+
+        setTimeout(() => {
+          btn.disabled = false;
+          btnText.textContent = 'Send Feedback Directly →';
+          setTimeout(closeFeedbackModal, 2500);
+        }, 1500);
+
+      } catch (err) {
+        statusMsg.className = 'feedback-status-msg error';
+        statusMsg.innerHTML = 'Could not deliver automatically. You can email us directly at <a href="mailto:chasersmomentum@gmail.com" style="color:#f5b544;text-decoration:underline;">chasersmomentum@gmail.com</a>.';
+        statusMsg.style.display = 'block';
+        btn.disabled = false;
+        btnText.textContent = 'Send Feedback Directly →';
+        spinner.style.display = 'none';
+      }
+    }
+  </script>
 
 </body>
 
