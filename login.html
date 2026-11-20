@@ -4092,7 +4092,7 @@
           <p>Make Smarter Financial Decisions with Market Intelligence.</p>
         </div>
         <div class="fc">
-          <h4>Explore</h4><a href="#top">Home</a><a href="#hub">Analytics</a><a href="#tour">Market Insights</a><a
+          <h4>Explore</h4><a href="#top">Home</a><a href="#hub">Analytics</a><a href="#hub">Market Insights</a><a
             href="#features">Tools</a>
         </div>
         <div class="fc">
@@ -4209,91 +4209,6 @@
       var rz; addEventListener("resize", function () { clearTimeout(rz); rz = setTimeout(function () { build(); if (reduce) draw(0) }, 150) });
     })();
 
-
-    // 3D screen carousel (sample screens)
-    (function () {
-      function cs(n) {
-        var v = 100, o, c, hi, lo, d = [], out = "";
-        for (var i = 0; i < n; i++) { o = v; c = v + (Math.random() - .32) * 14; hi = Math.max(o, c) + Math.random() * 7; lo = Math.min(o, c) - Math.random() * 7; d.push([o, c, hi, lo]); v = c; }
-        var mn = Math.min.apply(null, d.map(function (x) { return x[3] })), mx = Math.max.apply(null, d.map(function (x) { return x[2] })), r = mx - mn || 1;
-        function y(p) { return 190 - (p - mn) / r * 175 }
-        d.forEach(function (x, i) {
-          var X = 12 + i * 16, col = x[1] >= x[0] ? "#4fd1a1" : "#f2788f";
-          out += '<line x1="' + (X + 4) + '" x2="' + (X + 4) + '" y1="' + y(x[2]) + '" y2="' + y(x[3]) + '" stroke="' + col + '" stroke-width="1.5"/><rect x="' + X + '" y="' + y(Math.max(x[0], x[1])) + '" width="8" height="' + Math.max(2, Math.abs(y(x[0]) - y(x[1]))) + '" rx="1.5" fill="' + col + '"/>';
-        });
-        return '<svg viewBox="0 0 400 200">' + out + '</svg>';
-      }
-      function bar(t) { return '<div class="bar"><i></i><i></i><i></i><span>' + t + '</span></div>' }
-      var P = [["Momentum Foundations", 100], ["Candles and Price Action", 68], ["Support, Resistance and Liquidity", 24], ["Risk and Position Sizing", 0]];
-      var S = [
-        { t: "Short, focused lessons", d: "Each lesson teaches one idea with a chart example, with a clear next step at the end.", h: bar("Lesson 3 · Reading momentum candles") + '<div class="sb">' + cs(24) + '<div class="row2"><span>Step 3 of 6</span><span>12 min</span></div><div class="prog" style="margin:10px 0 0"><i></i></div></div>' },
-        { t: "Practice before you risk money", d: "Look at a sample chart, make your call, then see why it was good or not.", h: bar("Practice · Where would you enter?") + '<div class="sb">' + cs(20) + '<div class="pb"><span>Enter now</span><span class="go">Wait for pullback &#10003;</span></div><div class="row2"><span class="chipx">Good call</span><span>Price was extended. A pullback gave a better entry.</span></div></div>' },
-        { t: "A trade journal you will actually use", d: "Log each trade and its risk, then review what worked every week.", h: bar("Trade journal · sample entries") + '<div class="sb"><table class="jt"><tr><th>Date</th><th>Stock</th><th>Setup</th><th>Risk</th><th>Result</th></tr><tr><td>12 Nov</td><td>SBIN</td><td>Pullback</td><td>1R</td><td class="pos">+1.8R</td></tr><tr><td>11 Nov</td><td>INFY</td><td>Breakout</td><td>1R</td><td class="neg">&minus;1.0R</td></tr><tr><td>10 Nov</td><td>TITAN</td><td>Pullback</td><td>0.5R</td><td class="pos">+0.9R</td></tr></table><div class="row2"><span>Win rate and average R are worked out for you.</span></div></div>' },
-        { t: "See your progress at a glance", d: "Track every course, pick up where you left off, and keep a learning streak going.", h: bar("Your progress") + '<div class="sb">' + P.map(function (p) { return '<div class="pr"><span>' + p[0] + '</span><span class="b"><i style="width:' + p[1] + '%"></i></span><span>' + p[1] + '%</span></div>' }).join("") + '<div class="row2"><span class="chipx">4-day streak</span><span>Next: Lesson 4 · Entries and exits</span></div></div>' }
-      ];
-      // ---- product slides (from the live tools) ----
-      function pt(a, r) { var t = a * Math.PI / 180; return [150 + r * Math.sin(t), 150 - r * Math.cos(t)] }
-      function arc(a0, a1, r) { var p = pt(a0, r), q = pt(a1, r); return 'M' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + 'A' + r + ' ' + r + ' 0 ' + (a1 - a0 > 180 ? 1 : 0) + ' 1 ' + q[0].toFixed(1) + ' ' + q[1].toFixed(1) }
-      var AG = function (v) { return -135 + v * 2.7 };
-      var MLOGO = document.querySelector(".brand img").src;
-      var CH = ["BAJAJ-AUTO", "RELIANCE", "HDFCBANK", "TCS", "SUNPHARMA", "BSE", "INFY"];
-      var scr = '<div class="sb ns sc"><span class="bg"><img src="' + MLOGO + '" alt="">MOMENTUM CHASERS</span><h4><b>Stock Screener</b> for Indian Markets</h4><p>EMA breadth, sector rotation, live market data and AI stock analysis.</p><div class="sbx"><span>&#128269;&nbsp; <i class="typ"></i></span><button>Go &rarr;</button></div><div class="chps">' + CH.map(function (c) { return '<span class="chp">' + c + '</span>' }).join("") + '</div></div>';
-      var D = ["09-11", "08-11", "06-11", "05-11", "04-11", "03-11"], M = [["Hotels", [1.78, .11, .66, .73, 1.07, 1.58]], ["Paints", [1.74, .10, .59, .92, 1.27, 1.53]], ["Gas Distribution", [1.72, .13, .82, .62, .85, 1.52]], ["Renewable Energy", [1.65, .12, .79, 1.28, 1.49, 1.42]], ["Rural Economy", [1.64, .13, .58, .89, 1.32, 1.66]]];
-      function mc(v) { return v >= 1.5 ? ["#2dd4bf", "#04201c"] : v >= 1.2 ? ["#10b981", "#04201c"] : v >= .95 ? ["#0f766e", "#e8fff9"] : v >= .7 ? ["#1e293b", "#e8ecf6"] : v >= .3 ? ["#451a1a", "#ffd6d6"] : ["#f87171", "#2a0a0a"] }
-      var mf = '<div class="sb ns"><div><small class="eb">MONEY FLOW</small><h4>Turnover vs own history</h4><p>Today&rsquo;s turnover vs the sector&rsquo;s own trailing 8-session average</p></div><div class="mg"><span class="mh">Sector</span>' + D.map(function (d) { return '<span class="mh" style="text-align:center">' + d + '</span>' }).join("") + M.map(function (r, i) { return '<b>' + r[0] + '</b>' + r[1].map(function (v, j) { var c = mc(v); return '<span class="mc" style="background:' + c[0] + ';color:' + c[1] + ';--d:' + ((i * 6 + j) * .07).toFixed(2) + 's">' + v.toFixed(2) + 'x</span>' }).join("") }).join("") + '</div></div>';
-      var SEG = [[0, 30, "#10b981"], [30, 50, "#facc15"], [50, 70, "#f97316"], [70, 100, "#ef4444"]];
-      var gs = '<div class="sb ns gx"><svg class="gsv" viewBox="36 36 228 200">' + SEG.map(function (g) { return '<path d="' + arc(AG(g[0]), AG(g[1]), 104) + '" fill="none" stroke="' + g[2] + '" stroke-width="2.5" opacity=".85"/>' }).join("") + '<path d="' + arc(-135, 135, 84) + '" fill="none" style="stroke:var(--tr)" stroke-width="16" stroke-linecap="round"/><path class="gp" pathLength="100" d="' + arc(-135, AG(79.23), 84) + '" fill="none" stroke="#ef4444" stroke-width="16" stroke-linecap="round"/><g class="ndl"><path d="M150 150L150 68" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/></g><circle cx="150" cy="150" r="8" fill="#ef4444"/><circle cx="150" cy="150" r="3" fill="#fff"/><text id="gv" x="150" y="205" text-anchor="middle" font-size="38" font-weight="800" fill="#ef4444" font-family="ui-monospace,Menlo,monospace">79.23</text><text x="150" y="225" text-anchor="middle" font-size="9" style="fill:var(--muted)">Updated live via Tickertape</text></svg><div class="gb"><span class="chipx">EXTREME GREED</span><small>+1.98 from yesterday (77.3)</small></div></div>';
-      function tc(p) { return p < 0 ? "#ef4444" : p < .2 ? "#94a3b8" : p >= 2.4 ? "#166534" : p >= 1.4 ? "#16a34a" : "#22c55e" }
-      var TL = [["RELIANCE", "1,320.00", .5, "1/1/3/3", "lg"], ["ICICIBANK", "1,571.20", 4.75, "1/3/2/5", "md"], ["SBIN", "1,018.50", 1.2, "1/5/2/6", "md"], ["TCS", "2,498.50", .11, "1/6/2/7", "md"],
-      ["LT", "", 1.67, "2/3/3/4"], ["SUNPHARMA", "", 1.69, "2/4/3/5"], ["ADANIPORTS", "", 2.76, "2/5/3/6"], ["TITAN", "", 3.42, "2/6/3/7"],
-      ["BHARTIARTL", "2,107.20", 2.45, "3/1/4/3", "md"], ["INFY", "", 1.2, "3/3/4/4"], ["HCLTECH", "", .66, "3/4/4/5"], ["ITC", "", 1.54, "3/5/4/6"], ["ETERNAL", "", 1.35, "3/6/4/7"],
-      ["KOTAKBANK", "", 2.78, "4/1/5/2"], ["ADANIENT", "", .46, "4/2/5/3"], ["JSWSTEEL", "", .11, "4/3/5/4"], ["ASIANPAINT", "", 1.95, "4/4/5/5"], ["EICHERMOT", "", -2.4, "4/5/5/6"], ["POWERGRID", "", 1.65, "4/6/5/7"]];
-      var hmp = '<div class="sb ns"><div class="hmh"><b>Nifty 50 Heatmap</b><span><i>&#9679;</i> Live &middot; sorted by market cap</span></div><div class="hmg">' + TL.map(function (t) { return '<div class="hm ' + (t[4] || "") + '" style="grid-area:' + t[3] + ';background:' + tc(t[2]) + '">' + t[0] + (t[1] ? '<em>&#8377;' + t[1] + '</em>' : '') + '<em>' + (t[2] > 0 ? '+' : '') + t[2].toFixed(2) + '%</em></div>' }).join("") + '</div></div>';
-      S = S.concat([
-        { t: "A screener built for Indian markets", d: "Search any stock for momentum research: EMA breadth, sector rotation, live market data and AI stock analysis.", h: bar("Stock Screener &middot; Indian markets") + scr },
-        { t: "See where the money is flowing", d: "Today\u2019s turnover for every sector, compared with its own trailing 8-session average.", h: bar("Money flow &middot; turnover vs own history") + mf },
-        { t: "Live market sentiment", d: "A 0 to 100 fear and greed gauge that updates live, so you know the market\u2019s mood before you trade.", h: bar("Live sentiment speedometer") + gs },
-        { t: "Nifty 50 heatmap", d: "Every stock sized by market cap and coloured by today\u2019s move, so leaders and laggards stand out at once.", h: bar("Nifty 50 heatmap") + hmp }
-      ]);
-      var st = document.getElementById("stage"), dots = document.getElementById("dots"), cap = document.getElementById("tcap"), cur = 0, n = S.length, hov = false;
-      if (!st || !dots || !cap) return;
-      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      S.forEach(function (x, i) {
-        var e = document.createElement("div"); e.className = "sl glass"; e.innerHTML = x.h; e.addEventListener("click", function () { go(i) }); st.appendChild(e);
-        var d = document.createElement("i"); d.addEventListener("click", function () { go(i) }); dots.appendChild(d);
-      });
-      function go(i) { cur = (i + n) % n; paint() }
-      function paint() {
-        var sl = st.children;
-        for (var i = 0; i < n; i++) {
-          var o = i - cur; if (o > n / 2) o -= n; if (o < -n / 2) o += n; var a = Math.abs(o), e = sl[i];
-          e.style.zIndex = 3 - a; e.style.visibility = a > 1 ? "hidden" : "visible"; e.classList.toggle("act", a <= 1); e.style.opacity = a > 1 ? 0 : (a ? .5 : 1); e.style.pointerEvents = a > 1 ? "none" : "auto";
-          e.style.transform = a > 1 ? "translateX(-50%) scale(.6)" : "translateX(calc(-50% + " + (o * 64) + "%)) scale(" + (a ? .82 : 1) + ") rotateY(" + (-o * 18) + "deg)";
-          dots.children[i].className = i === cur ? "on" : "";
-        }
-        cap.innerHTML = '<h3>' + S[cur].t + '</h3><p>' + S[cur].d + '</p>';
-      }
-      document.getElementById("prev").onclick = function () { go(cur - 1) };
-      document.getElementById("next").onclick = function () { go(cur + 1) };
-      st.parentNode.addEventListener("mouseenter", function () { hov = true }); st.parentNode.addEventListener("mouseleave", function () { hov = false });
-      if (!reduce) setInterval(function () { if (!hov && !document.hidden) go(cur + 1) }, 5500);
-      // product slide animations
-      (function () {
-        var el = st.querySelector(".typ"), T = ["BAJAJ-AUTO", "RELIANCE", "HDFCBANK", "TCS", "SUNPHARMA", "INFY"], cp = [].slice.call(st.querySelectorAll(".chp")), i = 0, k = 0, dir = 1;
-        function mark(w) { cp.forEach(function (c) { c.classList.toggle("on", c.textContent === w) }) }
-        function tick() {
-          if (st.classList.contains("off")) { setTimeout(tick, 600); return } var w = T[i], d = 85; k += dir; el.textContent = w.slice(0, k);
-          if (dir > 0 && k >= w.length) { dir = -1; d = 1500; mark(w) } else if (dir < 0 && k <= 0) { dir = 1; i = (i + 1) % T.length; d = 300; mark("") }
-          setTimeout(tick, d)
-        }
-        if (reduce) { el.textContent = T[0]; mark(T[0]) } else tick();
-        var gv = document.getElementById("gv");
-        if (!reduce) (function cnt() { var t0 = performance.now(); (function f(t) { var p = Math.min(1, (t - t0) / 2400); gv.textContent = (79.23 * (1 - Math.pow(1 - p, 3))).toFixed(2); if (p < 1) requestAnimationFrame(f) })(t0); setTimeout(cnt, 6000) })();
-        var hm = [].slice.call(st.querySelectorAll(".hm"));
-        if (!reduce) setInterval(function () { if (document.hidden || st.classList.contains("off")) return; var e = hm[(Math.random() * hm.length) | 0]; e.classList.add("fl"); setTimeout(function () { e.classList.remove("fl") }, 800) }, 450);
-      })();
-      paint();
-    })();
 
     // logo reuse (one copy of the image in the file)
     var LOGO = document.querySelector('.brand img').src;
@@ -4436,20 +4351,12 @@
       if (still) draw(0, 0); else kick();
     })();
 
-    // carousel height follows its tallest slide (any screen size)
-    (function () {
-      var st = document.getElementById('stage'); if (!st) return;
-      function fit() { var h = 0;[].forEach.call(st.children, function (e) { h = Math.max(h, e.offsetHeight) }); if (h) st.style.height = (h + 6) + 'px' }
-      fit(); addEventListener('load', fit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-      var t; addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 120) });
-    })();
-
     // top bar: search palette + Log in / Get started
     (function () {
       var pal = document.getElementById('pal'), pin = document.getElementById('pin'), pl = document.getElementById('plist'), open = false, sel = 0, vis = [];
       if (/Mac|iPhone|iPad/.test(navigator.platform || '')) { var k = document.getElementById('kbd'); if (k) k.textContent = '\u2318 K' }
-      var TOOLS = [['Smart Screener', '#tour'], ['Sector Indices', '#faq'], ['Sector Turnover', '#tour'], ['Market Mood (MMI)', '#tour'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#tour'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
-      var SEC = [['Learning path', '#path'], ['A look inside', '#tour'], ['Features', '#features'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
+      var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#faq'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#hub'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
+      var SEC = [['Learning path', '#path'], ['Features', '#features'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
       var ALL = [].concat(COURSES.map(function (c) { return ['Courses', c.t, '#courses'] }), TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
       function render() {
         var q = pin.value.trim().toLowerCase(), h = '', g = ''; vis = [];
@@ -4504,7 +4411,7 @@
       if (!("IntersectionObserver" in window)) { rv.forEach(function (e) { e.classList.add("in") }); return; }
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target) } }) }, { threshold: .12 });
       rv.forEach(function (e) { io.observe(e) });
-      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "courses", "tour", "path", "faq"].map(function (id) { return document.getElementById(id) });
+      var tabs = document.querySelectorAll(".tabs a"), secs = ["overview", "hub", "features", "path", "faq"].map(function (id) { return document.getElementById(id) }).filter(Boolean);
       var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { tabs.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id) }) } }) }, { rootMargin: "-45% 0px -50% 0px" });
       secs.forEach(function (s) { so.observe(s) });
     })();
