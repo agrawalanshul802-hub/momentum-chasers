@@ -4123,22 +4123,6 @@
   </nav>
 
   <script>
-    var BUL = [["What momentum is and how traders measure it", "Strong, weak and fading moves", "Why timing matters more than predicting"], ["Read candles, wicks and trends", "Spot pullbacks and breakouts", "Keep charts clean and simple"], ["Mark levels where price reacts", "Understand liquidity and traps", "Plan entries around key zones"], ["Size every position before entering", "Place stop-losses that make sense", "Think in risk per trade, not profit"], ["Handle fear, greed and impatience", "Keep a trade journal that you use", "Review weekly and improve"]];
-    var COURSES = [
-      { t: "Momentum Foundations", d: "What momentum is, how to measure it, and why most traders arrive too late.", l: "Beginner", c: "#f5b544", i: '<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>' },
-      { t: "Candles and Price Action", d: "Read candles, trends and pullbacks without a screen full of indicators.", l: "Beginner", c: "#4fd1a1", i: '<path d="M8 3v3M8 17v4M16 2v4M16 14v5"/><rect x="6" y="6" width="4" height="11" rx="1"/><rect x="14" y="6" width="4" height="8" rx="1"/>' },
-      { t: "Support, Resistance and Liquidity", d: "Find the levels where price reacts and where traders get trapped.", l: "Intermediate", c: "#6b8cff", i: '<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>' },
-      { t: "Risk and Position Sizing", d: "Decide how much to risk on every trade before you enter it.", l: "Intermediate", c: "#f2788f", i: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>' },
-      { t: "Psychology and Journaling", d: "Build habits that keep you calm, and review your trades like a pro.", l: "All levels", c: "#c58bff", i: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>' }
-    ];
-    function ico(c) { return '<span class="ic" style="--c:' + c.c + '"><svg viewBox="0 0 24 24">' + c.i + '</svg></span>'; }
-    COURSES.forEach(function (c, i) { c.b = BUL[i] });
-    var courseGridEl = document.getElementById("courseGrid");
-    if (courseGridEl) {
-      courseGridEl.innerHTML = COURSES.map(function (c) {
-        return '<a class="card glass rv" href="login.html" style="--c:' + c.c + '">' + ico(c) + '<span class="lv">' + c.l + '</span><h3>' + c.t + '</h3><p>' + c.d + '</p><ul>' + c.b.map(function (x) { return '<li>' + x + '</li>' }).join("") + '</ul><span class="open">Open course &rarr;</span></a>';
-      }).join("");
-    }
     var ANALYTICS_MENU = [
       { t: "Smart Screener", d: "Scan 2,000+ stocks across EMAs, RSI & volume breakouts", i: "&#9889;" },
       { t: "F&O Order Flow", d: "Live institutional volume, delta & option imbalances", i: "&#128200;" },
@@ -4214,76 +4198,6 @@
     var LOGO = document.querySelector('.brand img').src;
     document.querySelectorAll('img[data-logo]').forEach(function (i) { i.src = LOGO });
 
-    // flow hub
-    (function () {
-      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var P = '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>';
-      var LF = [{ t: 'New to markets', c: '#4fd1a1', i: P }, { t: 'Part-time trader', c: '#f5b544', i: P }, { t: 'Inconsistent results', c: '#f2788f', i: P },
-      { t: 'Smart Screener', c: '#6b8cff', i: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>' },
-      { t: 'Sector Turnover', c: '#c58bff', i: '<path d="M5 20V10M12 20V4M19 20v-7"/>' },
-      { t: 'Market Heatmap', c: '#4fd1a1', i: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>' }];
-      var ORD = [3, 0, 4, 1, 5, 2];
-      function nd(x, m) { return '<div class="nd glass" style="--c:' + x.c + '">' + ico(x) + '<div class="nt"><b>' + x.t + '</b>' + (m ? '<em>' + m + '</em>' : '') + '</div>' + (m ? '<span class="bdg">Ready &middot; 12 min</span>' : '') + '</div>' }
-      var box = document.getElementById('hubBox'), svg = document.getElementById('hlines'), card = document.getElementById('hCard'); if (!box || !card) return;
-      var cB = document.getElementById('cB'), cC = document.getElementById('cC'), cR = document.getElementById('cR'), code = card.querySelector('.code');
-      document.getElementById('hL').innerHTML = LF.map(function (x) { return nd(x) }).join('');
-      document.getElementById('hR').innerHTML = COURSES.map(function (x) { return nd(x, x.l) }).join('');
-      var Ln = [].slice.call(box.querySelectorAll('#hL .nd')), Rn = [].slice.call(box.querySelectorAll('#hR .nd')), base = [], trl = [], ch = null, cc = null, lit = [];
-      function lay() {
-        svg.innerHTML = ''; base = []; trl = []; if (innerWidth <= 1100) return;
-        var b = box.getBoundingClientRect(), c = card.getBoundingClientRect(), out = ''; svg.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height);
-        function add(n, i, N, left, col) {
-          var r = n.getBoundingClientRect(), ny = r.top + r.height / 2 - b.top, cy = c.top - b.top + c.height * (i + 1) / (N + 1), cx = (left ? c.left : c.right) - b.left, nx = (left ? r.right : r.left) - b.left;
-          var sx = left ? nx : cx, sy = left ? ny : cy, ex = left ? cx : nx, ey = left ? cy : ny, m = sx + (ex - sx) * .55, m2 = sx + (ex - sx) * .45;
-          var d = 'M' + sx + ' ' + sy + 'C' + m + ' ' + sy + ' ' + m2 + ' ' + ey + ' ' + ex + ' ' + ey;
-          out += '<path class="ln" d="' + d + '"/><path class="rt" pathLength="100" d="' + d + '" style="stroke:' + col + '"/><circle class="pp" cx="' + cx + '" cy="' + cy + '" r="3.5"/>';
-        }
-        Ln.forEach(function (n, i) { add(n, i, Ln.length, true, LF[i].c) }); Rn.forEach(function (n, i) { add(n, i, Rn.length, false, COURSES[i].c) });
-        svg.innerHTML = out + '<circle class="ch" r="12" cx="-50" cy="-50"/><circle class="cc" r="4.5" cx="-50" cy="-50"/>';
-        base = [].slice.call(svg.querySelectorAll('.ln')); trl = [].slice.call(svg.querySelectorAll('.rt')); ch = svg.querySelector('.ch'); cc = svg.querySelector('.cc');
-        lit.forEach(function (l) { var t = trl[l.i]; if (t) { t.style.transition = 'none'; t.style.strokeDashoffset = 0; t.style.opacity = 1 } });
-      }
-      function clearTrails() { lit = []; trl.forEach(function (t) { t.style.transition = 'opacity .5s'; t.style.opacity = 0 }) }
-      function fire(i, col, done) {
-        if (reduce || !trl[i]) { if (done) done(); return }
-        var t0 = performance.now(), D = 950, Lc = null, Lp = null;
-        (function f(now) {
-          var t = trl[i], pa = base[i]; if (!t || !pa || !ch) { if (done) done(); return }
-          if (Lp !== pa) { Lp = pa; Lc = pa.getTotalLength(); t.style.transition = 'none'; t.style.opacity = 1; ch.setAttribute('fill', col); cc.setAttribute('fill', '#fff'); ch.style.opacity = .3; cc.style.opacity = 1 }
-          var p = Math.min(1, (now - t0) / D), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2, q = pa.getPointAtLength(Lc * e);
-          ch.setAttribute('cx', q.x); ch.setAttribute('cy', q.y); cc.setAttribute('cx', q.x); cc.setAttribute('cy', q.y); t.style.strokeDashoffset = 100 - 100 * e;
-          if (p < 1) requestAnimationFrame(f); else { ch.style.opacity = 0; cc.style.opacity = 0; lit.push({ i: i }); if (done) done() }
-        })(t0);
-      }
-      var tm = []; function T(f, ms) { tm.push(setTimeout(f, ms)) }
-      function ty(el, txt, done) { var k = 0; el.classList.add('cur'); (function s() { el.textContent = txt.slice(0, k); if (k < txt.length) { k++; T(s, 55) } else { el.classList.remove('cur'); if (done) done() } })() }
-      function hit() { card.classList.remove('hit'); void card.offsetWidth; card.classList.add('hit') }
-      var cyc = 0;
-      function run() {
-        if (document.hidden || box.classList.contains('off')) { T(run, 600); return }
-        var li = ORD[cyc % 6], ci = cyc % 5; cyc++;
-        Ln.forEach(function (e) { e.classList.remove('on') }); Rn.forEach(function (e) { e.classList.remove('ok') }); clearTrails();
-        cR.classList.remove('show'); cB.textContent = LF[li].t; cC.textContent = 'auto'; card.classList.remove('glow');
-        void Ln[li].offsetWidth; Ln[li].classList.add('on');
-        fire(li, LF[li].c, function () {
-          card.classList.add('glow'); hit(); code.classList.remove('scan'); void code.offsetWidth; code.classList.add('scan');
-          T(function () {
-            ty(cC, COURSES[ci].t, function () {
-              T(function () {
-                fire(LF.length + ci, COURSES[ci].c, function () { hit(); Rn[ci].classList.add('ok'); cR.classList.add('show'); card.classList.remove('glow'); T(run, 2800) });
-                if (reduce) { T(function () { Rn[ci].classList.add('ok'); cR.classList.add('show'); T(run, 2800) }, 300) }
-              }, 200)
-            })
-          }, 350);
-        });
-        if (reduce) T(function () { card.classList.add('glow') }, 0);
-      }
-      lay(); addEventListener('load', lay); if (document.fonts && document.fonts.ready) document.fonts.ready.then(lay);
-      var rz; addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(lay, 150) });
-      if (reduce) { Ln[1].classList.add('on'); Rn[1].classList.add('ok'); cB.textContent = LF[1].t; cC.textContent = COURSES[1].t; cR.classList.add('show') }
-      else T(run, 900);
-    })();
-
     // animated feature bento
     (function () {
       var H = [30, 44, 38, 56, 48, 64, 52, 72, 60, 80, 66, 88], U = [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1];
@@ -4357,7 +4271,7 @@
       if (/Mac|iPhone|iPad/.test(navigator.platform || '')) { var k = document.getElementById('kbd'); if (k) k.textContent = '\u2318 K' }
       var TOOLS = [['Smart Screener', '#hub'], ['Sector Indices', '#faq'], ['Sector Turnover', '#hub'], ['Market Mood (MMI)', '#hub'], ['A/D Net Flow', '#faq'], ['AI Stock Analysis', '#faq'], ['Events Calendar', '#faq'], ['Bulk / Block Deals', '#faq'], ['Market News', '#faq'], ['Market Heatmap', '#hub'], ['Market Valuation', '#faq'], ['Multi-Demat Tracker', '#faq'], ['IPO Timetable', '#faq'], ['IPO Performance Tracker', '#faq']];
       var SEC = [['Learning path', '#path'], ['Features', '#features'], ['Questions (FAQ)', '#faq'], ['Log in or create an account', 'login.html']];
-      var ALL = [].concat(COURSES.map(function (c) { return ['Courses', c.t, '#courses'] }), TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
+      var ALL = [].concat(TOOLS.map(function (t) { return ['Market tools', t[0], t[1]] }), SEC.map(function (t) { return ['Sections', t[0], t[1]] }));
       function render() {
         var q = pin.value.trim().toLowerCase(), h = '', g = ''; vis = [];
         ALL.forEach(function (x) { if (q && x[1].toLowerCase().indexOf(q) < 0) return; if (x[0] !== g) { g = x[0]; h += '<div class="pg">' + g + '</div>' } h += '<div class="pi" data-i="' + vis.length + '">' + x[1] + '</div>'; vis.push(x) });
