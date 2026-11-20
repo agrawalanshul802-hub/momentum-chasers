@@ -6376,7 +6376,7 @@ const server = http.createServer(async (req, res) => {
       let data = '';
       request.on('data', chunk => {
         data += chunk;
-        if (data.length > 2e6) request.destroy();
+        if (data.length > 25e6) request.destroy();
       });
       request.on('end', () => {
         try {
@@ -6546,12 +6546,18 @@ const server = http.createServer(async (req, res) => {
         ? body.symbols.map(s => s.trim().toUpperCase()).filter(Boolean)
         : normalizedStocks.map(s => s.symbol);
 
+      const rawImages = Array.isArray(body.images) ? body.images : (body.image ? [body.image] : []);
+      const normalizedImages = rawImages.filter(img => typeof img === 'string' && img.trim().length > 0);
+      const primaryImage = normalizedImages[0] || (typeof body.image === 'string' ? body.image.trim() : '');
+
       const newIdea = {
         id: body.id || ('idea_' + Date.now()),
         title: body.title.trim(),
         category: (body.category || 'High Conviction').trim(),
         symbols: symbolsList,
         stocks: normalizedStocks,
+        image: primaryImage,
+        images: normalizedImages,
         timeframe: (body.timeframe || '2-4 Weeks').trim(),
         entry: (body.entry || 'CMP').trim(),
         target: (body.target || '').trim(),

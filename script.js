@@ -13660,9 +13660,67 @@
             ${escapeHtml(activeIdea.thesis)}
           </div>
         ` : ''}
+
+        ${(() => {
+          const imgs = Array.isArray(activeIdea.images) && activeIdea.images.length > 0
+            ? activeIdea.images
+            : (activeIdea.image ? [activeIdea.image] : []);
+          if (imgs.length === 0) return '';
+          return `
+            <div class="idea-images-section" style="margin-top:12px;">
+              <div style="font-size:11px;font-weight:700;color:var(--mu);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+                <span>📷 Chart Screenshots & Technical Analysis</span>
+                <span style="font-size:10px;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);padding:1px 6px;border-radius:8px;">${imgs.length} ${imgs.length === 1 ? 'Image' : 'Images'}</span>
+              </div>
+              <div class="idea-images-grid" style="display:flex;flex-wrap:wrap;gap:10px;">
+                ${imgs.map((src, i) => `
+                  <div class="idea-image-thumb-wrap" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#000;cursor:pointer;max-width:${imgs.length === 1 ? '100%' : '320px'};flex:1 1 240px;" onclick="window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(src)}', '${escapeHtml(activeIdea.title)}')">
+                    <img src="${escapeHtml(src)}" alt="${escapeHtml(activeIdea.title)} Chart ${i+1}" style="width:100%;height:${imgs.length === 1 ? 'auto' : '170px'};max-height:360px;object-fit:${imgs.length === 1 ? 'contain' : 'cover'};display:block;" loading="lazy">
+                    <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);">
+                      <span>🔍 Click to Zoom</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        })()}
       </div>
     `;
   }
+
+  // Fullscreen Lightbox Modal for Owner Idea Chart Screenshots
+  window.openOwnerIdeaLightbox = function(src, caption) {
+    let modal = document.getElementById('idea-image-lightbox-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'idea-image-lightbox-modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(3,7,18,0.94);backdrop-filter:blur(8px);z-index:999999;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+      modal.innerHTML = `
+        <div style="position:relative;max-width:95vw;max-height:92vh;display:flex;flex-direction:column;align-items:center;" onclick="event.stopPropagation()">
+          <button id="idea-lightbox-close-btn" style="position:absolute;top:-14px;right:-14px;background:#1e293b;color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.6);z-index:10;" title="Close">✕</button>
+          <img id="idea-lightbox-img" src="" alt="Chart Screenshot" style="max-width:100%;max-height:86vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 48px rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.18);">
+          <div id="idea-lightbox-caption" style="margin-top:10px;font-size:13px;color:#94a3b8;font-weight:600;text-align:center;"></div>
+        </div>
+      `;
+      modal.addEventListener('click', function() { modal.style.display = 'none'; });
+      const closeBtn = modal.querySelector('#idea-lightbox-close-btn');
+      if (closeBtn) closeBtn.addEventListener('click', function(e) { e.stopPropagation(); modal.style.display = 'none'; });
+      document.body.appendChild(modal);
+
+      window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+          modal.style.display = 'none';
+        }
+      });
+    }
+
+    const img = modal.querySelector('#idea-lightbox-img');
+    const cap = modal.querySelector('#idea-lightbox-caption');
+    if (img) img.src = src;
+    if (cap) cap.textContent = caption || '';
+    modal.style.display = 'flex';
+  };
 
   // 7A-1. FEATURE: SECTOR TURNOVER & MONEY FLOW HEATMAP (NSE BHAVCOPY DATA)
   // ==========================================================================
