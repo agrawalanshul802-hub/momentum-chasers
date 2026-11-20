@@ -9900,6 +9900,9 @@
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
+    heatmapAsOfDate: "20 Nov 2026 (Live 02:12 pm)",
+    heatmapIsLive: true,
+    heatmapDateLabel: "Live Market Feed",
     activeSectorIndex: "",
     heatmapSortBy: "mcap",      // "mcap", "volume", "turnover", "equal"
     heatmapPerfBy: "d",         // "d", "w", "15m"
@@ -10376,6 +10379,10 @@
 
     // Sync constituent stocks and indices for active Heatmap index via high-speed batch
     async syncHeatmapQuotes(interactive = false) {
+      if (typeof HeatmapLiveService !== "undefined") {
+        await HeatmapLiveService.sync(State.heatmapIndex || "Nifty 50", interactive);
+        return;
+      }
       try {
         const activeIdx = State.heatmapIndex || "Nifty 50";
         const currentStocks = (typeof getHeatmapStocksForIndex === "function") ? getHeatmapStocksForIndex(activeIdx) : (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) ? HEATMAP_NIFTY50_DATA : []);
@@ -17328,614 +17335,618 @@
   // ==========================================================================
 
   const HEATMAP_INDEX_STATS = {
-    "Nifty 50": { price: "25,514.30", chg: "+286.25 (+1.14%) ↗", isUp: true },
-    "Nifty Bank": { price: "63,063.00", chg: "+1,022.40 (+1.65%) ↗", isUp: true },
-    "Nifty IT": { price: "35,840.60", chg: "+352.10 (+0.99%) ↗", isUp: true },
-    "Nifty Auto": { price: "26,450.60", chg: "+390.20 (+1.50%) ↗", isUp: true },
-    "Nifty Pharma": { price: "23,120.40", chg: "+245.80 (+1.07%) ↗", isUp: true },
-    "All Stocks": { price: "25,514.30", chg: "+286.25 (+1.14%) ↗", isUp: true }
-  };
+    "Nifty 50": {
+        "price": "25,755.10",
+        "chg": "+240.80 (+0.94%) ↗",
+        "isUp": true
+    },
+    "Nifty Bank": {
+        "price": "64,461.90",
+        "chg": "+1398.90 (+2.22%) ↗",
+        "isUp": true
+    }
+};
 
   const HEATMAP_NIFTY50_DATA = [
   {
     "symbol": "RELIANCE",
     "name": "Reliance Industries",
-    "sector": "Oil & Gas",
-    "price": 1367,
-    "chg": 1.65,
-    "mcap": 50000,
-    "volume": "1.42 Cr",
+    "sector": "Oil & Gas & Energy",
+    "price": 1367.9,
+    "chg": -0.56,
+    "mcap": 1851107,
+    "volume": "82.2 L",
     "logoBg": "radial-gradient(circle, #fde047 30%, #d97706 90%)",
     "logoColor": "#ffffff",
     "logoText": "R"
   },
   {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services",
+    "sector": "Information Technology",
+    "price": 2378.9,
+    "chg": 1.55,
+    "mcap": 860707,
+    "volume": "25.7 L",
+    "logoBg": "linear-gradient(135deg, #1e3a8a, #3b82f6)",
+    "logoColor": "#ffffff",
+    "logoText": "TCS"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank",
+    "sector": "Banking & Finance",
+    "price": 846.6,
+    "chg": 3.02,
+    "mcap": 1306617,
+    "volume": "5.39 Cr",
+    "logoBg": "#004c8f",
+    "logoColor": "#ffffff",
+    "logoText": "HDFC"
+  },
+  {
     "symbol": "BHARTIARTL",
     "name": "Bharti Airtel",
     "sector": "Telecommunication",
-    "price": 2138.3,
-    "chg": -0.71,
-    "mcap": 50000,
-    "volume": "86.4 L",
+    "price": 2154.3,
+    "chg": 0.48,
+    "mcap": 1344164,
+    "volume": "36.5 L",
     "logoBg": "#dc2626",
     "logoColor": "#ffffff",
     "logoText": "airtel"
   },
   {
-    "symbol": "HDFCBANK",
-    "name": "HDFC Bank",
-    "sector": "Private Banks",
-    "price": 814.95,
-    "chg": -0.19,
-    "mcap": 50000,
-    "volume": "2.18 Cr",
-    "logoBg": "#003366",
-    "logoColor": "#ffffff",
-    "logoText": "HDFC"
-  },
-  {
     "symbol": "ICICIBANK",
     "name": "ICICI Bank",
-    "sector": "Private Banks",
-    "price": 1598.7,
-    "chg": 0.86,
-    "mcap": 50000,
-    "volume": "1.65 Cr",
-    "logoBg": "#831843",
+    "sector": "Banking & Finance",
+    "price": 1635.8,
+    "chg": 1.67,
+    "mcap": 1175179,
+    "volume": "1.28 Cr",
+    "logoBg": "linear-gradient(135deg, #b91c1c, #ea580c)",
     "logoColor": "#ffffff",
     "logoText": "i"
   },
   {
+    "symbol": "INFY",
+    "name": "Infosys",
+    "sector": "Information Technology",
+    "price": 1096.5,
+    "chg": 0.42,
+    "mcap": 444124,
+    "volume": "94.1 L",
+    "logoBg": "#007cc3",
+    "logoColor": "#ffffff",
+    "logoText": "Infy"
+  },
+  {
     "symbol": "SBIN",
     "name": "State Bank of India",
-    "sector": "PSU Banks",
-    "price": 1108.6,
-    "chg": 1.66,
-    "mcap": 50000,
-    "volume": "1.12 Cr",
-    "logoBg": "#0284c7",
+    "sector": "Banking & Finance",
+    "price": 1167.55,
+    "chg": 1,
+    "mcap": 1077721,
+    "volume": "1.17 Cr",
+    "logoBg": "#00a1e0",
     "logoColor": "#ffffff",
     "logoText": "SBI"
   },
   {
-    "symbol": "TCS",
-    "name": "Tata Consultancy Services",
-    "sector": "Information Technology",
-    "price": 2406.6,
-    "chg": 0.07,
-    "mcap": 50000,
-    "volume": "62.1 L",
-    "logoBg": "#1e40af",
+    "symbol": "ITC",
+    "name": "ITC Ltd",
+    "sector": "FMCG & Consumer",
+    "price": 300.25,
+    "chg": -0.25,
+    "mcap": 376294,
+    "volume": "94.6 L",
+    "logoBg": "linear-gradient(135deg, #1e3a8a, #dc2626)",
     "logoColor": "#ffffff",
-    "logoText": "TCS"
-  },
-  {
-    "symbol": "BAJFINANCE",
-    "name": "Bajaj Finance",
-    "sector": "NBFC & Financials",
-    "price": 1121.1,
-    "chg": 1,
-    "mcap": 50000,
-    "volume": "74.8 L",
-    "logoBg": "#1e40af",
-    "logoColor": "#ffffff",
-    "logoText": "B"
+    "logoText": "ITC"
   },
   {
     "symbol": "LT",
     "name": "Larsen & Toubro",
     "sector": "Construction & Infra",
-    "price": 4155.5,
-    "chg": 0.37,
-    "mcap": 50000,
-    "volume": "38.5 L",
-    "logoBg": "#003366",
+    "price": 4203.1,
+    "chg": -0.19,
+    "mcap": 578299,
+    "volume": "16.3 L",
+    "logoBg": "linear-gradient(135deg, #1e293b, #0284c7)",
     "logoColor": "#ffffff",
-    "logoText": "LT"
+    "logoText": "L&T"
   },
   {
-    "symbol": "SUNPHARMA",
-    "name": "Sun Pharmaceutical",
-    "sector": "Pharmaceuticals",
-    "price": 1870,
-    "chg": 0.13,
-    "mcap": 50000,
-    "volume": "44.2 L",
-    "logoBg": "#ea580c",
+    "symbol": "BAJFINANCE",
+    "name": "Bajaj Finance",
+    "sector": "Banking & Finance",
+    "price": 1115.85,
+    "chg": 2.1,
+    "mcap": 707231,
+    "volume": "76.6 L",
+    "logoBg": "#005a9c",
     "logoColor": "#ffffff",
-    "logoText": "SUN"
-  },
-  {
-    "symbol": "ADANIPORTS",
-    "name": "Adani Ports & SEZ",
-    "sector": "Infrastructure",
-    "price": 1917,
-    "chg": 1.27,
-    "mcap": 50000,
-    "volume": "52.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#334155",
-    "logoText": "adani"
-  },
-  {
-    "symbol": "TITAN",
-    "name": "Titan Company",
-    "sector": "Consumer Durables",
-    "price": 4908,
-    "chg": -0.04,
-    "mcap": 50000,
-    "volume": "26.3 L",
-    "logoBg": "#0f766e",
-    "logoColor": "#ffffff",
-    "logoText": "✦"
-  },
-  {
-    "symbol": "AXISBANK",
-    "name": "Axis Bank",
-    "sector": "Private Banks",
-    "price": 1369,
-    "chg": 1.98,
-    "mcap": 50000,
-    "volume": "88.1 L",
-    "logoBg": "#831843",
-    "logoColor": "#ffffff",
-    "logoText": "▲"
-  },
-  {
-    "symbol": "M&M",
-    "name": "Mahindra & Mahindra",
-    "sector": "Automobiles",
-    "price": 3399,
-    "chg": 1.8,
-    "mcap": 50000,
-    "volume": "64.9 L",
-    "logoBg": "#b91c1c",
-    "logoColor": "#ffffff",
-    "logoText": "m"
-  },
-  {
-    "symbol": "MARUTI",
-    "name": "Maruti Suzuki",
-    "sector": "Automobiles",
-    "price": 12625,
-    "chg": 0.43,
-    "mcap": 50000,
-    "volume": "14.2 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#dc2626",
-    "logoText": "MS"
-  },
-  {
-    "symbol": "INFY",
-    "name": "Infosys Limited",
-    "sector": "Information Technology",
-    "price": 1130,
-    "chg": -1.32,
-    "mcap": 50000,
-    "volume": "1.25 Cr",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "Infosys"
+    "logoText": "B"
   },
   {
     "symbol": "HCLTECH",
     "name": "HCL Technologies",
     "sector": "Information Technology",
-    "price": 1355.7,
-    "chg": -2.09,
-    "mcap": 50000,
-    "volume": "41.6 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#2563eb",
-    "logoText": "HCLTech"
-  },
-  {
-    "symbol": "ITC",
-    "name": "ITC Limited",
-    "sector": "FMCG",
-    "price": 293.3,
-    "chg": -0.61,
-    "mcap": 50000,
-    "volume": "1.92 Cr",
-    "logoBg": "#ffffff",
-    "logoColor": "#1e3a8a",
-    "logoText": "ITC"
-  },
-  {
-    "symbol": "ZOMATO",
-    "name": "Zomato Ltd (Eternal)",
-    "sector": "Internet & Consumer",
-    "price": 375.05,
-    "chg": 1.06,
-    "mcap": 50000,
-    "volume": "2.40 Cr",
-    "logoBg": "#e11d48",
+    "price": 1338.8,
+    "chg": 0.44,
+    "mcap": 362363,
+    "volume": "30.7 L",
+    "logoBg": "#0072c6",
     "logoColor": "#ffffff",
-    "logoText": "Z"
+    "logoText": "HCL"
   },
   {
-    "symbol": "JSWSTEEL",
-    "name": "JSW Steel",
-    "sector": "Iron & Steel Products",
-    "price": 1332,
-    "chg": -0.19,
-    "mcap": 50000,
-    "volume": "56.3 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#dc2626",
-    "logoText": "JSW"
-  },
-  {
-    "symbol": "NTPC",
-    "name": "NTPC Limited",
-    "sector": "Power & Utilities",
-    "price": 321.8,
-    "chg": 0.17,
-    "mcap": 50000,
-    "volume": "1.45 Cr",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "NTPC"
-  },
-  {
-    "symbol": "BAJAJ-AUTO",
-    "name": "Bajaj Auto",
-    "sector": "Automobiles",
-    "price": 10770,
-    "chg": 0.34,
-    "mcap": 50000,
-    "volume": "18.5 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "BA"
-  },
-  {
-    "symbol": "BAJAJFINSV",
-    "name": "Bajaj Finserv",
-    "sector": "NBFC & Financials",
-    "price": 1870.8,
-    "chg": 1.22,
-    "mcap": 50000,
-    "volume": "32.0 L",
-    "logoBg": "#1e40af",
+    "symbol": "MARUTI",
+    "name": "Maruti Suzuki India",
+    "sector": "Automobile & Auto Ancil",
+    "price": 14000,
+    "chg": 3.03,
+    "mcap": 440164,
+    "volume": "12.5 L",
+    "logoBg": "#00205b",
     "logoColor": "#ffffff",
-    "logoText": "B"
+    "logoText": "MS"
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "name": "Sun Pharmaceutical",
+    "sector": "Pharma & Healthcare",
+    "price": 1902.3,
+    "chg": 0.12,
+    "mcap": 456425,
+    "volume": "14.6 L",
+    "logoBg": "linear-gradient(135deg, #ea580c, #f59e0b)",
+    "logoColor": "#ffffff",
+    "logoText": "SUN"
+  },
+  {
+    "symbol": "M&M",
+    "name": "Mahindra & Mahindra",
+    "sector": "Automobile & Auto Ancil",
+    "price": 3562.9,
+    "chg": 1.54,
+    "mcap": 427820,
+    "volume": "26.3 L",
+    "logoBg": "#dc2626",
+    "logoColor": "#ffffff",
+    "logoText": "M&M"
   },
   {
     "symbol": "KOTAKBANK",
     "name": "Kotak Mahindra Bank",
-    "sector": "Private Banks",
-    "price": 497.25,
-    "chg": 0.62,
-    "mcap": 50000,
-    "volume": "92.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#dc2626",
-    "logoText": "∞"
+    "sector": "Banking & Finance",
+    "price": 512.2,
+    "chg": 1.83,
+    "mcap": 509554,
+    "volume": "1.42 Cr",
+    "logoBg": "#ed1c24",
+    "logoColor": "#ffffff",
+    "logoText": "kotak"
+  },
+  {
+    "symbol": "AXISBANK",
+    "name": "Axis Bank",
+    "sector": "Banking & Finance",
+    "price": 1439.6,
+    "chg": 4.26,
+    "mcap": 448409,
+    "volume": "1.50 Cr",
+    "logoBg": "#97144d",
+    "logoColor": "#ffffff",
+    "logoText": "AXIS"
+  },
+  {
+    "symbol": "TITAN",
+    "name": "Titan Company",
+    "sector": "FMCG & Consumer",
+    "price": 4611.5,
+    "chg": -1.88,
+    "mcap": 409184,
+    "volume": "12.9 L",
+    "logoBg": "#000000",
+    "logoColor": "#ffffff",
+    "logoText": "TITAN"
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "name": "UltraTech Cement",
+    "sector": "Commodities & Materials",
+    "price": 12813,
+    "chg": 2.01,
+    "mcap": 376785,
+    "volume": "3.8 L",
+    "logoBg": "#f59e0b",
+    "logoColor": "#000000",
+    "logoText": "UT"
+  },
+  {
+    "symbol": "NTPC",
+    "name": "NTPC Ltd",
+    "sector": "Power & Utilities",
+    "price": 321.1,
+    "chg": -1.2,
+    "mcap": 311360,
+    "volume": "71.0 L",
+    "logoBg": "#005596",
+    "logoColor": "#ffffff",
+    "logoText": "NTPC"
+  },
+  {
+    "symbol": "ONGC",
+    "name": "ONGC Ltd",
+    "sector": "Oil & Gas & Energy",
+    "price": 223.88,
+    "chg": -0.29,
+    "mcap": 281647,
+    "volume": "1.14 Cr",
+    "logoBg": "#8b0000",
+    "logoColor": "#ffffff",
+    "logoText": "ONGC"
   },
   {
     "symbol": "ADANIENT",
     "name": "Adani Enterprises",
     "sector": "Metals & Mining",
-    "price": 2745.1,
-    "chg": 3.24,
-    "mcap": 50000,
-    "volume": "48.2 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#334155",
-    "logoText": "adani"
-  },
-  {
-    "symbol": "ONGC",
-    "name": "Oil & Natural Gas Corp",
-    "sector": "Oil & Gas",
-    "price": 223.52,
-    "chg": -1.53,
-    "mcap": 50000,
-    "volume": "84.3 L",
-    "logoBg": "#831843",
+    "price": 2703.7,
+    "chg": 0.02,
+    "mcap": 366006,
+    "volume": "5.5 L",
+    "logoBg": "linear-gradient(135deg, #1e3a8a, #0d9488)",
     "logoColor": "#ffffff",
-    "logoText": "ONGC"
-  },
-  {
-    "symbol": "COALINDIA",
-    "name": "Coal India",
-    "sector": "Mining & Minerals",
-    "price": 391.55,
-    "chg": -1.5,
-    "mcap": 50000,
-    "volume": "76.4 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#15803d",
-    "logoText": "CIL"
-  },
-  {
-    "symbol": "ASIANPAINT",
-    "name": "Asian Paints",
-    "sector": "Paints & Coatings",
-    "price": 2625,
-    "chg": 2.02,
-    "mcap": 50000,
-    "volume": "32.6 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#ea580c",
-    "logoText": "ap"
+    "logoText": "ADANI"
   },
   {
     "symbol": "POWERGRID",
     "name": "Power Grid Corp",
     "sector": "Power & Utilities",
-    "price": 258,
-    "chg": -1.6,
-    "mcap": 50000,
-    "volume": "1.10 Cr",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "PG"
+    "price": 267.15,
+    "chg": 1,
+    "mcap": 248466,
+    "volume": "92.0 L",
+    "logoBg": "#00529b",
+    "logoColor": "#ffffff",
+    "logoText": "PGC"
   },
   {
     "symbol": "TATASTEEL",
     "name": "Tata Steel",
-    "sector": "Iron & Steel Products",
-    "price": 181.5,
-    "chg": -0.42,
-    "mcap": 50000,
-    "volume": "2.15 Cr",
-    "logoBg": "#ffffff",
-    "logoColor": "#1e40af",
-    "logoText": "TS"
+    "sector": "Metals & Mining",
+    "price": 178.15,
+    "chg": -1.51,
+    "mcap": 222186,
+    "volume": "4.03 Cr",
+    "logoBg": "#00487c",
+    "logoColor": "#ffffff",
+    "logoText": "TATA"
   },
   {
-    "symbol": "SHRIRAMFIN",
-    "name": "Shriram Finance",
-    "sector": "NBFC & Financials",
-    "price": 982.85,
-    "chg": 0.45,
-    "mcap": 50000,
-    "volume": "28.4 L",
+    "symbol": "COALINDIA",
+    "name": "Coal India",
+    "sector": "Metals & Mining",
+    "price": 390.05,
+    "chg": -0.37,
+    "mcap": 240377,
+    "volume": "70.8 L",
     "logoBg": "#f59e0b",
     "logoColor": "#000000",
-    "logoText": "SF"
+    "logoText": "CIL"
   },
   {
-    "symbol": "GRASIM",
-    "name": "Grasim Industries",
-    "sector": "Diversified",
-    "price": 3054.8,
-    "chg": -0.96,
-    "mcap": 50000,
-    "volume": "16.8 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#b91c1c",
-    "logoText": "G"
+    "symbol": "BAJAJFINSV",
+    "name": "Bajaj Finserv",
+    "sector": "Banking & Finance",
+    "price": 1900,
+    "chg": 0.8,
+    "mcap": 304047,
+    "volume": "8.8 L",
+    "logoBg": "#005a9c",
+    "logoColor": "#ffffff",
+    "logoText": "BFS"
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "name": "JSW Steel",
+    "sector": "Metals & Mining",
+    "price": 1322.3,
+    "chg": -1.09,
+    "mcap": 322890,
+    "volume": "18.4 L",
+    "logoBg": "#c4122f",
+    "logoColor": "#ffffff",
+    "logoText": "JSW"
   },
   {
     "symbol": "HINDUNILVR",
     "name": "Hindustan Unilever",
-    "sector": "FMCG",
-    "price": 2009.9,
-    "chg": 0.48,
-    "mcap": 50000,
-    "volume": "42.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#1e40af",
-    "logoText": "U"
+    "sector": "FMCG & Consumer",
+    "price": 2053,
+    "chg": -1.02,
+    "mcap": 482371,
+    "volume": "9.7 L",
+    "logoBg": "#005a9c",
+    "logoColor": "#ffffff",
+    "logoText": "HUL"
   },
   {
-    "symbol": "ULTRACEMCO",
-    "name": "UltraTech Cement",
-    "sector": "Cement",
-    "price": 12290,
-    "chg": 0.16,
-    "mcap": 50000,
-    "volume": "12.4 L",
-    "logoBg": "#fef08a",
-    "logoColor": "#1e293b",
-    "logoText": "UTC"
+    "symbol": "ADANIPORTS",
+    "name": "Adani Ports & SEZ",
+    "sector": "Services & Logistics",
+    "price": 1919.5,
+    "chg": 0.13,
+    "mcap": 442245,
+    "volume": "16.5 L",
+    "logoBg": "linear-gradient(135deg, #1e3a8a, #0d9488)",
+    "logoColor": "#ffffff",
+    "logoText": "APSEZ"
+  },
+  {
+    "symbol": "ASIANPAINT",
+    "name": "Asian Paints",
+    "sector": "FMCG & Consumer",
+    "price": 2602.8,
+    "chg": 0.3,
+    "mcap": 249469,
+    "volume": "3.1 L",
+    "logoBg": "#dc2626",
+    "logoColor": "#ffffff",
+    "logoText": "AP"
+  },
+  {
+    "symbol": "GRASIM",
+    "name": "Grasim Industries",
+    "sector": "Commodities & Materials",
+    "price": 3093.5,
+    "chg": -0.57,
+    "mcap": 209829,
+    "volume": "10.0 L",
+    "logoBg": "#c4122f",
+    "logoColor": "#ffffff",
+    "logoText": "GRASIM"
   },
   {
     "symbol": "BEL",
     "name": "Bharat Electronics",
-    "sector": "Aerospace & Defence",
-    "price": 399.55,
-    "chg": -0.46,
-    "mcap": 50000,
-    "volume": "95.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
+    "sector": "Capital Goods & Engineering",
+    "price": 402.4,
+    "chg": -0.45,
+    "mcap": 294145,
+    "volume": "35.4 L",
+    "logoBg": "#004b87",
+    "logoColor": "#ffffff",
     "logoText": "BEL"
-  },
-  {
-    "symbol": "HINDALCO",
-    "name": "Hindalco Industries",
-    "sector": "Metals & Mining",
-    "price": 927.75,
-    "chg": 0.48,
-    "mcap": 50000,
-    "volume": "62.5 L",
-    "logoBg": "#b91c1c",
-    "logoColor": "#ffffff",
-    "logoText": "HI"
-  },
-  {
-    "symbol": "EICHERMOT",
-    "name": "Eicher Motors",
-    "sector": "Automobiles",
-    "price": 7828,
-    "chg": 3.01,
-    "mcap": 50000,
-    "volume": "22.0 L",
-    "logoBg": "#dc2626",
-    "logoColor": "#ffffff",
-    "logoText": "EM"
   },
   {
     "symbol": "TECHM",
     "name": "Tech Mahindra",
     "sector": "Information Technology",
-    "price": 1762,
-    "chg": -0.81,
-    "mcap": 50000,
-    "volume": "35.8 L",
-    "logoBg": "#b91c1c",
+    "price": 1726.5,
+    "chg": 0.2,
+    "mcap": 152963,
+    "volume": "22.7 L",
+    "logoBg": "#e31837",
     "logoColor": "#ffffff",
-    "logoText": "m"
+    "logoText": "TM"
   },
   {
-    "symbol": "SBILIFE",
-    "name": "SBI Life Insurance",
-    "sector": "Insurance",
-    "price": 1815,
-    "chg": -0.69,
-    "mcap": 50000,
-    "volume": "26.1 L",
-    "logoBg": "#0284c7",
+    "symbol": "EICHERMOT",
+    "name": "Eicher Motors",
+    "sector": "Automobile & Auto Ancil",
+    "price": 8118.5,
+    "chg": 0.74,
+    "mcap": 222891,
+    "volume": "3.7 L",
+    "logoBg": "#dc2626",
     "logoColor": "#ffffff",
-    "logoText": "SL"
+    "logoText": "RE"
+  },
+  {
+    "symbol": "HINDALCO",
+    "name": "Hindalco Industries",
+    "sector": "Metals & Mining",
+    "price": 926.8,
+    "chg": 1.85,
+    "mcap": 205735,
+    "volume": "75.1 L",
+    "logoBg": "#c4122f",
+    "logoColor": "#ffffff",
+    "logoText": "HIND"
+  },
+  {
+    "symbol": "CIPLA",
+    "name": "Cipla Ltd",
+    "sector": "Pharma & Healthcare",
+    "price": 1413.7,
+    "chg": -0.34,
+    "mcap": 114211,
+    "volume": "9.5 L",
+    "logoBg": "#003865",
+    "logoColor": "#ffffff",
+    "logoText": "CIPLA"
   },
   {
     "symbol": "TRENT",
-    "name": "Trent Limited",
-    "sector": "Retail",
-    "price": 3176.3,
-    "chg": -0.86,
-    "mcap": 50000,
-    "volume": "31.4 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#15803d",
-    "logoText": "T"
-  },
-  {
-    "symbol": "BSE",
-    "name": "BSE Limited",
-    "sector": "Capital Markets",
-    "price": 3864.9,
-    "chg": -0.58,
-    "mcap": 50000,
-    "volume": "24.6 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#1e40af",
-    "logoText": "BSE"
+    "name": "Trent Ltd",
+    "sector": "FMCG & Consumer",
+    "price": 3261,
+    "chg": 1.12,
+    "mcap": 173887,
+    "volume": "9.6 L",
+    "logoBg": "#000000",
+    "logoColor": "#ffffff",
+    "logoText": "TRENT"
   },
   {
     "symbol": "NESTLEIND",
     "name": "Nestle India",
-    "sector": "FMCG",
-    "price": 1294.3,
-    "chg": -0.21,
-    "mcap": 50000,
-    "volume": "19.3 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "NI"
-  },
-  {
-    "symbol": "INDIGO",
-    "name": "InterGlobe Aviation",
-    "sector": "Aviation",
-    "price": 5611,
-    "chg": 1.21,
-    "mcap": 50000,
-    "volume": "28.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#1e40af",
-    "logoText": "6E"
-  },
-  {
-    "symbol": "JIOFIN",
-    "name": "Jio Financial Services",
-    "sector": "NBFC & Financials",
-    "price": 228.96,
-    "chg": 1.31,
-    "mcap": 50000,
-    "volume": "1.85 Cr",
-    "logoBg": "#dc2626",
+    "sector": "FMCG & Consumer",
+    "price": 1319.7,
+    "chg": 1.25,
+    "mcap": 254480,
+    "volume": "12.8 L",
+    "logoBg": "#005a9c",
     "logoColor": "#ffffff",
-    "logoText": "Jio"
+    "logoText": "NESTLE"
   },
   {
-    "symbol": "HDFCLIFE",
-    "name": "HDFC Life Insurance",
-    "sector": "Insurance",
-    "price": 595.05,
-    "chg": -1.56,
-    "mcap": 50000,
-    "volume": "45.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#dc2626",
-    "logoText": "HL"
+    "symbol": "DRREDDY",
+    "name": "Dr Reddy's Labs",
+    "sector": "Pharma & Healthcare",
+    "price": 1392.3,
+    "chg": -0.61,
+    "mcap": 116071,
+    "volume": "6.5 L",
+    "logoBg": "#6a1b9a",
+    "logoColor": "#ffffff",
+    "logoText": "RDY"
+  },
+  {
+    "symbol": "WIPRO",
+    "name": "Wipro Ltd",
+    "sector": "Information Technology",
+    "price": 184.22,
+    "chg": 0.16,
+    "mcap": 182264,
+    "volume": "1.22 Cr",
+    "logoBg": "#e91e63",
+    "logoColor": "#ffffff",
+    "logoText": "WIPRO"
+  },
+  {
+    "symbol": "BAJAJ-AUTO",
+    "name": "Bajaj Auto",
+    "sector": "Automobile & Auto Ancil",
+    "price": 10781,
+    "chg": -0.33,
+    "mcap": 296022,
+    "volume": "4.6 L",
+    "logoBg": "#005a9c",
+    "logoColor": "#ffffff",
+    "logoText": "BAJAJ"
   },
   {
     "symbol": "APOLLOHOSP",
     "name": "Apollo Hospitals",
-    "sector": "Healthcare",
-    "price": 8712.5,
-    "chg": -0.67,
-    "mcap": 50000,
-    "volume": "16.2 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0284c7",
-    "logoText": "AH"
-  },
-  {
-    "symbol": "DRREDDY",
-    "name": "Dr. Reddy's Laboratories",
-    "sector": "Pharmaceuticals",
-    "price": 1388,
-    "chg": 0.73,
-    "mcap": 50000,
-    "volume": "18.4 L",
-    "logoBg": "#7e22ce",
+    "sector": "Pharma & Healthcare",
+    "price": 9245,
+    "chg": 5.8,
+    "mcap": 132929,
+    "volume": "12.0 L",
+    "logoBg": "#00838f",
     "logoColor": "#ffffff",
-    "logoText": "DRL"
+    "logoText": "APOLLO"
   },
   {
-    "symbol": "CIPLA",
-    "name": "Cipla Limited",
-    "sector": "Pharmaceuticals",
-    "price": 1388,
-    "chg": -0.47,
-    "mcap": 50000,
-    "volume": "34.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0891b2",
-    "logoText": "Cipla"
-  },
-  {
-    "symbol": "TMPV",
-    "name": "Tata Motors PV",
-    "sector": "Automobiles",
-    "price": 259.2,
-    "chg": -1.22,
-    "mcap": 50000,
-    "volume": "1.95 Cr",
-    "logoBg": "#dc2626",
+    "symbol": "TATACONSUM",
+    "name": "Tata Consumer Products",
+    "sector": "FMCG & Consumer",
+    "price": 1155.9,
+    "chg": 1.04,
+    "mcap": 114401,
+    "volume": "14.6 L",
+    "logoBg": "#00487c",
     "logoColor": "#ffffff",
-    "logoText": "T"
+    "logoText": "TCP"
   },
   {
-    "symbol": "WIPRO",
-    "name": "Wipro Limited",
-    "sector": "Information Technology",
-    "price": 189.89,
-    "chg": -1.89,
-    "mcap": 50000,
-    "volume": "78.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#059669",
-    "logoText": "W"
+    "symbol": "SHRIRAMFIN",
+    "name": "Shriram Finance",
+    "sector": "Banking & Finance",
+    "price": 964,
+    "chg": -0.96,
+    "mcap": 226843,
+    "volume": "30.2 L",
+    "logoBg": "#f59e0b",
+    "logoColor": "#000000",
+    "logoText": "SFL"
+  },
+  {
+    "symbol": "BPCL",
+    "name": "Bharat Petroleum",
+    "sector": "Oil & Gas & Energy",
+    "price": 308.1,
+    "chg": 0,
+    "mcap": 133669,
+    "volume": "24.3 L",
+    "logoBg": "#005a9c",
+    "logoColor": "#ffffff",
+    "logoText": "BPCL"
   },
   {
     "symbol": "DIVISLAB",
     "name": "Divi's Laboratories",
-    "sector": "Pharmaceuticals",
-    "price": 11150,
-    "chg": 0.63,
-    "mcap": 50000,
-    "volume": "15.0 L",
-    "logoBg": "#ffffff",
-    "logoColor": "#0d9488",
-    "logoText": "DL"
+    "sector": "Pharma & Healthcare",
+    "price": 11141,
+    "chg": -0.33,
+    "mcap": 295759,
+    "volume": "3.2 L",
+    "logoBg": "#00695c",
+    "logoColor": "#ffffff",
+    "logoText": "DIVIS"
+  },
+  {
+    "symbol": "HEROMOTOCO",
+    "name": "Hero MotoCorp",
+    "sector": "Automobile & Auto Ancil",
+    "price": 5512.5,
+    "chg": -0.78,
+    "mcap": 110339,
+    "volume": "5.3 L",
+    "logoBg": "#dc2626",
+    "logoColor": "#ffffff",
+    "logoText": "HERO"
+  },
+  {
+    "symbol": "INDUSINDBK",
+    "name": "IndusInd Bank",
+    "sector": "Banking & Finance",
+    "price": 993.5,
+    "chg": 7.56,
+    "mcap": 77408,
+    "volume": "1.59 Cr",
+    "logoBg": "#8b0000",
+    "logoColor": "#ffffff",
+    "logoText": "IIB"
+  },
+  {
+    "symbol": "SBILIFE",
+    "name": "SBI Life Insurance",
+    "sector": "Banking & Finance",
+    "price": 1819.1,
+    "chg": 0.8,
+    "mcap": 182530,
+    "volume": "4.8 L",
+    "logoBg": "#00a1e0",
+    "logoColor": "#ffffff",
+    "logoText": "SBIL"
+  },
+  {
+    "symbol": "HDFCLIFE",
+    "name": "HDFC Life Insurance",
+    "sector": "Banking & Finance",
+    "price": 585.5,
+    "chg": 1.46,
+    "mcap": 127181,
+    "volume": "32.2 L",
+    "logoBg": "#004c8f",
+    "logoColor": "#ffffff",
+    "logoText": "HDFCL"
+  },
+  {
+    "symbol": "BRITANNIA",
+    "name": "Britannia Industries",
+    "sector": "FMCG & Consumer",
+    "price": 4880,
+    "chg": 0.25,
+    "mcap": 117544,
+    "volume": "3.0 L",
+    "logoBg": "#dc2626",
+    "logoColor": "#ffffff",
+    "logoText": "BRIT"
   }
 ];
 
@@ -25705,6 +25716,108 @@
     return "#15803d";                  // 3%+ deep emerald (HDFC Bank, ICICI Bank, M&M, NTPC)
   }
 
+
+  // ==========================================
+  // HEATMAP LIVE & EOD INTELLIGENCE SERVICE
+  // ==========================================
+  const HeatmapLiveService = {
+    quoteCache: {},
+    isSyncing: false,
+    lastSyncTime: 0,
+
+    async sync(indexName = (State.heatmapIndex || "Nifty 50"), force = false) {
+      if (this.isSyncing) return;
+      if (!force && Date.now() - this.lastSyncTime < 30 * 1000) return; // 30s throttle
+
+      this.isSyncing = true;
+      const syncBtn = document.getElementById("heatmap-sync-btn");
+      if (syncBtn) syncBtn.classList.add("spinning");
+
+      try {
+        const res = await fetch(`/api/heatmap?index=${encodeURIComponent(indexName)}${force ? '&force=true' : ''}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data && data.status === "success") {
+          State.heatmapAsOfDate = data.asOfDate || "20 Nov 2026";
+          State.heatmapIsLive = Boolean(data.isLive);
+          State.heatmapDateLabel = data.dateLabel || (data.isLive ? "Live Market Feed" : "EOD Market Close");
+
+          if (data.stats) {
+            Object.assign(HEATMAP_INDEX_STATS, data.stats);
+          }
+
+          if (Array.isArray(data.stocks) && data.stocks.length > 0) {
+            data.stocks.forEach(stk => {
+              if (stk && stk.symbol) {
+                this.quoteCache[stk.symbol] = stk;
+                if (typeof HM_STOCKS_MAP !== "undefined" && HM_STOCKS_MAP[stk.symbol]) {
+                  Object.assign(HM_STOCKS_MAP[stk.symbol], stk);
+                }
+                const n50Item = HEATMAP_NIFTY50_DATA.find(x => x.symbol === stk.symbol);
+                if (n50Item) Object.assign(n50Item, stk);
+              }
+            });
+          }
+
+          this.lastSyncTime = Date.now();
+          this.updateDOM();
+        }
+      } catch (err) {
+        console.warn("[HeatmapLiveService] Sync notice:", err.message);
+      } finally {
+        this.isSyncing = false;
+        if (syncBtn) syncBtn.classList.remove("spinning");
+      }
+    },
+
+    updateDOM() {
+      // 1. Update Date & Live Status Badge
+      const dateBadge = document.getElementById("heatmap-date-badge");
+      if (dateBadge) {
+        dateBadge.className = `heatmap-date-status-pill ${State.heatmapIsLive ? 'live' : 'eod'}`;
+        dateBadge.innerHTML = `
+          <span class="heatmap-status-dot"></span>
+          <span class="heatmap-date-text">${State.heatmapDateLabel}: ${State.heatmapAsOfDate}</span>
+        `;
+      }
+
+      // 2. Update Index Pill
+      const activeIdx = State.heatmapIndex || "Nifty 50";
+      const stats = HEATMAP_INDEX_STATS[activeIdx];
+      if (stats) {
+        const priceEl = document.querySelector(".heatmap-index-price");
+        const chgEl = document.querySelector(".heatmap-index-chg");
+        if (priceEl) priceEl.textContent = stats.price;
+        if (chgEl) {
+          chgEl.textContent = stats.chg;
+          chgEl.className = `heatmap-index-chg font-mono ${stats.isUp ? 'val-green' : 'val-red'}`;
+        }
+      }
+
+      // 3. Update Individual Tiles if in Heatmap View
+      const tiles = document.querySelectorAll(".heatmap-treemap-tile");
+      tiles.forEach(tile => {
+        const sym = tile.dataset.symbol;
+        const q = this.quoteCache[sym] || (typeof HM_STOCKS_MAP !== "undefined" ? HM_STOCKS_MAP[sym] : null);
+        if (q && q.price) {
+          const priceEl = tile.querySelector(".heatmap-tile-price");
+          const chgEl = tile.querySelector(".heatmap-tile-chg");
+          if (priceEl) {
+            priceEl.textContent = `₹${Number(q.price).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          }
+          if (chgEl && typeof q.chg === "number") {
+            const prefix = q.chg >= 0 ? "+" : "";
+            chgEl.textContent = `${prefix}${q.chg.toFixed(2)}%`;
+          }
+          if (typeof getHeatmapTileBg === "function") {
+            tile.style.background = getHeatmapTileBg(q.chg);
+          }
+        }
+      });
+    }
+  };
+
   function renderHeatmapView() {
     let rawIndex = State.heatmapIndex || "Nifty 50";
     const cleanIndex = String(rawIndex).replace(/^\d+[\.\s\-]+/, "").trim() || "Nifty 50";
@@ -26007,6 +26120,10 @@
             </h2>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div id="heatmap-date-badge" class="heatmap-date-status-pill live" title="Market Session Status and As-Of Date">
+              <span class="heatmap-status-dot"></span>
+              <span class="heatmap-date-text">Live Market Feed: 20 Nov 2026 (Live 02:12 pm)</span>
+            </div>
             <div class="heatmap-index-pill">
               <span class="mmi-live-dot" title="Live Yahoo Finance Feed Active"></span>
               <span class="heatmap-index-name">${isAllSectors ? "All Sectors" : activeIndex}</span>
@@ -26115,6 +26232,9 @@
         if (typeof ScreeningMantisClient !== "undefined") {
           promises.push(ScreeningMantisClient.syncSectorIndices());
           promises.push(ScreeningMantisClient.syncScannerSnapshot());
+        }
+        if (typeof HeatmapLiveService !== "undefined") {
+          promises.push(HeatmapLiveService.sync(State.heatmapIndex, true));
         }
         if (typeof YahooFinanceLiveService !== "undefined" && YahooFinanceLiveService.syncHeatmapQuotes) {
           promises.push(YahooFinanceLiveService.syncHeatmapQuotes(true));

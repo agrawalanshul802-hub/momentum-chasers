@@ -5853,6 +5853,128 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // 6b-2. Live Market Heatmap Intelligence Endpoint: /api/heatmap
+  if (pathname === '/api/heatmap') {
+    const targetIdx = (parsedUrl.query.index || 'Nifty 50').trim();
+    const isForce = parsedUrl.query.force === 'true';
+    const cacheKey = `heatmap_live_${targetIdx.toLowerCase()}`;
+    const cached = CACHE.get(cacheKey);
+    if (!isForce && cached && (Date.now() - cached.time < 60 * 1000)) { // 1-minute cache
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'HIT' });
+      res.end(cached.data);
+      return;
+    }
+
+    try {
+      const cacheFilePath = path.join(__dirname, 'data', 'heatmap-cache.json');
+      let baseData = null;
+      if (fs.existsSync(cacheFilePath)) {
+        baseData = JSON.parse(fs.readFileSync(cacheFilePath, 'utf8'));
+      }
+
+      const isBank = targetIdx.toLowerCase().includes('bank');
+      const idxKey = isBank ? "Nifty Bank" : "Nifty 50";
+      let stocks = (baseData?.indices?.[idxKey]) || [];
+      let stats = (baseData?.stats) || {
+        "Nifty 50": { price: "25,755.10", chg: "+240.80 (+0.94%) ↗", isUp: true },
+        "Nifty Bank": { price: "64,461.90", chg: "+1,398.90 (+2.22%) ↗", isUp: true }
+      };
+
+      const now = new Date();
+      const istDateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+      const istTimeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+      const hr = parseInt(now.toLocaleTimeString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }), 10);
+      const min = parseInt(now.toLocaleTimeString('en-US', { minute: 'numeric', timeZone: 'Asia/Kolkata' }), 10);
+      const day = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).getDay();
+      const isMarketHours = (day >= 1 && day <= 5) && ((hr > 9 || (hr === 9 && min >= 15)) && (hr < 15 || (hr === 15 && min <= 30)));
+
+      // If market is active or force refresh requested, try fetching live quotes
+      try {
+        const symbolsToFetch = stocks.map(s => s.symbol + '.NS').join(',') + (isBank ? ',^NSEBANK' : ',^NSEI');
+        const session = await yahooSession.getSession();
+        if (session && session.cookie && session.crumb) {
+          const qUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolsToFetch)}&crumb=${encodeURIComponent(session.crumb)}`;
+          const freshQuotes = await new Promise((resolve) => {
+            const req = https.get(qUrl, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Cookie': session.cookie
+              },
+              timeout: 4500
+            }, qRes => {
+              let body = '';
+              qRes.on('data', c => body += c);
+              qRes.on('end', () => {
+                try {
+                  const j = JSON.parse(body);
+                  resolve(j?.quoteResponse?.result || []);
+                } catch(e) { resolve([]); }
+              });
+            });
+            req.on('error', () => resolve([]));
+            req.on('timeout', function() { this.destroy(); resolve([]); });
+          });
+
+          if (freshQuotes && freshQuotes.length > 0) {
+            const qMap = {};
+            freshQuotes.forEach(q => {
+              const sym = (q.symbol || '').replace('.NS', '');
+              qMap[sym] = q;
+            });
+            stocks = stocks.map(s => {
+              const q = qMap[s.symbol];
+              if (q && typeof q.regularMarketPrice === 'number') {
+                return {
+                  ...s,
+                  price: q.regularMarketPrice,
+                  chg: +(q.regularMarketChangePercent || 0).toFixed(2),
+                  mcap: q.marketCap ? Math.round(q.marketCap / 10000000) : s.mcap
+                };
+              }
+              return s;
+            });
+
+            const indexQuote = qMap[isBank ? '^NSEBANK' : '^NSEI'];
+            if (indexQuote && typeof indexQuote.regularMarketPrice === 'number') {
+              const p = indexQuote.regularMarketPrice;
+              const c = indexQuote.regularMarketChange || 0;
+              const cp = indexQuote.regularMarketChangePercent || 0;
+              const isUp = c >= 0;
+              stats[idxKey] = {
+                price: p.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                chg: `${isUp ? '+' : ''}${c.toFixed(2)} (${isUp ? '+' : ''}${cp.toFixed(2)}%) ${isUp ? '↗' : '↘'}`,
+                isUp
+              };
+            }
+          }
+        }
+      } catch (liveErr) {
+        // Fall back gracefully to baseData cache
+      }
+
+      const responsePayload = {
+        status: "success",
+        index: idxKey,
+        isLive: isMarketHours,
+        dateLabel: isMarketHours ? "Live Market Feed" : "EOD Market Close",
+        asOfDate: isMarketHours ? `${istDateStr} (Live ${istTimeStr})` : (baseData?.asOfDate || `${istDateStr} Close`),
+        stats,
+        stocks
+      };
+
+      const outStr = JSON.stringify(responsePayload);
+      CACHE.set(cacheKey, { time: Date.now(), data: outStr });
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'MISS' });
+      res.end(outStr);
+      return;
+    } catch (err) {
+      console.warn('Heatmap endpoint error:', err.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: "error", error: err.message }));
+      return;
+    }
+  }
+
   // 6c. Live IPO Intelligence Endpoint: /api/ipo (Groww public IPO dashboard)
   if (pathname === '/api/ipo') {
     const cacheKey = 'ipo_live_data';

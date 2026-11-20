@@ -5019,6 +5019,62 @@ body.theme-white .netflow-interactive-hint {
     font-weight: 400;
 }
 
+
+.heatmap-date-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.heatmap-date-status-pill.live {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #10b981;
+}
+
+.heatmap-date-status-pill.eod {
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #60a5fa;
+}
+
+.heatmap-date-status-pill .heatmap-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.heatmap-date-status-pill.live .heatmap-status-dot {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+    animation: livePulse 2s infinite ease-in-out;
+}
+
+.heatmap-date-status-pill.eod .heatmap-status-dot {
+    background: #60a5fa;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+.heatmap-date-status-pill .heatmap-date-text {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+}
+
 .heatmap-index-pill {
     display: flex;
     align-items: center;
