@@ -14,6 +14,16 @@
       "price": "64,461.90",
       "chg": "+1398.90 (+2.22%) ↗",
       "isUp": true
+    },
+    "NIFTY IPO": {
+      "price": "2,440.10",
+      "chg": "+14.30 (+0.59%) ↗",
+      "isUp": true
+    },
+    "41. NIFTY IPO": {
+      "price": "2,440.10",
+      "chg": "+14.30 (+0.59%) ↗",
+      "isUp": true
     }
   },
   "indices": {
@@ -763,6 +773,370 @@
         "logoBg": "#0055a5",
         "logoColor": "#ffffff",
         "logoText": "CAN"
+      }
+    ],
+    "NIFTY IPO": [
+      {
+        "symbol": "HYUNDAI",
+        "name": "Hyundai Motor India Ltd.",
+        "sector": "Automobiles",
+        "price": 1845,
+        "chg": 1.79,
+        "mcap": 150000,
+        "volume": "18.5 L",
+        "logoBg": "#0284c7",
+        "logoColor": "#ffffff",
+        "logoText": "HYU"
+      },
+      {
+        "symbol": "BAJAJHFL",
+        "name": "Bajaj Housing Finance Ltd.",
+        "sector": "Housing Finance",
+        "price": 131.5,
+        "chg": 1.15,
+        "mcap": 109000,
+        "volume": "45.0 L",
+        "logoBg": "#1e40af",
+        "logoColor": "#ffffff",
+        "logoText": "BAJ"
+      },
+      {
+        "symbol": "MANKIND",
+        "name": "Mankind Pharma Ltd.",
+        "sector": "Pharmaceuticals",
+        "price": 2645,
+        "chg": -0.63,
+        "mcap": 106000,
+        "volume": "6.2 L",
+        "logoBg": "#059669",
+        "logoColor": "#ffffff",
+        "logoText": "MANKND"
+      },
+      {
+        "symbol": "NTPCGREEN",
+        "name": "NTPC Green Energy Ltd.",
+        "sector": "Renewable Energy",
+        "price": 122.5,
+        "chg": 0.8,
+        "mcap": 103000,
+        "volume": "3.8 Cr",
+        "logoBg": "#15803d",
+        "logoColor": "#ffffff",
+        "logoText": "NTP"
+      },
+      {
+        "symbol": "SWIGGY",
+        "name": "Swiggy Ltd.",
+        "sector": "Consumer Tech",
+        "price": 412,
+        "chg": -1.15,
+        "mcap": 98500,
+        "volume": "1.2 Cr",
+        "logoBg": "#ea580c",
+        "logoColor": "#ffffff",
+        "logoText": "SWI"
+      },
+      {
+        "symbol": "WAAREEENER",
+        "name": "Waaree Energies Ltd.",
+        "sector": "Solar Energy",
+        "price": 2840,
+        "chg": 1.15,
+        "mcap": 81500,
+        "volume": "12.0 L",
+        "logoBg": "#16a34a",
+        "logoColor": "#ffffff",
+        "logoText": "WAA"
+      },
+      {
+        "symbol": "IREDA",
+        "name": "Indian Renewable Energy Dev Agency",
+        "sector": "Green Financing",
+        "price": 204,
+        "chg": 1.25,
+        "mcap": 54800,
+        "volume": "1.8 Cr",
+        "logoBg": "#0d9488",
+        "logoColor": "#ffffff",
+        "logoText": "IREDA"
+      },
+      {
+        "symbol": "PREMIERENE",
+        "name": "Premier Energies Ltd.",
+        "sector": "Solar Manufacturing",
+        "price": 1085,
+        "chg": 1.28,
+        "mcap": 48900,
+        "volume": "8.5 L",
+        "logoBg": "#2563eb",
+        "logoColor": "#ffffff",
+        "logoText": "PRE"
+      },
+      {
+        "symbol": "MEDANTA",
+        "name": "Global Health Ltd (Medanta)",
+        "sector": "Healthcare",
+        "price": 1220,
+        "chg": 0.74,
+        "mcap": 32800,
+        "volume": "5.0 L",
+        "logoBg": "#dc2626",
+        "logoColor": "#ffffff",
+        "logoText": "MED"
+      },
+      {
+        "symbol": "OLAELEC",
+        "name": "Ola Electric Mobility Ltd.",
+        "sector": "EV Automobiles",
+        "price": 70.2,
+        "chg": -1.45,
+        "mcap": 31000,
+        "volume": "2.4 Cr",
+        "logoBg": "#1f2937",
+        "logoColor": "#ffffff",
+        "logoText": "OLA"
+      },
+      {
+        "symbol": "DOMS",
+        "name": "DOMS Industries Ltd.",
+        "sector": "FMCG / Stationery",
+        "price": 2740,
+        "chg": 1.25,
+        "mcap": 16600,
+        "volume": "4.5 L",
+        "logoBg": "#e11d48",
+        "logoColor": "#ffffff",
+        "logoText": "DOMS"
+      },
+      {
+        "symbol": "AFCONS",
+        "name": "Afcons Infrastructure Ltd.",
+        "sector": "Infrastructure",
+        "price": 448,
+        "chg": 2.91,
+        "mcap": 16500,
+        "volume": "18.0 L",
+        "logoBg": "#b91c1c",
+        "logoColor": "#ffffff",
+        "logoText": "AFC"
+      },
+      {
+        "symbol": "ACMESOLAR",
+        "name": "ACME Solar Holdings Ltd.",
+        "sector": "Solar Utilities",
+        "price": 252,
+        "chg": 0.3,
+        "mcap": 15250,
+        "volume": "25.0 L",
+        "logoBg": "#d97706",
+        "logoColor": "#ffffff",
+        "logoText": "ACM"
+      },
+      {
+        "symbol": "JYOTICNC",
+        "name": "Jyoti CNC Automation Ltd.",
+        "sector": "CNC Machinery",
+        "price": 1215,
+        "chg": -1.88,
+        "mcap": 13800,
+        "volume": "7.5 L",
+        "logoBg": "#4338ca",
+        "logoColor": "#ffffff",
+        "logoText": "JYOTI"
+      },
+      {
+        "symbol": "KRN",
+        "name": "KRN Heat Exchanger Ltd.",
+        "sector": "Engineering",
+        "price": 855,
+        "chg": -0.04,
+        "mcap": 5350,
+        "volume": "6.0 L",
+        "logoBg": "#9333ea",
+        "logoColor": "#ffffff",
+        "logoText": "KRN"
+      }
+    ],
+    "IPO": [
+      {
+        "symbol": "HYUNDAI",
+        "name": "Hyundai Motor India Ltd.",
+        "sector": "Automobiles",
+        "price": 1845,
+        "chg": 1.79,
+        "mcap": 150000,
+        "volume": "18.5 L",
+        "logoBg": "#0284c7",
+        "logoColor": "#ffffff",
+        "logoText": "HYU"
+      },
+      {
+        "symbol": "BAJAJHFL",
+        "name": "Bajaj Housing Finance Ltd.",
+        "sector": "Housing Finance",
+        "price": 131.5,
+        "chg": 1.15,
+        "mcap": 109000,
+        "volume": "45.0 L",
+        "logoBg": "#1e40af",
+        "logoColor": "#ffffff",
+        "logoText": "BAJ"
+      },
+      {
+        "symbol": "MANKIND",
+        "name": "Mankind Pharma Ltd.",
+        "sector": "Pharmaceuticals",
+        "price": 2645,
+        "chg": -0.63,
+        "mcap": 106000,
+        "volume": "6.2 L",
+        "logoBg": "#059669",
+        "logoColor": "#ffffff",
+        "logoText": "MANKND"
+      },
+      {
+        "symbol": "NTPCGREEN",
+        "name": "NTPC Green Energy Ltd.",
+        "sector": "Renewable Energy",
+        "price": 122.5,
+        "chg": 0.8,
+        "mcap": 103000,
+        "volume": "3.8 Cr",
+        "logoBg": "#15803d",
+        "logoColor": "#ffffff",
+        "logoText": "NTP"
+      },
+      {
+        "symbol": "SWIGGY",
+        "name": "Swiggy Ltd.",
+        "sector": "Consumer Tech",
+        "price": 412,
+        "chg": -1.15,
+        "mcap": 98500,
+        "volume": "1.2 Cr",
+        "logoBg": "#ea580c",
+        "logoColor": "#ffffff",
+        "logoText": "SWI"
+      },
+      {
+        "symbol": "WAAREEENER",
+        "name": "Waaree Energies Ltd.",
+        "sector": "Solar Energy",
+        "price": 2840,
+        "chg": 1.15,
+        "mcap": 81500,
+        "volume": "12.0 L",
+        "logoBg": "#16a34a",
+        "logoColor": "#ffffff",
+        "logoText": "WAA"
+      },
+      {
+        "symbol": "IREDA",
+        "name": "Indian Renewable Energy Dev Agency",
+        "sector": "Green Financing",
+        "price": 204,
+        "chg": 1.25,
+        "mcap": 54800,
+        "volume": "1.8 Cr",
+        "logoBg": "#0d9488",
+        "logoColor": "#ffffff",
+        "logoText": "IREDA"
+      },
+      {
+        "symbol": "PREMIERENE",
+        "name": "Premier Energies Ltd.",
+        "sector": "Solar Manufacturing",
+        "price": 1085,
+        "chg": 1.28,
+        "mcap": 48900,
+        "volume": "8.5 L",
+        "logoBg": "#2563eb",
+        "logoColor": "#ffffff",
+        "logoText": "PRE"
+      },
+      {
+        "symbol": "MEDANTA",
+        "name": "Global Health Ltd (Medanta)",
+        "sector": "Healthcare",
+        "price": 1220,
+        "chg": 0.74,
+        "mcap": 32800,
+        "volume": "5.0 L",
+        "logoBg": "#dc2626",
+        "logoColor": "#ffffff",
+        "logoText": "MED"
+      },
+      {
+        "symbol": "OLAELEC",
+        "name": "Ola Electric Mobility Ltd.",
+        "sector": "EV Automobiles",
+        "price": 70.2,
+        "chg": -1.45,
+        "mcap": 31000,
+        "volume": "2.4 Cr",
+        "logoBg": "#1f2937",
+        "logoColor": "#ffffff",
+        "logoText": "OLA"
+      },
+      {
+        "symbol": "DOMS",
+        "name": "DOMS Industries Ltd.",
+        "sector": "FMCG / Stationery",
+        "price": 2740,
+        "chg": 1.25,
+        "mcap": 16600,
+        "volume": "4.5 L",
+        "logoBg": "#e11d48",
+        "logoColor": "#ffffff",
+        "logoText": "DOMS"
+      },
+      {
+        "symbol": "AFCONS",
+        "name": "Afcons Infrastructure Ltd.",
+        "sector": "Infrastructure",
+        "price": 448,
+        "chg": 2.91,
+        "mcap": 16500,
+        "volume": "18.0 L",
+        "logoBg": "#b91c1c",
+        "logoColor": "#ffffff",
+        "logoText": "AFC"
+      },
+      {
+        "symbol": "ACMESOLAR",
+        "name": "ACME Solar Holdings Ltd.",
+        "sector": "Solar Utilities",
+        "price": 252,
+        "chg": 0.3,
+        "mcap": 15250,
+        "volume": "25.0 L",
+        "logoBg": "#d97706",
+        "logoColor": "#ffffff",
+        "logoText": "ACM"
+      },
+      {
+        "symbol": "JYOTICNC",
+        "name": "Jyoti CNC Automation Ltd.",
+        "sector": "CNC Machinery",
+        "price": 1215,
+        "chg": -1.88,
+        "mcap": 13800,
+        "volume": "7.5 L",
+        "logoBg": "#4338ca",
+        "logoColor": "#ffffff",
+        "logoText": "JYOTI"
+      },
+      {
+        "symbol": "KRN",
+        "name": "KRN Heat Exchanger Ltd.",
+        "sector": "Engineering",
+        "price": 855,
+        "chg": -0.04,
+        "mcap": 5350,
+        "volume": "6.0 L",
+        "logoBg": "#9333ea",
+        "logoColor": "#ffffff",
+        "logoText": "KRN"
       }
     ]
   }

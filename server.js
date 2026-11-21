@@ -5964,8 +5964,13 @@ const server = http.createServer(async (req, res) => {
         baseData = JSON.parse(fs.readFileSync(cacheFilePath, 'utf8'));
       }
 
-      const isBank = targetIdx.toLowerCase().includes('bank');
-      const idxKey = isBank ? "Nifty Bank" : "Nifty 50";
+      let idxKey = "Nifty 50";
+      if (targetIdx.toLowerCase().includes('bank')) idxKey = "Nifty Bank";
+      else if (targetIdx.toLowerCase().includes('ipo')) idxKey = "NIFTY IPO";
+      else {
+        const found = Object.keys(baseData?.indices || {}).find(k => k.toLowerCase() === targetIdx.toLowerCase() || targetIdx.toLowerCase().includes(k.toLowerCase()));
+        if (found) idxKey = found;
+      }
       let stocks = (baseData?.indices?.[idxKey]) || [];
       let stats = (baseData?.stats) || {
         "Nifty 50": { price: "25,755.10", chg: "+240.80 (+0.94%) ↗", isUp: true },

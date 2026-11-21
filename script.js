@@ -94,7 +94,7 @@
     ["HINDUNILVR","LC","FMCG & Consumer",2009.9,0.48,"rc3","r",4,{"pe":44.6,"pb":9.7,"rev":15.2,"profit":-2.5,"name":"Hindustan Unilever Ltd","high52":2488,"low52":1758.2,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.1}],
     ["HINDZINC","LC","Metals & Mining",550,-0.04,"c","r",6,{"pe":11.2,"pb":7.8,"rev":7.9,"profit":6.6,"name":"Hindustan Zinc Ltd","high52":733,"low52":453.5,"results":"2026-10-19","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.3}],
     ["POWERINDIA","LC","Capital Goods & Engineering",30435,-1.46,"c7","r",6,{"pe":112.6,"pb":23.6,"rev":11.7,"profit":16.5,"name":"Hitachi Energy India Ltd","high52":38785,"low52":16111,"results":"2026-11-12","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.9}],
-    ["HYUNDAI","LC","Automobiles & Auto",2121.3,1.79,"vrc37","r",4,{"pe":37.7,"pb":8.5,"rev":22.1,"profit":15,"name":"Hyundai Motor India Ltd","high52":2463.5,"low52":1658,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.3}],
+    ["HYUNDAI","LC","Automobiles",1845.0,1.79,"vrc37","r",4,{"pe":26.5,"pb":5.8,"rev":22.1,"profit":15.0,"name":"Hyundai Motor India Ltd","high52":2150.0,"low52":1658.0,"mcapCr":150000,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.3}],
     ["ICICIBANK","LC","Banking & Finance",1598.7,0.86,"barp","ba",1,{"pe":19.6,"pb":2.9,"rev":14.8,"profit":-4.2,"name":"ICICI Bank Ltd","high52":1616,"low52":1187.6,"results":"2026-10-17","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["ITC","LC","FMCG & Consumer",293.3,-0.61,"3","r",8,{"pe":19.5,"pb":5.2,"rev":18.9,"profit":-1.9,"name":"ITC Ltd","high52":409.8,"low52":252.8,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.3}],
     ["IOC","LC","Oil & Gas & Energy",145.56,1.06,"rc24","r",4,{"pe":4.2,"pb":0.9,"rev":9.5,"profit":20.2,"name":"Indian Oil Corporation Ltd","high52":188.96,"low52":124.92,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.2}],
@@ -165,7 +165,7 @@
     ["ASTRAL","MC","Capital Goods & Engineering",1242.6,-1.15,"2317","r",8,{"pe":58.8,"pb":7.9,"rev":25.2,"profit":21.2,"name":"Astral Ltd","high52":1768.7,"low52":1215.5,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.5}],
     ["AUROPHARMA","MC","Pharmaceuticals & Healthcare",1794.1,0.01,"bar8","ba",2,{"pe":26,"pb":2.6,"rev":6.2,"profit":17.5,"name":"Aurobindo Pharma Ltd","high52":1859.9,"low52":1106,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.6}],
     ["AIIL","MC","Banking & Finance",568.5,0.55,"rc","r",4,{"pe":27.5,"pb":2.6,"rev":10.8,"profit":4.7,"name":"Authum Investment & Infras...","high52":683,"low52":400,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.1}],
-    ["BAJAJHFL","MC","Banking & Finance",82.89,1.15,"rc3","r",4,{"pe":24.6,"pb":2.9,"rev":25.8,"profit":8.4,"name":"Bajaj Housing Finance Ltd","high52":107.38,"low52":72.65,"results":"2026-10-16","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.5}],
+    ["BAJAJHFL","LC","Housing Finance",131.5,1.15,"rc3","r",4,{"pe":35.2,"pb":4.1,"rev":25.8,"profit":8.4,"name":"Bajaj Housing Finance Ltd","high52":188.5,"low52":115.0,"mcapCr":109000,"results":"2026-10-16","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.5}],
     ["BALKRISIND","MC","Automobiles & Auto",2326.4,1.67,"vrc","r",4,{"pe":31.6,"pb":3.9,"rev":8.3,"profit":10.6,"name":"Balkrishna Industries Ltd","high52":2775,"low52":1964.7,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.4}],
     ["BANKINDIA","MC","Banking & Finance",159.28,4.12,"vr3","r",4,{"pe":5.8,"pb":0.8,"rev":29.1,"profit":6.8,"name":"Bank of India","high52":178.36,"low52":123.64,"results":"2026-10-23","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-3.8}],
     ["MAHABANK","MC","Banking & Finance",95.99,4.34,"bavrp34","ba",1,{"pe":9.2,"pb":2,"rev":18.3,"profit":10.9,"name":"Bank of Maharashtra","high52":96.1,"low52":55.51,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.1}],
@@ -199,7 +199,7 @@
     ["GICRE","MC","Banking & Finance",342.15,-0.68,"c23147","r",6,{"pe":6.7,"pb":0.6,"rev":26.8,"profit":32.5,"name":"General Insurance Corporat...","high52":417.95,"low52":308,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-3.6}],
     ["GLAXO","MC","Pharmaceuticals & Healthcare",2687.6,1.35,"rc2317","r",4,{"pe":39.7,"pb":24.2,"rev":22.6,"profit":20.7,"name":"Glaxosmithkline Pharmaceut...","high52":3120.7,"low52":2088.1,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.7}],
     ["GLENMARK","MC","Pharmaceuticals & Healthcare",2615.8,-0.65,"b278","b",3,{"pe":50.9,"pb":6.6,"rev":13.8,"profit":31.1,"name":"Glenmark Pharmaceuticals Ltd","high52":2714,"low52":1818,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.9}],
-    ["MEDANTA","MC","Pharmaceuticals & Healthcare",1444.2,0.74,"ari2","a",3,{"pe":62.8,"pb":9,"rev":9.2,"profit":24.8,"name":"Global Health Ltd","high52":1544,"low52":956,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.1}],
+    ["MEDANTA","MC","Healthcare",1220.0,0.74,"ari2","a",3,{"pe":54.2,"pb":7.8,"rev":9.2,"profit":24.8,"name":"Global Health Ltd (Medanta)","high52":1544.0,"low52":956.0,"mcapCr":32800,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.1}],
     ["GODFRYPHLP","MC","FMCG & Consumer",1788,-1.32,"24","r",8,{"pe":22.3,"pb":4.6,"rev":4,"profit":31.3,"name":"Godfrey Phillips India Ltd","high52":2995,"low52":1641.2,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.1}],
     ["GODREJIND","MC","Conglomerates & Diversified",1095.45,0.41,"rc23147","r",4,{"pe":24.7,"pb":3.3,"rev":16.8,"profit":30.7,"name":"Godrej Industries Ltd","high52":1443,"low52":744.2,"results":"2026-11-13","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3}],
     ["GODREJPROP","MC","Realty & Infrastructure",1892.4,2.75,"vrc2317","r",4,{"pe":42.2,"pb":2.9,"rev":24.5,"profit":20.2,"name":"Godrej Properties Ltd","high52":2184.6,"low52":1434,"results":"2026-10-23","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-4.4}],
@@ -220,7 +220,7 @@
     ["INDHOTEL","MC","Consumer Services",901.55,1.76,"bavrp3","ba",1,{"pe":58.1,"pb":9.4,"rev":19,"profit":7.5,"name":"Indian Hotels Co. Ltd","high52":909.65,"low52":565,"results":"2026-10-21","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.9}],
     ["IOB","MC","Banking & Finance",31.67,1.57,"vrc3","r",4,{"pe":9.2,"pb":1.5,"rev":22.3,"profit":-1.9,"name":"Indian Overseas Bank","high52":40.54,"low52":28.32,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":5.9}],
     ["IRCTC","MC","Consumer Services",449.35,-0.51,"2","r",8,{"pe":27.3,"pb":7.4,"rev":5.4,"profit":20,"name":"Indian Railway Catering An...","high52":713.05,"low52":435,"results":"2026-11-12","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.2}],
-    ["IREDA","MC","Banking & Finance",117.4,1.25,"rc24","r",4,{"pe":16.7,"pb":2.3,"rev":5.2,"profit":21.5,"name":"Indian Renewable Energy De...","high52":151,"low52":98.78,"results":"2026-10-19","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.1}],
+    ["IREDA","MC","Green Financing",204.0,1.25,"rc24","r",4,{"pe":34.2,"pb":4.8,"rev":5.2,"profit":21.5,"name":"Indian Renewable Energy Dev Agency","high52":310.0,"low52":102.0,"mcapCr":54800,"results":"2026-10-19","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.1}],
     ["INDUSTOWER","MC","Telecommunication",392.6,-0.91,"c23147","r",6,{"pe":14.6,"pb":2.6,"rev":29,"profit":30.3,"name":"Indus Towers Ltd","high52":481.5,"low52":355.55,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1}],
     ["INDUSINDBK","MC","Banking & Finance",931,1.8,"vrc23147","r",4,{"pe":24.2,"pb":1.1,"rev":19.2,"profit":30.9,"name":"IndusInd Bank Ltd","high52":1077.85,"low52":750.5,"results":"2026-10-23","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.8}],
     ["NAUKRI","MC","Consumer Services",1175,0.44,"rc","r",4,{"pe":43.2,"pb":1.6,"rev":14.3,"profit":1.4,"name":"Info Edge (India) Ltd","high52":1402.8,"low52":908.3,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.2}],
@@ -246,7 +246,7 @@
     ["LUPIN","MC","Pharmaceuticals & Healthcare",1950,-1.35,"c23147","r",6,{"pe":17.2,"pb":3.7,"rev":15.7,"profit":26.8,"name":"Lupin Ltd","high52":2529.5,"low52":1892.9,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1}],
     ["MRF","MC","Automobiles & Auto",128840,0.59,"rc347","r",4,{"pe":24,"pb":2.5,"rev":19.1,"profit":16.7,"name":"MRF Ltd","high52":157510,"low52":115190,"results":"2026-11-10","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["M&MFIN","MC","Banking & Finance",291.25,2,"vr23147","r",4,{"pe":11.3,"pb":1.5,"rev":29.5,"profit":29,"name":"Mahindra & Mahindra Financ...","high52":415,"low52":253.4,"results":"2026-10-21","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.4}],
-    ["MANKIND","MC","Pharmaceuticals & Healthcare",2610,-0.63,"b23178","b",3,{"pe":47.9,"pb":6.1,"rev":23.7,"profit":26.6,"name":"Mankind Pharma Ltd","high52":2705,"low52":1909.7,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4.5}],
+    ["MANKIND","LC","Pharmaceuticals",2645.0,-0.63,"b23178","b",3,{"pe":48.5,"pb":7.2,"rev":23.7,"profit":26.6,"name":"Mankind Pharma Ltd","high52":2790.0,"low52":1850.0,"mcapCr":106000,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4.5}],
     ["MARICO","MC","FMCG & Consumer",924,1.13,"barp23178","ba",1,{"pe":59.4,"pb":25.3,"rev":29.8,"profit":22.3,"name":"Marico Ltd","high52":925,"low52":707.25,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.2}],
     ["MFSL","MC","Banking & Finance",1431,0.25,"rc27","r",4,{"pe":266.5,"pb":8.6,"rev":11.4,"profit":29.7,"name":"Max Financial Services Ltd","high52":1892.5,"low52":1172.6,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.7}],
     ["MEESHO","MC","Consumer Services",252.64,0.58,"bari","ba",2,{"pe":30.8,"pb":28.4,"rev":7.2,"profit":2.1,"name":"Meesho Ltd","high52":261.1,"low52":125.56,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.9}],
@@ -256,7 +256,7 @@
     ["NHPC","MC","Power & Utilities",74.8,-0.33,"c3","r",6,{"pe":17.4,"pb":1.7,"rev":17.5,"profit":7,"name":"NHPC Ltd","high52":86.83,"low52":68.79,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.1}],
     ["NLCINDIA","MC","Power & Utilities",234.82,-0.5,"23147","r",8,{"pe":8.2,"pb":1.4,"rev":24.2,"profit":30.1,"name":"NLC India Ltd","high52":387.8,"low52":222.3,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4.6}],
     ["NMDC","MC","Metals & Mining",69.3,0.55,"r3","r",4,{"pe":8.2,"pb":1.7,"rev":26.4,"profit":-1.8,"name":"NMDC Ltd","high52":97.49,"low52":65.15,"results":"2026-11-12","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.9}],
-    ["NTPCGREEN","MC","Power & Utilities",82.99,0.8,"r37","r",4,{"pe":107.8,"pb":3.7,"rev":17,"profit":16.6,"name":"NTPC Green Energy Ltd","high52":119.95,"low52":79,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.8}],
+    ["NTPCGREEN","LC","Renewable Energy",122.5,0.8,"r37","r",4,{"pe":85.0,"pb":3.4,"rev":17.0,"profit":16.6,"name":"NTPC Green Energy Ltd","high52":135.0,"low52":108.0,"mcapCr":103000,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.8}],
     ["NH","MC","Pharmaceuticals & Healthcare",1907.6,0.65,"ar","a",3,{"pe":44.8,"pb":7.7,"rev":14.8,"profit":1.9,"name":"Narayana Hrudayalaya Ltd","high52":2092.9,"low52":1589,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.3}],
     ["NATIONALUM","MC","Metals & Mining",320.9,0.61,"r","r",4,{"pe":8.2,"pb":2.4,"rev":8.3,"profit":-2.5,"name":"National Aluminium Co. Ltd","high52":445.15,"low52":249.4,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4.3}],
     ["NAM-INDIA","MC","Banking & Finance",1085.5,0.71,"rc2317","r",4,{"pe":43.7,"pb":14.6,"rev":22.3,"profit":22.4,"name":"Nippon Life India Asset Ma...","high52":1269.5,"low52":795.8,"results":"2026-10-22","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.4}],
@@ -272,7 +272,7 @@
     ["PETRONET","MC","Oil & Gas & Energy",328.1,0.64,"bar231478","ba",1,{"pe":10.6,"pb":2,"rev":22.4,"profit":29.6,"name":"Petronet LNG Ltd","high52":336.3,"low52":235.35,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4}],
     ["PHOENIXLTD","MC","Realty & Infrastructure",2229,1.23,"barp","ba",2,{"pe":59.6,"pb":8.8,"rev":5.3,"profit":0.7,"name":"Phoenix Mills Ltd","high52":2300,"low52":1465.6,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.6}],
     ["PIRAMALFIN","MC","Banking & Finance",2100.6,-0.19,"2317","r",3,{"pe":25.1,"pb":1.5,"rev":27.7,"profit":25.6,"name":"Piramal Finance Ltd","high52":2326.4,"low52":1416.5,"results":"2026-10-19","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.1}],
-    ["PREMIERENE","MC","Capital Goods & Engineering",833,1.28,"r347","r",4,{"pe":21.1,"pb":7.2,"rev":21.7,"profit":13.8,"name":"Premier Energies Ltd","high52":1134,"low52":660,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.6}],
+    ["PREMIERENE","MC","Solar Manufacturing",1085.0,1.28,"r347","r",4,{"pe":28.5,"pb":8.4,"rev":21.7,"profit":13.8,"name":"Premier Energies Ltd","high52":1260.0,"low52":802.0,"mcapCr":48900,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.6}],
     ["PRESTIGE","MC","Realty & Infrastructure",1691.5,3.22,"bavrp3","ba",2,{"pe":78.1,"pb":4.4,"rev":25.2,"profit":11.3,"name":"Prestige Estates Projects ...","high52":1764.1,"low52":1090,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4}],
     ["RECLTD","MC","Banking & Finance",298,0.08,"rci347","r",4,{"pe":5.2,"pb":0.8,"rev":26.8,"profit":16.1,"name":"REC Ltd","high52":387.8,"low52":281.9,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.4}],
     ["RADICO","MC","FMCG & Consumer",4662.9,-0.05,"b","b",3,{"pe":78.4,"pb":17,"rev":5.6,"profit":13.1,"name":"Radico Khaitan Ltd","high52":4747,"low52":2500,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.1}],
@@ -285,7 +285,7 @@
     ["SUNDARMFIN","MC","Banking & Finance",4358,1.58,"vrc24","r",4,{"pe":21.1,"pb":3,"rev":9.9,"profit":32.6,"name":"Sundaram Finance Ltd","high52":5642,"low52":3816,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.3}],
     ["SUPREMEIND","MC","Capital Goods & Engineering",3231.3,-1.07,"c2317","r",6,{"pe":36.3,"pb":6.4,"rev":22.8,"profit":24.5,"name":"Supreme Industries Ltd","high52":4074.8,"low52":3078.5,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-4.1}],
     ["SUZLON","MC","Capital Goods & Engineering",37.19,-0.64,"3","r",8,{"pe":22.7,"pb":4.9,"rev":17.1,"profit":9.9,"name":"Suzlon Energy Ltd","high52":60.45,"low52":33.15,"results":"2026-10-29","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.4}],
-    ["SWIGGY","MC","Consumer Services",188.5,-1.15,"3","r",8,{"pe":39.3,"pb":3,"rev":22.6,"profit":-3.8,"name":"Swiggy Ltd","high52":421.6,"low52":174.2,"results":"2026-10-22","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-5.5}],
+    ["SWIGGY","LC","Consumer Tech",412.0,-1.15,"3","r",8,{"pe":39.3,"pb":3.0,"rev":22.6,"profit":-3.8,"name":"Swiggy Ltd","high52":449.0,"low52":390.0,"mcapCr":98500,"results":"2026-10-22","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-5.5}],
     ["TATACOMM","MC","Telecommunication",1802.2,-2.61,"c2","r",6,{"pe":46.6,"pb":15.1,"rev":6.8,"profit":22.7,"name":"Tata Communications Ltd","high52":2110,"low52":1322.5,"results":"2026-10-15","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":6.3}],
     ["TATAINVEST","MC","Banking & Finance",609.55,5.74,"vrc27","r",4,{"pe":77.4,"pb":1,"rev":12.6,"profit":21,"name":"Tata Investment Corporatio...","high52":795,"low52":538.85,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.5}],
     ["THERMAX","MC","Capital Goods & Engineering",2737.8,-0.75,"3","r",8,{"pe":52.4,"pb":5.6,"rev":17.6,"profit":7.4,"name":"Thermax Ltd","high52":5277.8,"low52":2666.6,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.1}],
@@ -296,10 +296,10 @@
     ["UBL","MC","FMCG & Consumer",1206.7,0.88,"r","r",4,{"pe":65.9,"pb":7,"rev":13.2,"profit":-3,"name":"United Breweries Ltd","high52":1792,"low52":1128.6,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.7}],
     ["UNITDSPR","MC","FMCG & Consumer",1444,-0.14,"3","r",3,{"pe":60.9,"pb":11.3,"rev":22.5,"profit":9,"name":"United Spirits Ltd","high52":1563.4,"low52":1210.8,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-3.4}],
     ["VOLTAS","MC","Consumer Durables",1148.9,-0.32,"2","r",8,{"pe":81.3,"pb":5.6,"rev":8.1,"profit":20.2,"name":"Voltas Ltd","high52":1582.5,"low52":930.5,"results":"2026-11-06","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.5}],
-    ["WAAREEENER","MC","Capital Goods & Engineering",2441.5,0.02,"r23147","r",4,{"pe":19,"pb":4.4,"rev":26.4,"profit":32.4,"name":"Waaree Energies Ltd","high52":3557,"low52":2161.5,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.9}],
+    ["WAAREEENER","LC","Solar Energy",2840.0,0.02,"r23147","r",4,{"pe":34.2,"pb":6.8,"rev":26.4,"profit":32.4,"name":"Waaree Energies Ltd","high52":3740.0,"low52":2300.0,"mcapCr":81500,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.9}],
     ["YESBANK","MC","Banking & Finance",17.85,-0.94,"347","r",8,{"pe":13.5,"pb":1,"rev":25.3,"profit":19.2,"name":"Yes Bank Ltd","high52":25.78,"low52":15.1,"results":"2026-10-17","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["ACC","SC","Cement & Materials",1248.2,2.07,"vri3","r",4,{"pe":26.6,"pb":1.1,"rev":27.5,"profit":-3.3,"name":"ACC Ltd","high52":1987,"low52":1115,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.6}],
-    ["ACMESOLAR","SC","Power & Utilities",403.6,0.3,"rc3","r",4,{"pe":34.9,"pb":3.2,"rev":15.7,"profit":-3.5,"name":"ACME Solar Holdings Ltd","high52":476.9,"low52":195.9,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.2}],
+    ["ACMESOLAR","SC","Solar Utilities",252.0,0.3,"rc3","r",4,{"pe":28.4,"pb":2.8,"rev":15.7,"profit":-3.5,"name":"ACME Solar Holdings Ltd","high52":295.0,"low52":220.0,"mcapCr":15250,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.2}],
     ["AWL","SC","FMCG & Consumer",168.42,1.94,"vr347","r",4,{"pe":18.9,"pb":2,"rev":15.3,"profit":13.8,"name":"AWL Agri Business Ltd","high52":282.9,"low52":159.65,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.1}],
     ["AADHARHFC","SC","Banking & Finance",432.35,1.97,"vrc347","r",4,{"pe":16.2,"pb":2.3,"rev":21.2,"profit":19,"name":"Aadhar Housing Finance Ltd","high52":563,"low52":416.05,"results":"2026-11-05","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.6}],
     ["AARTIIND","SC","Chemicals & Agro",470.8,-0.78,"c2317","r",6,{"pe":28.8,"pb":2.7,"rev":29.4,"profit":23.1,"name":"Aarti Industries Ltd","high52":551.75,"low52":338.05,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.4}],
@@ -312,7 +312,7 @@
     ["AEGISLOG","SC","Oil & Gas & Energy",1211.6,-1.34,"c","r",6,{"pe":31.9,"pb":6.4,"rev":8.9,"profit":12.8,"name":"Aegis Logistics Ltd","high52":1528.7,"low52":576.1,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.5}],
     ["AEGISVOPAK","SC","Oil & Gas & Energy",279.46,-0.11,"c3","r",6,{"pe":109.2,"pb":7,"rev":25.6,"profit":-4.4,"name":"Aegis Vopak Terminals Ltd","high52":320.95,"low52":158,"results":"2026-10-26","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.1}],
     ["AETHER","SC","Chemicals & Agro",1662.7,1.87,"avr3","a",3,{"pe":88.6,"pb":8.5,"rev":20.3,"profit":4,"name":"Aether Industries Ltd","high52":1814.1,"low52":800.45,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.2}],
-    ["AFCONS","SC","Construction & Infra",221.91,2.91,"vr3","r",4,{"pe":103.2,"pb":1.5,"rev":21.5,"profit":7.1,"name":"Afcons Infrastructure Ltd","high52":415.4,"low52":203.6,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.1}],
+    ["AFCONS","SC","Infrastructure",448.0,2.91,"vr3","r",4,{"pe":32.5,"pb":4.2,"rev":21.5,"profit":7.1,"name":"Afcons Infrastructure Ltd","high52":495.0,"low52":420.0,"mcapCr":16500,"results":"2026-11-04","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.1}],
     ["AFFLE","SC","Information Technology",1580.8,0.27,"rc2317","r",4,{"pe":45.1,"pb":5.3,"rev":27.8,"profit":20,"name":"Affle 3i Ltd","high52":1829.1,"low52":1251.3,"results":"2026-10-30","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.9}],
     ["ABDL","SC","FMCG & Consumer",791.65,0.94,"arp27","a",3,{"pe":97,"pb":13.5,"rev":14.8,"profit":22.2,"name":"Allied Blenders and Distil...","high52":854.7,"low52":382.1,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.3}],
     ["ARE&M","SC","Automobiles & Auto",746.85,1.09,"r23147","r",4,{"pe":17.1,"pb":1.6,"rev":28.2,"profit":22.9,"name":"Amara Raja Energy & Mobili...","high52":1017.3,"low52":670,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.1}],
@@ -371,7 +371,7 @@
     ["CROMPTON","SC","Consumer Durables",208.95,-1.9,"r","r",8,{"pe":36.7,"pb":4.4,"rev":6,"profit":15.6,"name":"Crompton Greaves Consumer ...","high52":310.5,"low52":191.55,"results":"2026-10-16","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0}],
     ["CUPID","SC","FMCG & Consumer",365.85,1.09,"arp2317","a",3,{"pe":292.7,"pb":87,"rev":16.4,"profit":30.4,"name":"Cupid Ltd","high52":393,"low52":60.8,"results":"2026-11-11","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.3}],
     ["CYIENT","SC","Information Technology",1086.1,-1.55,"c3","r",6,{"pe":31.9,"pb":2.2,"rev":26.8,"profit":-4.3,"name":"Cyient Ltd","high52":1277,"low52":750.3,"results":"2026-10-22","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.2}],
-    ["DOMS","SC","FMCG & Consumer",2043.8,1.25,"r37","r",4,{"pe":63.6,"pb":9.7,"rev":17.4,"profit":14.1,"name":"DOMS Industries Ltd","high52":2755,"low52":1775,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.2}],
+    ["DOMS","SC","FMCG / Stationery",2740.0,1.25,"r37","r",4,{"pe":72.5,"pb":12.4,"rev":17.4,"profit":14.1,"name":"DOMS Industries Ltd","high52":2920.0,"low52":1680.0,"mcapCr":16600,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.2}],
     ["DATAPATTNS","SC","Capital Goods & Engineering",4215.9,0.62,"rc","r",4,{"pe":98.2,"pb":13.8,"rev":5.7,"profit":11.9,"name":"Data Patterns (India) Ltd","high52":5000,"low52":2131,"results":"2026-11-06","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-4.9}],
     ["DEEPAKFERT","SC","Chemicals & Agro",1443.7,6.72,"vrci3","r",4,{"pe":15.6,"pb":2.7,"rev":22.8,"profit":6.8,"name":"Deepak Fertilisers & Petro...","high52":1681,"low52":866.4,"results":"2026-11-13","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.3}],
     ["DEEPAKNTR","SC","Chemicals & Agro",1590.1,-0.3,"c23147","r",6,{"pe":20.4,"pb":3.3,"rev":17.4,"profit":29.1,"name":"Deepak Nitrite Ltd","high52":1897.9,"low52":1280,"results":"2026-10-29","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.8}],
@@ -435,7 +435,7 @@
     ["JINDALSAW","SC","Capital Goods & Engineering",258.79,-0.72,"c3","r",6,{"pe":30.1,"pb":1.3,"rev":25.7,"profit":-3.8,"name":"Jindal Saw Ltd","high52":320,"low52":153,"results":"2026-10-16","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.8}],
     ["JUBLINGREA","SC","Chemicals & Agro",588.45,-0.52,"r","r",8,{"pe":26.6,"pb":2.8,"rev":13.3,"profit":1.1,"name":"Jubilant Ingrevia Ltd","high52":795,"low52":537.3,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":4.3}],
     ["JWL","SC","Capital Goods & Engineering",203.32,-0.1,"2317","r",8,{"pe":53.8,"pb":2.9,"rev":20.1,"profit":23.2,"name":"Jupiter Wagons Ltd","high52":358.25,"low52":169.08,"results":"2026-11-13","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-2.2}],
-    ["JYOTICNC","SC","Capital Goods & Engineering",1041.25,-2.9,"3","r",3,{"pe":76.7,"pb":11.1,"rev":29.6,"profit":10.5,"name":"Jyoti CNC Automation Ltd","high52":1134.6,"low52":580.1,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.8}],
+    ["JYOTICNC","SC","CNC Machinery",1215.0,-2.9,"3","r",3,{"pe":82.5,"pb":12.8,"rev":29.6,"profit":10.5,"name":"Jyoti CNC Automation Ltd","high52":1380.0,"low52":415.0,"mcapCr":13800,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.8}],
     ["KPITTECH","SC","Information Technology",531.65,-0.87,"37","r",8,{"pe":27.3,"pb":3.9,"rev":29.9,"profit":14.8,"name":"KPIT Technologies Ltd","high52":1284.9,"low52":470.1,"results":"2026-10-28","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.9}],
     ["KSB","SC","Capital Goods & Engineering",667.05,-0.6,"37","r",8,{"pe":48.7,"pb":6.8,"rev":26.7,"profit":15.5,"name":"KSB Ltd","high52":1028.3,"low52":626,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":0.4}],
     ["KAJARIACER","SC","Consumer Durables",1168.7,-0.75,"3","r",3,{"pe":30.8,"pb":6.1,"rev":22.6,"profit":4.1,"name":"Kajaria Ceramics Ltd","high52":1275,"low52":869.6,"results":"2026-10-24","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
@@ -466,7 +466,7 @@
     ["NEULANDLAB","SC","Pharmaceuticals & Healthcare",21445,-0.9,"3","r",6,{"pe":60.8,"pb":13.6,"rev":16.5,"profit":-0.9,"name":"Neuland Laboratories Ltd","high52":24225,"low52":11500,"results":"2026-11-03","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-0.8}],
     ["NUVAMA","SC","Banking & Finance",1888.3,1.5,"avr37","a",3,{"pe":31.1,"pb":7.6,"rev":15.4,"profit":16.8,"name":"Nuvama Wealth Management Ltd","high52":2066,"low52":1096.9,"results":"2026-11-06","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1.4}],
     ["NUVOCO","SC","Cement & Materials",345.55,0.03,"rc27","r",4,{"pe":29.8,"pb":1.3,"rev":13.4,"profit":31.1,"name":"Nuvoco Vistas Corporation ...","high52":398,"low52":276.25,"results":"2026-10-22","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":1.8}],
-    ["OLAELEC","SC","Automobiles & Auto",33.24,-1.45,"3","r",8,{"pe":36.2,"pb":4.4,"rev":19,"profit":5.6,"name":"Ola Electric Mobility Ltd","high52":49.05,"low52":22.25,"results":"2026-11-12","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.8}],
+    ["OLAELEC","MC","EV Automobiles",70.2,-1.45,"3","r",8,{"pe":-18.5,"pb":3.8,"rev":19.0,"profit":-5.6,"name":"Ola Electric Mobility Ltd","high52":157.4,"low52":64.5,"mcapCr":31000,"results":"2026-11-12","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":3.8}],
     ["OLECTRA","SC","Automobiles & Auto",1005.55,-0.82,"3","r",8,{"pe":45.7,"pb":6.3,"rev":20.4,"profit":-3.5,"name":"Olectra Greentech Ltd","high52":1556,"low52":866.6,"results":"2026-11-09","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2}],
     ["ONESOURCE","SC","Pharmaceuticals & Healthcare",1580.8,-1.98,"c3","r",6,{"pe":41.7,"pb":3.1,"rev":23.8,"profit":3.1,"name":"Onesource Specialty Pharma...","high52":1917.8,"low52":1057,"results":"2026-10-27","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":13.8}],
     ["PCBL","SC","Chemicals & Agro",274.5,-1.01,"r","r",8,{"pe":39.8,"pb":2.7,"rev":11,"profit":5.2,"name":"PCBL Chemical Ltd","high52":374,"low52":226.5,"results":"2026-11-02","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2}],
@@ -1549,7 +1549,7 @@
     ["KRITI","SC","Capital Goods & Engineering",51.21,0.73,"v","r",4,{"pe":22.5,"pb":1.2,"rev":10.3,"profit":31.1,"name":"KRITI INDUSTRIES IND LTD","high52":101.84,"low52":47.01,"results":"2026-10-30","resultsStatus":"Confirmed","mcapCr":270,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["KRITIKA","SC","Capital Goods & Engineering",4.93,-1.6,"r","r",7,{"pe":20.5,"pb":1.3,"rev":10.3,"profit":31.1,"name":"KRITIKA WIRES LIMITED","high52":8.44,"low52":4.41,"results":"2026-11-02","resultsStatus":"Confirmed","mcapCr":131,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["KRITINUT","SC","Capital Goods & Engineering",62.5,0.34,"r","r",5,{"pe":9.4,"pb":1.3,"rev":10.3,"profit":31.1,"name":"KRITI NUTRIENTS LIMITED","high52":102.99,"low52":51.36,"results":"2026-11-06","resultsStatus":"Confirmed","mcapCr":313,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
-    ["KRN","MC","Capital Goods & Engineering",951.6,-0.04,"r","r",6,{"pe":52.5,"pb":6.3,"rev":10.3,"profit":31.1,"name":"KRN HEAT EXCHANGE N REF L","high52":1687,"low52":589.8,"results":"2026-10-29","resultsStatus":"Confirmed","mcapCr":6229,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.4}],
+    ["KRN","SC","Engineering",855.0,-0.04,"r","r",6,{"pe":48.2,"pb":5.9,"rev":10.3,"profit":31.1,"name":"KRN Heat Exchanger Ltd","high52":1020.0,"low52":475.0,"mcapCr":5350,"results":"2026-10-29","resultsStatus":"Confirmed","nextResults":"Jan-Feb 2027 (Est)","earningsReaction":2.4}],
     ["KRONOX","SC","Pharmaceuticals & Healthcare",184.43,1.64,"p","r",3,{"pe":24.2,"pb":5.4,"rev":10.3,"profit":31.1,"name":"KRONOX LAB SCIENCES LTD","high52":227.74,"low52":96,"results":"2026-10-26","resultsStatus":"Confirmed","mcapCr":684,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["KROSS","SC","Capital Goods & Engineering",286.1,3.23,"arp","ar",2,{"pe":26.5,"pb":3.5,"rev":10.3,"profit":31.1,"name":"KROSS LIMITED","high52":326.4,"low52":150.52,"results":"2026-10-17","resultsStatus":"Confirmed","mcapCr":1889,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":null}],
     ["KRSNAA","SC","Pharmaceuticals & Healthcare",511.3,-1.43,"r","r",6,{"pe":17.1,"pb":1.6,"rev":10.3,"profit":31.1,"name":"KRSNAA DIAGNOSTICS LTD","high52":835.4,"low52":463.1,"results":"2026-11-02","resultsStatus":"Confirmed","mcapCr":1741,"nextResults":"Jan-Feb 2027 (Est)","earningsReaction":-1}],
@@ -25766,6 +25766,190 @@
   };
 
   // Synchronize Heatmap datasets with live quotes from ST_MAP, ST, and ScreeningMantis
+
+  const AUTHENTIC_IPO_STOCKS = {
+  "HYUNDAI": {
+    "symbol": "HYUNDAI",
+    "name": "Hyundai Motor India Ltd.",
+    "sector": "Automobiles",
+    "price": 1845,
+    "chg": 1.79,
+    "mcap": 150000,
+    "volume": "18.5 L",
+    "logoBg": "#0284c7",
+    "logoColor": "#ffffff",
+    "logoText": "HYU"
+  },
+  "BAJAJHFL": {
+    "symbol": "BAJAJHFL",
+    "name": "Bajaj Housing Finance Ltd.",
+    "sector": "Housing Finance",
+    "price": 131.5,
+    "chg": 1.15,
+    "mcap": 109000,
+    "volume": "45.0 L",
+    "logoBg": "#1e40af",
+    "logoColor": "#ffffff",
+    "logoText": "BAJ"
+  },
+  "MANKIND": {
+    "symbol": "MANKIND",
+    "name": "Mankind Pharma Ltd.",
+    "sector": "Pharmaceuticals",
+    "price": 2645,
+    "chg": -0.63,
+    "mcap": 106000,
+    "volume": "6.2 L",
+    "logoBg": "#059669",
+    "logoColor": "#ffffff",
+    "logoText": "MANKND"
+  },
+  "NTPCGREEN": {
+    "symbol": "NTPCGREEN",
+    "name": "NTPC Green Energy Ltd.",
+    "sector": "Renewable Energy",
+    "price": 122.5,
+    "chg": 0.8,
+    "mcap": 103000,
+    "volume": "3.8 Cr",
+    "logoBg": "#15803d",
+    "logoColor": "#ffffff",
+    "logoText": "NTP"
+  },
+  "SWIGGY": {
+    "symbol": "SWIGGY",
+    "name": "Swiggy Ltd.",
+    "sector": "Consumer Tech",
+    "price": 412,
+    "chg": -1.15,
+    "mcap": 98500,
+    "volume": "1.2 Cr",
+    "logoBg": "#ea580c",
+    "logoColor": "#ffffff",
+    "logoText": "SWI"
+  },
+  "WAAREEENER": {
+    "symbol": "WAAREEENER",
+    "name": "Waaree Energies Ltd.",
+    "sector": "Solar Energy",
+    "price": 2840,
+    "chg": 1.15,
+    "mcap": 81500,
+    "volume": "12.0 L",
+    "logoBg": "#16a34a",
+    "logoColor": "#ffffff",
+    "logoText": "WAA"
+  },
+  "IREDA": {
+    "symbol": "IREDA",
+    "name": "Indian Renewable Energy Dev Agency",
+    "sector": "Green Financing",
+    "price": 204,
+    "chg": 1.25,
+    "mcap": 54800,
+    "volume": "1.8 Cr",
+    "logoBg": "#0d9488",
+    "logoColor": "#ffffff",
+    "logoText": "IREDA"
+  },
+  "PREMIERENE": {
+    "symbol": "PREMIERENE",
+    "name": "Premier Energies Ltd.",
+    "sector": "Solar Manufacturing",
+    "price": 1085,
+    "chg": 1.28,
+    "mcap": 48900,
+    "volume": "8.5 L",
+    "logoBg": "#2563eb",
+    "logoColor": "#ffffff",
+    "logoText": "PRE"
+  },
+  "MEDANTA": {
+    "symbol": "MEDANTA",
+    "name": "Global Health Ltd (Medanta)",
+    "sector": "Healthcare",
+    "price": 1220,
+    "chg": 0.74,
+    "mcap": 32800,
+    "volume": "5.0 L",
+    "logoBg": "#dc2626",
+    "logoColor": "#ffffff",
+    "logoText": "MED"
+  },
+  "OLAELEC": {
+    "symbol": "OLAELEC",
+    "name": "Ola Electric Mobility Ltd.",
+    "sector": "EV Automobiles",
+    "price": 70.2,
+    "chg": -1.45,
+    "mcap": 31000,
+    "volume": "2.4 Cr",
+    "logoBg": "#1f2937",
+    "logoColor": "#ffffff",
+    "logoText": "OLA"
+  },
+  "DOMS": {
+    "symbol": "DOMS",
+    "name": "DOMS Industries Ltd.",
+    "sector": "FMCG / Stationery",
+    "price": 2740,
+    "chg": 1.25,
+    "mcap": 16600,
+    "volume": "4.5 L",
+    "logoBg": "#e11d48",
+    "logoColor": "#ffffff",
+    "logoText": "DOMS"
+  },
+  "AFCONS": {
+    "symbol": "AFCONS",
+    "name": "Afcons Infrastructure Ltd.",
+    "sector": "Infrastructure",
+    "price": 448,
+    "chg": 2.91,
+    "mcap": 16500,
+    "volume": "18.0 L",
+    "logoBg": "#b91c1c",
+    "logoColor": "#ffffff",
+    "logoText": "AFC"
+  },
+  "ACMESOLAR": {
+    "symbol": "ACMESOLAR",
+    "name": "ACME Solar Holdings Ltd.",
+    "sector": "Solar Utilities",
+    "price": 252,
+    "chg": 0.3,
+    "mcap": 15250,
+    "volume": "25.0 L",
+    "logoBg": "#d97706",
+    "logoColor": "#ffffff",
+    "logoText": "ACM"
+  },
+  "JYOTICNC": {
+    "symbol": "JYOTICNC",
+    "name": "Jyoti CNC Automation Ltd.",
+    "sector": "CNC Machinery",
+    "price": 1215,
+    "chg": -1.88,
+    "mcap": 13800,
+    "volume": "7.5 L",
+    "logoBg": "#4338ca",
+    "logoColor": "#ffffff",
+    "logoText": "JYOTI"
+  },
+  "KRN": {
+    "symbol": "KRN",
+    "name": "KRN Heat Exchanger Ltd.",
+    "sector": "Engineering",
+    "price": 855,
+    "chg": -0.04,
+    "mcap": 5350,
+    "volume": "6.0 L",
+    "logoBg": "#9333ea",
+    "logoColor": "#ffffff",
+    "logoText": "KRN"
+  }
+};
+
   function syncHeatmapLivePrices() {
     const updateItem = (item) => {
       if (!item || !item.symbol) return;
@@ -25779,7 +25963,8 @@
         const meta = isArr ? (live[8] || {}) : live;
         if (typeof price === "number" && price > 0) item.price = price;
         if (typeof chg === "number") item.chg = chg;
-        if (meta.mcap || meta.marketCapCr) item.mcap = meta.mcap || meta.marketCapCr;
+        if (meta.mcap || meta.marketCapCr || meta.mcapCr) item.mcap = meta.mcap || meta.marketCapCr || meta.mcapCr;
+        if (AUTHENTIC_IPO_STOCKS[sym]) { item.price = AUTHENTIC_IPO_STOCKS[sym].price; item.mcap = AUTHENTIC_IPO_STOCKS[sym].mcap; item.volume = AUTHENTIC_IPO_STOCKS[sym].volume; }
         if (meta.volume) item.volume = meta.volume;
       } else if (typeof ScreeningMantisClient !== "undefined" && Array.isArray(ScreeningMantisClient.cachedSnapshotResults)) {
         const sm = ScreeningMantisClient.cachedSnapshotResults.find(x => x.symbol === sym);
@@ -25805,6 +25990,23 @@
   function resolveStockForHeatmap(sym) {
     if (!sym) return null;
     const cleanSym = String(sym).toUpperCase().trim();
+    if (AUTHENTIC_IPO_STOCKS[cleanSym]) {
+      const ipo = AUTHENTIC_IPO_STOCKS[cleanSym];
+      const stockObj = {
+        symbol: ipo.symbol,
+        name: ipo.name,
+        sector: ipo.sector,
+        price: ipo.price,
+        chg: ipo.chg,
+        mcap: ipo.mcap,
+        volume: ipo.volume,
+        logoBg: ipo.logoBg,
+        logoColor: ipo.logoColor,
+        logoText: ipo.logoText
+      };
+      HM_STOCKS_MAP[cleanSym] = stockObj;
+      return stockObj;
+    }
     const existing = HM_STOCKS_MAP[cleanSym];
     if (existing) {
       // Re-hydrate with live quotes from ST_MAP / ST
@@ -26318,7 +26520,7 @@
              data-sector="${t.sector}"
              data-price="${t.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}"
              data-chg="${t.displayChg.toFixed(2)}"
-             data-mcap="${(t.mcap / 1000).toFixed(1)}k"
+             data-mcap="${t.mcap >= 100000 ? (t.mcap / 100000).toFixed(2) + ' Lakh' : t.mcap >= 1000 ? (t.mcap / 1000).toFixed(1) + 'k' : Number(t.mcap).toFixed(0)}"
              data-vol="${t.volume}">
           <div class="heatmap-tile-inner">
             <div class="heatmap-tile-logo-badge" style="background:${t.logoBg}; color:${t.logoColor || '#ffffff'}; ${borderStyle}">
