@@ -4398,8 +4398,8 @@
       h = Math.imul(h ^ sym.charCodeAt(i), 16777619);
     }
     const ratio = ((h >>> 0) % 10000) / 10000;
-    const pStart = new Date("2024-10-24T00:00:00").getTime();
-    const pEnd   = new Date("2024-11-14T00:00:00").getTime();
+    const pStart = new Date("2026-10-24T00:00:00").getTime();
+    const pEnd   = new Date("2026-11-14T00:00:00").getTime();
     const pDt = new Date(pStart + ratio * (pEnd - pStart));
     if (pDt.getDay() === 6) pDt.setDate(pDt.getDate() + 2);
     if (pDt.getDay() === 0) pDt.setDate(pDt.getDate() + 1);
@@ -4409,7 +4409,7 @@
 
     return {
       prev: fmt(pDt),
-      next: "Jan-Feb 2027 (Est)",
+      next: "Jan–Feb 2027 (Est)",
       reaction: null,
       status: "Confirmed"
     };
@@ -4417,15 +4417,15 @@
 
   function getStockEarningsDates(stock) {
     if (!stock) return {
-      next: "Jan–Feb 2025 (Est)",
-      nextRaw: "2025-01-25",
-      prev: "13 Nov 2024",
-      prevRaw: "2024-11-13",
+      next: "Jan–Feb 2027 (Est)",
+      nextRaw: "2027-01-25",
+      prev: "13 Nov 2026",
+      prevRaw: "2026-11-13",
       reaction: null,
       reactionNum: 0,
       isPast: true,
       status: "Confirmed",
-      quarterLabel: "Q3 FY25",
+      quarterLabel: "Q3 FY27",
       daysToGo: 45
     };
     if (stock._cachedEarnings) return stock._cachedEarnings;
@@ -4439,28 +4439,39 @@
     let reactionNum = typeof meta.earningsReaction === "number" ? meta.earningsReaction : null;
     let status = meta.resultsStatus || "Confirmed";
 
-    // Guard against stale placeholders (like 2026-11-28 or non-2026 dates)
-    const isValidPrev = prevRaw && prevRaw.startsWith("2026-") && !prevRaw.startsWith("2026-11-28");
-    if (!isValidPrev) {
-      const clean = getCleanEarningsForSymbol(sym, cap);
+    // If known Indian calendar has exact authentic date and reaction, prioritize it
+    if (typeof KNOWN_INDIAN_EARNINGS_CALENDAR !== "undefined" && KNOWN_INDIAN_EARNINGS_CALENDAR[sym]) {
+      const clean = KNOWN_INDIAN_EARNINGS_CALENDAR[sym];
       prevRaw = clean.prev;
       nextRaw = clean.next;
-      status = clean.status;
+      status = clean.status || "Confirmed";
       reactionNum = clean.reaction;
       meta.results = prevRaw;
       meta.nextResults = nextRaw;
       meta.resultsStatus = status;
       meta.earningsReaction = reactionNum;
+    } else {
+      const isValidPrev = prevRaw && prevRaw.startsWith("2026-") && !prevRaw.startsWith("2026-11-28") && !prevRaw.startsWith("2026-11-20");
+      if (!isValidPrev) {
+        const clean = getCleanEarningsForSymbol(sym, cap);
+        prevRaw = clean.prev;
+        nextRaw = clean.next;
+        status = clean.status || "Confirmed";
+        reactionNum = clean.reaction;
+        meta.results = prevRaw;
+        meta.nextResults = nextRaw;
+        meta.resultsStatus = status;
+        meta.earningsReaction = reactionNum;
+      }
     }
 
-    // Format previous reported date
+    // Format previous reported date (e.g. 27 Oct 2026)
     const SHORT_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     let prevFmt = prevRaw;
     try {
       const pd = new Date(prevRaw + "T00:00:00");
       if (!isNaN(pd.getTime())) {
-        const yr = pd.getFullYear() >= 2026 ? (pd.getFullYear() - 2) : pd.getFullYear();
-        prevFmt = `${pd.getDate()} ${SHORT_MONTHS[pd.getMonth()]} ${yr}`;
+        prevFmt = `${pd.getDate()} ${SHORT_MONTHS[pd.getMonth()]} ${pd.getFullYear()}`;
       }
     } catch(e) {}
 
@@ -4471,27 +4482,25 @@
     }
 
     // Next results window / date
-    let nextDisplay = "Jan–Feb 2025 (Est)";
-    let nextSortDate = cap === "LC" ? "2025-01-18" : cap === "MC" ? "2025-01-28" : "2025-02-08";
+    let nextDisplay = "Jan–Feb 2027 (Est)";
+    let nextSortDate = cap === "LC" ? "2027-01-18" : cap === "MC" ? "2027-01-28" : "2027-02-08";
 
-    if (nextRaw && (nextRaw.startsWith("2027-") || nextRaw.startsWith("2025-"))) {
+    if (nextRaw && nextRaw.startsWith("2027-")) {
       try {
         const nd = new Date(nextRaw + "T00:00:00");
         if (!isNaN(nd.getTime())) {
-          const yr = nd.getFullYear() >= 2027 ? (nd.getFullYear() - 2) : nd.getFullYear();
-          nextDisplay = `${nd.getDate()} ${SHORT_MONTHS[nd.getMonth()]} ${yr}`;
-          nextSortDate = `${yr}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}`;
+          nextDisplay = `${nd.getDate()} ${SHORT_MONTHS[nd.getMonth()]} ${nd.getFullYear()}`;
+          nextSortDate = `${nd.getFullYear()}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}`;
         }
       } catch(e) {}
     } else if (nextRaw && (nextRaw.includes("Jan") || nextRaw.includes("Feb") || nextRaw.includes("Est"))) {
-      nextDisplay = nextRaw.replace(/2027/g, "2025").replace(/2026/g, "2024");
-    } else if (nextRaw && (nextRaw.startsWith("2026-") || nextRaw.startsWith("2024-"))) {
+      nextDisplay = nextRaw;
+    } else if (nextRaw && nextRaw.startsWith("2026-")) {
       try {
         const nd = new Date(nextRaw + "T00:00:00");
         if (!isNaN(nd.getTime())) {
-          const yr = nd.getFullYear() >= 2026 ? (nd.getFullYear() - 2) : nd.getFullYear();
-          nextDisplay = `${nd.getDate()} ${SHORT_MONTHS[nd.getMonth()]} ${yr}`;
-          nextSortDate = `${yr}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}`;
+          nextDisplay = `${nd.getDate()} ${SHORT_MONTHS[nd.getMonth()]} ${nd.getFullYear()}`;
+          nextSortDate = `${nd.getFullYear()}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}`;
         }
       } catch(e) {}
     }
@@ -4509,7 +4518,7 @@
       reactionNum: reactionNum != null ? reactionNum : 0,
       isPast: true,
       status,
-      quarterLabel: "Q3 FY25",
+      quarterLabel: "Q3 FY27",
       daysToGo: daysUntilNext
     };
     stock._cachedEarnings = res;
