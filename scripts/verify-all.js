@@ -55,8 +55,8 @@ async function verify() {
 
   console.log('=== VERIFYING INDEX.HTML ===');
   const htmlRes = await fetchJson('http://localhost:3000/');
-  if (htmlRes.status === 200 && htmlRes.text.includes('script.js?v=6.4.5')) {
-    console.log('✅ index.html serves script.js?v=6.4.5 correctly!\n');
+  if (htmlRes.status === 200 && htmlRes.text.includes('script.js?v=6.4.6')) {
+    console.log('✅ index.html serves script.js?v=6.4.6 correctly!\n');
   } else {
     throw new Error('index.html did not match expected version');
   }

@@ -13951,20 +13951,13 @@
                               <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(st.symbol)}">
                               <span>📷 Photo</span>
                             </button>
-                          ` : `
-                            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(st.symbol)} live chart directly on TradingView" onclick="event.stopPropagation()">
-                              <span>📈 TV ↗</span>
-                            </a>
-                          `}
+                          ` : ''}
                         </div>
                       </td>
                       <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
                       <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
                       <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
                       <td style="padding:7px 8px;text-align:right;white-space:nowrap;">
-                        ${stockImg ? `
-                          <button class="sm-tag-btn" onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" style="cursor:pointer;padding:3px 8px;background:rgba(56,189,248,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="View ${escapeHtml(st.symbol)} chart screenshot photo">📷 Photo</button>
-                        ` : ''}
                         <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app interactive chart">Chart &rarr;</button>
                         <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
                           <span>📊 TV ↗</span>
