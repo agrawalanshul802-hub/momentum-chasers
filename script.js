@@ -13926,29 +13926,53 @@
                 </tr>
               </thead>
               <tbody>
-                ${activeIdea.stocks.map(st => `
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                    <td style="padding:7px 8px;font-weight:700;">
-                      <div style="display:inline-flex;align-items:center;gap:6px;">
-                        <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open stock details">
-                          ${escapeHtml(st.symbol)}
-                        </span>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(st.symbol)} live chart directly on TradingView" onclick="event.stopPropagation()">
-                          <span>📈 TV ↗</span>
+                ${activeIdea.stocks.map((st, sIdx) => {
+                  const imgs = Array.isArray(activeIdea.images) && activeIdea.images.length > 0
+                    ? activeIdea.images
+                    : (activeIdea.image ? [activeIdea.image] : []);
+                  const stockImg = (st.image && typeof st.image === 'string' && st.image.trim())
+                    ? st.image.trim()
+                    : (imgs && imgs[sIdx] ? imgs[sIdx] : (imgs && imgs.length === 1 ? imgs[0] : null));
+                  const stockMeta = (typeof ST_MAP !== 'undefined' && ST_MAP[st.symbol]) || null;
+                  const stockName = (stockMeta && stockMeta.name) ? stockMeta.name : (st.name || '');
+                  const caption = `${st.symbol}${stockName ? ' (' + stockName + ')' : ''} — ${activeIdea.title}`;
+
+                  return `
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                      <td style="padding:7px 8px;font-weight:700;">
+                        <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                          <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open ${escapeHtml(st.symbol)} stock details">
+                            ${escapeHtml(st.symbol)}
+                          </span>
+                          ${stockImg ? `
+                            <button class="idea-stock-photo-pill" 
+                                    onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
+                                    title="Click to open ${escapeHtml(st.symbol)} chart screenshot photo">
+                              <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(st.symbol)}">
+                              <span>📷 Photo</span>
+                            </button>
+                          ` : `
+                            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(st.symbol)} live chart directly on TradingView" onclick="event.stopPropagation()">
+                              <span>📈 TV ↗</span>
+                            </a>
+                          `}
+                        </div>
+                      </td>
+                      <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
+                      <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
+                      <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
+                      <td style="padding:7px 8px;text-align:right;white-space:nowrap;">
+                        ${stockImg ? `
+                          <button class="sm-tag-btn" onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" style="cursor:pointer;padding:3px 8px;background:rgba(56,189,248,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="View ${escapeHtml(st.symbol)} chart screenshot photo">📷 Photo</button>
+                        ` : ''}
+                        <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app interactive chart">Chart &rarr;</button>
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
+                          <span>📊 TV ↗</span>
                         </a>
-                      </div>
-                    </td>
-                    <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
-                    <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
-                    <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
-                    <td style="padding:7px 8px;text-align:right;white-space:nowrap;">
-                      <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app chart">Chart &rarr;</button>
-                      <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
-                        <span>📊 TV ↗</span>
-                      </a>
-                    </td>
-                  </tr>
-                `).join('')}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
               </tbody>
             </table>
           </div>
@@ -13960,16 +13984,36 @@
           </div>
           <div class="idea-stocks-list">
             <span style="font-size:11px;color:var(--mu);font-weight:600;">Constituent Stocks (${count}):</span>
-            ${(activeIdea.symbols || []).map(sym => `
-              <span style="display:inline-flex;align-items:center;gap:4px;margin-right:6px;margin-bottom:6px;">
-                <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;" title="Click to view deep dive on ${escapeHtml(sym)}">
-                  ${escapeHtml(sym)}
+            ${(activeIdea.symbols || []).map((sym, sIdx) => {
+              const imgs = Array.isArray(activeIdea.images) && activeIdea.images.length > 0
+                ? activeIdea.images
+                : (activeIdea.image ? [activeIdea.image] : []);
+              const stockImg = (activeIdea.stocks && activeIdea.stocks[sIdx] && activeIdea.stocks[sIdx].image)
+                || (imgs && imgs[sIdx])
+                || (imgs && imgs.length === 1 ? imgs[0] : null);
+              const stockMeta = (typeof ST_MAP !== 'undefined' && ST_MAP[sym]) || null;
+              const stockName = (stockMeta && stockMeta.name) ? stockMeta.name : '';
+              const caption = `${sym}${stockName ? ' (' + stockName + ')' : ''} — ${activeIdea.title}`;
+
+              return `
+                <span style="display:inline-flex;align-items:center;gap:4px;margin-right:6px;margin-bottom:6px;">
+                  <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;" title="Click to view deep dive on ${escapeHtml(sym)}">
+                    ${escapeHtml(sym)}
+                  </span>
+                  ${stockImg ? `
+                    <button class="idea-stock-photo-pill" 
+                            onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
+                            title="Click to open ${escapeHtml(sym)} chart screenshot photo">
+                      <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(sym)}">
+                      <span>📷 Photo</span>
+                    </button>
+                  ` : ''}
+                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(sym)} live chart on TradingView" onclick="event.stopPropagation()">
+                    📈 TV ↗
+                  </a>
                 </span>
-                <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(sym)} live chart on TradingView" onclick="event.stopPropagation()">
-                  📈 TV ↗
-                </a>
-              </span>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         `}
 
@@ -13992,14 +14036,26 @@
                 <span style="font-size:10px;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);padding:1px 6px;border-radius:8px;">${imgs.length} ${imgs.length === 1 ? 'Image' : 'Images'}</span>
               </div>
               <div class="idea-images-grid" style="display:flex;flex-wrap:wrap;gap:10px;">
-                ${imgs.map((src, i) => `
-                  <div class="idea-image-thumb-wrap" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#000;cursor:pointer;max-width:${imgs.length === 1 ? '100%' : '320px'};flex:1 1 240px;" onclick="window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(src)}', '${escapeHtml(activeIdea.title)}')">
-                    <img src="${escapeHtml(src)}" alt="${escapeHtml(activeIdea.title)} Chart ${i+1}" style="width:100%;height:${imgs.length === 1 ? 'auto' : '170px'};max-height:360px;object-fit:${imgs.length === 1 ? 'contain' : 'cover'};display:block;" loading="lazy">
-                    <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);">
-                      <span>🔍 Click to Zoom</span>
+                ${imgs.map((src, i) => {
+                  const stockForImg = (activeIdea.stocks && activeIdea.stocks[i]) || (activeIdea.symbols && activeIdea.symbols[i]) || null;
+                  const sym = typeof stockForImg === 'string' ? stockForImg : (stockForImg && stockForImg.symbol ? stockForImg.symbol : '');
+                  const stockMeta = sym ? ((typeof ST_MAP !== 'undefined' && ST_MAP[sym]) || null) : null;
+                  const stockName = (stockMeta && stockMeta.name) ? stockMeta.name : (stockForImg && stockForImg.name ? stockForImg.name : '');
+                  const label = sym ? `${sym}${stockName ? ' — ' + stockName : ''}` : `Setup ${i+1}`;
+                  const caption = sym ? `${label} — ${activeIdea.title}` : activeIdea.title;
+
+                  return `
+                    <div class="idea-image-thumb-wrap" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#000;cursor:pointer;max-width:${imgs.length === 1 ? '100%' : '340px'};flex:1 1 260px;" onclick="window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(src)}', '${escapeHtml(caption)}')">
+                      <img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" style="width:100%;height:${imgs.length === 1 ? 'auto' : '175px'};max-height:360px;object-fit:${imgs.length === 1 ? 'contain' : 'cover'};display:block;" loading="lazy">
+                      <div style="position:absolute;top:6px;left:6px;background:rgba(15,23,42,0.85);color:#38bdf8;border:1px solid rgba(56,189,248,0.35);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);box-shadow:0 2px 6px rgba(0,0,0,0.5);">
+                        <span>📊 ${escapeHtml(sym || ('Chart ' + (i+1)))}</span>
+                      </div>
+                      <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.8);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);">
+                        <span>🔍 Click to Zoom</span>
+                      </div>
                     </div>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
           `;

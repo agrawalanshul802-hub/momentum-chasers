@@ -6631,22 +6631,25 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
+      const rawImages = Array.isArray(body.images) ? body.images : (body.image ? [body.image] : []);
+      const normalizedImages = rawImages.filter(img => typeof img === 'string' && img.trim().length > 0);
+      const primaryImage = normalizedImages[0] || (typeof body.image === 'string' ? body.image.trim() : '');
+
       const ideas = getStoredOwnerIdeas();
       const rawStocks = Array.isArray(body.stocks) ? body.stocks : [];
-      const normalizedStocks = rawStocks.map(s => ({
+      const normalizedStocks = rawStocks.map((s, idx) => ({
         symbol: (s.symbol || '').trim().toUpperCase(),
         entry: (s.entry || body.entry || 'CMP').trim(),
         target: (s.target || body.target || '').trim(),
-        stopLoss: (s.stopLoss || body.stopLoss || '').trim()
+        stopLoss: (s.stopLoss || body.stopLoss || '').trim(),
+        image: (s.image && typeof s.image === 'string' && s.image.trim()) 
+          ? s.image.trim() 
+          : (normalizedImages[idx] || '')
       })).filter(s => s.symbol);
 
       const symbolsList = Array.isArray(body.symbols) && body.symbols.length > 0
         ? body.symbols.map(s => s.trim().toUpperCase()).filter(Boolean)
         : normalizedStocks.map(s => s.symbol);
-
-      const rawImages = Array.isArray(body.images) ? body.images : (body.image ? [body.image] : []);
-      const normalizedImages = rawImages.filter(img => typeof img === 'string' && img.trim().length > 0);
-      const primaryImage = normalizedImages[0] || (typeof body.image === 'string' ? body.image.trim() : '');
 
       const newIdea = {
         id: body.id || ('idea_' + Date.now()),

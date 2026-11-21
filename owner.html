@@ -1541,9 +1541,11 @@
           var stEntry = st.entry || entry;
           var stTarget = st.target || target;
           var stSl = st.stopLoss || sl;
+          var stImg = (st && st.image) || (attachedImages && attachedImages[i]) || '';
           html += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;flex-wrap:wrap;gap:6px;">' +
             '<div style="display:flex;align-items:center;gap:6px;">' +
               '<span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;">' + escapeHtml(st.symbol) + '</span>' +
+              (stImg ? '<button type="button" onclick="openOwnerLightbox(\'' + escapeHtml(stImg) + '\', \'' + escapeHtml(st.symbol) + ' Setup Chart\')" style="cursor:pointer;padding:1px 6px;background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.45);border-radius:4px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;" title="View ' + escapeHtml(st.symbol) + ' chart photo">📷 Photo</button>' : '') +
               '<a href="' + getTradingViewUrl(st.symbol) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Open ' + escapeHtml(st.symbol) + ' live chart on TradingView" onclick="event.stopPropagation()">' +
                 getTradingViewIconSvg(10) + ' <span>TV ↗</span>' +
               '</a>' +
@@ -1674,12 +1676,13 @@
         category: category,
         timeframe: timeframe,
         symbols: selectedSymbols,
-        stocks: selectedStocks.map(function(s) {
+        stocks: selectedStocks.map(function(s, idx) {
           return {
             symbol: s.symbol,
             entry: s.entry || entry || 'CMP',
             target: s.target || target || 'TBD',
-            stopLoss: s.stopLoss || stopLoss || 'TBD'
+            stopLoss: s.stopLoss || stopLoss || 'TBD',
+            image: s.image || (attachedImages && attachedImages[idx]) || ''
           };
         }),
         entry: entry,
@@ -1727,14 +1730,15 @@
       document.getElementById('idea-active').checked = idea.active !== false;
 
       if (idea.stocks && Array.isArray(idea.stocks) && idea.stocks.length > 0) {
-        selectedStocks = idea.stocks.map(function(s) {
+        selectedStocks = idea.stocks.map(function(s, idx) {
           var match = stockUniverse.find(function(u) { return u.symbol === s.symbol; });
           return {
             symbol: s.symbol,
             name: match ? match.name : '',
             entry: s.entry || idea.entry || '',
             target: s.target || idea.target || '',
-            stopLoss: s.stopLoss || idea.stopLoss || ''
+            stopLoss: s.stopLoss || idea.stopLoss || '',
+            image: s.image || (idea.images && idea.images[idx]) || ''
           };
         });
       } else {
