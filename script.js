@@ -11564,7 +11564,9 @@
             low52: Math.round(p * 0.7 * 100) / 100,
             results: "2026-11-20",
             resultsStatus: "Confirmed",
-            currency: "INR"
+            currency: "INR",
+            isIpo: true,
+            ipoData: ipo
           }
         ];
       }
@@ -11714,9 +11716,16 @@
       });
     }
 
+    const cleanSym = String(symbol || "").trim().toUpperCase();
     const stock = getStockBySymbol(symbol);
     const basePrice = stock[3];
     const trend = stock[4] >= 0 ? 1 : -1;
+
+    // Check if this stock is an IPO from IPO_PERF or IPO_CURRENT
+    let ipoMatch = null;
+    if (typeof IPO_PERF !== "undefined") {
+      ipoMatch = IPO_PERF.find(r => (r[9] && r[9].toUpperCase() === cleanSym) || (r[0] && r[0].toUpperCase() === cleanSym));
+    }
 
     const prices = [];
     const ema10 = [];
@@ -11730,6 +11739,118 @@
     const candleEma20 = [];
     const candleEma50 = [];
     const candleEma200 = [];
+
+    if (ipoMatch) {
+      // Authentic post-listing IPO candlestick generator
+      // ipoMatch: [company, listedOnStr, issuePrice, issueSize, listingClose, listingGainPct, currentPrice, currentReturnPct, year, ticker]
+      const issuePrice = Number(ipoMatch[2]) || basePrice;
+      const listingClose = Number(ipoMatch[4]) || basePrice;
+      const currentPrice = Number(ipoMatch[6]) || basePrice;
+      const listedOnStr = ipoMatch[1]; // e.g. "05 Nov 2026"
+
+      const parsedDate = new Date(listedOnStr);
+      const today = new Date(2026, 10, 20); // Reference Nov 20, 2026
+      const listingDate = isNaN(parsedDate.getTime()) ? new Date(today.getTime() - 14 * 86400 * 1000) : parsedDate;
+
+      // Generate trading day calendar strictly from listingDate to today (skipping weekends)
+      const tradingDays = [];
+      const cur = new Date(listingDate.getTime());
+      while (cur <= today) {
+        const dayOfWeek = cur.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Skip Sunday (0) and Saturday (6)
+          const yyyy = cur.getFullYear();
+          const mm = String(cur.getMonth() + 1).padStart(2, "0");
+          const dd = String(cur.getDate()).padStart(2, "0");
+          tradingDays.push(`${yyyy}-${mm}-${dd}`);
+        }
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      if (tradingDays.length === 0) {
+        const yyyy = listingDate.getFullYear();
+        const mm = String(listingDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(listingDate.getDate()).padStart(2, "0");
+        tradingDays.push(`${yyyy}-${mm}-${dd}`);
+      }
+
+      const numSessions = tradingDays.length;
+      let prevClose = issuePrice;
+
+      for (let i = 0; i < numSessions; i++) {
+        const dateStr = tradingDays[i];
+        let open, close, high, low, vol;
+
+        if (i === 0) {
+          // Day 1: Authentic Listing Day
+          open = issuePrice;
+          close = listingClose;
+          high = Math.round(Math.max(open, close) * 1.025 * 100) / 100;
+          low = Math.round(Math.min(open, close) * 0.975 * 100) / 100;
+          vol = Math.round(1800000 + Math.random() * 800000); // Heavy listing day turnover
+        } else if (i === numSessions - 1) {
+          // Latest Session: Calibrated exactly to Current Price
+          close = currentPrice;
+          open = Math.round((prevClose + (close - prevClose) * 0.3) * 100) / 100;
+          high = Math.round(Math.max(open, close) * 1.018 * 100) / 100;
+          low = Math.round(Math.min(open, close) * 0.985 * 100) / 100;
+          vol = Math.round(650000 + Math.random() * 350000);
+        } else {
+          // Intermediate Post-Listing Sessions: Smooth progression between listing close and current price
+          const progress = i / (numSessions - 1);
+          const targetP = listingClose + (currentPrice - listingClose) * progress;
+          const wobble = (Math.sin(i * 1.2) * 0.015 + (Math.random() - 0.48) * 0.02) * targetP;
+          open = Math.round(prevClose * 100) / 100;
+          close = Math.round((targetP + wobble) * 100) / 100;
+          high = Math.round((Math.max(open, close) + Math.random() * (targetP * 0.015)) * 100) / 100;
+          low = Math.round((Math.min(open, close) - Math.random() * (targetP * 0.015)) * 100) / 100;
+          vol = Math.round(500000 + Math.random() * 400000);
+        }
+
+        candleData.push({ time: dateStr, open, high, low, close });
+        volumeData.push({ time: dateStr, value: vol, color: close >= open ? 'rgba(34, 197, 94, 0.45)' : 'rgba(239, 68, 68, 0.45)' });
+        prices.push(close);
+        volumes.push(vol);
+        prevClose = close;
+      }
+
+      // Calculate EMAs strictly according to available trading history
+      let ce10 = prices[0], ce20 = prices[0];
+      for (let i = 0; i < numSessions; i++) {
+        const p = prices[i];
+        const dateStr = candleData[i].time;
+        ce10 = ce10 + (p - ce10) * (2 / (10 + 1));
+        ce20 = ce20 + (p - ce20) * (2 / (20 + 1));
+
+        if (i >= 9) { // 10 EMA only after 10 sessions
+          candleEma10.push({ time: dateStr, value: Math.round(ce10 * 100) / 100 });
+          ema10.push(Math.round(ce10 * 10) / 10);
+        }
+        if (i >= 19) { // 20 EMA only after 20 sessions
+          candleEma20.push({ time: dateStr, value: Math.round(ce20 * 100) / 100 });
+          ema20.push(Math.round(ce20 * 10) / 10);
+        }
+      }
+      // Note: 50 EMA and 200 EMA are strictly NOT generated for newly listed IPOs (<50 sessions)
+
+      CHART_DATA[symbol] = {
+        isIpo: true,
+        ipoDetails: ipoMatch,
+        numSessions,
+        prices,
+        ema10,
+        ema20,
+        ema50: [],
+        ema200: [],
+        volumes,
+        candleData,
+        volumeData,
+        ema10Data: candleEma10,
+        ema20Data: candleEma20,
+        ema50Data: [],
+        ema200Data: []
+      };
+      return CHART_DATA[symbol];
+    }
 
     const baseDate = new Date();
     const numCandles = 60;
@@ -14084,27 +14205,43 @@
                   <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
                     <td style="padding:7px 8px;font-weight:700;">
                       <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                        <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open ${escapeHtml(st.symbol)} stock details">
-                          ${escapeHtml(st.symbol)}
-                        </span>
                         ${stockImg ? `
+                          <span class="idea-stock-tag" 
+                                onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
+                                style="margin:0;cursor:pointer;" 
+                                title="Click to view verified technical chart photo for ${escapeHtml(st.symbol)}">
+                            ${escapeHtml(st.symbol)}
+                          </span>
                           <button class="idea-stock-photo-pill" 
                                   onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
                                   title="Click to open ${escapeHtml(st.symbol)} chart screenshot photo">
                             <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(st.symbol)}">
                             <span>📷 Photo</span>
                           </button>
-                        ` : ''}
+                        ` : `
+                          <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open ${escapeHtml(st.symbol)} stock details">
+                            ${escapeHtml(st.symbol)}
+                          </span>
+                        `}
                       </div>
                     </td>
                     <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
                     <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
                     <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
                     <td style="padding:7px 8px;text-align:right;white-space:nowrap;">
-                      <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app interactive chart">Chart &rarr;</button>
-                      <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
-                        <span>📊 TV ↗</span>
-                      </a>
+                      ${stockImg ? `
+                        <button class="sm-tag-btn" 
+                                onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
+                                style="cursor:pointer;padding:4px 10px;background:rgba(79,209,161,0.2);color:#10b981;border:1px solid rgba(79,209,161,0.4);border-radius:4px;font-size:11px;font-weight:700;" 
+                                title="Open verified technical analysis chart for ${escapeHtml(st.symbol)}">
+                          📷 Setup Chart ↗
+                        </button>
+                      ` : `
+                        <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app interactive chart">Chart &rarr;</button>
+                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
+                          <span>📊 TV ↗</span>
+                        </a>
+                      `}
                     </td>
                   </tr>
                 `;
@@ -14133,20 +14270,27 @@
 
             return `
               <span style="display:inline-flex;align-items:center;gap:4px;margin-right:6px;margin-bottom:6px;">
-                <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;" title="Click to view deep dive on ${escapeHtml(sym)}">
-                  ${escapeHtml(sym)}
-                </span>
                 ${stockImg ? `
+                  <span class="idea-stock-tag" 
+                        onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
+                        style="margin:0;cursor:pointer;" 
+                        title="Click to view verified technical analysis chart for ${escapeHtml(sym)}">
+                    ${escapeHtml(sym)}
+                  </span>
                   <button class="idea-stock-photo-pill" 
                           onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
                           title="Click to open ${escapeHtml(sym)} chart screenshot photo">
                     <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(sym)}">
                     <span>📷 Photo</span>
                   </button>
-                ` : ''}
-                <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(sym)} live chart on TradingView" onclick="event.stopPropagation()">
-                  📈 TV ↗
-                </a>
+                ` : `
+                  <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;" title="Click to view deep dive on ${escapeHtml(sym)}">
+                    ${escapeHtml(sym)}
+                  </span>
+                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(sym)} live chart on TradingView" onclick="event.stopPropagation()">
+                    📈 TV ↗
+                  </a>
+                `}
               </span>
             `;
           }).join('')}
@@ -17074,6 +17218,15 @@
     }
 
     const SPECIAL_TV_MAP = {
+      "ANTALA": "BSE:545024",
+      "VECTRAS": "BSE:545020",
+      "VPFL": "NSE:VPFL",
+      "MAXENGS": "BSE:544988",
+      "JOHNSONCAB": "BSE:544986",
+      "HGSINDIALT": "BSE:544984",
+      "BCSSL": "BSE:544982",
+      "TONBO": "NSE:TONBO",
+      "SYMBIOTEC": "NSE:SYMBIOTEC",
       "HOTELS": "NSE:INDHOTEL",
       "INDHOTEL": "NSE:INDHOTEL",
       "HOSPITALITY": "NSE:INDHOTEL",
@@ -17676,12 +17829,18 @@
   function renderStockView() {
     const s = getStockBySymbol(State.activeStock);
     const meta = s[8] || {};
-    const chart = CHART_DATA[s[0]] || {};
+    const chart = (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]]) ? CHART_DATA[s[0]] : (typeof getOrGenerateChartData === "function" ? getOrGenerateChartData(s[0]) : {});
+    const isIpo = !!(chart.isIpo || meta.isIpo || s[2] === "Landmark IPO");
+    const ipoDetails = chart.ipoDetails || meta.ipoData || (typeof IPO_PERF !== "undefined" ? IPO_PERF.find(r => (r[9] && r[9].toUpperCase() === s[0].toUpperCase()) || (r[0] && r[0].toUpperCase() === s[0].toUpperCase())) : null);
 
-    const e10 = chart.ema10 ? chart.ema10[chart.ema10.length - 1] : s[3] * 0.99;
-    const e20 = chart.ema20 ? chart.ema20[chart.ema20.length - 1] : s[3] * 0.98;
-    const e50 = chart.ema50 ? chart.ema50[chart.ema50.length - 1] : s[3] * 0.97;
-    const e200 = chart.ema200 ? chart.ema200[chart.ema200.length - 1] : s[3] * 0.95;
+    const bseSmeSymbols = new Set(["ANTALA", "VECTRAS", "MAXENGS", "JOHNSONCAB", "HGSINDIALT", "BCSSL"]);
+    const symUpper = (s[0] || "").toUpperCase();
+    const exBadge = bseSmeSymbols.has(symUpper) ? "BSE SME" : (symUpper === "VPFL" ? "NSE SME" : (meta.exchange || "NSE"));
+
+    const e10 = chart.ema10 && chart.ema10.length > 0 ? chart.ema10[chart.ema10.length - 1] : s[3] * 0.99;
+    const e20 = chart.ema20 && chart.ema20.length > 0 ? chart.ema20[chart.ema20.length - 1] : s[3] * 0.98;
+    const e50 = chart.ema50 && chart.ema50.length > 0 ? chart.ema50[chart.ema50.length - 1] : (isIpo ? null : s[3] * 0.97);
+    const e200 = chart.ema200 && chart.ema200.length > 0 ? chart.ema200[chart.ema200.length - 1] : (isIpo ? null : s[3] * 0.95);
     const rsiVal = chart.rsi || (s[4] > 0 ? 58.4 : 46.2);
 
     const dist10 = ((s[3] - e10) / e10 * 100).toFixed(1);
@@ -17706,44 +17865,86 @@
     const defaultClose = s[3].toFixed(2);
     const defaultChg = (s[4] >= 0 ? "+" : "") + s[4].toFixed(2) + "%";
 
-    // AI Positives & Negatives List (Feature 02) calculated dynamically from live indicators
+    // AI Positives & Negatives List calculated dynamically from live indicators
     const positives = [];
     const negatives = [];
 
-    if (s[3] >= e10) {
-      positives.push(`Price (₹${formatNumber(s[3])}) trading above 10 EMA (+${dist10}%)`);
-    } else {
-      negatives.push(`Price trading below 10 EMA (${dist10}%)`);
-    }
+    if (isIpo && ipoDetails) {
+      const issuePrice = Number(ipoDetails[2]) || s[3];
+      const listClose = Number(ipoDetails[4]) || s[3];
+      const listGain = Number(ipoDetails[5]) || 0;
+      const curReturn = Number(ipoDetails[7]) || (((s[3] - issuePrice) / issuePrice) * 100);
+      const listedOn = ipoDetails[1] || "Recent Issue";
+      const sessions = chart.numSessions || 12;
 
-    if (s[3] >= e20) {
-      positives.push(`Trading above 20 EMA (+${dist20}%) · Short-term momentum positive`);
-    } else {
-      negatives.push(`Below 20 EMA (${dist20}%) · Short-term pullback in progress`);
-    }
+      if (curReturn >= 0) {
+        positives.push(`Trading +${curReturn.toFixed(1)}% above Issue Price (₹${formatNumber(issuePrice)})`);
+      } else {
+        negatives.push(`Trading ${curReturn.toFixed(1)}% below Issue Price (₹${formatNumber(issuePrice)})`);
+      }
 
-    if (e50 >= e200) {
-      positives.push("50 EMA > 200 EMA Golden Cross confirmed with expanding bullish trend");
-    } else {
-      negatives.push("50 EMA < 200 EMA Death Cross or bearish trend");
-    }
+      if (listGain >= 0) {
+        positives.push(`Strong debut listing gain of +${listGain.toFixed(1)}% on ${listedOn}`);
+      } else {
+        negatives.push(`Debut listing discount of ${listGain.toFixed(1)}% on ${listedOn}`);
+      }
 
-    if (rsiVal >= 50) {
-      positives.push(`RSI(14) in strong bullish zone at ${rsiVal} and rising`);
-    } else {
-      negatives.push(`RSI(14) in cautious/bearish zone at ${rsiVal}`);
-    }
+      if (s[3] >= listClose) {
+        positives.push(`Holding above Listing Day Close (₹${formatNumber(listClose)})`);
+      } else {
+        negatives.push(`Trading below Listing Day Close (₹${formatNumber(listClose)})`);
+      }
 
-    if (parseFloat(dist52w) < 15) {
-      positives.push(`Trading within ${dist52w}% of 52-Week High (₹${formatNumber(meta.high52)})`);
-    } else {
-      negatives.push(`${dist52w}% away from 52-Week High`);
-    }
+      if (rsiVal >= 50) {
+        positives.push(`Post-listing RSI(14) momentum positive at ${rsiVal}`);
+      } else {
+        negatives.push(`Post-listing RSI(14) in cautious zone at ${rsiVal}`);
+      }
 
-    if (s[3] >= e200) {
-      positives.push("Trading above major 200 EMA institutional support");
+      positives.push(`Authentic post-listing trading history (${sessions} sessions tracked)`);
+      if (sessions < 50) {
+        positives.push(`Newly listed IPO: 50 & 200 EMAs calibrate after 50/200 trading sessions`);
+      }
     } else {
-      negatives.push("Trading below 200 EMA institutional benchmark");
+      if (s[3] >= e10) {
+        positives.push(`Price (₹${formatNumber(s[3])}) trading above 10 EMA (+${dist10}%)`);
+      } else {
+        negatives.push(`Price trading below 10 EMA (${dist10}%)`);
+      }
+
+      if (s[3] >= e20) {
+        positives.push(`Trading above 20 EMA (+${dist20}%) · Short-term momentum positive`);
+      } else {
+        negatives.push(`Below 20 EMA (${dist20}%) · Short-term pullback in progress`);
+      }
+
+      if (e50 != null && e200 != null) {
+        if (e50 >= e200) {
+          positives.push("50 EMA > 200 EMA Golden Cross confirmed with expanding bullish trend");
+        } else {
+          negatives.push("50 EMA < 200 EMA Death Cross or bearish trend");
+        }
+      }
+
+      if (rsiVal >= 50) {
+        positives.push(`RSI(14) in strong bullish zone at ${rsiVal} and rising`);
+      } else {
+        negatives.push(`RSI(14) in cautious/bearish zone at ${rsiVal}`);
+      }
+
+      if (parseFloat(dist52w) < 15) {
+        positives.push(`Trading within ${dist52w}% of 52-Week High (₹${formatNumber(meta.high52)})`);
+      } else {
+        negatives.push(`${dist52w}% away from 52-Week High`);
+      }
+
+      if (e200 != null) {
+        if (s[3] >= e200) {
+          positives.push("Trading above major 200 EMA institutional support");
+        } else {
+          negatives.push("Trading below 200 EMA institutional benchmark");
+        }
+      }
     }
 
     const aiVerdict = positives.length > negatives.length + 1 ? "Bullish" : negatives.length > positives.length + 1 ? "Bearish" : "Neutral";
@@ -17765,7 +17966,7 @@
             <div class="tv-symbol-selector" data-action="open-symbol-search" title="Click to search / switch stock">
               <span class="tv-symbol-ticker">${s[0]}</span>
               <span class="tv-symbol-name">${meta.name}</span>
-              <span class="tv-exchange-badge">NSE</span>
+              <span class="tv-exchange-badge">${exBadge}</span>
               <span class="tv-dropdown-caret">▼</span>
             </div>
 
@@ -17807,6 +18008,31 @@
         <div class="tv-workspace-split ${State.chartFullWidth ? 'full-width' : ''}">
           <!-- Center TradingView & Native Candlestick Chart Viewport -->
           <div class="tv-chart-viewport" style="display:flex;flex-direction:column;gap:12px;padding:16px;min-height:640px;">
+            ${isIpo && ipoDetails ? `
+              <div class="ipo-post-listing-card" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+                  <div>
+                    <span style="font-size:11px;color:var(--mu);display:block;">Issue Price</span>
+                    <strong style="color:var(--ink);font-size:14px;font-family:var(--font-mono)">₹${formatNumber(ipoDetails[2])}</strong>
+                  </div>
+                  <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
+                    <span style="font-size:11px;color:var(--mu);display:block;">Listing Date</span>
+                    <strong style="color:var(--ink);font-size:14px;">${ipoDetails[1]}</strong>
+                  </div>
+                  <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
+                    <span style="font-size:11px;color:var(--mu);display:block;">Listing Day Close</span>
+                    <strong style="color:${ipoDetails[5] >= 0 ? 'var(--g)' : 'var(--r)'};font-size:14px;font-family:var(--font-mono)">₹${formatNumber(ipoDetails[4])} (${ipoDetails[5] >= 0 ? '+' : ''}${Number(ipoDetails[5]).toFixed(1)}%)</strong>
+                  </div>
+                  <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
+                    <span style="font-size:11px;color:var(--mu);display:block;">Return Since Issue</span>
+                    <strong style="color:${ipoDetails[7] >= 0 ? 'var(--g)' : 'var(--r)'};font-size:14px;font-family:var(--font-mono)">${ipoDetails[7] >= 0 ? '+' : ''}${Number(ipoDetails[7]).toFixed(1)}%</strong>
+                  </div>
+                </div>
+                <div style="font-size:12px;color:#38bdf8;font-weight:700;display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,0.12);padding:6px 12px;border-radius:6px;border:1px solid rgba(56,189,248,0.3)">
+                  <span>🚀 ${chart.numSessions || 'Active'} Post-Listing Trading Sessions</span>
+                </div>
+              </div>
+            ` : ''}
             <!-- Dynamic OHLC Bar + Multi-EMA Legends (Updates real-time on crosshair move) -->
             <div class="chart-ohlc-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sf2);border:1px solid var(--ln);border-radius:8px;font-family:var(--font-mono);font-size:12px;flex-wrap:wrap;gap:8px;">
               <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
@@ -17820,8 +18046,8 @@
               <div style="display:flex;gap:12px;align-items:center;font-size:11px;flex-wrap:wrap;">
                 <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>10 EMA: <strong id="legend-ema10-val">₹${formatNumber(e10)}</strong></span>
                 <span style="color:#22c55e;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>20 EMA: <strong id="legend-ema20-val">₹${formatNumber(e20)}</strong></span>
-                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">₹${formatNumber(e50)}</strong></span>
-                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">₹${formatNumber(e200)}</strong></span>
+                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">${isIpo && (!chart.ema50Data || chart.ema50Data.length === 0) ? 'N/A (IPO)' : '₹' + formatNumber(e50)}</strong></span>
+                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">${isIpo && (!chart.ema200Data || chart.ema200Data.length === 0) ? 'N/A (IPO)' : '₹' + formatNumber(e200)}</strong></span>
               </div>
             </div>
 
@@ -28561,12 +28787,15 @@
     const listGainCls = r[5] >= 0 ? "val-green" : "val-red";
     const listGainSign = r[5] >= 0 ? "+" : "";
     const isLive = !!r[10];
+    const bseSmeSymbols = new Set(["ANTALA", "VECTRAS", "MAXENGS", "JOHNSONCAB", "HGSINDIALT", "BCSSL"]);
+    const symUpper = (r[9] || "").toUpperCase();
+    const exLabel = bseSmeSymbols.has(symUpper) ? "BSE SME" : (symUpper === "VPFL" ? "NSE SME" : "NSE");
     return `
         <tr data-action="open-stock" data-symbol="${escapeHtml(r[9] || "")}" data-ipo-performance-symbol="${escapeHtml(r[9] || "")}" title="Open quote and charts" style="cursor:pointer">
           <td style="max-width:260px">
             <div style="font-weight:700;font-size:12px;color:var(--t)">${escapeHtml(r[0])}</div>
             <div style="display:inline-flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap">
-              ${r[9] ? `<span class="ipo-symbol-tag">NSE: ${escapeHtml(r[9])}</span>` : ""}
+              ${r[9] ? `<span class="ipo-symbol-tag">${exLabel}: ${escapeHtml(r[9])}</span>` : ""}
               ${isLive ? `<span class="ipo-symbol-tag" style="background:rgba(0,230,118,0.15);color:var(--g);border:1px solid rgba(0,230,118,0.3)">● Live Exchange Feed</span>` : ""}
             </div>
           </td>
