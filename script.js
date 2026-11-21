@@ -17191,48 +17191,6 @@
 
     const earnInfo = getStockEarningsDates(s);
 
-    // Watchlist HTML for the right sidebar (strictly deduplicated)
-    const seenSymbols = new Set(["NIFTY 50"]);
-    const watchlistStocks = [
-      ["NIFTY 50", "Nifty 50 Index", 25030.35, 2.01, 493.75]
-    ];
-    if (Array.isArray(State.watchlist)) {
-      for (const wSym of State.watchlist) {
-        if (!seenSymbols.has(wSym)) {
-          seenSymbols.add(wSym);
-          const st = getStockBySymbol(wSym);
-          watchlistStocks.push([st[0], st[8]?.name || st[2] || st[0], st[3], st[4]]);
-        }
-      }
-    }
-    for (const x of ST) {
-      if (!seenSymbols.has(x[0])) {
-        seenSymbols.add(x[0]);
-        watchlistStocks.push([x[0], x[8]?.name || x[2] || x[0], x[3], x[4]]);
-      }
-    }
-    const watchlistRows = watchlistStocks.slice(0, 10).map(item => {
-      const isSelected = item[0] === s[0];
-      const chgColor = item[3] >= 0 ? "val-green" : "val-red";
-      const chgSign = item[3] >= 0 ? "+" : "";
-      const chgVal = (item[2] * (item[3] / 100)).toFixed(2);
-      return `
-              <tr class="tv-watchlist-row ${isSelected ? 'active' : ''}" data-action="open-stock" data-symbol="${item[0]}">
-                <td>
-                  <div style="display:flex;align-items:center;gap:4px">
-                    <span style="font-weight:700;color:var(--ink)">${item[0]}</span>
-                    <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(item[0])}" target="_blank" rel="noopener noreferrer" class="watchlist-tv-link" title="Open ${item[0]} on TradingView" onclick="event.stopPropagation()">
-                      <span>↗</span>
-                    </a>
-                  </div>
-                </td>
-                <td style="text-align:right;font-weight:600" class="font-mono">₹${formatNumber(item[2])}</td>
-                <td style="text-align:right" class="font-mono ${chgColor}">${chgSign}${chgVal}</td>
-                <td style="text-align:right;font-weight:700" class="font-mono ${chgColor}">${chgSign}${item[3].toFixed(2)}%</td>
-              </tr>
-            `;
-    }).join("");
-
     // Initial default OHLC values for header
     const defaultOpen = s[0] === "INDUSINDBK" ? "891.00" : (s[3] * (1 - (s[4] / 100))).toFixed(2);
     const defaultHigh = s[0] === "INDUSINDBK" ? "925.00" : dayHigh.toFixed(2);
@@ -17439,29 +17397,6 @@
 
           <!-- Right Side Market & Quote Panel (Matching Image 2 Sidebar!) -->
           <div class="tv-right-panel">
-            <!-- Watchlist Snapshot -->
-            <div class="tv-watchlist-card">
-              <div class="tv-watchlist-header">
-                <span class="tv-panel-title">Nifty 50 Watchlist</span>
-                <span class="tv-watchlist-count">${watchlistStocks.length}</span>
-              </div>
-              <div class="tv-watchlist-table-wrap">
-                <table class="tv-mini-table">
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th style="text-align:right">Last</th>
-                      <th style="text-align:right">Chg</th>
-                      <th style="text-align:right">Chg%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${watchlistRows}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
             <!-- Selected Stock Live Snapshot (Matching Image 2!) -->
             <div class="tv-quote-detail-card">
               <div class="tv-quote-brand-row">
