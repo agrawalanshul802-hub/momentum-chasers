@@ -5798,6 +5798,12 @@
               parsed.forEach((h, idx) => {
                 if (!h.id) h.id = "h_" + (h.symbol || "stock").toLowerCase() + "_" + idx;
                 if (!h.broker) h.broker = h.account || "Zerodha";
+                const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+                let pClose = (h.prevClose && typeof h.prevClose === "number" && h.prevClose > 0) ? h.prevClose : null;
+                if (!pClose || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 1.5)) {
+                  pClose = dPct !== 0 ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
+                }
+                h.prevClose = pClose;
               });
               if (parsed.length === 5 && !parsed.some(h => (h.cmp - h.buyPrice) < 0)) {
                 const def = this.getDefaultHoldings();
@@ -5894,7 +5900,12 @@
           if (typeof newPrice === "number" && newPrice > 0) {
             h.cmp = Math.round(newPrice * 100) / 100;
             if (chgPct != null && !isNaN(chgPct)) h.dayChangePct = Math.round(chgPct * 100) / 100;
-            if (prevClose != null && !isNaN(prevClose)) h.prevClose = Math.round(prevClose * 100) / 100;
+            const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+            let validPrev = (prevClose && typeof prevClose === "number" && prevClose > 0) ? prevClose : null;
+            if (!validPrev || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 1.5)) {
+              validPrev = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
+            }
+            h.prevClose = Math.round(validPrev * 100) / 100;
             changed = true;
           }
         }
@@ -5956,7 +5967,13 @@
                 if (typeof q.regularMarketPrice === "number" && q.regularMarketPrice > 0) {
                   h.cmp = Math.round(q.regularMarketPrice * 100) / 100;
                   h.dayChangePct = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
-                  h.prevClose = Math.round((q.chartPreviousClose || (q.regularMarketPrice - (q.regularMarketChange || 0))) * 100) / 100;
+                  const rawPrev = q.chartPreviousClose || (q.regularMarketPrice - (q.regularMarketChange || 0));
+                  const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+                  let validPrev = (rawPrev && typeof rawPrev === "number" && rawPrev > 0) ? rawPrev : null;
+                  if (!validPrev || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 1.5)) {
+                    validPrev = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
+                  }
+                  h.prevClose = Math.round(validPrev * 100) / 100;
                   if (q.shortName && (!h.name || h.name === h.symbol)) {
                     h.name = q.shortName;
                   }
@@ -27811,10 +27828,11 @@
     }
 
     // Filter by Demat / Broker account
-    let list = [...allHoldings];
-    if (State.portfolioAccount && State.portfolioAccount !== "All") {
-      list = list.filter(h => (h.broker || "").toLowerCase() === State.portfolioAccount.toLowerCase());
-    }
+    const isFilteredAccount = State.portfolioAccount && State.portfolioAccount !== "All";
+    const scopeHoldings = isFilteredAccount
+      ? allHoldings.filter(h => (h.broker || "").toLowerCase() === State.portfolioAccount.toLowerCase())
+      : allHoldings;
+    let list = [...scopeHoldings];
 
     // Filter by Search Query
     const q = (State.portfolioSearch || "").trim().toLowerCase();
@@ -27823,10 +27841,10 @@
     }
 
     // Filter by Gain / Loss / Today Pill
-    const gainersCount = allHoldings.filter(h => (h.cmp - h.buyPrice) >= 0).length;
-    const losersCount = allHoldings.filter(h => (h.cmp - h.buyPrice) < 0).length;
-    const dayGainersCount = allHoldings.filter(h => (h.dayChangePct || 0) >= 0).length;
-    const dayLosersCount = allHoldings.filter(h => (h.dayChangePct || 0) < 0).length;
+    const gainersCount = scopeHoldings.filter(h => (h.cmp - h.buyPrice) >= 0).length;
+    const losersCount = scopeHoldings.filter(h => (h.cmp - h.buyPrice) < 0).length;
+    const dayGainersCount = scopeHoldings.filter(h => (h.dayChangePct || 0) >= 0).length;
+    const dayLosersCount = scopeHoldings.filter(h => (h.dayChangePct || 0) < 0).length;
 
     if (State.portfolioFilter === "profit") {
       list = list.filter(h => (h.cmp - h.buyPrice) >= 0);
@@ -27874,15 +27892,21 @@
       });
     }
 
-    // Calculate Consolidated Metrics
+    // Calculate Consolidated Metrics (or scoped by selected broker account)
     let totalInvested = 0;
     let totalCurrent = 0;
     let totalTodayPL = 0;
 
-    allHoldings.forEach(h => {
+    scopeHoldings.forEach(h => {
       const buyVal = h.qty * h.buyPrice;
       const curVal = h.qty * h.cmp;
-      const todayPL = h.qty * (h.cmp - (h.prevClose || h.cmp));
+      const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+      let pClose = (h.prevClose && typeof h.prevClose === "number" && h.prevClose > 0) ? h.prevClose : null;
+      if (!pClose || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 1.5)) {
+        pClose = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
+        h.prevClose = Math.round(pClose * 100) / 100;
+      }
+      const todayPL = h.qty * (h.cmp - pClose);
       totalInvested += buyVal;
       totalCurrent += curVal;
       totalTodayPL += todayPL;
@@ -27890,16 +27914,17 @@
 
     const totalGain = totalCurrent - totalInvested;
     const totalGainPct = totalInvested > 0 ? (totalGain / totalInvested) * 100 : 0;
-    const todayGainPct = (totalCurrent - totalTodayPL) > 0 ? (totalTodayPL / (totalCurrent - totalTodayPL)) * 100 : 0;
+    const prevTotalValue = totalCurrent - totalTodayPL;
+    const todayGainPct = prevTotalValue > 0 ? (totalTodayPL / prevTotalValue) * 100 : 0;
 
     // Identify Top Gainer & Top Loser across book
-    const sortedByGainPct = [...allHoldings].map(h => {
+    const sortedByGainPct = [...scopeHoldings].map(h => {
       const gPct = h.buyPrice > 0 ? ((h.cmp - h.buyPrice) / h.buyPrice) * 100 : 0;
       return { ...h, gPct };
     }).sort((a, b) => b.gPct - a.gPct);
 
     const topGainer = sortedByGainPct.length ? sortedByGainPct[0] : null;
-    const topLoser = sortedByGainPct.length ? sortedByGainPct[sortedByGainPct.length - 1] : null;
+    const topLoser = sortedByGainPct.length > 1 ? sortedByGainPct[sortedByGainPct.length - 1] : null;
 
     const isPrivate = State.portfolioPrivacy === true;
     const formatMoney = (num, decimals = 0) => {
@@ -27908,7 +27933,10 @@
     };
     const formatSignedMoney = (num, decimals = 0) => {
       if (isPrivate) return "••••••";
-      return (num >= 0 ? "+" : "") + "₹" + formatNumber(Math.abs(num), decimals);
+      const rounded = Math.round(num);
+      if (rounded === 0) return "+₹0";
+      const sign = num > 0 ? "+" : "-";
+      return sign + "₹" + formatNumber(Math.abs(num), decimals);
     };
 
     // Render table rows
@@ -27920,7 +27948,8 @@
       const dayChg = h.dayChangePct != null ? h.dayChangePct : 0;
       const bookWeight = totalCurrent > 0 ? ((curVal / totalCurrent) * 100).toFixed(1) : "0.0";
       const exch = h.exchange || "NSE";
-      const yahoo = h.yahooSymbol || `${h.symbol}.${exch === "BSE" ? "BO" : "NS"}`;
+      const cleanSym = (h.symbol || "").trim().replace(/\s+/g, "");
+      const yahoo = h.yahooSymbol ? h.yahooSymbol.replace(/\s+/g, "") : `${cleanSym}.${exch === "BSE" ? "BO" : "NS"}`;
 
       return `
         <tr>
@@ -27989,7 +28018,7 @@
         <div class="net-worth-card">
           <div class="net-worth-header">
             <div class="net-worth-header-left">
-              <span class="net-worth-label">Total Net Worth (Consolidated)</span>
+              <span class="net-worth-label">${isFilteredAccount ? `${escapeHtml(State.portfolioAccount)} Net Worth` : "Total Net Worth (Consolidated)"}</span>
               <button type="button" class="privacy-eye-btn" data-action="toggle-portfolio-privacy" title="${isPrivate ? 'Show monetary amounts' : 'Hide balance for privacy'}">
                 ${isPrivate ? '👁️‍🗨️' : '👁'}
               </button>
@@ -28031,7 +28060,7 @@
           <div class="stat-card-modern">
             <span class="card-label">Invested capital</span>
             <div class="stat-value">${formatMoney(totalInvested, 0)}</div>
-            <div class="sub" style="font-size:11px;color:var(--mu)">Across ${allHoldings.length} equities positions</div>
+            <div class="sub" style="font-size:11px;color:var(--mu)">Across ${scopeHoldings.length} equities positions</div>
           </div>
 
           <div class="stat-card-modern">
@@ -28056,7 +28085,7 @@
           </button>
         </div>
         <div class="portfolio-status-right">
-          <span style="color:var(--g)">●</span> ${allHoldings.length}/${allHoldings.length} live prices
+          <span style="color:var(--g)">●</span> ${scopeHoldings.length}/${scopeHoldings.length} live prices
         </div>
       </div>
 
