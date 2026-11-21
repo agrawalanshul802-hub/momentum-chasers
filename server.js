@@ -5987,7 +5987,7 @@ const server = http.createServer(async (req, res) => {
 
       // If market is active or force refresh requested, try fetching live quotes
       try {
-        const symbolsToFetch = stocks.map(s => s.symbol + '.NS').join(',') + (isBank ? ',^NSEBANK' : ',^NSEI');
+        const symbolsToFetch = stocks.slice(0, 45).map(s => s.symbol + '.NS').join(',') + (isBank ? ',^NSEBANK' : ',^NSEI');
         const session = await yahooSession.getSession();
         if (session && session.cookie && session.crumb) {
           const qUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolsToFetch)}&crumb=${encodeURIComponent(session.crumb)}`;

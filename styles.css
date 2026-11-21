@@ -5502,6 +5502,38 @@ body.theme-white .heatmap-treemap-tile {
     font-size: 8.5px;
 }
 
+.tile-micro .heatmap-tile-logo-badge {
+    display: none;
+}
+
+.tile-micro .heatmap-tile-price {
+    display: none;
+}
+
+.tile-micro .heatmap-tile-symbol {
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.tile-micro .heatmap-tile-chg {
+    font-size: 7.5px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tile-nano .heatmap-tile-logo-badge,
+.tile-nano .heatmap-tile-price,
+.tile-nano .heatmap-tile-chg {
+    display: none;
+}
+
+.tile-nano .heatmap-tile-symbol {
+    font-size: 7px;
+    font-weight: 800;
+    line-height: 1;
+}
+
 /* Floating Interactive Tooltip */
 .heatmap-interactive-tooltip {
     position: fixed;

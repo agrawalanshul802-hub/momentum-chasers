@@ -25640,7 +25640,7 @@
     "NIFTY MS IT TELCM": ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE"],
     "NIFTY RAILWAYS PSU": ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JUPITERIN", "TEXRAIL"],
     "NIFTY ENERGY": ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON"],
-    "NIFTY IPO": ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"],
+    "NIFTY IPO": ["ANTALA","VPFL","VECTRAS","MAXENGS","JOHNSONCAB","HGSINDIALT","BCSSL","CRL","MKSONS","AJWA","BLSPOLY","SFCTECH","WISCON","EDELALTS","CORE4","PARASHLTH","JPL","ZETWERK","SMT","TONBO","SHELLZ","BONFIG","RAVITA","FUSIONCX","HDFIRE","LOANFRONT","RKFAL","PARASYNTEX","ACMERAIL","TNA","EIMS","SHREETNB","DSL","OMARA","NITYAS","SOLLFEGE","SJP","EVENTIONS","VNL","GREENASIA","BLACKOPAL","PAPADMALJI","VANS","SRIT","SHIVCHEM","ACMEUNIV","PIND","SHAHINVEST","SAIURJA","BMISL","HIMALAYAN","ACEVECTOR","GERMAN","RUNWALENTR","ORIENTCABL","DUDANI","AONESTEELS","MONEYVIEW","PESHWA","ROOPA","SKOFFSET","ARMEE","LIQVD","SWASTIKAIN","ELEVATE","POOJALOGIS","UNITEC","ADROITIND","COREIN","HNIL","VARMORA","ANAND","ROBOKIDZ","FXML","VIVEKANAND","AXIOMGAS","SONA","KHERIAAUTO","NSE","SPECTRAA","JSIPL","SSRETAIL","HEROMOTORS","QAL","SHAKTIPOLY","VAMAWOVEN","MANIKA","CENTURYOOH","INJECTO","VEEGALAND","PANCHATV","RAKSAN","OMGL","SPEEDEX","AMTECH","ARCIL","STEAMHOUSE","KARAMTARA","LCCPROJECT","VINOD","INFRAX","MPIMANIPAL","RENTOMOJO","KANOHAR","PRASOLCHEM","GLASSWALL","PRANAV","APANA","QUALIANCE","MOMSBELIEF","DEEPA","FARMPEACE","FLYHI","SHANTIINOR","PHYCHEM","PERNIASPOP","ASHUTOSH","PRIORITY","PALUCK","CSML","ESDS","KWICK","LUMINO","SUMAX","ANNU","SKYWAYS","ABH","MADHURKNIT","SYMBIOTEC","HTEL","AUGMONT","TEMPSENS","DHANWEL","GAJA","MOPSHOP","SUNSHINE","SHANKESH","FASCINATE","LALITHAA","HORIZONIND","ENS","TECHNOCRAT","SKYTECH","CREDENT","PRAMODINI","SHIPROCKET","BLEL","QTFOODS","MILKYMIST","SHAMFOAM","DHOOTTRANS","MOLBIO","TECHNOCRAF","OPTIMYSTIX","LEAP","LAPL","TATACAP","HDBFS","LGEINDIA","ICICIPRUAM","VISHALMEGA","MEESHO","KALPATARU","CORONAREM","WAKEFIT","RUBICON","PARKMEDI","AEQUS","QUALITYPOW","LAXMIDNTL","MOBIKWIK","KSHINTL","NEPHROCARE","STNDRDGLAS","VIDYAWIRES","QUADRANT","DENTAWATR","STALLION","DIFFUSION","HIGHWAYINF","HYUNDAI","SWIGGY","WAAREEENER","PREMIERENE","BAJAJHFL","NTPCGREEN","OLAELEC","BHARTIHEXA","FIRSTCRY","GODIGIT","AADHARHFL","EMCURE","AFCONS","ACMESOLAR","KRN","TBOTEK","INDEGENE","JYOTICNC","ENVIRO"],
     "NIFTY SMLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "NIFTY SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
@@ -26077,6 +26077,106 @@
     return null;
   }
 
+  function resolveIPORowForHeatmap(r) {
+    if (!r) return null;
+    const sym = String(r[9] || "").toUpperCase().trim();
+    if (!sym) return null;
+    const name = r[0] || sym;
+    const listingDate = r[1] || "";
+    const issuePrice = Number(r[2]) || 100;
+    const issueSizeCr = Number(r[3]) || 500;
+    const listingPrice = Number(r[4]) || issuePrice;
+    let currentPrice = Number(r[6]) || listingPrice || issuePrice;
+    let chgPct = Number(r[7]) || 0;
+    const year = Number(r[8]) || 2026;
+
+    if (AUTHENTIC_IPO_STOCKS[sym]) {
+      const ipo = AUTHENTIC_IPO_STOCKS[sym];
+      const stockObj = {
+        symbol: ipo.symbol,
+        name: ipo.name,
+        sector: ipo.sector || "Recent IPO",
+        price: ipo.price,
+        chg: ipo.chg,
+        mcap: ipo.mcap,
+        volume: ipo.volume,
+        logoBg: ipo.logoBg,
+        logoColor: ipo.logoColor || "#ffffff",
+        logoText: ipo.logoText || ipo.symbol.slice(0, 3),
+        listingDate: listingDate,
+        issuePrice: issuePrice,
+        issueSizeCr: issueSizeCr,
+        year: year
+      };
+      HM_STOCKS_MAP[sym] = stockObj;
+      return stockObj;
+    }
+
+    const stItem = (typeof ST_MAP !== "undefined" && ST_MAP[sym]) 
+      || (typeof ST !== "undefined" && Array.isArray(ST) && ST.find(x => x[0] === sym));
+
+    let sector = "Diversified IPOs";
+    let mcap = Math.round(issueSizeCr * 4);
+    let volume = `${Math.max(1, Math.round(((currentPrice * 11) % 40) + 5))} L`;
+    let logoBg = "#1e293b";
+
+    if (stItem) {
+      const isArr = Array.isArray(stItem);
+      const p = isArr ? stItem[3] : stItem.price;
+      const c = isArr ? stItem[4] : stItem.chg;
+      const meta = isArr ? (stItem[8] || {}) : stItem;
+      if (typeof p === "number" && p > 0) currentPrice = p;
+      if (typeof c === "number") chgPct = c;
+      if (meta.marketCapCr) mcap = meta.marketCapCr;
+      else if (meta.mcap) mcap = meta.mcap;
+      if (meta.volume) volume = meta.volume;
+      if (isArr ? stItem[2] : stItem.sector) sector = isArr ? stItem[2] : stItem.sector;
+    } else {
+      const lowerName = name.toLowerCase();
+      if (lowerName.includes("tech") || lowerName.includes("software") || lowerName.includes("digital") || lowerName.includes("data") || lowerName.includes("solutions") || lowerName.includes("info")) {
+        sector = "Tech & Software";
+        logoBg = "#0284c7";
+      } else if (lowerName.includes("pharma") || lowerName.includes("health") || lowerName.includes("medic") || lowerName.includes("dental") || lowerName.includes("bio")) {
+        sector = "Pharma & Healthcare";
+        logoBg = "#059669";
+      } else if (lowerName.includes("energy") || lowerName.includes("power") || lowerName.includes("solar") || lowerName.includes("green") || lowerName.includes("renew")) {
+        sector = "Energy & Green";
+        logoBg = "#15803d";
+      } else if (lowerName.includes("finance") || lowerName.includes("capital") || lowerName.includes("bank") || lowerName.includes("amc") || lowerName.includes("wealth") || lowerName.includes("housing") || lowerName.includes("credit")) {
+        sector = "Financial Services";
+        logoBg = "#1e40af";
+      } else if (lowerName.includes("auto") || lowerName.includes("motor") || lowerName.includes("trans")) {
+        sector = "Automobiles";
+        logoBg = "#ea580c";
+      } else if (lowerName.includes("infra") || lowerName.includes("construct") || lowerName.includes("build") || lowerName.includes("project") || lowerName.includes("water") || lowerName.includes("engineer")) {
+        sector = "Infrastructure & Engg";
+        logoBg = "#7c3aed";
+      } else if (lowerName.includes("food") || lowerName.includes("retail") || lowerName.includes("mart") || lowerName.includes("dairy") || lowerName.includes("jewel") || lowerName.includes("fab") || lowerName.includes("steel")) {
+        sector = "Consumer & Retail";
+        logoBg = "#d97706";
+      }
+    }
+
+    const stockObj = {
+      symbol: sym,
+      name: name,
+      sector: sector,
+      price: currentPrice,
+      chg: chgPct,
+      mcap: mcap,
+      volume: volume,
+      logoBg: logoBg,
+      logoColor: "#ffffff",
+      logoText: sym.slice(0, 3),
+      listingDate: listingDate,
+      issuePrice: issuePrice,
+      issueSizeCr: issueSizeCr,
+      year: year
+    };
+    HM_STOCKS_MAP[sym] = stockObj;
+    return stockObj;
+  }
+
   function getHeatmapStocksForIndex(idxName) {
     syncHeatmapLivePrices();
     const raw = String(idxName || "All Stocks").trim();
@@ -26126,6 +26226,24 @@
     }
     if (norm === "NIFTY SMLCAP 250" || norm === "NIFTY SMALLCAP 250" || norm === "SMALLCAP 250" || norm === "SMALLCAP") {
       return NIFTY_SMALLCAP_250_DATA;
+    }
+    if (norm === "NIFTY IPO" || norm === "IPO" || norm === "IPO UNIVERSE" || norm === "RECENT IPOS") {
+      const windowChoice = State.heatmapIpoWindow || "1y";
+      const ipoList = (typeof IPO_PERF !== "undefined" && Array.isArray(IPO_PERF)) ? IPO_PERF : [];
+      let filteredRows = ipoList;
+      if (windowChoice === "2026") {
+        filteredRows = ipoList.filter(r => r[8] === 2026);
+      } else if (windowChoice === "2025") {
+        filteredRows = ipoList.filter(r => r[8] === 2025);
+      } else if (windowChoice === "2024") {
+        filteredRows = ipoList.filter(r => r[8] === 2024);
+      } else if (windowChoice === "all") {
+        filteredRows = ipoList;
+      } else {
+        // "1y" (Past 1 Year - DEFAULT): listings from 2025 & 2026 plus landmark 2024 issues
+        filteredRows = ipoList.filter(r => r[8] >= 2025 || (r[8] === 2024 && ['HYUNDAI', 'SWIGGY', 'WAAREEENER', 'PREMIERENE', 'BAJAJHFL', 'NTPCGREEN', 'OLAELEC', 'AFCONS', 'ACMESOLAR', 'KRN', 'BHARTIHEXA', 'FIRSTCRY', 'GODIGIT', 'AADHARHFL', 'EMCURE', 'TBOTEK', 'INDEGENE', 'JYOTICNC', 'ENVIRO'].includes(r[9])));
+      }
+      return filteredRows.map(r => resolveIPORowForHeatmap(r)).filter(Boolean);
     }
 
     let matchedKey = Object.keys(HEATMAP_SECTOR_SYMBOLS_MAP).find(k => {
@@ -26503,7 +26621,9 @@
       // Adaptive sizing classes based on percentage width/height
       const isCompact = t.pctWidth < 12 || t.pctHeight < 18;
       const isTiny = t.pctWidth < 8.5 || t.pctHeight < 16;
-      const sizeClass = isTiny ? "tile-tiny" : isCompact ? "tile-compact" : "";
+      const isMicro = t.pctWidth < 4.5 || t.pctHeight < 7.5;
+      const isNano = t.pctWidth < 2.5 || t.pctHeight < 4.5;
+      const sizeClass = isNano ? "tile-nano" : isMicro ? "tile-micro" : isTiny ? "tile-tiny" : isCompact ? "tile-compact" : "";
 
       const chgPrefix = t.displayChg >= 0 ? "+" : "";
       const chgText = `${chgPrefix}${t.displayChg.toFixed(2)}%`;
@@ -26544,7 +26664,7 @@
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <h2 class="heatmap-main-title">
-              ${isAllSectors ? "All Sectors Heatmap" : activeIndex === "All Stocks" ? "All Stocks Heatmap" : `${activeIndex} Heatmap`} <span class="heatmap-info-icon" title="${isAllSectors ? 'Squarified treemap of all 44 Nifty Sectoral & Thematic Indices. Click any sector tile to view its stock heatmap.' : 'Squarified market cap treemap: Tile area is proportional to market capitalization; color represents percentage price change.'}">ⓘ</span>
+              ${isAllSectors ? "All Sectors Heatmap" : activeNorm === "NIFTY IPO" ? `NIFTY IPO Heatmap (${(State.heatmapIpoWindow || "1y") === "1y" ? "Past 1 Year" : State.heatmapIpoWindow === "all" ? "All Recent" : `Year ${State.heatmapIpoWindow}`})` : activeIndex === "All Stocks" ? "All Stocks Heatmap" : `${activeIndex} Heatmap`} <span class="heatmap-info-icon" title="${isAllSectors ? 'Squarified treemap of all 44 Nifty Sectoral & Thematic Indices. Click any sector tile to view its stock heatmap.' : 'Squarified market cap treemap: Tile area is proportional to market capitalization; color represents percentage price change.'}">ⓘ</span>
             </h2>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -26605,9 +26725,21 @@
               <select id="heatmap-perf-select" class="heatmap-select">
                 <option value="d" ${activePerf === "d" ? "selected" : ""}>D%</option>
                 <option value="w" ${activePerf === "w" ? "selected" : ""}>W%</option>
-
               </select>
             </div>
+
+            ${(activeNorm === "NIFTY IPO" || activeNorm === "IPO" || activeNorm === "IPO UNIVERSE") ? `
+            <div class="heatmap-select-wrap" id="heatmap-ipo-window-wrap" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:6px;padding:3px 8px;">
+              <span style="color:#6366f1;font-weight:700">IPO Record:</span>
+              <select id="heatmap-ipo-window-select" class="heatmap-select" style="font-weight:700;color:#6366f1;border:none;background:transparent;">
+                <option value="1y" ${(State.heatmapIpoWindow || "1y") === "1y" ? "selected" : ""}>Past 1 Year (199 IPOs)</option>
+                <option value="all" ${State.heatmapIpoWindow === "all" ? "selected" : ""}>All Recent (224 IPOs)</option>
+                <option value="2026" ${State.heatmapIpoWindow === "2026" ? "selected" : ""}>Year 2026 (156 IPOs)</option>
+                <option value="2025" ${State.heatmapIpoWindow === "2025" ? "selected" : ""}>Year 2025 (24 IPOs)</option>
+                <option value="2024" ${State.heatmapIpoWindow === "2024" ? "selected" : ""}>Year 2024 (19 IPOs)</option>
+              </select>
+            </div>
+            ` : ""}
 
             <button class="heatmap-tool-icon-btn ${activeGroup === 'sector' ? 'active' : ''}" id="heatmap-toggle-group-btn" title="Toggle Sector Clustering">
               <span>⊞</span>
@@ -26647,6 +26779,13 @@
     const idxSelect = document.getElementById("heatmap-index-select");
     const sortSelect = document.getElementById("heatmap-sort-select");
     const perfSelect = document.getElementById("heatmap-perf-select");
+    const ipoWindowSelect = document.getElementById("heatmap-ipo-window-select");
+    if (ipoWindowSelect) {
+      ipoWindowSelect.addEventListener("change", e => {
+        State.heatmapIpoWindow = e.target.value;
+        renderActiveView();
+      });
+    }
     const groupBtn = document.getElementById("heatmap-toggle-group-btn");
     const fullBtn = document.getElementById("heatmap-fullscreen-btn");
     const syncBtn = document.getElementById("heatmap-sync-btn");
@@ -34655,6 +34794,9 @@
         renderActiveView();
       } else if (e.target.id === "heatmap-perf-select") {
         State.heatmapPerfBy = e.target.value;
+        renderActiveView();
+      } else if (e.target.id === "heatmap-ipo-window-select") {
+        State.heatmapIpoWindow = e.target.value;
         renderActiveView();
       } else if (e.target.id === "turnover-baseline-select") {
         const val = parseInt(e.target.value, 10) || 8;
