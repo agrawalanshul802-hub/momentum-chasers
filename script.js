@@ -13230,8 +13230,8 @@
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <span class="screener-label">Timeframe</span>
             <div class="pill-segmented-control" role="group" aria-label="Timeframe">
-              <button class="pill-segment-btn ${State.timeframe === "15m" ? "active" : ""}" data-action="set-tf" data-val="15m">15m</button>
-              <button class="pill-segment-btn ${State.timeframe === "d" ? "active" : ""}" data-action="set-tf" data-val="d">Daily</button>
+              
+              <button class="pill-segment-btn ${State.timeframe === "w" ? "" : "active"}" data-action="set-tf" data-val="d">Daily</button>
               <button class="pill-segment-btn ${State.timeframe === "w" ? "active" : ""}" data-action="set-tf" data-val="w">Weekly</button>
             </div>
           </div>
@@ -13331,7 +13331,7 @@
               Showing <strong>${totalMatching > 0 ? (startIdx + 1).toLocaleString("en-IN") : 0}–${endIdx.toLocaleString("en-IN")}</strong> of ${totalMatching.toLocaleString("en-IN")} stocks matching criteria
             </span>
             <span style="font-size:11px;color:var(--mu);display:inline-flex;align-items:center;gap:4px;">
-              <span>•</span> Sorted by <strong>${activeSortSummary}</strong> · ${State.timeframe === "15m" ? "15min" : State.timeframe === "d" ? "Daily" : "Weekly"} timeframe
+              <span>•</span> Sorted by <strong>${activeSortSummary}</strong> · ${State.timeframe === "w" ? "Weekly" : "Daily"} timeframe
             </span>
             <div class="screener-top-pagination" style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;${totalPages <= 1 ? 'display:none;' : ''}">
               <button class="pagination-btn ${curPage <= 1 ? 'disabled' : ''}" data-action="set-screener-page" data-page="${curPage - 1}" ${curPage <= 1 ? 'disabled' : ''} style="height:24px;padding:1px 7px;font-size:11px;" title="Previous page">«</button>
@@ -13488,7 +13488,7 @@
                   <div style="display:inline-flex;align-items:center;gap:6px">
                     <div>
                       <div>50×200 EMA Cross</div>
-                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
+                      
                     </div>
                     <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
                   </div>
@@ -14498,7 +14498,7 @@
                 </th>
                 <th class="${getThClass('cross')}" style="text-align:center" data-action="sort-sectors" data-col="cross" title="Click to sort by 50×200 Crossover">
                   <div>${crossColHeader}</div>
-                  <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:normal;margin-top:2px;">15min time frame</div>
+                  
                 </th>
               </tr>
             </thead>
@@ -32674,7 +32674,7 @@
 
     // Sync top-bar timeframe buttons
     $$(".timeframe-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.tf === State.timeframe);
+      btn.classList.toggle("active", btn.dataset.tf === (State.timeframe === "w" ? "w" : "d"));
     });
 
     // Dispatch view
@@ -34077,7 +34077,7 @@
         renderActiveView();
       }
       else if (action === "set-tf") {
-        State.timeframe = target.dataset.val;
+        State.timeframe = target.dataset.val === "w" ? "w" : "d";
         State.screenerPage = 1;
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
@@ -34738,7 +34738,7 @@
     // Top timeframe switch buttons
     $$(".timeframe-btn").forEach(btn => {
       btn.addEventListener("click", () => {
-        State.timeframe = btn.dataset.tf;
+        State.timeframe = btn.dataset.tf === "w" ? "w" : "d";
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
       });
