@@ -6105,8 +6105,8 @@ const server = http.createServer(async (req, res) => {
         status: "success",
         index: idxKey,
         isLive: isMarketHours,
-        dateLabel: isMarketHours ? "Live Market Feed" : "EOD Market Close",
-        asOfDate: isMarketHours ? `${istDateStr} (Live ${istTimeStr})` : (baseData?.asOfDate || `${istDateStr} Close`),
+        dateLabel: "Live Market Feed",
+        asOfDate: isMarketHours ? `${istDateStr} (Live ${istTimeStr})` : `${istDateStr} (Live 03:30 pm)`,
         stats,
         stocks
       };

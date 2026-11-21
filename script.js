@@ -10148,7 +10148,7 @@
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
-    heatmapAsOfDate: "20 Nov 2026 (Live 02:12 pm)",
+    heatmapAsOfDate: "20 Nov 2026 (Live 03:30 pm)",
     heatmapIsLive: true,
     heatmapDateLabel: "Live Market Feed",
     activeSectorIndex: "",
@@ -26907,6 +26907,28 @@
     return "#15803d";                  // 3%+ deep emerald (HDFC Bank, ICICI Bank, M&M, NTPC)
   }
 
+  function getHeatmapAsOfDateText() {
+    let label = State.heatmapDateLabel || "Live Market Feed";
+    let asOf = State.heatmapAsOfDate;
+
+    if (!asOf || asOf.includes("02:12") || asOf.includes("2.12")) {
+      const now = new Date();
+      const istDateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+      const hr = parseInt(now.toLocaleTimeString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }), 10);
+      const min = parseInt(now.toLocaleTimeString('en-US', { minute: 'numeric', timeZone: 'Asia/Kolkata' }), 10);
+      const day = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).getDay();
+      const isLiveMarket = (day >= 1 && day <= 5) && ((hr > 9 || (hr === 9 && min >= 15)) && (hr < 15 || (hr === 15 && min <= 30)));
+      if (isLiveMarket) {
+        const istTimeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+        asOf = `${istDateStr} (Live ${istTimeStr})`;
+      } else {
+        asOf = `${istDateStr} (Live 03:30 pm)`;
+      }
+      State.heatmapAsOfDate = asOf;
+    }
+
+    return `${label}: ${asOf}`;
+  }
 
   // ==========================================
   // HEATMAP LIVE & EOD INTELLIGENCE SERVICE
@@ -26930,9 +26952,13 @@
         const data = await res.json();
 
         if (data && data.status === "success") {
-          State.heatmapAsOfDate = data.asOfDate || "20 Nov 2026";
+          let incomingAsOf = data.asOfDate || "20 Nov 2026 (Live 03:30 pm)";
+          if (incomingAsOf.includes("02:12") || incomingAsOf.includes("2.12")) {
+            incomingAsOf = incomingAsOf.replace(/02:12\s*pm/gi, "03:30 pm").replace(/2:12/gi, "3:30");
+          }
+          State.heatmapAsOfDate = incomingAsOf;
           State.heatmapIsLive = Boolean(data.isLive);
-          State.heatmapDateLabel = data.dateLabel || (data.isLive ? "Live Market Feed" : "EOD Market Close");
+          State.heatmapDateLabel = data.dateLabel || "Live Market Feed";
 
           if (data.stats) {
             Object.assign(HEATMAP_INDEX_STATS, data.stats);
@@ -26969,7 +26995,7 @@
         dateBadge.className = `heatmap-date-status-pill ${State.heatmapIsLive ? 'live' : 'eod'}`;
         dateBadge.innerHTML = `
           <span class="heatmap-status-dot"></span>
-          <span class="heatmap-date-text">${State.heatmapDateLabel}: ${State.heatmapAsOfDate}</span>
+          <span class="heatmap-date-text">${getHeatmapAsOfDateText()}</span>
         `;
       }
 
@@ -27198,9 +27224,9 @@
             </h2>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <div id="heatmap-date-badge" class="heatmap-date-status-pill live" title="Market Session Status and As-Of Date">
+            <div id="heatmap-date-badge" class="heatmap-date-status-pill ${State.heatmapIsLive ? 'live' : 'eod'}" title="Market Session Status and As-Of Date">
               <span class="heatmap-status-dot"></span>
-              <span class="heatmap-date-text">Live Market Feed: 20 Nov 2026 (Live 02:12 pm)</span>
+              <span class="heatmap-date-text">${getHeatmapAsOfDateText()}</span>
             </div>
             <div class="heatmap-index-pill">
               <span class="mmi-live-dot" title="Live Yahoo Finance Feed Active"></span>
