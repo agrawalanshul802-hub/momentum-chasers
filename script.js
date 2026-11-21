@@ -4516,6 +4516,42 @@
     return res;
   }
 
+  // Global canonical verified prices for core Indian constituents
+  const AUTHENTIC_CANONICAL_PRICES = {
+    "BAJFINANCE": { price: 6850.00, chg: 1.25, mcap: 423500, volume: "18.5 L" },
+    "SHRIRAMFIN": { price: 3180.00, chg: 0.65, mcap: 119500, volume: "14.2 L" },
+    "BAJAJFINSV": { price: 1610.00, chg: 0.85, mcap: 256800, volume: "12.0 L" },
+    "JIOFIN":     { price: 318.00, chg: -0.45, mcap: 202000, volume: "85.0 L" },
+    "CHOLAFIN":   { price: 1290.00, chg: 0.85, mcap: 108500, volume: "16.4 L" },
+    "MUTHOOTFIN": { price: 1880.00, chg: -0.75, mcap: 75400, volume: "9.2 L" },
+    "POONAWALLA": { price: 380.00, chg: 1.15, mcap: 29400, volume: "15.0 L" },
+    "MANAPPURAM": { price: 162.00, chg: -0.30, mcap: 13700, volume: "22.0 L" },
+    "L&TFH":      { price: 148.00, chg: 0.40, mcap: 36800, volume: "31.0 L" },
+    "M&MFIN":     { price: 288.15, chg: 0.80, mcap: 35600, volume: "25.0 L" },
+    "CREDITACC":  { price: 983.00, chg: 0.55, mcap: 15600, volume: "5.5 L" },
+    "TCS":        { price: 4120.00, chg: 0.45, mcap: 1490000, volume: "24.0 L" },
+    "HDFCBANK":   { price: 1745.00, chg: 0.55, mcap: 1330000, volume: "120.0 L" },
+    "INFY":       { price: 1870.00, chg: 0.95, mcap: 776000, volume: "45.0 L" },
+    "SBIN":       { price: 825.00, chg: 0.70, mcap: 736000, volume: "95.0 L" },
+    "KOTAKBANK":  { price: 1765.00, chg: 0.40, mcap: 351000, volume: "28.0 L" },
+    "AXISBANK":   { price: 1185.00, chg: 0.60, mcap: 366000, volume: "42.0 L" },
+    "MARUTI":     { price: 11250.00, chg: 0.80, mcap: 353800, volume: "6.8 L" },
+    "LT":         { price: 3580.00, chg: 0.50, mcap: 492000, volume: "18.5 L" },
+    "WIPRO":      { price: 565.00, chg: 0.75, mcap: 295000, volume: "38.0 L" },
+    "TITAN":      { price: 3280.00, chg: -0.35, mcap: 291000, volume: "12.0 L" },
+    "TRENT":      { price: 6650.00, chg: 1.45, mcap: 236400, volume: "14.5 L" },
+    "EICHERMOT":  { price: 4880.00, chg: 0.90, mcap: 133800, volume: "8.5 L" },
+    "DIVISLAB":   { price: 5950.00, chg: 0.60, mcap: 157900, volume: "7.2 L" },
+    "APOLLOHOSP": { price: 6950.00, chg: 0.75, mcap: 99900, volume: "5.8 L" },
+    "DRREDDY":    { price: 1240.00, chg: 0.50, mcap: 103500, volume: "16.0 L" },
+    "ITC":        { price: 472.00, chg: 0.30, mcap: 589000, volume: "85.0 L" },
+    "RELIANCE":   { price: 1275.00, chg: 0.45, mcap: 1725000, volume: "110.0 L" },
+    "BHARTIARTL": { price: 1610.00, chg: 0.65, mcap: 965000, volume: "55.0 L" },
+    "ICICIBANK":  { price: 1275.00, chg: 0.75, mcap: 898000, volume: "75.0 L" },
+    "SYMBIOTEC":  { price: 1621.30, chg: 1.29, mcap: 5800, volume: "4.5 L" }
+  };
+
+
   // Fast Lookup Map for Stock Catalog & Watchlists
   const ST_MAP = {};
   for (const s of ST) {
@@ -16084,18 +16120,25 @@
                 ${scores.map((score, sIdx) => {
                   const isCellActive = isActive && (sIdx === activeSessionIdx);
                   const cellDate = tradingDates[sIdx] || { shortLabel: `Session ${sIdx}` };
-                  const cellTitle = (sIdx === 0)
-                    ? `${secName} (${cellDate.shortLabel}): Net Flow ${score > 0 ? '+' + score : score}% | ${advCount} Green / ${decCount} Red (${Math.round((advCount / (advCount + decCount || 1)) * 100)}% Advance Ratio) — Click to inspect constituent stocks`
-                    : `${secName} (${cellDate.shortLabel}): Net Flow score ${score > 0 ? '+' + score : score}% — Click to inspect constituent stocks`;
+                  const cellData = (sIdx === rowSessionIdx) ? rowData : getSectorConstituentsForSession(secName, score, sIdx);
+                  const cAdv = cellData.advancing.length;
+                  const cDec = cellData.declining.length;
+                  const cTotal = cAdv + cDec || 1;
+                  const cNet = cAdv - cDec;
+                  const cRatio = Math.round((cNet / cTotal) * 100);
+                  const flowClass = getFlowClass(cRatio);
+                  const cellTitle = `${secName} (${cellDate.shortLabel}): Net Advances: ${cNet > 0 ? '+' + cNet : cNet} (${cAdv} Adv / ${cDec} Dec | ${cRatio > 0 ? '+' + cRatio : cRatio}% Advance Ratio) — Click to inspect constituent stocks`;
                   return `
-                  <div class="netflow-cell ${getFlowClass(score)} ${isCellActive ? 'active-cell' : ''}" 
+                  <div class="netflow-cell ${flowClass} ${isCellActive ? 'active-cell' : ''}" 
                        data-action="select-netflow-session" 
                        data-sector="${secName}" 
                        data-session-idx="${sIdx}" 
-                       data-score="${score}" 
+                       data-score="${cNet}" 
+                       data-ratio="${cRatio}"
                        data-label="${cellDate.shortLabel}"
                        title="${cellTitle}">
-                    <span>${score > 0 ? "+" + score : score}</span>
+                    <span class="netflow-val font-mono">${cNet > 0 ? "+" + cNet : cNet}</span>
+                    <span class="netflow-ratio font-mono">${cRatio > 0 ? "+" + cRatio : cRatio}%</span>
                   </div>
                 `;
                 }).join("")}
@@ -26048,42 +26091,7 @@
 
   // Helper to resolve any stock symbol from HM_STOCKS_MAP, ST_MAP, or ScreeningMantis
   
-  // Global canonical verified prices for core Indian constituents
-  const AUTHENTIC_CANONICAL_PRICES = {
-    "BAJFINANCE": { price: 6850.00, chg: 1.25, mcap: 423500, volume: "18.5 L" },
-    "SHRIRAMFIN": { price: 3180.00, chg: 0.65, mcap: 119500, volume: "14.2 L" },
-    "BAJAJFINSV": { price: 1610.00, chg: 0.85, mcap: 256800, volume: "12.0 L" },
-    "JIOFIN":     { price: 318.00, chg: -0.45, mcap: 202000, volume: "85.0 L" },
-    "CHOLAFIN":   { price: 1290.00, chg: 0.85, mcap: 108500, volume: "16.4 L" },
-    "MUTHOOTFIN": { price: 1880.00, chg: -0.75, mcap: 75400, volume: "9.2 L" },
-    "POONAWALLA": { price: 380.00, chg: 1.15, mcap: 29400, volume: "15.0 L" },
-    "MANAPPURAM": { price: 162.00, chg: -0.30, mcap: 13700, volume: "22.0 L" },
-    "L&TFH":      { price: 148.00, chg: 0.40, mcap: 36800, volume: "31.0 L" },
-    "M&MFIN":     { price: 288.15, chg: 0.80, mcap: 35600, volume: "25.0 L" },
-    "CREDITACC":  { price: 983.00, chg: 0.55, mcap: 15600, volume: "5.5 L" },
-    "TCS":        { price: 4120.00, chg: 0.45, mcap: 1490000, volume: "24.0 L" },
-    "HDFCBANK":   { price: 1745.00, chg: 0.55, mcap: 1330000, volume: "120.0 L" },
-    "INFY":       { price: 1870.00, chg: 0.95, mcap: 776000, volume: "45.0 L" },
-    "SBIN":       { price: 825.00, chg: 0.70, mcap: 736000, volume: "95.0 L" },
-    "KOTAKBANK":  { price: 1765.00, chg: 0.40, mcap: 351000, volume: "28.0 L" },
-    "AXISBANK":   { price: 1185.00, chg: 0.60, mcap: 366000, volume: "42.0 L" },
-    "MARUTI":     { price: 11250.00, chg: 0.80, mcap: 353800, volume: "6.8 L" },
-    "LT":         { price: 3580.00, chg: 0.50, mcap: 492000, volume: "18.5 L" },
-    "WIPRO":      { price: 565.00, chg: 0.75, mcap: 295000, volume: "38.0 L" },
-    "TITAN":      { price: 3280.00, chg: -0.35, mcap: 291000, volume: "12.0 L" },
-    "TRENT":      { price: 6650.00, chg: 1.45, mcap: 236400, volume: "14.5 L" },
-    "EICHERMOT":  { price: 4880.00, chg: 0.90, mcap: 133800, volume: "8.5 L" },
-    "DIVISLAB":   { price: 5950.00, chg: 0.60, mcap: 157900, volume: "7.2 L" },
-    "APOLLOHOSP": { price: 6950.00, chg: 0.75, mcap: 99900, volume: "5.8 L" },
-    "DRREDDY":    { price: 1240.00, chg: 0.50, mcap: 103500, volume: "16.0 L" },
-    "ITC":        { price: 472.00, chg: 0.30, mcap: 589000, volume: "85.0 L" },
-    "RELIANCE":   { price: 1275.00, chg: 0.45, mcap: 1725000, volume: "110.0 L" },
-    "BHARTIARTL": { price: 1610.00, chg: 0.65, mcap: 965000, volume: "55.0 L" },
-    "ICICIBANK":  { price: 1275.00, chg: 0.75, mcap: 898000, volume: "75.0 L" },
-    "SYMBIOTEC":  { price: 1621.30, chg: 1.29, mcap: 5800, volume: "4.5 L" }
-  };
-
-function resolveStockForHeatmap(sym) {
+  function resolveStockForHeatmap(sym) {
     if (!sym) return null;
     const cleanSym = String(sym).toUpperCase().trim();
     if (AUTHENTIC_IPO_STOCKS[cleanSym]) {
