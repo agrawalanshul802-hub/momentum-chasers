@@ -14687,10 +14687,15 @@
     return `
       <div class="sector-turnover-view">
         <div class="turnover-header-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-          <div>
-            <div class="turnover-badge" style="color:#38bdf8">SECTOR STOCKS • ${stocks.length} CONSTITUENTS</div>
-            <h2 class="turnover-title">${escapeHtml(sectorIndex)} Constituents</h2>
-            <p class="turnover-subtitle">Live prices and daily changes for all ${stocks.length} stocks in this sector.</p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Back to sectors">
+              <span class="back-arrow">←</span> <span>Back</span>
+            </button>
+            <div>
+              <div class="turnover-badge" style="color:#38bdf8">SECTOR STOCKS • ${stocks.length} CONSTITUENTS</div>
+              <h2 class="turnover-title" style="margin:0;">${escapeHtml(sectorIndex)} Constituents</h2>
+              <p class="turnover-subtitle" style="margin:4px 0 0 0;">Live prices and daily changes for all ${stocks.length} stocks in this sector.</p>
+            </div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <input type="text" id="sector-stocks-search" placeholder="Search ${stocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:200px;outline:none;" />
@@ -14702,7 +14707,6 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
               <span>TradingView ↗</span>
             </a>
-            <button class="section-back-btn" data-action="go-back" title="Back to sectors">← Back</button>
           </div>
         </div>
         <div class="table-card-container">
