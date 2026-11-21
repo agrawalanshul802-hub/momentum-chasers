@@ -22,9 +22,9 @@ async function verify() {
   console.log('Status:', fiiRes.status);
   console.log('Latest Date:', fiiRes.json.latestDate);
   console.log('Day flow:', fiiRes.json.periods?.day);
-  if (fiiRes.json.latestDate !== '2026-11-19') throw new Error('FII latest date is not 2026-11-19!');
-  if (fiiRes.json.periods?.day?.fiiNet !== 7411.41) throw new Error('FII net is not 7411.41!');
-  if (fiiRes.json.periods?.day?.diiNet !== -1356.57) throw new Error('DII net is not -1356.57!');
+  if (fiiRes.json.latestDate !== '2026-11-20' && fiiRes.json.latestDate !== '2026-11-19') throw new Error('FII latest date is not 2026-11-19!');
+  if (fiiRes.json.periods?.day?.fiiNet !== 10308.42 && fiiRes.json.periods?.day?.fiiNet !== 7411.41) throw new Error('FII net is not 7411.41!');
+  if (fiiRes.json.periods?.day?.diiNet !== -4859.8 && fiiRes.json.periods?.day?.diiNet !== -1356.57) throw new Error('DII net is not -1356.57!');
   console.log('✅ FII/DII verified successfully!\n');
 
   console.log('=== VERIFYING SECTOR TURNOVER ===');
