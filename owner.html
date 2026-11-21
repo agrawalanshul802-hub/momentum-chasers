@@ -715,6 +715,159 @@
       align-items: center;
       gap: 8px;
     }
+
+    /* Owner Navigation Tabs */
+    .owner-nav-tabs {
+      background: #0b101b;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 28px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      position: sticky;
+      top: 57px;
+      z-index: 90;
+    }
+
+    .owner-tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .owner-tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .owner-tab-btn.active {
+      color: #f59e0b;
+      border-bottom-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    .tab-panel {
+      padding: 24px 28px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Gold / Amber Action Buttons */
+    .btn-gold {
+      background: #f59e0b;
+      color: #0f172a !important;
+      border: 1px solid #d97706;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-gold:hover {
+      background: #fbbf24;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Master Code Box */
+    .code-display-wrap {
+      background: #090d14;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .code-display-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: #f59e0b;
+      margin-bottom: 8px;
+      user-select: all;
+    }
+
+    /* Module Tables */
+    .owner-table-wrap {
+      background: #090d14;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    .owner-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .owner-data-table th {
+      background: #0f1420;
+      padding: 10px 14px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
+    }
+
+    .owner-data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .owner-data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .badge-status.active {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-status.disabled,
+    .badge-status.revoked {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -744,7 +897,7 @@
       <img src="logo-icon.png" alt="Logo" onerror="this.style.display='none'">
       <div class="studio-title">
         <span>Momentum Chasers</span>
-        <span class="studio-badge">Owner Studio</span>
+        <span class="studio-badge">Owner Panel</span>
       </div>
     </div>
     <div class="studio-header-actions">
@@ -752,11 +905,29 @@
         <span>📊 Live Screener ↗</span>
       </a>
       <button class="btn-outline btn-danger" onclick="lockStudio()" title="Lock studio session">
-        <span>🔒 Lock Studio</span>
+        <span>🔒 Lock Panel</span>
       </button>
     </div>
   </header>
 
+  <!-- OWNER NAVIGATION TABS -->
+  <nav class="owner-nav-tabs">
+    <button class="owner-tab-btn active" id="btn-tab-ideas" onclick="switchOwnerTab('ideas')">
+      <span>💡</span> <span>Trading Ideas Studio</span>
+    </button>
+    <button class="owner-tab-btn" id="btn-tab-coupons" onclick="switchOwnerTab('coupons')">
+      <span>🎟️</span> <span>Promo & Coupons</span>
+    </button>
+    <button class="owner-tab-btn" id="btn-tab-gateway" onclick="switchOwnerTab('gateway')">
+      <span>🛡️</span> <span>Payment Privacy & Gateway</span>
+    </button>
+    <button class="owner-tab-btn" id="btn-tab-subscribers" onclick="switchOwnerTab('subscribers')">
+      <span>👥</span> <span>VIP Passes & Customer Log</span>
+    </button>
+  </nav>
+
+  <!-- TAB 1: IDEAS STUDIO -->
+  <div id="tab-ideas" class="tab-panel active" style="padding:0;">
   <main class="studio-container">
     <!-- LEFT: CREATOR FORM -->
     <div class="studio-card">
@@ -973,6 +1144,258 @@
       </div>
     </div>
   </main>
+  </div>
+
+  <!-- TAB 2: PROMO & DISCOUNT COUPON MANAGER -->
+  <div id="tab-coupons" class="tab-panel" style="display:none;">
+    <div class="studio-card" style="margin-bottom:24px;">
+      <div class="card-title" style="color:#f59e0b;">
+        <span>🎟️</span> <span>Promo & Discount Coupon Manager</span>
+      </div>
+      <div class="card-subtitle">
+        Create promotional coupon codes that give instant flat (₹) or percentage (%) discounts in checkout.
+      </div>
+
+      <div style="background:#090d14;border:1px solid var(--card-border);border-radius:8px;padding:16px;margin-top:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text-main);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+          <span>➕</span> <span>Create New Promo Code</span>
+        </div>
+        <form id="coupon-form" onsubmit="handleCouponSubmit(event)" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 140px;gap:12px;align-items:end;">
+          <div>
+            <label class="form-label">Coupon Code *</label>
+            <input type="text" id="coupon-code" class="form-input" placeholder="E.G. DIWALI50" style="text-transform:uppercase;" required>
+          </div>
+          <div>
+            <label class="form-label">Discount Type *</label>
+            <select id="coupon-type" class="form-select">
+              <option value="flat">Flat ₹ Discount</option>
+              <option value="percent">Percentage (%) Discount</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Discount Amount *</label>
+            <input type="number" id="coupon-amount" class="form-input" placeholder="200" min="1" step="any" required>
+          </div>
+          <div>
+            <label class="form-label">Applies To Plan</label>
+            <select id="coupon-applies" class="form-select">
+              <option value="all">🌟 All Passes</option>
+              <option value="tip">Single Tip Pass</option>
+              <option value="weekly">Weekly VIP Pass</option>
+              <option value="monthly">Monthly VIP Pass</option>
+            </select>
+          </div>
+          <div>
+            <button type="submit" class="btn-gold" style="width:100%;height:38px;padding:0;">
+              Add Coupon
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div style="margin-top:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
+            ACTIVE PROMO CODES LIST
+          </div>
+          <button type="button" class="btn-outline" style="padding:2px 8px;font-size:11px;" onclick="fetchCoupons()">
+            ↻ Refresh
+          </button>
+        </div>
+        <div class="owner-table-wrap">
+          <table class="owner-data-table">
+            <thead>
+              <tr>
+                <th>Coupon Code</th>
+                <th>Discount</th>
+                <th>Applies To</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="coupons-table-body">
+              <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">Loading promo codes...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PAYMENT PRIVACY & GATEWAY SETTINGS -->
+  <div id="tab-gateway" class="tab-panel" style="display:none;">
+    <div class="studio-card" style="max-width:900px;margin:0 auto;">
+      <div class="card-title" style="color:#f59e0b;">
+        <span>🛡️</span> <span>Payment Privacy & Gateway Settings</span>
+      </div>
+      <div class="card-subtitle">
+        Keep your personal bank details 100% private. Paste your custom payment link or enable brand masking so customers only see Momentum Chasers Gateway!
+      </div>
+
+      <form id="gateway-form" onsubmit="handleGatewaySubmit(event)" style="margin-top:18px;">
+        <!-- Pricing Row -->
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Single Tip Pass Price (₹) *</label>
+            <input type="number" id="gw-price-tip" class="form-input" value="199" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Weekly VIP Pass Price (₹) *</label>
+            <input type="number" id="gw-price-weekly" class="form-input" value="999" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monthly VIP Pass Price (₹) *</label>
+            <input type="number" id="gw-price-monthly" class="form-input" value="2499" required>
+          </div>
+        </div>
+
+        <!-- Custom Payment Link (Optional direct link fallback) -->
+        <div class="form-group">
+          <label class="form-label">Custom Payment / Checkout Link (Optional)</label>
+          <input type="url" id="gw-custom-link" class="form-input" placeholder="e.g. https://cashfree.com/pay/... or https://instamojo.com/@momentum">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            Optional external payment link for customers who prefer payment gateways over direct UPI QR.
+          </div>
+        </div>
+
+        <!-- Telegram Handle -->
+        <div class="form-group">
+          <label class="form-label">✈️ Official Telegram Bot / Channel Handle (100% Anonymous • 0 Phone Numbers Exposed)</label>
+          <div style="display:flex;align-items:center;">
+            <span style="background:#090d14;border:1px solid var(--card-border);border-right:none;border-radius:6px 0 0 6px;padding:9px 12px;color:var(--text-muted);font-size:13px;font-weight:600;">t.me/</span>
+            <input type="text" id="gw-telegram" class="form-input" style="border-radius:0 6px 6px 0;" placeholder="MomentumChasers_bot">
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            Customers clicking "Fast Support & Checkout via Telegram" will open a chat with this bot.
+          </div>
+        </div>
+
+        <!-- Merchant UPI VPA -->
+        <div class="form-group">
+          <label class="form-label">Direct Merchant UPI VPA *</label>
+          <input type="text" id="gw-vpa" class="form-input" placeholder="e.g. 8767823878@slc" required>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            Your UPI address for automated QR code generation in checkout.
+          </div>
+        </div>
+
+        <!-- Privacy Masking Checkbox -->
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;background:#090d14;border:1px solid var(--card-border);border-radius:6px;padding:12px;">
+          <input type="checkbox" id="gw-hide-vpa" checked style="accent-color:#f59e0b;width:18px;height:18px;">
+          <label for="gw-hide-vpa" style="font-size:12.5px;color:var(--text-main);cursor:pointer;font-weight:600;">
+            🛡️ Hide Personal VPA & Display "Momentum Chasers Gateway" on Website
+          </label>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button type="submit" class="btn-gold" style="width:100%;padding:12px;">
+            Save Privacy & Gateway Settings
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TAB 4: TODAY'S MASTER FALLBACK CODE & CUSTOMER PURCHASE LOG -->
+  <div id="tab-subscribers" class="tab-panel" style="display:none;">
+    <!-- Master Fallback Code Card -->
+    <div class="studio-card" style="margin-bottom:24px;">
+      <div class="card-title" style="color:#f59e0b;">
+        <span>🔑</span> <span>Today's Master Fallback Unlock Code</span>
+      </div>
+      <div class="card-subtitle">
+        Global fallback code for today. Unique IDs are generated automatically per customer payment.
+      </div>
+
+      <div class="code-display-wrap">
+        <div class="code-display-value" id="master-code-display">MC-PASS-8842</div>
+        <div style="display:flex;gap:10px;justify-content:center;max-width:500px;margin:12px auto 0;flex-wrap:wrap;">
+          <input type="text" id="master-code-input" class="form-input" placeholder="Set custom master code" style="text-align:center;text-transform:uppercase;font-weight:700;max-width:240px;">
+          <button type="button" class="btn-gold" onclick="saveMasterCode()" style="white-space:nowrap;">
+            Save Code
+          </button>
+          <button type="button" class="btn-outline" onclick="generateRandomMasterCode()" style="white-space:nowrap;">
+            Generate Random
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Purchase & Access Log Card -->
+    <div class="studio-card">
+      <div class="card-title" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span>👥</span> <span>Customer Purchase & Access Log</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn-outline" style="padding:4px 10px;font-size:11px;" onclick="fetchPurchases()">
+            ↻ Refresh
+          </button>
+          <button type="button" class="btn-outline" style="padding:4px 10px;font-size:11px;" onclick="exportPurchasesCSV()">
+            📑 Export Purchases (CSV)
+          </button>
+        </div>
+      </div>
+      <div class="card-subtitle">
+        Active subscriber VIP passes, secret PINs, hardware bindings, and manual pass generator.
+      </div>
+
+      <!-- Quick Issue VIP Pass Box -->
+      <div style="background:#090d14;border:1px solid var(--card-border);border-radius:8px;padding:16px;margin:16px 0;">
+        <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+          <span>⚡</span> <span>QUICK ISSUE VIP PASS (MANUAL SUBSCRIBER ENTRY)</span>
+        </div>
+        <form id="issue-pass-form" onsubmit="handleIssuePass(event)" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 220px;gap:12px;align-items:end;">
+          <div>
+            <label class="form-label">10-Digit Mobile Number *</label>
+            <input type="tel" id="pass-mobile" class="form-input" placeholder="e.g. 9588470423" maxlength="10" required>
+          </div>
+          <div>
+            <label class="form-label">4-Digit Secret PIN (Optional)</label>
+            <input type="text" id="pass-pin" class="form-input" placeholder="Auto-generated if empty" maxlength="6">
+          </div>
+          <div>
+            <label class="form-label">Plan Tier</label>
+            <select id="pass-tier" class="form-select">
+              <option value="Weekly VIP Pass (7 Days)">Weekly VIP Pass (7 Days)</option>
+              <option value="Monthly VIP Pass (30 Days)">Monthly VIP Pass (30 Days)</option>
+              <option value="Single Tip Pass (24 Hours)">Single Tip Pass (24 Hours)</option>
+              <option value="Lifetime Access">Lifetime Access</option>
+            </select>
+          </div>
+          <div>
+            <button type="submit" class="btn-gold" style="width:100%;height:38px;padding:0;">
+              ⚡ Issue VIP Pass & Activate Access
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Search purchases -->
+      <div style="margin:14px 0 8px;">
+        <input type="text" id="purchases-search-input" class="form-input" placeholder="🔍 Search purchases by Mobile Number, PIN, Passcode, or UTR..." oninput="handlePurchasesSearch(this.value)">
+      </div>
+
+      <!-- Table -->
+      <div class="owner-table-wrap">
+        <table class="owner-data-table">
+          <thead>
+            <tr>
+              <th>Subscriber Mobile & Date</th>
+              <th>Plan Tier</th>
+              <th>Secret PIN / Passcode</th>
+              <th>1-Device Lock Status</th>
+              <th>Time Left</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="purchases-table-body">
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading subscriber log...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast">
     <span>✅</span> <span id="toast-msg">Idea Published!</span>
@@ -1224,6 +1647,9 @@
       if (gate) gate.style.display = 'none';
       var err = document.getElementById('pin-error');
       if (err) err.style.display = 'none';
+      if (typeof switchOwnerTab === 'function') {
+        switchOwnerTab(activeTab);
+      }
     }
 
     function verifyPinWithServer(pin, cb) {
@@ -1854,6 +2280,428 @@
           toast.style.display = 'none';
         }, 3000);
       }
+    }
+
+    // Owner Navigation Tabs State & Handlers
+    var activeTab = sessionStorage.getItem('mc_owner_active_tab') || 'ideas';
+    var allCoupons = [];
+    var allPurchases = [];
+
+    function switchOwnerTab(tabName) {
+      activeTab = tabName;
+      sessionStorage.setItem('mc_owner_active_tab', tabName);
+
+      var tabs = ['ideas', 'coupons', 'gateway', 'subscribers'];
+      tabs.forEach(function(t) {
+        var btn = document.getElementById('btn-tab-' + t);
+        var panel = document.getElementById('tab-' + t);
+        if (btn) {
+          if (t === tabName) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+        if (panel) {
+          panel.style.display = (t === tabName) ? 'block' : 'none';
+        }
+      });
+
+      if (tabName === 'ideas') fetchIdeas();
+      else if (tabName === 'coupons') fetchCoupons();
+      else if (tabName === 'gateway') fetchGatewaySettings();
+      else if (tabName === 'subscribers') { fetchMasterCode(); fetchPurchases(); }
+    }
+
+    // --- TAB 2: COUPONS MANAGER ---
+    function fetchCoupons() {
+      fetch('/api/owner/coupons?_t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && Array.isArray(data.coupons)) {
+            allCoupons = data.coupons;
+            renderCouponsTable();
+          }
+        })
+        .catch(function(err) {
+          console.warn('Coupons fetch notice:', err);
+        });
+    }
+
+    function renderCouponsTable() {
+      var tbody = document.getElementById('coupons-table-body');
+      if (!tbody) return;
+      if (allCoupons.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">No coupon codes created yet. Use form above to add one.</td></tr>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < allCoupons.length; i++) {
+        var c = allCoupons[i];
+        var discountText = c.type === 'percent' ? (c.amount + '% OFF') : ('₹' + c.amount + ' OFF');
+        var appliesText = 'All Passes';
+        if (c.appliesTo === 'tip') appliesText = 'Single Tip Pass';
+        else if (c.appliesTo === 'weekly') appliesText = 'Weekly VIP Pass';
+        else if (c.appliesTo === 'monthly') appliesText = 'Monthly VIP Pass';
+
+        html += '<tr>' +
+          '<td><strong style="color:#f59e0b;font-family:monospace;font-size:13px;letter-spacing:0.05em;">' + escapeHtml(c.code) + '</strong></td>' +
+          '<td><span style="color:#22c55e;font-weight:700;">' + escapeHtml(discountText) + '</span></td>' +
+          '<td><span style="color:#94a3b8;">' + escapeHtml(appliesText) + '</span></td>' +
+          '<td><span class="badge-status ' + (c.active ? 'active' : 'disabled') + '">' + (c.active ? 'Active' : 'Disabled') + '</span></td>' +
+          '<td style="text-align:right;white-space:nowrap;">' +
+            '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;margin-right:6px;" onclick="toggleCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
+              (c.active ? 'Disable' : 'Activate') +
+            '</button>' +
+            '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deleteCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
+              '✕ Delete' +
+            '</button>' +
+          '</td>' +
+        '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function handleCouponSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var code = (document.getElementById('coupon-code').value || '').trim().toUpperCase();
+      var type = document.getElementById('coupon-type').value;
+      var amount = parseFloat(document.getElementById('coupon-amount').value);
+      var appliesTo = document.getElementById('coupon-applies').value;
+      if (!code || isNaN(amount) || amount <= 0) {
+        alert('Please provide a valid coupon code and discount amount.');
+        return;
+      }
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, code: code, type: type, amount: amount, appliesTo: appliesTo })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allCoupons = data.coupons || [];
+          renderCouponsTable();
+          document.getElementById('coupon-form').reset();
+          showToast('Coupon ' + code + ' Added Successfully!');
+        } else {
+          alert('Error: ' + (data.error || 'Failed to add coupon'));
+        }
+      })
+      .catch(function(err) {
+        alert('Network error: ' + err.message);
+      });
+    }
+
+    function toggleCoupon(id, code) {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'toggle', id: id, code: code })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allCoupons = data.coupons || [];
+          renderCouponsTable();
+          showToast('Coupon status updated');
+        }
+      });
+    }
+
+    function deleteCoupon(id, code) {
+      if (!confirm('Are you sure you want to delete coupon ' + code + '?')) return;
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'delete', id: id, code: code })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allCoupons = data.coupons || [];
+          renderCouponsTable();
+          showToast('Coupon deleted');
+        }
+      });
+    }
+
+    // --- TAB 3: GATEWAY & PRIVACY SETTINGS ---
+    function fetchGatewaySettings() {
+      fetch('/api/owner/gateway-settings?_t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && data.settings) {
+            var s = data.settings;
+            if (document.getElementById('gw-price-tip')) document.getElementById('gw-price-tip').value = s.tipPrice || 199;
+            if (document.getElementById('gw-price-weekly')) document.getElementById('gw-price-weekly').value = s.weeklyPrice || 999;
+            if (document.getElementById('gw-price-monthly')) document.getElementById('gw-price-monthly').value = s.monthlyPrice || 2499;
+            if (document.getElementById('gw-custom-link')) document.getElementById('gw-custom-link').value = s.customPaymentLink || '';
+            if (document.getElementById('gw-telegram')) document.getElementById('gw-telegram').value = s.telegramBot || 'MomentumChasers_bot';
+            if (document.getElementById('gw-vpa')) document.getElementById('gw-vpa').value = s.upiVpa || '8767823878@slc';
+            if (document.getElementById('gw-hide-vpa')) document.getElementById('gw-hide-vpa').checked = s.hideVpa !== false;
+          }
+        })
+        .catch(function(err) {
+          console.warn('Gateway settings fetch notice:', err);
+        });
+    }
+
+    function handleGatewaySubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      var payload = {
+        pin: activePin,
+        tipPrice: document.getElementById('gw-price-tip').value,
+        weeklyPrice: document.getElementById('gw-price-weekly').value,
+        monthlyPrice: document.getElementById('gw-price-monthly').value,
+        customPaymentLink: document.getElementById('gw-custom-link').value,
+        telegramBot: document.getElementById('gw-telegram').value,
+        upiVpa: document.getElementById('gw-vpa').value,
+        hideVpa: document.getElementById('gw-hide-vpa').checked
+      };
+
+      fetch('/api/owner/gateway-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          showToast('Payment & Gateway Settings Saved!');
+        } else {
+          alert('Error: ' + (data.error || 'Failed to save settings'));
+        }
+      })
+      .catch(function(err) {
+        alert('Network error: ' + err.message);
+      });
+    }
+
+    // --- TAB 4: MASTER FALLBACK UNLOCK CODE & VIP PASSES ---
+    function fetchMasterCode() {
+      fetch('/api/owner/master-code?_t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && data.code) {
+            document.getElementById('master-code-display').textContent = data.code;
+            document.getElementById('master-code-input').value = data.code;
+          }
+        });
+    }
+
+    function saveMasterCode() {
+      var custom = (document.getElementById('master-code-input').value || '').trim().toUpperCase();
+      if (!custom) {
+        alert('Please enter a valid master code');
+        return;
+      }
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/master-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, code: custom })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          document.getElementById('master-code-display').textContent = data.code;
+          showToast('Master Code Updated to: ' + data.code);
+        }
+      });
+    }
+
+    function generateRandomMasterCode() {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      var rnd = 'MC-PASS-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('master-code-input').value = rnd;
+      fetch('/api/owner/master-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, code: rnd })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          document.getElementById('master-code-display').textContent = data.code;
+          showToast('New Master Code Generated: ' + data.code);
+        }
+      });
+    }
+
+    function fetchPurchases() {
+      fetch('/api/owner/purchases?_t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && Array.isArray(data.purchases)) {
+            allPurchases = data.purchases;
+            renderPurchasesTable(allPurchases);
+          }
+        });
+    }
+
+    function renderPurchasesTable(list) {
+      var tbody = document.getElementById('purchases-table-body');
+      if (!tbody) return;
+      if (!list || list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No subscriber purchases found.</td></tr>';
+        return;
+      }
+      var now = Date.now();
+      var html = '';
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        var expDate = p.expiresAt ? new Date(p.expiresAt).getTime() : 0;
+        var diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+        var timeLeftText = diffDays > 0 ? (diffDays + ' Days Left') : 'Expired';
+        var timeLeftClass = (diffDays > 0 && p.status === 'Active') ? 'active' : 'disabled';
+        if (p.planTier && p.planTier.includes('Lifetime')) {
+          timeLeftText = 'Lifetime Active';
+          timeLeftClass = 'active';
+        }
+
+        html += '<tr>' +
+          '<td><strong>+91 ' + escapeHtml(p.mobile) + '</strong><br><span style="font-size:10.5px;color:#94a3b8;">' + escapeHtml(p.issuedAt || '') + '</span></td>' +
+          '<td><span style="background:rgba(56,189,248,0.12);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">' + escapeHtml(p.planTier) + '</span></td>' +
+          '<td><code style="color:#f59e0b;font-weight:700;font-size:12px;background:#090d14;padding:2px 6px;border-radius:3px;">' + escapeHtml(p.secretPin || '----') + '</code></td>' +
+          '<td><span style="font-size:11px;color:' + (p.deviceLock && p.deviceLock.includes('Locked') ? '#22c55e' : '#94a3b8') + ';">' + escapeHtml(p.deviceLock || 'Unbound') + '</span></td>' +
+          '<td><span class="badge-status ' + timeLeftClass + '">' + escapeHtml(timeLeftText) + '</span></td>' +
+          '<td style="text-align:right;white-space:nowrap;">' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
+              (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
+            '</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>' +
+          '</td>' +
+        '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function handleIssuePass(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var mobile = (document.getElementById('pass-mobile').value || '').trim();
+      var secretPin = (document.getElementById('pass-pin').value || '').trim();
+      var planTier = document.getElementById('pass-tier').value;
+      if (!mobile || mobile.length < 10) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'issue', mobile: mobile, secretPin: secretPin, planTier: planTier })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allPurchases = data.purchases || [];
+          renderPurchasesTable(allPurchases);
+          document.getElementById('issue-pass-form').reset();
+          showToast('VIP Pass Issued for +91 ' + mobile);
+        } else {
+          alert('Error: ' + (data.error || 'Failed to issue pass'));
+        }
+      });
+    }
+
+    function resetDeviceLock(id, mobile) {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'reset_device', id: id, mobile: mobile })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allPurchases = data.purchases || [];
+          renderPurchasesTable(allPurchases);
+          showToast('Device lock reset for +91 ' + mobile);
+        }
+      });
+    }
+
+    function revokePass(id, mobile) {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'revoke', id: id, mobile: mobile })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allPurchases = data.purchases || [];
+          renderPurchasesTable(allPurchases);
+          showToast('Status updated for +91 ' + mobile);
+        }
+      });
+    }
+
+    function deletePass(id, mobile) {
+      if (!confirm('Are you sure you want to delete access for ' + mobile + '?')) return;
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'delete', id: id, mobile: mobile })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          allPurchases = data.purchases || [];
+          renderPurchasesTable(allPurchases);
+          showToast('Pass deleted');
+        }
+      });
+    }
+
+    function handlePurchasesSearch(query) {
+      var q = (query || '').toLowerCase().trim();
+      if (!q) {
+        renderPurchasesTable(allPurchases);
+        return;
+      }
+      var filtered = allPurchases.filter(function(p) {
+        return (p.mobile && p.mobile.includes(q)) ||
+               (p.secretPin && p.secretPin.toLowerCase().includes(q)) ||
+               (p.planTier && p.planTier.toLowerCase().includes(q)) ||
+               (p.deviceLock && p.deviceLock.toLowerCase().includes(q));
+      });
+      renderPurchasesTable(filtered);
+    }
+
+    function exportPurchasesCSV() {
+      if (!allPurchases || allPurchases.length === 0) {
+        alert('No purchase logs available to export.');
+        return;
+      }
+      var csvRows = [
+        ['Mobile', 'Plan Tier', 'Secret PIN', 'Device Lock', 'Issued Date', 'Expires Date', 'Status']
+      ];
+      for (var i = 0; i < allPurchases.length; i++) {
+        var p = allPurchases[i];
+        csvRows.push([
+          p.mobile || '',
+          p.planTier || '',
+          p.secretPin || '',
+          p.deviceLock || '',
+          p.issuedAt || '',
+          p.expiresAt || '',
+          p.status || ''
+        ]);
+      }
+      var csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(function(e) { return e.join(','); }).join('\n');
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'subscribers_vip_access_' + new Date().toISOString().slice(0, 10) + '.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function escapeHtml(str) {

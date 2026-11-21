@@ -6469,6 +6469,141 @@ const server = http.createServer(async (req, res) => {
     return true;
   }
 
+  // 6g-1. Coupons Store
+  const couponsPath = path.join(__dirname, 'data', 'coupons.json');
+  const SEED_COUPONS = [
+    { id: 'cp_diwali50', code: 'DIWALI50', type: 'flat', amount: 200, appliesTo: 'all', active: true, createdAt: '2026-11-20' },
+    { id: 'cp_vip20', code: 'VIP20', type: 'percent', amount: 20, appliesTo: 'weekly', active: true, createdAt: '2026-11-18' }
+  ];
+  let _couponsMemory = null;
+  function getStoredCoupons() {
+    if (_couponsMemory !== null) return _couponsMemory;
+    try {
+      if (fs.existsSync(couponsPath)) {
+        const raw = fs.readFileSync(couponsPath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) { _couponsMemory = parsed; return _couponsMemory; }
+      }
+    } catch (_) {}
+    _couponsMemory = JSON.parse(JSON.stringify(SEED_COUPONS));
+    return _couponsMemory;
+  }
+  function saveStoredCoupons(list) {
+    _couponsMemory = list;
+    try {
+      fs.mkdirSync(path.dirname(couponsPath), { recursive: true });
+      fs.writeFileSync(couponsPath, JSON.stringify(list, null, 2) + '\n', 'utf8');
+    } catch (_) {}
+    return true;
+  }
+
+  // 6g-2. Gateway & Privacy Settings Store
+  const gatewaySettingsPath = path.join(__dirname, 'data', 'gateway-settings.json');
+  const DEFAULT_GATEWAY_SETTINGS = {
+    tipPrice: 199,
+    weeklyPrice: 999,
+    monthlyPrice: 2499,
+    telegramBot: 'MomentumChasers_bot',
+    upiVpa: '8767823878@slc',
+    customPaymentLink: '',
+    hideVpa: true,
+    gatewayBrand: 'Momentum Chasers Gateway'
+  };
+  let _gatewayMemory = null;
+  function getStoredGatewaySettings() {
+    if (_gatewayMemory !== null) return _gatewayMemory;
+    try {
+      if (fs.existsSync(gatewaySettingsPath)) {
+        const raw = fs.readFileSync(gatewaySettingsPath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          _gatewayMemory = { ...DEFAULT_GATEWAY_SETTINGS, ...parsed };
+          return _gatewayMemory;
+        }
+      }
+    } catch (_) {}
+    _gatewayMemory = { ...DEFAULT_GATEWAY_SETTINGS };
+    return _gatewayMemory;
+  }
+  function saveStoredGatewaySettings(settings) {
+    _gatewayMemory = settings;
+    try {
+      fs.mkdirSync(path.dirname(gatewaySettingsPath), { recursive: true });
+      fs.writeFileSync(gatewaySettingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
+    } catch (_) {}
+    return true;
+  }
+
+  // 6g-3. Master Fallback Unlock Code Store
+  const masterCodePath = path.join(__dirname, 'data', 'master-code.json');
+  let _masterCodeMemory = null;
+  function getStoredMasterCode() {
+    if (_masterCodeMemory !== null) return _masterCodeMemory;
+    try {
+      if (fs.existsSync(masterCodePath)) {
+        const raw = fs.readFileSync(masterCodePath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.code) { _masterCodeMemory = parsed; return _masterCodeMemory; }
+      }
+    } catch (_) {}
+    _masterCodeMemory = { code: 'MC-PASS-8842', updatedAt: '2026-11-21' };
+    return _masterCodeMemory;
+  }
+  function saveStoredMasterCode(obj) {
+    _masterCodeMemory = obj;
+    try {
+      fs.mkdirSync(path.dirname(masterCodePath), { recursive: true });
+      fs.writeFileSync(masterCodePath, JSON.stringify(obj, null, 2) + '\n', 'utf8');
+    } catch (_) {}
+    return true;
+  }
+
+  // 6g-4. Customer Purchases & VIP Access Log Store
+  const purchasesPath = path.join(__dirname, 'data', 'purchases.json');
+  const SEED_PURCHASES = [
+    {
+      id: 'pass_1732185600',
+      mobile: '9588470423',
+      planTier: 'Weekly VIP Pass (7 Days)',
+      secretPin: '8429',
+      deviceLock: 'Locked (1 Device: Chrome/Win)',
+      issuedAt: '2026-11-20',
+      expiresAt: '2026-11-27',
+      status: 'Active'
+    },
+    {
+      id: 'pass_1732185601',
+      mobile: '9820145521',
+      planTier: 'Monthly VIP Pass (30 Days)',
+      secretPin: '4190',
+      deviceLock: 'Locked (1 Device: Android)',
+      issuedAt: '2026-11-15',
+      expiresAt: '2026-12-15',
+      status: 'Active'
+    }
+  ];
+  let _purchasesMemory = null;
+  function getStoredPurchases() {
+    if (_purchasesMemory !== null) return _purchasesMemory;
+    try {
+      if (fs.existsSync(purchasesPath)) {
+        const raw = fs.readFileSync(purchasesPath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) { _purchasesMemory = parsed; return _purchasesMemory; }
+      }
+    } catch (_) {}
+    _purchasesMemory = JSON.parse(JSON.stringify(SEED_PURCHASES));
+    return _purchasesMemory;
+  }
+  function saveStoredPurchases(list) {
+    _purchasesMemory = list;
+    try {
+      fs.mkdirSync(path.dirname(purchasesPath), { recursive: true });
+      fs.writeFileSync(purchasesPath, JSON.stringify(list, null, 2) + '\n', 'utf8');
+    } catch (_) {}
+    return true;
+  }
+
   function parseRequestBody(request) {
     return new Promise((resolve) => {
       let data = '';
@@ -6728,6 +6863,174 @@ const server = http.createServer(async (req, res) => {
       saveStoredOwnerIdeas(ideas);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, ideas }));
+      return;
+    }
+  }
+
+  // 6g-1. Coupons Endpoints
+  if (pathname === '/api/owner/coupons') {
+    if (req.method === 'GET') {
+      const coupons = getStoredCoupons();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, count: coupons.length, coupons }));
+      return;
+    }
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
+      const code = (body.code || '').toString().trim().toUpperCase();
+      let coupons = getStoredCoupons();
+      if (body.action === 'toggle') {
+        const target = coupons.find(c => c.id === body.id || c.code === code);
+        if (target) target.active = !target.active;
+      } else if (body.action === 'delete') {
+        coupons = coupons.filter(c => c.id !== body.id && c.code !== code);
+      } else {
+        if (!code) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Coupon code is required' }));
+          return;
+        }
+        const newCoupon = {
+          id: 'cp_' + Date.now(),
+          code,
+          type: body.type === 'percent' ? 'percent' : 'flat',
+          amount: parseFloat(body.amount) || 0,
+          appliesTo: body.appliesTo || 'all',
+          active: true,
+          createdAt: new Date().toISOString().slice(0, 10)
+        };
+        // Avoid duplicate codes
+        coupons = coupons.filter(c => c.code !== code);
+        coupons.unshift(newCoupon);
+      }
+      saveStoredCoupons(coupons);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, coupons }));
+      return;
+    }
+  }
+
+  // 6g-2. Gateway & Privacy Settings Endpoints
+  if (pathname === '/api/owner/gateway-settings') {
+    if (req.method === 'GET') {
+      const settings = getStoredGatewaySettings();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, settings }));
+      return;
+    }
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
+      const prev = getStoredGatewaySettings();
+      const updated = {
+        tipPrice: parseFloat(body.tipPrice) || prev.tipPrice || 199,
+        weeklyPrice: parseFloat(body.weeklyPrice) || prev.weeklyPrice || 999,
+        monthlyPrice: parseFloat(body.monthlyPrice) || prev.monthlyPrice || 2499,
+        telegramBot: (body.telegramBot || '').toString().trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//, ''),
+        upiVpa: (body.upiVpa || '').toString().trim(),
+        customPaymentLink: (body.customPaymentLink || '').toString().trim(),
+        hideVpa: body.hideVpa !== false,
+        gatewayBrand: (body.gatewayBrand || 'Momentum Chasers Gateway').toString().trim()
+      };
+      saveStoredGatewaySettings(updated);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, settings: updated }));
+      return;
+    }
+  }
+
+  // 6g-3. Master Fallback Code Endpoints
+  if (pathname === '/api/owner/master-code') {
+    if (req.method === 'GET') {
+      const mc = getStoredMasterCode();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, ...mc }));
+      return;
+    }
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
+      const newCode = (body.code || ('MC-PASS-' + Math.floor(1000 + Math.random() * 9000))).toString().trim().toUpperCase();
+      const obj = { code: newCode, updatedAt: new Date().toISOString().slice(0, 10) };
+      saveStoredMasterCode(obj);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, ...obj }));
+      return;
+    }
+  }
+
+  // 6g-4. VIP Purchases & Subscribers Access Log Endpoints
+  if (pathname === '/api/owner/purchases') {
+    if (req.method === 'GET') {
+      const purchases = getStoredPurchases();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, count: purchases.length, purchases }));
+      return;
+    }
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
+      let purchases = getStoredPurchases();
+      if (body.action === 'issue') {
+        const mobile = (body.mobile || '').toString().trim();
+        if (!mobile || mobile.length < 10) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Valid 10-digit mobile number required' }));
+          return;
+        }
+        const secretPin = (body.secretPin || Math.floor(1000 + Math.random() * 9000).toString()).trim();
+        const planTier = (body.planTier || 'Weekly VIP Pass (7 Days)').trim();
+        let days = 7;
+        if (planTier.includes('Day') || planTier.includes('Tip')) days = 1;
+        else if (planTier.includes('Monthly') || planTier.includes('30')) days = 30;
+        else if (planTier.includes('Lifetime')) days = 3650;
+        const now = new Date();
+        const exp = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+
+        const newPass = {
+          id: 'pass_' + Date.now(),
+          mobile,
+          planTier,
+          secretPin,
+          deviceLock: 'Unbound (Ready for first login)',
+          issuedAt: now.toISOString().slice(0, 10),
+          expiresAt: exp.toISOString().slice(0, 10),
+          status: 'Active'
+        };
+        purchases.unshift(newPass);
+      } else if (body.action === 'reset_device') {
+        const target = purchases.find(p => p.id === body.id || p.mobile === body.mobile);
+        if (target) target.deviceLock = 'Unbound (Device lock reset)';
+      } else if (body.action === 'revoke') {
+        const target = purchases.find(p => p.id === body.id || p.mobile === body.mobile);
+        if (target) target.status = target.status === 'Revoked' ? 'Active' : 'Revoked';
+      } else if (body.action === 'delete') {
+        purchases = purchases.filter(p => p.id !== body.id && p.mobile !== body.mobile);
+      }
+      saveStoredPurchases(purchases);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, purchases }));
       return;
     }
   }
