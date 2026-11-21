@@ -5297,7 +5297,8 @@
             if (err) {
               const cleanErr = decodeURIComponent(err).replace(/\+/g, ' ');
               openAuth("signin");
-              if (cleanErr.toLowerCase().includes('external code') || cleanErr.toLowerCase().includes('exchange')) {
+              const lowerErr = cleanErr.toLowerCase();
+              if (lowerErr.includes('external code') || lowerErr.includes('exchange') || lowerErr.includes('provider')) {
                 showMsg(`
                   <div style="font-weight:700;color:#f87171;margin-bottom:5px;font-size:13px;">⚠️ Google Sign-In: Setup Step Required</div>
                   <div style="font-size:11.5px;color:#cbd5e1;line-height:1.5;">

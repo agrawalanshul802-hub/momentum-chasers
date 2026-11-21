@@ -383,7 +383,12 @@
           console.warn('⚠️ OAuth redirect returned error:', cleanErr);
           const cleanPath = window.location.pathname.includes('login') ? '/index.html' : window.location.pathname;
           history.replaceState(null, '', window.location.origin + cleanPath + '#screener');
-          const isExchangeError = cleanErr.toLowerCase().includes('external code') || cleanErr.toLowerCase().includes('exchange');
+          const lowerErr = cleanErr.toLowerCase();
+          const isExchangeError = lowerErr.includes('external code') || 
+            lowerErr.includes('exchange') || 
+            lowerErr.includes('external provider') || 
+            lowerErr.includes('oauth') ||
+            lowerErr.includes('provider');
           return {
             error: cleanErr,
             isOAuthExchangeError: isExchangeError,

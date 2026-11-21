@@ -9984,6 +9984,16 @@
     }
   };
 
+  const viewHistoryStack = [];
+  function recordViewNavigation(fromView) {
+    if (fromView && fromView !== "login") {
+      if (viewHistoryStack.length === 0 || viewHistoryStack[viewHistoryStack.length - 1] !== fromView) {
+        viewHistoryStack.push(fromView);
+        if (viewHistoryStack.length > 50) viewHistoryStack.shift();
+      }
+    }
+  }
+
   // ==========================================================================
   // 2B. YAHOO FINANCE SYMBOL MAPPING & LIVE SERVICE
   // ==========================================================================
@@ -12320,7 +12330,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -13072,7 +13082,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -14292,7 +14302,7 @@
       ${renderSectorTabsHeader()}
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -15063,7 +15073,7 @@
         <!-- View Header -->
         <div class="view-title-bar">
           <div class="view-title-left">
-            <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div>
@@ -15940,7 +15950,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -26347,7 +26357,7 @@
         <!-- Top Header: Title + Live Index Stats -->
         <div class="heatmap-header-row">
           <div class="heatmap-title-wrap">
-            <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <h2 class="heatmap-main-title">
@@ -26721,7 +26731,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -27085,7 +27095,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -27298,7 +27308,7 @@
     return `
       <div class="view-title-bar">
         <div class="view-title-left">
-          <button class="section-back-btn" data-action="go-back" onclick="navigateBack()" title="Go back to previous page">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
@@ -33352,24 +33362,52 @@
     }, 290);
   }
 
-  window.navigateBack = function () {
-    let dest = State.previousView;
-    if (!dest || dest === State.view || dest === "login" || dest === "sectors") {
-      dest = "screener";
+  let _lastNavigateBackTime = 0;
+  window.navigateBack = function (e) {
+    if (e) {
+      if (typeof e.stopPropagation === "function") e.stopPropagation();
+      if (typeof e.preventDefault === "function") e.preventDefault();
     }
+    const now = Date.now();
+    if (now - _lastNavigateBackTime < 350) {
+      return; // Debounce rapid / double event firing
+    }
+    _lastNavigateBackTime = now;
+
+    let dest = null;
+    while (viewHistoryStack.length > 0) {
+      const candidate = viewHistoryStack.pop();
+      if (candidate && candidate !== State.view && candidate !== "login") {
+        dest = candidate;
+        break;
+      }
+    }
+
+    if (!dest) {
+      dest = State.previousView;
+    }
+
+    // If destination is missing, invalid, or identical to current view:
+    if (!dest || dest === State.view || dest === "login") {
+      dest = (State.view === "screener") ? "home" : "screener";
+    }
+
     State.previousView = State.view;
     State.view = dest;
     window.location.hash = dest;
     renderActiveView();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  function navigateBack() {
-    return window.navigateBack();
+  function navigateBack(e) {
+    return window.navigateBack(e);
   }
 
   function openStockDetail(sym) {
     if (!sym) return;
-    if (State.view !== "stock" && State.view !== "login") State.previousView = State.view;
+    if (State.view !== "stock" && State.view !== "login") {
+      recordViewNavigation(State.view);
+      State.previousView = State.view;
+    }
     State.activeStock = sym;
     State.view = "stock";
     window.location.hash = "stock";
@@ -33613,7 +33651,9 @@
 
       // Back button click
       if (action === "go-back") {
-        navigateBack();
+        if (e && typeof e.preventDefault === "function") e.preventDefault();
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+        navigateBack(e);
         return;
       }
 
@@ -33625,7 +33665,10 @@
 
       // Go to screener from index card click
       if (action === "go-screener") {
-        State.previousView = State.view;
+        if (State.view !== "screener" && State.view !== "login") {
+          recordViewNavigation(State.view);
+          State.previousView = State.view;
+        }
         State.view = "screener";
         history.replaceState(null, "", "#screener");
         renderActiveView();
@@ -33654,6 +33697,7 @@
           State.sectorSubTab = "indices";
         }
         if (State.view !== view && State.view !== "login") {
+          recordViewNavigation(State.view);
           State.previousView = State.view;
         }
         State.view = view;
@@ -35666,18 +35710,22 @@
     window.addEventListener("hashchange", () => {
       const h = window.location.hash.slice(1);
       if (h) {
+        let nextView = h;
         if (h.startsWith("events-")) {
           State.eventsTab = h.replace("events-", "");
-          State.view = "events";
+          nextView = "events";
         } else if (h === "sector-turnover") {
           State.sectorSubTab = "turnover";
-          State.view = "sector-turnover";
+          nextView = "sector-turnover";
         } else if (h === "sectors") {
           State.sectorSubTab = "indices";
-          State.view = "sectors";
-        } else {
-          State.view = h;
+          nextView = "sectors";
         }
+        if (nextView && nextView !== State.view && State.view !== "login") {
+          recordViewNavigation(State.view);
+          State.previousView = State.view;
+        }
+        State.view = nextView;
         try {
           renderActiveView();
         } catch (e) {
