@@ -31498,14 +31498,18 @@
   // 12B. FEATURE HOME: LANDING DASHBOARD HERO & STOCK ALERTS TRACKER
   // ==========================================================================
 
+  let _sharedAudioCtx = null;
   function playAlertChime() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      if (ctx.state === "suspended") {
-        ctx.resume();
+      if (!_sharedAudioCtx) {
+        _sharedAudioCtx = new AudioCtx();
       }
+      if (_sharedAudioCtx.state === "suspended") {
+        _sharedAudioCtx.resume();
+      }
+      const ctx = _sharedAudioCtx;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
@@ -35721,15 +35725,17 @@
           State.sectorSubTab = "indices";
           nextView = "sectors";
         }
-        if (nextView && nextView !== State.view && State.view !== "login") {
-          recordViewNavigation(State.view);
-          State.previousView = State.view;
-        }
-        State.view = nextView;
-        try {
-          renderActiveView();
-        } catch (e) {
-          console.error("renderActiveView error on hashchange:", e);
+        if (nextView && nextView !== State.view) {
+          if (State.view !== "login") {
+            recordViewNavigation(State.view);
+            State.previousView = State.view;
+          }
+          State.view = nextView;
+          try {
+            renderActiveView();
+          } catch (e) {
+            console.error("renderActiveView error on hashchange:", e);
+          }
         }
       }
     });

@@ -5267,6 +5267,108 @@ function parseValuationCSV(csv) {
   };
 }
 
+// In-memory static file cache for high-speed delivery & low CPU overhead on cloud instances
+const STATIC_FILE_CACHE = new Map();
+
+// ------------------------------------------------------------------------------
+// 5. STATIC ASSET SERVER WITH IN-MEMORY GZIP CACHE & ETAGS
+// ------------------------------------------------------------------------------
+function handleStaticFile(req, res, filePath, pathname) {
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+  fs.stat(filePath, (statErr, stat) => {
+    if (statErr || !stat.isFile()) {
+      const err = statErr || { code: 'ENOENT' };
+      if (err.code === 'ENOENT') {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('404 Not Found');
+      } else {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 Server Error');
+      }
+      return;
+    }
+
+    const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname === '/owner' || pathname === '/admin' || pathname.startsWith('/order-flow');
+    const etag = `W/"${stat.size.toString(16)}-${Math.trunc(stat.mtimeMs).toString(16)}"`;
+    const cacheControl = isHtml 
+      ? 'no-cache, must-revalidate' 
+      : 'public, max-age=300, must-revalidate';
+
+    const headers = {
+      'Content-Type': contentType,
+      'Cache-Control': cacheControl,
+      'Last-Modified': stat.mtime.toUTCString(),
+      'ETag': etag,
+      'Vary': 'Accept-Encoding'
+    };
+
+    // Fast 304 Not Modified validation
+    const etags = String(req.headers['if-none-match'] || '').split(',').map(value => value.trim());
+    if (etags.includes('*') || etags.includes(etag)) {
+      res.writeHead(304, headers);
+      res.end();
+      return;
+    }
+
+    const cacheKey = `${filePath}:${stat.mtimeMs}:${stat.size}`;
+    const cachedFile = STATIC_FILE_CACHE.get(cacheKey);
+
+    const acceptsGzip = String(req.headers['accept-encoding'] || '').split(',').some(encoding => {
+      const [name, ...params] = encoding.trim().split(';');
+      const quality = params.map(param => param.trim()).find(param => /^q=/i.test(param));
+      return name.toLowerCase() === 'gzip' && (!quality || Number(quality.slice(2)) > 0);
+    });
+    const compressible = /^(text\/|application\/(javascript|json))|^image\/svg\+xml/.test(contentType);
+
+    // Serve from in-memory cache if available (zero disk I/O, zero CPU compression)
+    if (cachedFile) {
+      if (compressible && acceptsGzip && cachedFile.gzip) {
+        headers['Content-Encoding'] = 'gzip';
+        res.writeHead(200, headers);
+        res.end(cachedFile.gzip);
+        return;
+      }
+      res.writeHead(200, headers);
+      res.end(cachedFile.content);
+      return;
+    }
+
+    // Read and cache
+    fs.readFile(filePath, (err, content) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 Server Error');
+        return;
+      }
+
+      if (compressible) {
+        zlib.gzip(content, (gzipErr, compressed) => {
+          const gzipBuffer = gzipErr ? null : compressed;
+          STATIC_FILE_CACHE.set(cacheKey, { content, gzip: gzipBuffer });
+          if (STATIC_FILE_CACHE.size > 200) {
+            STATIC_FILE_CACHE.delete(STATIC_FILE_CACHE.keys().next().value);
+          }
+
+          if (acceptsGzip && gzipBuffer) {
+            headers['Content-Encoding'] = 'gzip';
+            res.writeHead(200, headers);
+            res.end(gzipBuffer);
+          } else {
+            res.writeHead(200, headers);
+            res.end(content);
+          }
+        });
+      } else {
+        STATIC_FILE_CACHE.set(cacheKey, { content, gzip: null });
+        res.writeHead(200, headers);
+        res.end(content);
+      }
+    });
+  });
+}
+
 const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, 'http://localhost');
   parsedUrl.query = Object.fromEntries(parsedUrl.searchParams.entries());
@@ -6730,73 +6832,7 @@ const server = http.createServer(async (req, res) => {
     res.end('404 Not Found');
     return;
   }
-  const ext = path.extname(filePath).toLowerCase();
-  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
-  fs.stat(filePath, (statErr, stat) => {
-    if (statErr || !stat.isFile()) {
-      const err = statErr || { code: 'ENOENT' };
-      if (err.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
-      } else {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('500 Server Error');
-      }
-      return;
-    }
-
-    const isScriptOrStyle = ext === '.js' || ext === '.css';
-    const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname === '/owner' || pathname === '/admin' || pathname.startsWith('/order-flow');
-    const isNoCache = isScriptOrStyle || isHtml || ext === '.json';
-    const etag = `W/"${stat.size.toString(16)}-${Math.trunc(stat.mtimeMs).toString(16)}"`;
-    const headers = {
-      'Content-Type': contentType,
-      'Cache-Control': isNoCache ? 'no-cache, no-store, must-revalidate, max-age=0' : 'no-cache',
-      'Pragma': 'no-cache',
-      'Expires': '0',
-      'Last-Modified': stat.mtime.toUTCString(),
-      'ETag': isNoCache ? '' : etag,
-      'Vary': 'Accept-Encoding'
-    };
-    if (!isNoCache) {
-      const etags = String(req.headers['if-none-match'] || '').split(',').map(value => value.trim());
-      if (etags.includes('*') || etags.includes(etag)) {
-        res.writeHead(304, headers);
-        res.end();
-        return;
-      }
-    }
-
-    fs.readFile(filePath, (err, content) => {
-      if (err) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('500 Server Error');
-        return;
-      }
-      const compressible = /^(text\/|application\/(javascript|json))|^image\/svg\+xml/.test(contentType);
-      const acceptsGzip = String(req.headers['accept-encoding'] || '').split(',').some(encoding => {
-        const [name, ...params] = encoding.trim().split(';');
-        const quality = params.map(param => param.trim()).find(param => /^q=/i.test(param));
-        return name.toLowerCase() === 'gzip' && (!quality || Number(quality.slice(2)) > 0);
-      });
-      if (!compressible || !acceptsGzip) {
-        res.writeHead(200, headers);
-        res.end(content);
-        return;
-      }
-      zlib.gzip(content, (gzipErr, compressed) => {
-        if (gzipErr) {
-          res.writeHead(200, headers);
-          res.end(content);
-          return;
-        }
-        headers['Content-Encoding'] = 'gzip';
-        res.writeHead(200, headers);
-        res.end(compressed);
-      });
-    });
-  });
+  handleStaticFile(req, res, filePath, pathname);
 });
 
 // ------------------------------------------------------------------------------
