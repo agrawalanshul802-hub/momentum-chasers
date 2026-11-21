@@ -26229,7 +26229,6 @@
     const items = stockList.map(s => {
       let chgVal = s.chg;
       if (activePerf === "w") chgVal = +(s.chg * 1.5 + 0.3).toFixed(2);
-      else if (activePerf === "15m") chgVal = +(s.chg * 0.35 + 0.05).toFixed(2);
 
       let weight = s.mcap;
       if (activeSort === "volume") weight = parseFloat(s.volume) * 10000;
@@ -26243,163 +26242,49 @@
       };
     });
 
-    // Layout Calculation:
-    // If standard Nifty 50 flat view with default sorting, use exact pixel-accurate Dhan grid.
-    // Otherwise, dynamically squarify via the Bruls-Huizing-van Wijk algorithm.
+    // Layout Calculation: Dynamic squarified treemap (supports flat and sector clustering)
     let tiles = [];
-    const isDhanExactView = (!isAllSectors && (activeNorm === "NIFTY 50" || activeNorm === "NIFTY50") && activeGroup === "flat" && activeSort === "mcap");
+    const bounds = { x: 0, y: 0, w: 1000, h: 680 };
 
-    if (isDhanExactView) {
-      const stockMap = {};
-      items.forEach(it => { stockMap[it.symbol] = it; });
-
-      // Left Column (width 20.5%): RELIANCE, BHARTIARTL, HDFCBANK
-      const leftColDefs = [
-        { sym: "RELIANCE", top: 0, h: 47 },
-        { sym: "BHARTIARTL", top: 47, h: 26.5 },
-        { sym: "HDFCBANK", top: 73.5, h: 26.5 }
-      ];
-      leftColDefs.forEach(d => {
-        const it = stockMap[d.sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: 0,
-            pctTop: d.top,
-            pctWidth: 20.5,
-            pctHeight: d.h
-          });
-        }
+    if (activeGroup === "sector" && !isAllSectors) {
+      // Group stocks by sector and squarify within each sector container
+      const sectorsMap = {};
+      items.forEach(it => {
+        const sec = it.sector || "Other";
+        if (!sectorsMap[sec]) sectorsMap[sec] = [];
+        sectorsMap[sec].push(it);
       });
-
-      // Right Partition: width 79.5% starting at left 20.5%
-      // Row 1: top: 0%, height: 23%
-      const r1 = [
-        { sym: "ICICIBANK", w: 22.8 },
-        { sym: "SBIN", w: 19.2 },
-        { sym: "TCS", w: 18.5 },
-        { sym: "BAJFINANCE", w: 19.0 }
-      ];
-      let currX = 20.5;
-      r1.forEach(d => {
-        const it = stockMap[d.sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: currX,
-            pctTop: 0,
-            pctWidth: d.w,
-            pctHeight: 23
-          });
-          currX += d.w;
-        }
+      const sectorEntries = Object.keys(sectorsMap).map(sec => ({
+        name: sec,
+        weight: sectorsMap[sec].reduce((s, it) => s + (it.weight > 0 ? it.weight : 1), 0),
+        items: sectorsMap[sec]
+      }));
+      sectorEntries.sort((a, b) => b.weight - a.weight);
+      const sectorBounds = computeSquarifiedTreemap(sectorEntries, bounds);
+      let rawTiles = [];
+      sectorBounds.forEach(sb => {
+        const secItems = sb.items;
+        secItems.sort((a, b) => b.weight - a.weight);
+        const pad = 1.5;
+        const innerBounds = {
+          x: sb.x + pad,
+          y: sb.y + pad,
+          w: Math.max(8, sb.w - pad * 2),
+          h: Math.max(8, sb.h - pad * 2)
+        };
+        const st = computeSquarifiedTreemap(secItems, innerBounds);
+        rawTiles.push(...st);
       });
-
-      // Row 2: top: 23%, height: 17%
-      const r2 = ["LT", "SUNPHARMA", "ADANIPORTS", "TITAN", "AXISBANK", "M&M", "MARUTI"];
-      const r2W = 79.5 / r2.length;
-      r2.forEach((sym, idx) => {
-        const it = stockMap[sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: +(20.5 + idx * r2W).toFixed(3),
-            pctTop: 23,
-            pctWidth: +r2W.toFixed(3),
-            pctHeight: 17
-          });
-        }
-      });
-
-      // Row 3: top: 40%, height: 15%
-      const r3 = ["INFY", "HCLTECH", "ITC", "ZOMATO", "JSWSTEEL", "NTPC", "BAJAJ-AUTO", "BAJAJFINSV"];
-      const r3W = 79.5 / r3.length;
-      r3.forEach((sym, idx) => {
-        const it = stockMap[sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: +(20.5 + idx * r3W).toFixed(3),
-            pctTop: 40,
-            pctWidth: +r3W.toFixed(3),
-            pctHeight: 15
-          });
-        }
-      });
-
-      // Row 4: top: 55%, height: 13.5%
-      const r4 = ["KOTAKBANK", "ADANIENT", "ONGC", "COALINDIA", "ASIANPAINT", "POWERGRID", "TATASTEEL", "SHRIRAMFIN", "GRASIM"];
-      const r4W = 79.5 / r4.length;
-      r4.forEach((sym, idx) => {
-        const it = stockMap[sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: +(20.5 + idx * r4W).toFixed(3),
-            pctTop: 55,
-            pctWidth: +r4W.toFixed(3),
-            pctHeight: 13.5
-          });
-        }
-      });
-
-      // Rows 5 & 6 (top: 68.5%, height: 31.5%):
-      // Left side: HINDUNILVR (w: 12.3%) and ULTRACEMCO (w: 9.7%)
-      if (stockMap["HINDUNILVR"]) {
-        tiles.push({
-          ...stockMap["HINDUNILVR"],
-          pctLeft: 20.5,
-          pctTop: 68.5,
-          pctWidth: 12.3,
-          pctHeight: 31.5
-        });
-      }
-      if (stockMap["ULTRACEMCO"]) {
-        tiles.push({
-          ...stockMap["ULTRACEMCO"],
-          pctLeft: 32.8,
-          pctTop: 68.5,
-          pctWidth: 9.7,
-          pctHeight: 31.5
-        });
-      }
-
-      // Right sub-block: left: 42.5%, width: 57.5%
-      // Row 5 top: top: 68.5%, height: 16%
-      const r5 = ["BEL", "HINDALCO", "EICHERMOT", "TECHM", "SBILIFE", "TRENT", "BSE"];
-      const r5W = 57.5 / r5.length;
-      r5.forEach((sym, idx) => {
-        const it = stockMap[sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: +(42.5 + idx * r5W).toFixed(3),
-            pctTop: 68.5,
-            pctWidth: +r5W.toFixed(3),
-            pctHeight: 16
-          });
-        }
-      });
-
-      // Row 6 bottom: top: 84.5%, height: 15.5%
-      const r6 = ["NESTLEIND", "INDIGO", "JIOFIN", "HDFCLIFE", "APOLLOHOSP", "DRREDDY", "CIPLA", "TMPV"];
-      const r6W = 57.5 / r6.length;
-      r6.forEach((sym, idx) => {
-        const it = stockMap[sym];
-        if (it) {
-          tiles.push({
-            ...it,
-            pctLeft: +(42.5 + idx * r6W).toFixed(3),
-            pctTop: 84.5,
-            pctWidth: +r6W.toFixed(3),
-            pctHeight: 15.5
-          });
-        }
-      });
+      tiles = rawTiles.map(t => ({
+        ...t,
+        pctLeft: +((t.x / bounds.w) * 100).toFixed(3),
+        pctTop: +((t.y / bounds.h) * 100).toFixed(3),
+        pctWidth: +((t.w / bounds.w) * 100).toFixed(3),
+        pctHeight: +((t.h / bounds.h) * 100).toFixed(3)
+      }));
     } else {
-      // Dynamic squarified treemap calculation
+      // Dynamic squarified treemap calculation (Flat mode across all items)
       items.sort((a, b) => b.weight - a.weight);
-      const bounds = { x: 0, y: 0, w: 1000, h: 680 };
       const rawTiles = computeSquarifiedTreemap(items, bounds);
       tiles = rawTiles.map(t => ({
         ...t,
@@ -26518,7 +26403,7 @@
               <select id="heatmap-perf-select" class="heatmap-select">
                 <option value="d" ${activePerf === "d" ? "selected" : ""}>D%</option>
                 <option value="w" ${activePerf === "w" ? "selected" : ""}>W%</option>
-                <option value="15m" ${activePerf === "15m" ? "selected" : ""}>15m%</option>
+
               </select>
             </div>
 
