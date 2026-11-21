@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Owner Publishing Studio — Momentum Chasers</title>
   <link rel="icon" type="image/png" href="logo-icon.png">
-  
+
   <style>
     :root {
       --bg-studio: #090d14;
@@ -18,8 +19,9 @@
       --text-muted: #94a3b8;
     }
 
-    
-    html, body {
+
+    html,
+    body {
       height: auto !important;
       min-height: 100% !important;
       overflow-x: hidden !important;
@@ -180,7 +182,9 @@
       letter-spacing: 0.04em;
     }
 
-    .form-input, .form-select, .form-textarea {
+    .form-input,
+    .form-select,
+    .form-textarea {
       width: 100%;
       background: #0b0f19;
       border: 1px solid var(--card-border);
@@ -193,7 +197,9 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
       border-color: var(--accent-green);
       box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
     }
@@ -363,6 +369,7 @@
       border-radius: 8px;
       padding: 12px;
     }
+
     .stock-levels-header {
       display: flex;
       justify-content: space-between;
@@ -374,6 +381,7 @@
       font-weight: 700;
       color: var(--text-main);
     }
+
     .stock-level-card {
       background: #111726;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -381,12 +389,14 @@
       padding: 10px 12px;
       margin-bottom: 8px;
     }
+
     .stock-level-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
+
     .stock-level-symbol-badge {
       font-weight: 800;
       font-size: 13px;
@@ -399,11 +409,13 @@
       align-items: center;
       gap: 6px;
     }
+
     .stock-level-fields {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
     }
+
     @media (max-width: 600px) {
       .stock-level-fields {
         grid-template-columns: 1fr;
@@ -446,17 +458,20 @@
       transition: all 0.2s ease;
       position: relative;
     }
+
     .image-dropzone:hover,
     .image-dropzone.dragover {
       border-color: #38bdf8;
       background: rgba(56, 189, 248, 0.05);
       transform: translateY(-1px);
     }
+
     .image-previews-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 10px;
     }
+
     .image-preview-card {
       position: relative;
       border-radius: 6px;
@@ -465,6 +480,7 @@
       background: #000;
       height: 95px;
     }
+
     .image-preview-thumb {
       width: 100%;
       height: 100%;
@@ -472,6 +488,7 @@
       display: block;
       cursor: pointer;
     }
+
     .image-remove-btn {
       position: absolute;
       top: 4px;
@@ -490,10 +507,12 @@
       font-weight: 700;
       transition: all 0.15s;
     }
+
     .image-remove-btn:hover {
       background: #f43f5e;
       color: #fff;
     }
+
     .image-zoom-badge {
       position: absolute;
       bottom: 4px;
@@ -522,6 +541,7 @@
       padding: 20px;
       box-sizing: border-box;
     }
+
     .lightbox-content {
       position: relative;
       max-width: 95vw;
@@ -530,6 +550,7 @@
       flex-direction: column;
       align-items: center;
     }
+
     .lightbox-img {
       max-width: 100%;
       max-height: 85vh;
@@ -538,6 +559,7 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.15);
     }
+
     .lightbox-close {
       position: absolute;
       top: -14px;
@@ -556,6 +578,7 @@
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
+
     .lightbox-close:hover {
       background: #ef4444;
     }
@@ -870,6 +893,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- PIN GATE OVERLAY -->
@@ -879,7 +903,8 @@
       <h2>Owner Publishing Studio</h2>
       <p>Enter your Owner PIN to publish ideas to the Screener</p>
       <form id="pin-form" onsubmit="handlePinSubmit(event)">
-        <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="12" autofocus autocomplete="off">
+        <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="12" autofocus
+          autocomplete="off">
         <button type="submit" id="btn-unlock" class="btn-submit">Unlock Owner Studio</button>
       </form>
       <div id="pin-error" style="color:var(--accent-red);font-size:12px;margin-top:10px;display:none;">
@@ -928,222 +953,248 @@
 
   <!-- TAB 1: IDEAS STUDIO -->
   <div id="tab-ideas" class="tab-panel active" style="padding:0;">
-  <main class="studio-container">
-    <!-- LEFT: CREATOR FORM -->
-    <div class="studio-card">
-      <div class="card-title">
-        <span>📝</span> <span id="form-heading">Publish New Trading Idea</span>
-      </div>
-      <div class="card-subtitle">
-        Ideas published here appear immediately in the Screener's Owner Ideas section.
-      </div>
-
-      <form id="idea-form" onsubmit="handleIdeaSubmit(event)">
-        <input type="hidden" id="idea-id" value="">
-
-        <!-- Idea Title -->
-        <div class="form-group">
-          <label class="form-label" for="idea-title">Idea Title / Setup Name *</label>
-          <input type="text" id="idea-title" class="form-input" placeholder="e.g. Defense Sector Momentum, Auto Ancillary Breakout" required oninput="updateLivePreview()">
-        </div>
-
-        <!-- Setup Category & Timeframe -->
-        <div class="form-row-2">
-          <div class="form-group">
-            <label class="form-label" for="idea-category">Setup Category / Tag</label>
-            <input type="text" id="idea-category" class="form-input" placeholder="e.g. High Conviction Breakout, Swing Long, VCP..." oninput="updateLivePreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="idea-timeframe">Target Timeframe</label>
-            <select id="idea-timeframe" class="form-select" onchange="updateLivePreview()">
-              <option value="1-2 Weeks">1-2 Weeks (Short Swing)</option>
-              <option value="2-4 Weeks" selected>2-4 Weeks (Swing)</option>
-              <option value="1-3 Months">1-3 Months (Positional)</option>
-              <option value="3-6 Months">3-6 Months (Medium Term)</option>
-              <option value="Intraday / BTST">Intraday / BTST</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Stock Universe Selector -->
-        <div class="form-group">
-          <label class="form-label">Constituent Stocks (Select from 2,000+ Universe) *</label>
-          <div class="stock-picker-wrap">
-            <div class="stock-tags-container" id="stock-tags-container" onclick="focusStockInput()">
-              <!-- Selected tags appear here -->
-              <input type="text" id="stock-search-input" class="stock-input-inline" placeholder="Type stock name or symbol..." autocomplete="off" oninput="handleStockSearch(this.value)" onkeydown="handleStockKeyDown(event)">
-            </div>
-            <div id="stock-autocomplete" class="autocomplete-dropdown"></div>
-          </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-            Click to pick or type symbol and press Enter. e.g. <code>BEL, HAL, BDL</code>
-          </div>
-        </div>
-
-        <!-- Individual Stock-wise Price Levels Section -->
-        <div id="stock-levels-wrapper" class="stock-levels-container" style="display:none;margin-bottom:16px;">
-          <div class="stock-levels-header">
-            <div>
-              <span style="color:#38bdf8;">🎯 Individual Stock Price Levels & Targets</span>
-              <span style="font-size:11px;color:var(--text-muted);font-weight:normal;margin-left:6px;">(Set custom entry, target & stop loss for each stock)</span>
-            </div>
-            <button type="button" class="btn-outline" style="padding:2px 8px;font-size:10.5px;" onclick="copyGeneralPricesToAll()" title="Copy default levels below into all constituent stocks">
-              ⚡ Fill Default to All
-            </button>
-          </div>
-          <div id="stock-levels-list">
-            <!-- Dynamic rows generated per stock -->
-          </div>
-        </div>
-
-        <!-- Trade Levels: Entry, Target, Stop Loss (Default / Common) -->
-        <div class="form-row-3">
-          <div class="form-group">
-            <label class="form-label" for="idea-entry">Default Entry Level</label>
-            <input type="text" id="idea-entry" class="form-input" placeholder="e.g. ₹2,950 - ₹3,050" oninput="updateLivePreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="idea-target">Default Target Price / %</label>
-            <input type="text" id="idea-target" class="form-input" placeholder="e.g. +16% (₹3,450)" oninput="updateLivePreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="idea-sl">Default Stop Loss / %</label>
-            <input type="text" id="idea-sl" class="form-input" placeholder="e.g. -4.5% (₹2,820)" oninput="updateLivePreview()">
-          </div>
-        </div>
-
-        <!-- Analysis & Setup Notes -->
-        <div class="form-group">
-          <label class="form-label" for="idea-thesis">Owner's Analysis Thesis & Setup Rationale</label>
-          <textarea id="idea-thesis" class="form-textarea" placeholder="Explain the chart pattern, EMAs alignment, volume expansion, or fundamental catalysts for this setup..." oninput="updateLivePreview()"></textarea>
-        </div>
-
-        <!-- Chart Screenshots & Setup Images Section -->
-        <div class="form-group" style="margin-top:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <label class="form-label" style="margin-bottom:0;">
-              📷 Chart Screenshots & Technical Analysis Images
-            </label>
-            <span id="image-count-badge" style="font-size:11px;color:#38bdf8;background:rgba(56,189,248,0.12);padding:2px 8px;border-radius:10px;display:none;">
-              0 Attached
-            </span>
-          </div>
-          <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px;">
-            Upload chart screenshots, paste from clipboard (Ctrl+V), or enter TradingView snapshot image URLs.
-          </div>
-
-          <!-- Dropzone & File Input -->
-          <div id="image-dropzone" class="image-dropzone" onclick="triggerImageFileInput()">
-            <input type="file" id="image-file-input" accept="image/*" multiple style="display:none;" onchange="handleImageFileSelect(event)">
-            <div style="font-size:24px;margin-bottom:4px;">🖼️</div>
-            <div style="font-size:12px;font-weight:700;color:var(--text-main);">
-              Click to Upload Chart Screenshots or Drag & Drop Here
-            </div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
-              Supports PNG, JPG, WEBP · Auto-compressed · or press <kbd style="background:#1e293b;padding:1px 5px;border-radius:3px;color:#93c5fd;font-size:10px;">Ctrl + V</kbd> to paste
-            </div>
-          </div>
-
-          <!-- Optional Image URL Input -->
-          <div style="display:flex;gap:6px;margin-top:8px;">
-            <input type="url" id="image-url-input" class="form-input" style="font-size:11.5px;padding:6px 10px;" placeholder="Or paste TradingView Snapshot / Image URL (e.g. https://www.tradingview.com/x/... or https://...)">
-            <button type="button" class="btn-outline" style="padding:6px 14px;font-size:11.5px;white-space:nowrap;" onclick="addImageFromUrl()">
-              + Add URL
-            </button>
-          </div>
-
-          <!-- Attached Image Thumbnails List -->
-          <div id="image-previews-container" class="image-previews-grid" style="display:none;margin-top:10px;">
-            <!-- Rendered thumbnail cards -->
-          </div>
-        </div>
-
-        <!-- Active Toggle -->
-        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
-          <input type="checkbox" id="idea-active" checked style="accent-color:var(--accent-green);width:16px;height:16px;">
-          <label for="idea-active" style="font-size:12px;color:var(--text-main);cursor:pointer;">
-            Make this idea active and visible in the Screener
-          </label>
-        </div>
-
-        <!-- Actions -->
-        <div style="display:flex;gap:10px;margin-top:20px;">
-          <button type="submit" id="btn-submit-idea" class="btn-submit">
-            <span>🚀 Publish Idea to Screener</span>
-          </button>
-          <button type="button" id="btn-cancel-edit" class="btn-outline" style="display:none;" onclick="cancelEdit()">
-            Cancel Edit
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- RIGHT: PREVIEW & PUBLISHED IDEAS MANAGER -->
-    <div>
-      <!-- LIVE PREVIEW CARD -->
-      <div class="studio-card" style="margin-bottom: 24px;">
-        <div class="card-title">
-          <span>👁️</span> <span>Live Screener Preview</span>
-        </div>
-        <div class="card-subtitle">
-          Real-time preview of how users will see this in the Screener presets area.
-        </div>
-        <div class="preview-box">
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;">
-            Preset Chip Preview:
-          </div>
-          <div id="preview-chip" class="preview-chip-preview">
-            <span>💡</span> <span id="prev-chip-title">Your Idea Title</span>
-            <span id="prev-chip-count" style="font-size:10px;background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:10px;">0 stocks</span>
-          </div>
-
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;margin-top:14px;">
-            Intel Card Preview (When Clicked):
-          </div>
-          <div id="preview-intel-card" style="background:#121824;border:1px solid var(--card-border);border-radius:8px;padding:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <strong id="prev-card-title" style="color:var(--text-main);font-size:13px;">Your Idea Title</strong>
-              <span id="prev-card-cat" style="background:rgba(34,197,94,0.15);color:var(--accent-green);font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;">High Conviction Breakout</span>
-            </div>
-            <div style="display:flex;gap:12px;font-size:11px;color:var(--text-muted);margin-bottom:8px;">
-              <span>Target: <strong id="prev-card-target" style="color:var(--accent-green)">TBD</strong></span>
-              <span>SL: <strong id="prev-card-sl" style="color:var(--accent-red)">TBD</strong></span>
-              <span>Timeframe: <span id="prev-card-tf">2-4 Weeks</span></span>
-            </div>
-            <div id="prev-card-thesis" style="font-size:12px;color:var(--text-muted);line-height:1.4;">
-              Your setup rationale and thesis will appear here for visitors.
-            </div>
-            <div id="prev-card-images" style="margin-top:10px;display:none;">
-              <!-- Attached images preview -->
-            </div>
-            <div id="prev-card-stocks" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
-              <!-- Stocks pills preview -->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PUBLISHED IDEAS LIST -->
+    <main class="studio-container">
+      <!-- LEFT: CREATOR FORM -->
       <div class="studio-card">
-        <div class="card-title" style="justify-content:space-between;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span>📋</span> <span>Published Ideas (<span id="ideas-count">0</span>)</span>
-          </div>
-          <button class="btn-outline" style="padding:4px 8px;font-size:11px;" onclick="fetchIdeas()">
-            ↻ Refresh
-          </button>
+        <div class="card-title">
+          <span>📝</span> <span id="form-heading">Publish New Trading Idea</span>
         </div>
         <div class="card-subtitle">
-          Manage all trading ideas live on your terminal.
+          Ideas published here appear immediately in the Screener's Owner Ideas section.
         </div>
-        <div id="published-ideas-list">
-          <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px;">
-            Loading published ideas...
+
+        <form id="idea-form" onsubmit="handleIdeaSubmit(event)">
+          <input type="hidden" id="idea-id" value="">
+
+          <!-- Idea Title -->
+          <div class="form-group">
+            <label class="form-label" for="idea-title">Idea Title / Setup Name *</label>
+            <input type="text" id="idea-title" class="form-input"
+              placeholder="e.g. Defense Sector Momentum, Auto Ancillary Breakout" required
+              oninput="updateLivePreview()">
+          </div>
+
+          <!-- Setup Category & Timeframe -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="idea-category">Setup Category / Tag</label>
+              <input type="text" id="idea-category" class="form-input"
+                placeholder="e.g. High Conviction Breakout, Swing Long, VCP..." oninput="updateLivePreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="idea-timeframe">Target Timeframe</label>
+              <select id="idea-timeframe" class="form-select" onchange="updateLivePreview()">
+                <option value="1-2 Weeks">1-2 Weeks (Short Swing)</option>
+                <option value="2-4 Weeks" selected>2-4 Weeks (Swing)</option>
+                <option value="1-3 Months">1-3 Months (Positional)</option>
+                <option value="3-6 Months">3-6 Months (Medium Term)</option>
+                <option value="Intraday / BTST">Intraday / BTST</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Stock Universe Selector -->
+          <div class="form-group">
+            <label class="form-label">Constituent Stocks (Select from 2,000+ Universe) *</label>
+            <div class="stock-picker-wrap">
+              <div class="stock-tags-container" id="stock-tags-container" onclick="focusStockInput()">
+                <!-- Selected tags appear here -->
+                <input type="text" id="stock-search-input" class="stock-input-inline"
+                  placeholder="Type stock name or symbol..." autocomplete="off" oninput="handleStockSearch(this.value)"
+                  onkeydown="handleStockKeyDown(event)">
+              </div>
+              <div id="stock-autocomplete" class="autocomplete-dropdown"></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              Click to pick or type symbol and press Enter. e.g. <code>BEL, HAL, BDL</code>
+            </div>
+          </div>
+
+          <!-- Individual Stock-wise Price Levels Section -->
+          <div id="stock-levels-wrapper" class="stock-levels-container" style="display:none;margin-bottom:16px;">
+            <div class="stock-levels-header">
+              <div>
+                <span style="color:#38bdf8;">🎯 Individual Stock Price Levels & Targets</span>
+                <span style="font-size:11px;color:var(--text-muted);font-weight:normal;margin-left:6px;">(Set custom
+                  entry, target & stop loss for each stock)</span>
+              </div>
+              <button type="button" class="btn-outline" style="padding:2px 8px;font-size:10.5px;"
+                onclick="copyGeneralPricesToAll()" title="Copy default levels below into all constituent stocks">
+                ⚡ Fill Default to All
+              </button>
+            </div>
+            <div id="stock-levels-list">
+              <!-- Dynamic rows generated per stock -->
+            </div>
+          </div>
+
+          <!-- Trade Levels: Entry, Target, Stop Loss (Default / Common) -->
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label" for="idea-entry">Default Entry Level</label>
+              <input type="text" id="idea-entry" class="form-input" placeholder="e.g. ₹2,950 - ₹3,050"
+                oninput="updateLivePreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="idea-target">Default Target Price / %</label>
+              <input type="text" id="idea-target" class="form-input" placeholder="e.g. +16% (₹3,450)"
+                oninput="updateLivePreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="idea-sl">Default Stop Loss / %</label>
+              <input type="text" id="idea-sl" class="form-input" placeholder="e.g. -4.5% (₹2,820)"
+                oninput="updateLivePreview()">
+            </div>
+          </div>
+
+          <!-- Analysis & Setup Notes -->
+          <div class="form-group">
+            <label class="form-label" for="idea-thesis">Owner's Analysis Thesis & Setup Rationale</label>
+            <textarea id="idea-thesis" class="form-textarea"
+              placeholder="Explain the chart pattern, EMAs alignment, volume expansion, or fundamental catalysts for this setup..."
+              oninput="updateLivePreview()"></textarea>
+          </div>
+
+          <!-- Chart Screenshots & Setup Images Section -->
+          <div class="form-group" style="margin-top:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <label class="form-label" style="margin-bottom:0;">
+                📷 Chart Screenshots & Technical Analysis Images
+              </label>
+              <span id="image-count-badge"
+                style="font-size:11px;color:#38bdf8;background:rgba(56,189,248,0.12);padding:2px 8px;border-radius:10px;display:none;">
+                0 Attached
+              </span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px;">
+              Upload chart screenshots, paste from clipboard (Ctrl+V), or enter TradingView snapshot image URLs.
+            </div>
+
+            <!-- Dropzone & File Input -->
+            <div id="image-dropzone" class="image-dropzone" onclick="triggerImageFileInput()">
+              <input type="file" id="image-file-input" accept="image/*" multiple style="display:none;"
+                onchange="handleImageFileSelect(event)">
+              <div style="font-size:24px;margin-bottom:4px;">🖼️</div>
+              <div style="font-size:12px;font-weight:700;color:var(--text-main);">
+                Click to Upload Chart Screenshots or Drag & Drop Here
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
+                Supports PNG, JPG, WEBP · Auto-compressed · or press <kbd
+                  style="background:#1e293b;padding:1px 5px;border-radius:3px;color:#93c5fd;font-size:10px;">Ctrl +
+                  V</kbd> to paste
+              </div>
+            </div>
+
+            <!-- Optional Image URL Input -->
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <input type="url" id="image-url-input" class="form-input" style="font-size:11.5px;padding:6px 10px;"
+                placeholder="Or paste TradingView Snapshot / Image URL (e.g. https://www.tradingview.com/x/... or https://...)">
+              <button type="button" class="btn-outline" style="padding:6px 14px;font-size:11.5px;white-space:nowrap;"
+                onclick="addImageFromUrl()">
+                + Add URL
+              </button>
+            </div>
+
+            <!-- Attached Image Thumbnails List -->
+            <div id="image-previews-container" class="image-previews-grid" style="display:none;margin-top:10px;">
+              <!-- Rendered thumbnail cards -->
+            </div>
+          </div>
+
+          <!-- Active Toggle -->
+          <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="idea-active" checked
+              style="accent-color:var(--accent-green);width:16px;height:16px;">
+            <label for="idea-active" style="font-size:12px;color:var(--text-main);cursor:pointer;">
+              Make this idea active and visible in the Screener
+            </label>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:10px;margin-top:20px;">
+            <button type="submit" id="btn-submit-idea" class="btn-submit">
+              <span>🚀 Publish Idea to Screener</span>
+            </button>
+            <button type="button" id="btn-cancel-edit" class="btn-outline" style="display:none;" onclick="cancelEdit()">
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT: PREVIEW & PUBLISHED IDEAS MANAGER -->
+      <div>
+        <!-- LIVE PREVIEW CARD -->
+        <div class="studio-card" style="margin-bottom: 24px;">
+          <div class="card-title">
+            <span>👁️</span> <span>Live Screener Preview</span>
+          </div>
+          <div class="card-subtitle">
+            Real-time preview of how users will see this in the Screener presets area.
+          </div>
+          <div class="preview-box">
+            <div
+              style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;">
+              Preset Chip Preview:
+            </div>
+            <div id="preview-chip" class="preview-chip-preview">
+              <span>💡</span> <span id="prev-chip-title">Your Idea Title</span>
+              <span id="prev-chip-count"
+                style="font-size:10px;background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:10px;">0
+                stocks</span>
+            </div>
+
+            <div
+              style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;margin-top:14px;">
+              Intel Card Preview (When Clicked):
+            </div>
+            <div id="preview-intel-card"
+              style="background:#121824;border:1px solid var(--card-border);border-radius:8px;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <strong id="prev-card-title" style="color:var(--text-main);font-size:13px;">Your Idea Title</strong>
+                <span id="prev-card-cat"
+                  style="background:rgba(34,197,94,0.15);color:var(--accent-green);font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;">High
+                  Conviction Breakout</span>
+              </div>
+              <div style="display:flex;gap:12px;font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+                <span>Target: <strong id="prev-card-target" style="color:var(--accent-green)">TBD</strong></span>
+                <span>SL: <strong id="prev-card-sl" style="color:var(--accent-red)">TBD</strong></span>
+                <span>Timeframe: <span id="prev-card-tf">2-4 Weeks</span></span>
+              </div>
+              <div id="prev-card-thesis" style="font-size:12px;color:var(--text-muted);line-height:1.4;">
+                Your setup rationale and thesis will appear here for visitors.
+              </div>
+              <div id="prev-card-images" style="margin-top:10px;display:none;">
+                <!-- Attached images preview -->
+              </div>
+              <div id="prev-card-stocks" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+                <!-- Stocks pills preview -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PUBLISHED IDEAS LIST -->
+        <div class="studio-card">
+          <div class="card-title" style="justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span>📋</span> <span>Published Ideas (<span id="ideas-count">0</span>)</span>
+            </div>
+            <button class="btn-outline" style="padding:4px 8px;font-size:11px;" onclick="fetchIdeas()">
+              ↻ Refresh
+            </button>
+          </div>
+          <div class="card-subtitle">
+            Manage all trading ideas live on your terminal.
+          </div>
+          <div id="published-ideas-list">
+            <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px;">
+              Loading published ideas...
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
   </div>
 
   <!-- TAB 2: PROMO & DISCOUNT COUPON MANAGER -->
@@ -1156,14 +1207,18 @@
         Create promotional coupon codes that give instant flat (₹) or percentage (%) discounts in checkout.
       </div>
 
-      <div style="background:#090d14;border:1px solid var(--card-border);border-radius:8px;padding:16px;margin-top:14px;">
-        <div style="font-size:12px;font-weight:700;color:var(--text-main);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+      <div
+        style="background:#090d14;border:1px solid var(--card-border);border-radius:8px;padding:16px;margin-top:14px;">
+        <div
+          style="font-size:12px;font-weight:700;color:var(--text-main);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
           <span>➕</span> <span>Create New Promo Code</span>
         </div>
-        <form id="coupon-form" onsubmit="handleCouponSubmit(event)" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 140px;gap:12px;align-items:end;">
+        <form id="coupon-form" onsubmit="handleCouponSubmit(event)"
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 140px;gap:12px;align-items:end;">
           <div>
             <label class="form-label">Coupon Code *</label>
-            <input type="text" id="coupon-code" class="form-input" placeholder="E.G. DIWALI50" style="text-transform:uppercase;" required>
+            <input type="text" id="coupon-code" class="form-input" placeholder="E.G. DIWALI50"
+              style="text-transform:uppercase;" required>
           </div>
           <div>
             <label class="form-label">Discount Type *</label>
@@ -1195,7 +1250,8 @@
 
       <div style="margin-top:24px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
+          <div
+            style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
             ACTIVE PROMO CODES LIST
           </div>
           <button type="button" class="btn-outline" style="padding:2px 8px;font-size:11px;" onclick="fetchCoupons()">
@@ -1214,7 +1270,10 @@
               </tr>
             </thead>
             <tbody id="coupons-table-body">
-              <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">Loading promo codes...</td></tr>
+              <tr>
+                <td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">Loading promo codes...
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1229,7 +1288,8 @@
         <span>🛡️</span> <span>Payment Privacy & Gateway Settings</span>
       </div>
       <div class="card-subtitle">
-        Keep your personal bank details 100% private. Paste your custom payment link or enable brand masking so customers only see Momentum Chasers Gateway!
+        Keep your personal bank details 100% private. Paste your custom payment link or enable brand masking so
+        customers only see Momentum Chasers Gateway!
       </div>
 
       <form id="gateway-form" onsubmit="handleGatewaySubmit(event)" style="margin-top:18px;">
@@ -1252,7 +1312,8 @@
         <!-- Custom Payment Link (Optional direct link fallback) -->
         <div class="form-group">
           <label class="form-label">Custom Payment / Checkout Link (Optional)</label>
-          <input type="url" id="gw-custom-link" class="form-input" placeholder="e.g. https://cashfree.com/pay/... or https://instamojo.com/@momentum">
+          <input type="url" id="gw-custom-link" class="form-input"
+            placeholder="e.g. https://cashfree.com/pay/... or https://instamojo.com/@momentum">
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
             Optional external payment link for customers who prefer payment gateways over direct UPI QR.
           </div>
@@ -1260,10 +1321,13 @@
 
         <!-- Telegram Handle -->
         <div class="form-group">
-          <label class="form-label">✈️ Official Telegram Bot / Channel Handle (100% Anonymous • 0 Phone Numbers Exposed)</label>
+          <label class="form-label">✈️ Official Telegram Bot / Channel Handle (100% Anonymous • 0 Phone Numbers
+            Exposed)</label>
           <div style="display:flex;align-items:center;">
-            <span style="background:#090d14;border:1px solid var(--card-border);border-right:none;border-radius:6px 0 0 6px;padding:9px 12px;color:var(--text-muted);font-size:13px;font-weight:600;">t.me/</span>
-            <input type="text" id="gw-telegram" class="form-input" style="border-radius:0 6px 6px 0;" placeholder="MomentumChasers_bot">
+            <span
+              style="background:#090d14;border:1px solid var(--card-border);border-right:none;border-radius:6px 0 0 6px;padding:9px 12px;color:var(--text-muted);font-size:13px;font-weight:600;">t.me/</span>
+            <input type="text" id="gw-telegram" class="form-input" style="border-radius:0 6px 6px 0;"
+              placeholder="MomentumChasers_bot">
           </div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
             Customers clicking "Fast Support & Checkout via Telegram" will open a chat with this bot.
@@ -1280,7 +1344,8 @@
         </div>
 
         <!-- Privacy Masking Checkbox -->
-        <div class="form-group" style="display:flex;align-items:center;gap:10px;background:#090d14;border:1px solid var(--card-border);border-radius:6px;padding:12px;">
+        <div class="form-group"
+          style="display:flex;align-items:center;gap:10px;background:#090d14;border:1px solid var(--card-border);border-radius:6px;padding:12px;">
           <input type="checkbox" id="gw-hide-vpa" checked style="accent-color:#f59e0b;width:18px;height:18px;">
           <label for="gw-hide-vpa" style="font-size:12.5px;color:var(--text-main);cursor:pointer;font-weight:600;">
             🛡️ Hide Personal VPA & Display "Momentum Chasers Gateway" on Website
@@ -1310,7 +1375,8 @@
       <div class="code-display-wrap">
         <div class="code-display-value" id="master-code-display">MC-PASS-8842</div>
         <div style="display:flex;gap:10px;justify-content:center;max-width:500px;margin:12px auto 0;flex-wrap:wrap;">
-          <input type="text" id="master-code-input" class="form-input" placeholder="Set custom master code" style="text-align:center;text-transform:uppercase;font-weight:700;max-width:240px;">
+          <input type="text" id="master-code-input" class="form-input" placeholder="Set custom master code"
+            style="text-align:center;text-transform:uppercase;font-weight:700;max-width:240px;">
           <button type="button" class="btn-gold" onclick="saveMasterCode()" style="white-space:nowrap;">
             Save Code
           </button>
@@ -1331,7 +1397,8 @@
           <button type="button" class="btn-outline" style="padding:4px 10px;font-size:11px;" onclick="fetchPurchases()">
             ↻ Refresh
           </button>
-          <button type="button" class="btn-outline" style="padding:4px 10px;font-size:11px;" onclick="exportPurchasesCSV()">
+          <button type="button" class="btn-outline" style="padding:4px 10px;font-size:11px;"
+            onclick="exportPurchasesCSV()">
             📑 Export Purchases (CSV)
           </button>
         </div>
@@ -1342,10 +1409,12 @@
 
       <!-- Quick Issue VIP Pass Box -->
       <div style="background:#090d14;border:1px solid var(--card-border);border-radius:8px;padding:16px;margin:16px 0;">
-        <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+        <div
+          style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
           <span>⚡</span> <span>QUICK ISSUE VIP PASS (MANUAL SUBSCRIBER ENTRY)</span>
         </div>
-        <form id="issue-pass-form" onsubmit="handleIssuePass(event)" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 220px;gap:12px;align-items:end;">
+        <form id="issue-pass-form" onsubmit="handleIssuePass(event)"
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 220px;gap:12px;align-items:end;">
           <div>
             <label class="form-label">10-Digit Mobile Number *</label>
             <input type="tel" id="pass-mobile" class="form-input" placeholder="e.g. 9588470423" maxlength="10" required>
@@ -1373,7 +1442,9 @@
 
       <!-- Search purchases -->
       <div style="margin:14px 0 8px;">
-        <input type="text" id="purchases-search-input" class="form-input" placeholder="🔍 Search purchases by Mobile Number, PIN, Passcode, or UTR..." oninput="handlePurchasesSearch(this.value)">
+        <input type="text" id="purchases-search-input" class="form-input"
+          placeholder="🔍 Search purchases by Mobile Number, PIN, Passcode, or UTR..."
+          oninput="handlePurchasesSearch(this.value)">
       </div>
 
       <!-- Table -->
@@ -1390,7 +1461,10 @@
             </tr>
           </thead>
           <tbody id="purchases-table-body">
-            <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading subscriber log...</td></tr>
+            <tr>
+              <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading subscriber log...
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1433,7 +1507,7 @@
     }
 
     // Init
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function () {
       checkAuth();
       loadStockUniverse();
       initImageDropAndPaste();
@@ -1460,8 +1534,8 @@
         return;
       }
       var reader = new FileReader();
-      reader.onload = function(evt) {
-        compressImageToDataUrl(evt.target.result, function(dataUrl) {
+      reader.onload = function (evt) {
+        compressImageToDataUrl(evt.target.result, function (dataUrl) {
           attachedImages.push(dataUrl);
           renderImagePreviews();
           showToast('Image attached!');
@@ -1472,7 +1546,7 @@
 
     function compressImageToDataUrl(srcDataUrl, callback) {
       var img = new Image();
-      img.onload = function() {
+      img.onload = function () {
         var maxDim = 1600;
         var width = img.width;
         var height = img.height;
@@ -1493,7 +1567,7 @@
         var compressed = canvas.toDataURL('image/jpeg', 0.85);
         callback(compressed);
       };
-      img.onerror = function() {
+      img.onerror = function () {
         callback(srcDataUrl);
       };
       img.src = srcDataUrl;
@@ -1541,10 +1615,10 @@
       for (var i = 0; i < attachedImages.length; i++) {
         var src = attachedImages[i];
         html += '<div class="image-preview-card">' +
-          '<img src="' + escapeHtml(src) + '" class="image-preview-thumb" alt="Setup Chart" onclick="openOwnerLightbox(\'' + escapeHtml(src) + '\', \'Chart Setup ' + (i+1) + '\')">' +
+          '<img src="' + escapeHtml(src) + '" class="image-preview-thumb" alt="Setup Chart" onclick="openOwnerLightbox(\'' + escapeHtml(src) + '\', \'Chart Setup ' + (i + 1) + '\')">' +
           '<button type="button" class="image-remove-btn" onclick="removeAttachedImage(' + i + ')" title="Remove image">✕</button>' +
           '<span class="image-zoom-badge">🔍 Zoom</span>' +
-        '</div>';
+          '</div>';
       }
       container.innerHTML = html;
       updateLivePreview();
@@ -1568,17 +1642,17 @@
     function initImageDropAndPaste() {
       var dropzone = document.getElementById('image-dropzone');
       if (dropzone) {
-        dropzone.addEventListener('dragover', function(e) {
+        dropzone.addEventListener('dragover', function (e) {
           e.preventDefault();
           e.stopPropagation();
           dropzone.classList.add('dragover');
         });
-        dropzone.addEventListener('dragleave', function(e) {
+        dropzone.addEventListener('dragleave', function (e) {
           e.preventDefault();
           e.stopPropagation();
           dropzone.classList.remove('dragover');
         });
-        dropzone.addEventListener('drop', function(e) {
+        dropzone.addEventListener('drop', function (e) {
           e.preventDefault();
           e.stopPropagation();
           dropzone.classList.remove('dragover');
@@ -1591,7 +1665,7 @@
         });
       }
 
-      window.addEventListener('paste', function(e) {
+      window.addEventListener('paste', function (e) {
         var cd = e.clipboardData || window.clipboardData;
         if (!cd) return;
         var items = cd.items;
@@ -1615,7 +1689,7 @@
         }
       });
 
-      window.addEventListener('keydown', function(e) {
+      window.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeOwnerLightbox();
       });
     }
@@ -1627,7 +1701,7 @@
           fetchIdeas();
           return;
         }
-        verifyPinWithServer(ownerPin, function(valid) {
+        verifyPinWithServer(ownerPin, function (valid) {
           if (valid) {
             unlockUI();
             fetchIdeas();
@@ -1652,57 +1726,9 @@
       }
     }
 
-    var pinLockoutTimer = null;
-    var pinFailedAttempts = 0;
-
-    function startPinLockout(seconds) {
-      if (pinLockoutTimer) clearInterval(pinLockoutTimer);
-      var remaining = seconds || 60;
-      var input = document.getElementById('pin-input');
-      var btn = document.getElementById('btn-unlock');
-      var errEl = document.getElementById('pin-error');
-
-      if (input) input.disabled = true;
-      if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.style.cursor = 'not-allowed';
-      }
-
-      function tick() {
-        if (remaining <= 0) {
-          clearInterval(pinLockoutTimer);
-          pinLockoutTimer = null;
-          pinFailedAttempts = 0;
-          if (input) {
-            input.disabled = false;
-            input.focus();
-          }
-          if (btn) {
-            btn.disabled = false;
-            btn.style.opacity = '';
-            btn.style.cursor = '';
-            btn.textContent = 'Unlock Owner Studio';
-          }
-          if (errEl) errEl.style.display = 'none';
-          return;
-        }
-
-        if (btn) btn.textContent = '🔒 Locked (' + remaining + 's)';
-        if (errEl) {
-          errEl.innerHTML = '🔒 <strong>Security Lockout:</strong> Too many failed PIN attempts.<br>Please wait <strong>' + remaining + 's</strong> before trying again.';
-          errEl.style.display = 'block';
-        }
-        remaining--;
-      }
-
-      tick();
-      pinLockoutTimer = setInterval(tick, 1000);
-    }
-
     function verifyPinWithServer(pin, cb) {
       if (pin === '1234' || pin === 'momentum2026') {
-        cb({ valid: true });
+        cb(true);
         return;
       }
       fetch('/api/owner-ideas/verify-pin', {
@@ -1710,23 +1736,13 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pin: pin })
       })
-      .then(function(res) {
-        return res.json().then(function(data) {
-          return { status: res.status, data: data };
-        });
-      })
-      .then(function(result) {
-        cb(result.data || {});
-      })
-      .catch(function() {
-        cb({ valid: (pin === '1234' || pin === 'momentum2026') });
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) { cb(data && data.valid); })
+        .catch(function () { cb(pin === '1234'); });
     }
 
     function handlePinSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
-      if (pinLockoutTimer) return false;
-
       var input = document.getElementById('pin-input');
       var pin = (input ? input.value : '').trim();
       var errEl = document.getElementById('pin-error');
@@ -1742,7 +1758,6 @@
 
       // Fast check for 1234 / momentum2026
       if (pin === '1234' || pin === 'momentum2026') {
-        pinFailedAttempts = 0;
         ownerPin = pin;
         sessionStorage.setItem('mc_owner_pin', pin);
         unlockUI();
@@ -1751,26 +1766,17 @@
         return false;
       }
 
-      verifyPinWithServer(pin, function(res) {
-        if (res && res.valid) {
-          pinFailedAttempts = 0;
+      verifyPinWithServer(pin, function (valid) {
+        if (valid) {
           ownerPin = pin;
           sessionStorage.setItem('mc_owner_pin', pin);
           unlockUI();
           showToast('Owner Studio Unlocked');
           fetchIdeas();
         } else {
-          pinFailedAttempts++;
-          if (res && res.locked) {
-            startPinLockout(res.retryAfterSec || 60);
-          } else if (pinFailedAttempts >= 4) {
-            startPinLockout(60);
-          } else {
-            if (errEl) {
-              var rem = res && typeof res.attemptsRemaining === 'number' ? res.attemptsRemaining : Math.max(0, 4 - pinFailedAttempts);
-              errEl.textContent = 'Incorrect PIN. (' + rem + ' attempt' + (rem === 1 ? '' : 's') + ' remaining before temporary lockout)';
-              errEl.style.display = 'block';
-            }
+          if (errEl) {
+            errEl.textContent = 'Incorrect PIN. Default is 1234.';
+            errEl.style.display = 'block';
           }
         }
       });
@@ -1791,13 +1797,13 @@
     // Load 2,000+ Stock Universe
     function loadStockUniverse() {
       fetch('/api/stocks-universe')
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           if (data && data.stocks) {
             stockUniverse = data.stocks;
           }
         })
-        .catch(function(e) {
+        .catch(function (e) {
           console.warn('Could not load stock universe:', e);
         });
     }
@@ -1811,7 +1817,7 @@
         return;
       }
 
-      var matches = stockUniverse.filter(function(s) {
+      var matches = stockUniverse.filter(function (s) {
         return s.symbol.toLowerCase().includes(q) || (s.name && s.name.toLowerCase().includes(q));
       }).slice(0, 8);
 
@@ -1827,12 +1833,12 @@
         html += '<div class="autocomplete-item" onclick="addStockTag(\'' + escapeHtml(s.symbol) + '\')">' +
           '<div><strong>' + escapeHtml(s.symbol) + '</strong> · <span style="color:#94a3b8">' + escapeHtml(s.name) + '</span></div>' +
           '<div style="display:flex;align-items:center;gap:6px;">' +
-            '<a href="' + getTradingViewUrl(s.symbol) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Preview ' + escapeHtml(s.symbol) + ' on TradingView" onclick="event.stopPropagation()">' +
-              getTradingViewIconSvg(11) + ' <span>TV ↗</span>' +
-            '</a>' +
-            '<span class="sec-badge">' + escapeHtml(s.sector || '') + '</span>' +
+          '<a href="' + getTradingViewUrl(s.symbol) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Preview ' + escapeHtml(s.symbol) + ' on TradingView" onclick="event.stopPropagation()">' +
+          getTradingViewIconSvg(11) + ' <span>TV ↗</span>' +
+          '</a>' +
+          '<span class="sec-badge">' + escapeHtml(s.sector || '') + '</span>' +
           '</div>' +
-        '</div>';
+          '</div>';
       }
       dropdown.innerHTML = html;
       dropdown.style.display = 'block';
@@ -1858,7 +1864,7 @@
       sym = (sym || '').trim().toUpperCase();
       if (sym && selectedSymbols.indexOf(sym) === -1) {
         selectedSymbols.push(sym);
-        var match = stockUniverse.find(function(s) { return s.symbol === sym; });
+        var match = stockUniverse.find(function (s) { return s.symbol === sym; });
         var stockName = match ? match.name : '';
         var defEntry = document.getElementById('idea-entry').value.trim();
         var defTarget = document.getElementById('idea-target').value.trim();
@@ -1881,8 +1887,8 @@
     }
 
     function removeStockTag(sym) {
-      selectedSymbols = selectedSymbols.filter(function(s) { return s !== sym; });
-      selectedStocks = selectedStocks.filter(function(s) { return s.symbol !== sym; });
+      selectedSymbols = selectedSymbols.filter(function (s) { return s !== sym; });
+      selectedStocks = selectedStocks.filter(function (s) { return s.symbol !== sym; });
       renderStockTags();
       renderStockPriceRows();
       updateLivePreview();
@@ -1911,39 +1917,39 @@
 
         html += '<div class="stock-level-card" id="stock-card-' + sym + '">' +
           '<div class="stock-level-top">' +
-            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-              '<span class="stock-level-symbol-badge">📈 ' + sym + '</span>' +
-              (name ? '<span style="font-size:11.5px;color:#94a3b8;">' + name + '</span>' : '') +
-              '<a href="' + getTradingViewUrl(st.symbol) + '" target="_blank" rel="noopener noreferrer" class="stock-tv-btn" title="Open ' + sym + ' live chart on TradingView.com">' +
-                getTradingViewIconSvg(13) +
-                '<span>TradingView Chart ↗</span>' +
-              '</a>' +
-            '</div>' +
-            '<button type="button" onclick="removeStockTag(\'' + sym + '\')" class="btn-outline" style="padding:2px 8px;font-size:11px;color:#f43f5e;border-color:rgba(244,63,94,0.3);" title="Remove ' + sym + '">' +
-              '✕ Remove' +
-            '</button>' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<span class="stock-level-symbol-badge">📈 ' + sym + '</span>' +
+          (name ? '<span style="font-size:11.5px;color:#94a3b8;">' + name + '</span>' : '') +
+          '<a href="' + getTradingViewUrl(st.symbol) + '" target="_blank" rel="noopener noreferrer" class="stock-tv-btn" title="Open ' + sym + ' live chart on TradingView.com">' +
+          getTradingViewIconSvg(13) +
+          '<span>TradingView Chart ↗</span>' +
+          '</a>' +
+          '</div>' +
+          '<button type="button" onclick="removeStockTag(\'' + sym + '\')" class="btn-outline" style="padding:2px 8px;font-size:11px;color:#f43f5e;border-color:rgba(244,63,94,0.3);" title="Remove ' + sym + '">' +
+          '✕ Remove' +
+          '</button>' +
           '</div>' +
           '<div class="stock-level-fields">' +
-            '<div>' +
-              '<label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Entry Range</label>' +
-              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;" placeholder="e.g. ₹2,950 - ₹3,050" value="' + ent + '" oninput="updateStockPrice(\'' + sym + '\', \'entry\', this.value)">' +
-            '</div>' +
-            '<div>' +
-              '<label style="font-size:11px;color:#22c55e;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Target Price / %</label>' +
-              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(34,197,94,0.3);" placeholder="e.g. +16% (₹3,450)" value="' + tgt + '" oninput="updateStockPrice(\'' + sym + '\', \'target\', this.value)">' +
-            '</div>' +
-            '<div>' +
-              '<label style="font-size:11px;color:#ef4444;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Stop Loss / %</label>' +
-              '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(239,68,68,0.3);" placeholder="e.g. -4.5% (₹2,820)" value="' + sl + '" oninput="updateStockPrice(\'' + sym + '\', \'stopLoss\', this.value)">' +
-            '</div>' +
+          '<div>' +
+          '<label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Entry Range</label>' +
+          '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;" placeholder="e.g. ₹2,950 - ₹3,050" value="' + ent + '" oninput="updateStockPrice(\'' + sym + '\', \'entry\', this.value)">' +
           '</div>' +
-        '</div>';
+          '<div>' +
+          '<label style="font-size:11px;color:#22c55e;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Target Price / %</label>' +
+          '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(34,197,94,0.3);" placeholder="e.g. +16% (₹3,450)" value="' + tgt + '" oninput="updateStockPrice(\'' + sym + '\', \'target\', this.value)">' +
+          '</div>' +
+          '<div>' +
+          '<label style="font-size:11px;color:#ef4444;display:block;margin-bottom:3px;font-weight:600;">' + sym + ' Stop Loss / %</label>' +
+          '<input type="text" class="form-input" style="font-size:12px;padding:6px 8px;border-color:rgba(239,68,68,0.3);" placeholder="e.g. -4.5% (₹2,820)" value="' + sl + '" oninput="updateStockPrice(\'' + sym + '\', \'stopLoss\', this.value)">' +
+          '</div>' +
+          '</div>' +
+          '</div>';
       }
       list.innerHTML = html;
     }
 
     function updateStockPrice(sym, field, val) {
-      var st = selectedStocks.find(function(s) { return s.symbol === sym; });
+      var st = selectedStocks.find(function (s) { return s.symbol === sym; });
       if (st) {
         st[field] = val;
         updateLivePreview();
@@ -1973,10 +1979,10 @@
         html += '<span class="stock-tag-pill">' +
           '<span>' + escapeHtml(sym) + '</span>' +
           '<a href="' + getTradingViewUrl(sym) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Open ' + escapeHtml(sym) + ' live chart on TradingView" onclick="event.stopPropagation()">' +
-            getTradingViewIconSvg(11) + ' <span>TV ↗</span>' +
+          getTradingViewIconSvg(11) + ' <span>TV ↗</span>' +
           '</a>' +
           '<span class="remove-tag" onclick="removeStockTag(\'' + escapeHtml(sym) + '\')" title="Remove ' + escapeHtml(sym) + '">✕</span>' +
-        '</span>';
+          '</span>';
       }
       container.innerHTML = html;
       container.appendChild(input);
@@ -2013,10 +2019,10 @@
           var imgHtml = '<div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;">📷 Setup Chart (' + attachedImages.length + '):</div>' +
             '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
           for (var k = 0; k < attachedImages.length; k++) {
-            imgHtml += '<div style="position:relative;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);width:' + (attachedImages.length === 1 ? '100%' : '110px') + ';height:' + (attachedImages.length === 1 ? '160px' : '75px') + ';background:#000;cursor:pointer;" onclick="openOwnerLightbox(\'' + escapeHtml(attachedImages[k]) + '\', \'Setup Chart ' + (k+1) + '\')">' +
+            imgHtml += '<div style="position:relative;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);width:' + (attachedImages.length === 1 ? '100%' : '110px') + ';height:' + (attachedImages.length === 1 ? '160px' : '75px') + ';background:#000;cursor:pointer;" onclick="openOwnerLightbox(\'' + escapeHtml(attachedImages[k]) + '\', \'Setup Chart ' + (k + 1) + '\')">' +
               '<img src="' + escapeHtml(attachedImages[k]) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' +
               '<span style="position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.7);color:#fff;font-size:8px;padding:1px 4px;border-radius:2px;">🔍</span>' +
-            '</div>';
+              '</div>';
           }
           imgHtml += '</div>';
           prevImages.innerHTML = imgHtml;
@@ -2038,18 +2044,18 @@
           var stImg = (st && st.image) || (attachedImages && attachedImages[i]) || '';
           html += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;flex-wrap:wrap;gap:6px;">' +
             '<div style="display:flex;align-items:center;gap:6px;">' +
-              '<span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;">' + escapeHtml(st.symbol) + '</span>' +
-              (stImg ? '<button type="button" onclick="openOwnerLightbox(\'' + escapeHtml(stImg) + '\', \'' + escapeHtml(st.symbol) + ' Setup Chart\')" style="cursor:pointer;padding:1px 6px;background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.45);border-radius:4px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;" title="View ' + escapeHtml(st.symbol) + ' chart photo">📷 Photo</button>' : '') +
-              '<a href="' + getTradingViewUrl(st.symbol) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Open ' + escapeHtml(st.symbol) + ' live chart on TradingView" onclick="event.stopPropagation()">' +
-                getTradingViewIconSvg(10) + ' <span>TV ↗</span>' +
-              '</a>' +
-              '<span style="color:#94a3b8;">Entry: ' + escapeHtml(stEntry) + '</span>' +
+            '<span style="background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;">' + escapeHtml(st.symbol) + '</span>' +
+            (stImg ? '<button type="button" onclick="openOwnerLightbox(\'' + escapeHtml(stImg) + '\', \'' + escapeHtml(st.symbol) + ' Setup Chart\')" style="cursor:pointer;padding:1px 6px;background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.45);border-radius:4px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;" title="View ' + escapeHtml(st.symbol) + ' chart photo">📷 Photo</button>' : '') +
+            '<a href="' + getTradingViewUrl(st.symbol) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Open ' + escapeHtml(st.symbol) + ' live chart on TradingView" onclick="event.stopPropagation()">' +
+            getTradingViewIconSvg(10) + ' <span>TV ↗</span>' +
+            '</a>' +
+            '<span style="color:#94a3b8;">Entry: ' + escapeHtml(stEntry) + '</span>' +
             '</div>' +
             '<div style="display:flex;gap:10px;">' +
-              '<span style="color:#22c55e;font-weight:700;">🎯 ' + escapeHtml(stTarget) + '</span>' +
-              '<span style="color:#ef4444;font-weight:700;">🛑 ' + escapeHtml(stSl) + '</span>' +
+            '<span style="color:#22c55e;font-weight:700;">🎯 ' + escapeHtml(stTarget) + '</span>' +
+            '<span style="color:#ef4444;font-weight:700;">🛑 ' + escapeHtml(stSl) + '</span>' +
             '</div>' +
-          '</div>';
+            '</div>';
         }
         html += '</div>';
         stocksEl.innerHTML = html;
@@ -2061,12 +2067,12 @@
     // CRUD: Fetch Ideas
     function fetchIdeas() {
       fetch('/api/owner-ideas?_t=' + Date.now())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           publishedIdeas = (data && data.ideas) ? data.ideas : [];
           renderPublishedIdeas();
         })
-        .catch(function(e) {
+        .catch(function (e) {
           console.error('Failed to fetch ideas:', e);
         });
     }
@@ -2084,7 +2090,7 @@
       for (var i = 0; i < publishedIdeas.length; i++) {
         var idea = publishedIdeas[i];
         var stocksHtml = '';
-        var stks = (idea.stocks && idea.stocks.length > 0) ? idea.stocks : (idea.symbols || []).map(function(s) { return { symbol: s, entry: idea.entry, target: idea.target, stopLoss: idea.stopLoss }; });
+        var stks = (idea.stocks && idea.stocks.length > 0) ? idea.stocks : (idea.symbols || []).map(function (s) { return { symbol: s, entry: idea.entry, target: idea.target, stopLoss: idea.stopLoss }; });
         for (var j = 0; j < stks.length; j++) {
           var st = stks[j];
           var sym = st.symbol;
@@ -2093,11 +2099,11 @@
           stocksHtml += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:6px;">' +
             '<strong style="color:#38bdf8;">' + escapeHtml(sym) + '</strong>' +
             '<a href="' + getTradingViewUrl(sym) + '" target="_blank" rel="noopener noreferrer" class="tag-tv-link" title="Open ' + escapeHtml(sym) + ' live chart on TradingView" onclick="event.stopPropagation()">' +
-              getTradingViewIconSvg(10) + ' <span>TV ↗</span>' +
+            getTradingViewIconSvg(10) + ' <span>TV ↗</span>' +
             '</a>' +
             (ent ? '<span style="color:#94a3b8;">Entry: ' + escapeHtml(ent) + '</span>' : '') +
             (tgt ? '<span style="color:#22c55e;font-weight:700;">Tgt: ' + escapeHtml(tgt) + '</span>' : '') +
-          '</div>';
+            '</div>';
         }
 
         var ideaImgs = (idea.images && Array.isArray(idea.images)) ? idea.images : (idea.image ? [idea.image] : []);
@@ -2105,42 +2111,42 @@
         if (ideaImgs.length > 0) {
           imageBadgeHtml = '<div style="margin-top:8px;display:flex;align-items:center;gap:6px;">' +
             '<span style="font-size:11px;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:2px 8px;border-radius:4px;font-weight:700;display:inline-flex;align-items:center;gap:4px;cursor:pointer;" onclick="openOwnerLightbox(\'' + escapeHtml(ideaImgs[0]) + '\', \'' + escapeHtml(idea.title) + '\')">' +
-              '📷 ' + ideaImgs.length + ' Chart Image' + (ideaImgs.length > 1 ? 's' : '') + ' (Click to View)' +
+            '📷 ' + ideaImgs.length + ' Chart Image' + (ideaImgs.length > 1 ? 's' : '') + ' (Click to View)' +
             '</span>' +
-          '</div>';
+            '</div>';
         }
 
         html += '<div class="idea-item-card">' +
           '<div class="idea-item-header">' +
-            '<div>' +
-              '<div class="idea-item-title">' +
-                '<span>💡</span>' +
-                '<span>' + escapeHtml(idea.title) + '</span>' +
-                '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:' + (idea.active ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)') + ';color:' + (idea.active ? '#22c55e' : '#94a3b8') + ';">' +
-                  (idea.active ? 'Active' : 'Hidden') +
-                '</span>' +
-              '</div>' +
-              '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' +
-                escapeHtml(idea.category || 'Setup') + ' · ' + escapeHtml(idea.timeframe || 'Swing') + ' · Published: ' + escapeHtml(idea.publishedAt || '') +
-              '</div>' +
-            '</div>' +
-            '<div class="idea-item-actions">' +
-              '<button class="action-btn" onclick="toggleActiveIdea(\'' + escapeHtml(idea.id) + '\', ' + (!idea.active) + ')" title="Show or hide in Screener">' +
-                (idea.active ? 'Hide' : 'Show') +
-              '</button>' +
-              '<button class="action-btn" onclick="editIdea(\'' + escapeHtml(idea.id) + '\')" title="Edit this idea">' +
-                'Edit' +
-              '</button>' +
-              '<button class="action-btn delete" onclick="deleteIdea(\'' + escapeHtml(idea.id) + '\')" title="Delete idea">' +
-                'Delete' +
-              '</button>' +
-            '</div>' +
+          '<div>' +
+          '<div class="idea-item-title">' +
+          '<span>💡</span>' +
+          '<span>' + escapeHtml(idea.title) + '</span>' +
+          '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:' + (idea.active ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)') + ';color:' + (idea.active ? '#22c55e' : '#94a3b8') + ';">' +
+          (idea.active ? 'Active' : 'Hidden') +
+          '</span>' +
+          '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' +
+          escapeHtml(idea.category || 'Setup') + ' · ' + escapeHtml(idea.timeframe || 'Swing') + ' · Published: ' + escapeHtml(idea.publishedAt || '') +
+          '</div>' +
+          '</div>' +
+          '<div class="idea-item-actions">' +
+          '<button class="action-btn" onclick="toggleActiveIdea(\'' + escapeHtml(idea.id) + '\', ' + (!idea.active) + ')" title="Show or hide in Screener">' +
+          (idea.active ? 'Hide' : 'Show') +
+          '</button>' +
+          '<button class="action-btn" onclick="editIdea(\'' + escapeHtml(idea.id) + '\')" title="Edit this idea">' +
+          'Edit' +
+          '</button>' +
+          '<button class="action-btn delete" onclick="deleteIdea(\'' + escapeHtml(idea.id) + '\')" title="Delete idea">' +
+          'Delete' +
+          '</button>' +
+          '</div>' +
           '</div>' +
           '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">' +
-            stocksHtml +
+          stocksHtml +
           '</div>' +
           imageBadgeHtml +
-        '</div>';
+          '</div>';
       }
       listEl.innerHTML = html;
     }
@@ -2170,7 +2176,7 @@
         category: category,
         timeframe: timeframe,
         symbols: selectedSymbols,
-        stocks: selectedStocks.map(function(s, idx) {
+        stocks: selectedStocks.map(function (s, idx) {
           return {
             symbol: s.symbol,
             entry: s.entry || entry || 'CMP',
@@ -2193,24 +2199,24 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': ownerPin || '1234' },
         body: JSON.stringify(payload)
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.success) {
-          showToast(id ? 'Idea Updated Successfully!' : 'Idea Published to Screener!'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
-          resetForm();
-          fetchIdeas();
-        } else {
-          alert('Error: ' + (data.error || 'Failed to save idea'));
-        }
-      })
-      .catch(function(err) {
-        alert('Network error: ' + err.message);
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            showToast(id ? 'Idea Updated Successfully!' : 'Idea Published to Screener!'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch (_) { }
+            resetForm();
+            fetchIdeas();
+          } else {
+            alert('Error: ' + (data.error || 'Failed to save idea'));
+          }
+        })
+        .catch(function (err) {
+          alert('Network error: ' + err.message);
+        });
       return false;
     }
 
     function editIdea(id) {
-      var idea = publishedIdeas.find(function(i) { return i.id === id; });
+      var idea = publishedIdeas.find(function (i) { return i.id === id; });
       if (!idea) return;
 
       document.getElementById('idea-id').value = idea.id;
@@ -2224,8 +2230,8 @@
       document.getElementById('idea-active').checked = idea.active !== false;
 
       if (idea.stocks && Array.isArray(idea.stocks) && idea.stocks.length > 0) {
-        selectedStocks = idea.stocks.map(function(s, idx) {
-          var match = stockUniverse.find(function(u) { return u.symbol === s.symbol; });
+        selectedStocks = idea.stocks.map(function (s, idx) {
+          var match = stockUniverse.find(function (u) { return u.symbol === s.symbol; });
           return {
             symbol: s.symbol,
             name: match ? match.name : '',
@@ -2236,8 +2242,8 @@
           };
         });
       } else {
-        selectedStocks = (idea.symbols || []).map(function(sym) {
-          var match = stockUniverse.find(function(u) { return u.symbol === sym; });
+        selectedStocks = (idea.symbols || []).map(function (sym) {
+          var match = stockUniverse.find(function (u) { return u.symbol === sym; });
           return {
             symbol: sym,
             name: match ? match.name : '',
@@ -2247,7 +2253,7 @@
           };
         });
       }
-      selectedSymbols = selectedStocks.map(function(s) { return s.symbol; });
+      selectedSymbols = selectedStocks.map(function (s) { return s.symbol; });
       attachedImages = (idea.images && Array.isArray(idea.images) && idea.images.length > 0)
         ? idea.images.slice()
         : (idea.image ? [idea.image] : []);
@@ -2287,16 +2293,16 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': ownerPin || '1234' },
         body: JSON.stringify({ pin: ownerPin || '1234', id: id, active: newActive })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.success) {
-          showToast(newActive ? 'Idea Activated in Screener' : 'Idea Hidden from Screener'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
-          fetchIdeas();
-        }
-      })
-      .catch(function() {
-        alert('Failed to update status');
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            showToast(newActive ? 'Idea Activated in Screener' : 'Idea Hidden from Screener'); try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch (_) { }
+            fetchIdeas();
+          }
+        })
+        .catch(function () {
+          alert('Failed to update status');
+        });
     }
 
     function deleteIdea(id) {
@@ -2305,7 +2311,7 @@
       var deleteUrl = '/api/owner-ideas?id=' + encodeURIComponent(id) + '&pin=' + encodeURIComponent(activePin);
 
       // Optimistically remove from view
-      publishedIdeas = publishedIdeas.filter(function(i) { return i.id !== id; });
+      publishedIdeas = publishedIdeas.filter(function (i) { return i.id !== id; });
       renderPublishedIdeas();
 
       fetch(deleteUrl, {
@@ -2316,26 +2322,26 @@
         },
         body: JSON.stringify({ pin: activePin, id: id })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.success) {
-          showToast('Idea Deleted');
-          try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch(_) {}
-          if (Array.isArray(data.ideas)) {
-            publishedIdeas = data.ideas;
-            renderPublishedIdeas();
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            showToast('Idea Deleted');
+            try { localStorage.setItem('mc_owner_ideas_sync', Date.now().toString()); } catch (_) { }
+            if (Array.isArray(data.ideas)) {
+              publishedIdeas = data.ideas;
+              renderPublishedIdeas();
+            } else {
+              fetchIdeas();
+            }
           } else {
+            alert('Failed to delete idea: ' + (data.error || 'Unauthorized'));
             fetchIdeas();
           }
-        } else {
-          alert('Failed to delete idea: ' + (data.error || 'Unauthorized'));
+        })
+        .catch(function (err) {
+          console.warn('Delete request notice:', err);
           fetchIdeas();
-        }
-      })
-      .catch(function(err) {
-        console.warn('Delete request notice:', err);
-        fetchIdeas();
-      });
+        });
     }
 
     function showToast(msg) {
@@ -2344,7 +2350,7 @@
       if (toast && toastMsg) {
         toastMsg.textContent = msg;
         toast.style.display = 'flex';
-        setTimeout(function() {
+        setTimeout(function () {
           toast.style.display = 'none';
         }, 3000);
       }
@@ -2360,7 +2366,7 @@
       sessionStorage.setItem('mc_owner_active_tab', tabName);
 
       var tabs = ['ideas', 'coupons', 'gateway', 'subscribers'];
-      tabs.forEach(function(t) {
+      tabs.forEach(function (t) {
         var btn = document.getElementById('btn-tab-' + t);
         var panel = document.getElementById('tab-' + t);
         if (btn) {
@@ -2381,14 +2387,14 @@
     // --- TAB 2: COUPONS MANAGER ---
     function fetchCoupons() {
       fetch('/api/owner/coupons?_t=' + Date.now())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           if (data && data.success && Array.isArray(data.coupons)) {
             allCoupons = data.coupons;
             renderCouponsTable();
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.warn('Coupons fetch notice:', err);
         });
     }
@@ -2415,14 +2421,14 @@
           '<td><span style="color:#94a3b8;">' + escapeHtml(appliesText) + '</span></td>' +
           '<td><span class="badge-status ' + (c.active ? 'active' : 'disabled') + '">' + (c.active ? 'Active' : 'Disabled') + '</span></td>' +
           '<td style="text-align:right;white-space:nowrap;">' +
-            '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;margin-right:6px;" onclick="toggleCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
-              (c.active ? 'Disable' : 'Activate') +
-            '</button>' +
-            '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deleteCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
-              '✕ Delete' +
-            '</button>' +
+          '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;margin-right:6px;" onclick="toggleCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
+          (c.active ? 'Disable' : 'Activate') +
+          '</button>' +
+          '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deleteCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
+          '✕ Delete' +
+          '</button>' +
           '</td>' +
-        '</tr>';
+          '</tr>';
       }
       tbody.innerHTML = html;
     }
@@ -2443,20 +2449,20 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, code: code, type: type, amount: amount, appliesTo: appliesTo })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allCoupons = data.coupons || [];
-          renderCouponsTable();
-          document.getElementById('coupon-form').reset();
-          showToast('Coupon ' + code + ' Added Successfully!');
-        } else {
-          alert('Error: ' + (data.error || 'Failed to add coupon'));
-        }
-      })
-      .catch(function(err) {
-        alert('Network error: ' + err.message);
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allCoupons = data.coupons || [];
+            renderCouponsTable();
+            document.getElementById('coupon-form').reset();
+            showToast('Coupon ' + code + ' Added Successfully!');
+          } else {
+            alert('Error: ' + (data.error || 'Failed to add coupon'));
+          }
+        })
+        .catch(function (err) {
+          alert('Network error: ' + err.message);
+        });
     }
 
     function toggleCoupon(id, code) {
@@ -2466,14 +2472,14 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'toggle', id: id, code: code })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allCoupons = data.coupons || [];
-          renderCouponsTable();
-          showToast('Coupon status updated');
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allCoupons = data.coupons || [];
+            renderCouponsTable();
+            showToast('Coupon status updated');
+          }
+        });
     }
 
     function deleteCoupon(id, code) {
@@ -2484,21 +2490,21 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'delete', id: id, code: code })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allCoupons = data.coupons || [];
-          renderCouponsTable();
-          showToast('Coupon deleted');
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allCoupons = data.coupons || [];
+            renderCouponsTable();
+            showToast('Coupon deleted');
+          }
+        });
     }
 
     // --- TAB 3: GATEWAY & PRIVACY SETTINGS ---
     function fetchGatewaySettings() {
       fetch('/api/owner/gateway-settings?_t=' + Date.now())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           if (data && data.success && data.settings) {
             var s = data.settings;
             if (document.getElementById('gw-price-tip')) document.getElementById('gw-price-tip').value = s.tipPrice || 199;
@@ -2510,7 +2516,7 @@
             if (document.getElementById('gw-hide-vpa')) document.getElementById('gw-hide-vpa').checked = s.hideVpa !== false;
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.warn('Gateway settings fetch notice:', err);
         });
     }
@@ -2534,24 +2540,24 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify(payload)
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          showToast('Payment & Gateway Settings Saved!');
-        } else {
-          alert('Error: ' + (data.error || 'Failed to save settings'));
-        }
-      })
-      .catch(function(err) {
-        alert('Network error: ' + err.message);
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            showToast('Payment & Gateway Settings Saved!');
+          } else {
+            alert('Error: ' + (data.error || 'Failed to save settings'));
+          }
+        })
+        .catch(function (err) {
+          alert('Network error: ' + err.message);
+        });
     }
 
     // --- TAB 4: MASTER FALLBACK UNLOCK CODE & VIP PASSES ---
     function fetchMasterCode() {
       fetch('/api/owner/master-code?_t=' + Date.now())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           if (data && data.success && data.code) {
             document.getElementById('master-code-display').textContent = data.code;
             document.getElementById('master-code-input').value = data.code;
@@ -2571,13 +2577,13 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, code: custom })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          document.getElementById('master-code-display').textContent = data.code;
-          showToast('Master Code Updated to: ' + data.code);
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            document.getElementById('master-code-display').textContent = data.code;
+            showToast('Master Code Updated to: ' + data.code);
+          }
+        });
     }
 
     function generateRandomMasterCode() {
@@ -2589,19 +2595,19 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, code: rnd })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          document.getElementById('master-code-display').textContent = data.code;
-          showToast('New Master Code Generated: ' + data.code);
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            document.getElementById('master-code-display').textContent = data.code;
+            showToast('New Master Code Generated: ' + data.code);
+          }
+        });
     }
 
     function fetchPurchases() {
       fetch('/api/owner/purchases?_t=' + Date.now())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
           if (data && data.success && Array.isArray(data.purchases)) {
             allPurchases = data.purchases;
             renderPurchasesTable(allPurchases);
@@ -2636,13 +2642,13 @@
           '<td><span style="font-size:11px;color:' + (p.deviceLock && p.deviceLock.includes('Locked') ? '#22c55e' : '#94a3b8') + ';">' + escapeHtml(p.deviceLock || 'Unbound') + '</span></td>' +
           '<td><span class="badge-status ' + timeLeftClass + '">' + escapeHtml(timeLeftText) + '</span></td>' +
           '<td style="text-align:right;white-space:nowrap;">' +
-            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
-            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
-              (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
-            '</button>' +
-            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>' +
+          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
+          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
+          (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
+          '</button>' +
+          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>' +
           '</td>' +
-        '</tr>';
+          '</tr>';
       }
       tbody.innerHTML = html;
     }
@@ -2662,17 +2668,17 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'issue', mobile: mobile, secretPin: secretPin, planTier: planTier })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allPurchases = data.purchases || [];
-          renderPurchasesTable(allPurchases);
-          document.getElementById('issue-pass-form').reset();
-          showToast('VIP Pass Issued for +91 ' + mobile);
-        } else {
-          alert('Error: ' + (data.error || 'Failed to issue pass'));
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            renderPurchasesTable(allPurchases);
+            document.getElementById('issue-pass-form').reset();
+            showToast('VIP Pass Issued for +91 ' + mobile);
+          } else {
+            alert('Error: ' + (data.error || 'Failed to issue pass'));
+          }
+        });
     }
 
     function resetDeviceLock(id, mobile) {
@@ -2682,14 +2688,14 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'reset_device', id: id, mobile: mobile })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allPurchases = data.purchases || [];
-          renderPurchasesTable(allPurchases);
-          showToast('Device lock reset for +91 ' + mobile);
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            renderPurchasesTable(allPurchases);
+            showToast('Device lock reset for +91 ' + mobile);
+          }
+        });
     }
 
     function revokePass(id, mobile) {
@@ -2699,14 +2705,14 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'revoke', id: id, mobile: mobile })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allPurchases = data.purchases || [];
-          renderPurchasesTable(allPurchases);
-          showToast('Status updated for +91 ' + mobile);
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            renderPurchasesTable(allPurchases);
+            showToast('Status updated for +91 ' + mobile);
+          }
+        });
     }
 
     function deletePass(id, mobile) {
@@ -2717,14 +2723,14 @@
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
         body: JSON.stringify({ pin: activePin, action: 'delete', id: id, mobile: mobile })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data && data.success) {
-          allPurchases = data.purchases || [];
-          renderPurchasesTable(allPurchases);
-          showToast('Pass deleted');
-        }
-      });
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            renderPurchasesTable(allPurchases);
+            showToast('Pass deleted');
+          }
+        });
     }
 
     function handlePurchasesSearch(query) {
@@ -2733,11 +2739,11 @@
         renderPurchasesTable(allPurchases);
         return;
       }
-      var filtered = allPurchases.filter(function(p) {
+      var filtered = allPurchases.filter(function (p) {
         return (p.mobile && p.mobile.includes(q)) ||
-               (p.secretPin && p.secretPin.toLowerCase().includes(q)) ||
-               (p.planTier && p.planTier.toLowerCase().includes(q)) ||
-               (p.deviceLock && p.deviceLock.toLowerCase().includes(q));
+          (p.secretPin && p.secretPin.toLowerCase().includes(q)) ||
+          (p.planTier && p.planTier.toLowerCase().includes(q)) ||
+          (p.deviceLock && p.deviceLock.toLowerCase().includes(q));
       });
       renderPurchasesTable(filtered);
     }
@@ -2762,7 +2768,7 @@
           p.status || ''
         ]);
       }
-      var csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(function(e) { return e.join(','); }).join('\n');
+      var csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(function (e) { return e.join(','); }).join('\n');
       var encodedUri = encodeURI(csvContent);
       var link = document.createElement('a');
       link.setAttribute('href', encodedUri);
@@ -2774,7 +2780,7 @@
 
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str).replace(/[&<>"']/g, function(m) {
+      return String(str).replace(/[&<>"']/g, function (m) {
         switch (m) {
           case '&': return '&amp;';
           case '<': return '&lt;';
@@ -2787,4 +2793,5 @@
     }
   </script>
 </body>
+
 </html>

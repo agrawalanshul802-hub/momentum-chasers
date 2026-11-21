@@ -741,6 +741,131 @@
         </div>
     </div>
 
+    <!-- Idea VIP Paywall & Autopayment Detection Modal -->
+    <div class="modal-overlay-backdrop" id="idea-unlock-modal" role="dialog" aria-modal="true" style="display:none;z-index:9999;">
+        <div class="modal-content-window" style="max-width:480px;background:#0b101b;border:1px solid rgba(245,158,11,0.35);box-shadow:0 12px 48px rgba(0,0,0,0.85);border-radius:12px;padding:22px;">
+            <div class="modal-header-row" style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:22px;">🔒</span>
+                    <div>
+                        <h3 id="idea-modal-title" style="font-size:16px;font-weight:800;color:#ffffff;margin:0;">
+                            Unlock Research Setup
+                        </h3>
+                        <div id="idea-modal-subtitle" style="font-size:11.5px;color:var(--mu);margin-top:2px;">
+                            Instant 1-Click UPI Payment &amp; Auto-Detection
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="modal-close-trigger" onclick="closeIdeaUnlockModal()" aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Pricing Banner -->
+            <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                <div>
+                    <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Amount Payable</div>
+                    <div id="idea-modal-amount" style="font-size:24px;font-weight:900;color:#f59e0b;">₹199</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:10px;background:rgba(34,197,94,0.15);color:#22c55e;padding:2px 8px;border-radius:12px;font-weight:700;display:inline-block;">✓ Instant Unblur</div>
+                    <div id="idea-modal-brand" style="font-size:11px;color:#cbd5e1;margin-top:3px;">Momentum Chasers Gateway</div>
+                </div>
+            </div>
+
+            <!-- Dynamic UPI QR Code Display -->
+            <div style="text-align:center;margin-bottom:14px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
+                <div style="font-size:11.5px;font-weight:700;color:#fcd34d;margin-bottom:8px;">
+                    📱 Scan &amp; Pay with Any UPI App
+                </div>
+                <div style="display:inline-block;padding:8px;background:#ffffff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.5);">
+                    <img id="idea-modal-qr-img" src="" alt="UPI QR Code" style="width:170px;height:170px;display:block;">
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;">
+                    <span style="font-size:11px;color:#94a3b8;">UPI ID:</span>
+                    <code id="idea-modal-vpa" style="font-size:11.5px;color:#38bdf8;background:rgba(15,23,42,0.8);padding:2px 6px;border-radius:4px;user-select:all;">8767823878@slc</code>
+                    <button type="button" id="idea-modal-copy-vpa" onclick="copyIdeaModalVpa()" style="background:none;border:none;color:#f59e0b;font-size:11px;cursor:pointer;text-decoration:underline;padding:2px 4px;">Copy</button>
+                </div>
+            </div>
+
+            <!-- 1-Click UPI Mobile Intent Buttons -->
+            <div style="margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">
+                    Or Open Directly in Installed UPI App:
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;">
+                    <a id="idea-intent-gpay" href="#" target="_blank" class="upi-app-btn" style="background:#1e293b;border:1px solid rgba(255,255,255,0.12);color:#ffffff;text-decoration:none;border-radius:6px;padding:8px 4px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        <span>🔵 GPay</span>
+                    </a>
+                    <a id="idea-intent-phonepe" href="#" target="_blank" class="upi-app-btn" style="background:#1e293b;border:1px solid rgba(255,255,255,0.12);color:#ffffff;text-decoration:none;border-radius:6px;padding:8px 4px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        <span>🟣 PhonePe</span>
+                    </a>
+                    <a id="idea-intent-paytm" href="#" target="_blank" class="upi-app-btn" style="background:#1e293b;border:1px solid rgba(255,255,255,0.12);color:#ffffff;text-decoration:none;border-radius:6px;padding:8px 4px;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;">
+                        <span>🔷 Paytm / Any</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Autopayment Detection Radar Bar -->
+            <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:10px 12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+                <span class="autopay-radar-dot"></span>
+                <div style="flex:1;">
+                    <div style="font-size:11.5px;font-weight:700;color:#4fd1a1;">
+                        Live Autopayment Radar Active
+                    </div>
+                    <div id="idea-radar-status" style="font-size:11px;color:#94a3b8;">
+                        Listening for bank confirmation... Checking automatically.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instant Auto-Verify / Manual UTR Input -->
+            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;margin-bottom:10px;">
+                <div style="display:flex;gap:6px;">
+                    <input type="text" id="idea-utr-input" placeholder="Paste 12-digit UPI Ref / UTR (Optional)" style="flex:1;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:8px 10px;color:#fff;font-size:12px;font-weight:600;outline:none;">
+                    <button type="button" id="btn-verify-utr" onclick="handleManualUtrVerification()" style="background:#22c55e;color:#070b17;font-weight:800;border:none;border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer;white-space:nowrap;">
+                        Verify &amp; Unlock
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instant Confirm Button -->
+            <button type="button" id="btn-autopay-confirm" onclick="triggerAutoVerifyUnlock()" style="width:100%;background:linear-gradient(135deg, #f59e0b, #d97706);color:#070b17;border:none;border-radius:8px;padding:12px;font-size:13.5px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(245,158,11,0.3);margin-top:4px;">
+                <span>⚡ I Have Paid &bull; Auto-Detect &amp; Unlock Now</span>
+            </button>
+
+            <!-- Bottom Code link -->
+            <div style="text-align:center;margin-top:12px;">
+                <button type="button" onclick="switchToCodeUnlockModal()" style="background:none;border:none;color:#94a3b8;font-size:11.5px;cursor:pointer;text-decoration:underline;">
+                    Have an Owner Master Passcode or Promo Coupon?
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passcode / Coupon Modal -->
+    <div class="modal-overlay-backdrop" id="idea-code-modal" role="dialog" aria-modal="true" style="display:none;z-index:9999;">
+        <div class="modal-content-window" style="max-width:400px;background:#0b101b;border:1px solid rgba(255,255,255,0.15);box-shadow:0 12px 48px rgba(0,0,0,0.85);border-radius:12px;padding:22px;">
+            <div class="modal-header-row" style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:20px;">🔑</span>
+                    <h3 style="font-size:16px;font-weight:800;color:#ffffff;margin:0;">
+                        Enter Passcode or Coupon
+                    </h3>
+                </div>
+                <button type="button" class="modal-close-trigger" onclick="closeIdeaCodeModal()" aria-label="Close">&times;</button>
+            </div>
+            <p style="font-size:12px;color:#94a3b8;line-height:1.4;margin:0 0 14px 0;">
+                Enter today's Owner Master Fallback Code or an active discount coupon to unlock immediately.
+            </p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <input type="text" id="idea-code-input" placeholder="e.g. MC-PASS-8842 or DIWALI50" style="text-transform:uppercase;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:10px 12px;color:#ffffff;font-size:13.5px;font-weight:700;letter-spacing:1px;outline:none;">
+                <div id="idea-code-error" style="color:#ef4444;font-size:11.5px;display:none;"></div>
+                <button type="button" onclick="handleCodeUnlockSubmit()" style="background:#f59e0b;color:#070b17;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;">
+                    Apply &amp; Unlock Setup
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Shelf -->
     <div class="toast-notification-shelf" id="toast-shelf" aria-live="polite"></div>
 

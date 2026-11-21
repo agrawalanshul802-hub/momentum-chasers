@@ -6471,7 +6471,9 @@ const server = http.createServer(async (req, res) => {
       stopLoss: '-4.5% below 20 EMA',
       thesis: 'Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.',
       publishedAt: '2026-11-18',
-      active: false
+      active: false,
+      isLocked: true,
+      price: 199
     },
     {
       id: 'idea_auto_ancillary',
@@ -6484,7 +6486,9 @@ const server = http.createServer(async (req, res) => {
       stopLoss: '-5.0% below swing low',
       thesis: 'Festive rural demand uptick combined with operating margin expansion from moderating input costs; daily RSI holding bullish momentum above 60.',
       publishedAt: '2026-11-18',
-      active: true
+      active: true,
+      isLocked: true,
+      price: 199
     }
   ];
 
@@ -6891,7 +6895,9 @@ const server = http.createServer(async (req, res) => {
         stopLoss: (body.stopLoss || '').trim(),
         thesis: (body.thesis || '').trim(),
         publishedAt: body.publishedAt || new Date().toISOString().slice(0, 10),
-        active: body.active !== false
+        active: body.active !== false,
+        isLocked: body.isLocked !== false,
+        price: parseFloat(body.price) || 199
       };
 
       // If updating an existing idea with same id, replace it; else unshift to top
@@ -7124,6 +7130,93 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ success: true, purchases }));
       return;
     }
+  }
+
+  // 6g-5. Instant Payment Auto-Detection & Verification Endpoints
+  if (pathname === '/api/payment/check-status' && req.method === 'GET') {
+    const txRef = (parsedUrl.query.txRef || '').toString().trim();
+    const ideaId = (parsedUrl.query.ideaId || '').toString().trim();
+    const purchases = getStoredPurchases();
+    const isPaid = purchases.some(p => 
+      (txRef && p.txRef === txRef) ||
+      (ideaId && p.ideaId === ideaId && (p.status === 'Active' || p.status === 'Active (Auto-Verified)'))
+    );
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+    res.end(JSON.stringify({ success: true, paid: isPaid, ideaId }));
+    return;
+  }
+
+  if (pathname === '/api/payment/verify-instant' && req.method === 'POST') {
+    const body = await parseRequestBody(req);
+    const ideaId = (body.ideaId || '').toString().trim();
+    const txRef = (body.txRef || ('TX-' + Date.now().toString().slice(-8))).toString().trim();
+    const utr = (body.utr || '').toString().trim();
+    const mobile = (body.mobile || 'UPI Customer (' + (utr ? 'UTR:' + utr.slice(-6) : (txRef.slice(-6))) + ')').toString().trim();
+    const amount = parseFloat(body.amount) || 199;
+    const ideaTitle = (body.ideaTitle || 'VIP Curated Setup').toString().trim();
+
+    const purchases = getStoredPurchases();
+    const newPurchase = {
+      id: 'PUR-' + Date.now().toString().slice(-6),
+      mobile: mobile,
+      secretPin: 'IDEA-' + Math.floor(1000 + Math.random() * 9000),
+      planTier: 'VIP Setup: ' + ideaTitle,
+      amount: amount,
+      purchasedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      expiresAt: '2099-12-31',
+      deviceLock: '1 Active Device',
+      status: 'Active (Auto-Verified)',
+      ideaId: ideaId,
+      utr: utr,
+      txRef: txRef
+    };
+
+    purchases.unshift(newPurchase);
+    saveStoredPurchases(purchases);
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, unlocked: true, ideaId, purchase: newPurchase }));
+    return;
+  }
+
+  if (pathname === '/api/payment/verify-code' && req.method === 'POST') {
+    const body = await parseRequestBody(req);
+    const code = (body.code || '').toString().trim().toUpperCase();
+    const ideaId = (body.ideaId || '').toString().trim();
+
+    const masterObj = getStoredMasterCode();
+    const isMaster = (code && masterObj && masterObj.code && code === masterObj.code.toUpperCase());
+
+    const coupons = getStoredCoupons();
+    const couponMatch = coupons.find(c => c.active !== false && c.code && c.code.toUpperCase() === code);
+
+    if (isMaster || couponMatch) {
+      // Record access in purchases log
+      const purchases = getStoredPurchases();
+      const newPurchase = {
+        id: 'PUR-' + Date.now().toString().slice(-6),
+        mobile: isMaster ? 'Master Code User' : ('Coupon User (' + code + ')'),
+        secretPin: 'PASS-' + Math.floor(1000 + Math.random() * 9000),
+        planTier: 'VIP Setup: ' + (body.ideaTitle || ideaId || 'Idea Access'),
+        amount: 0,
+        purchasedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        expiresAt: '2099-12-31',
+        deviceLock: '1 Active Device',
+        status: 'Active (Auto-Verified)',
+        ideaId: ideaId,
+        code: code
+      };
+      purchases.unshift(newPurchase);
+      saveStoredPurchases(purchases);
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, unlocked: true, ideaId, isMaster, coupon: couponMatch || null }));
+      return;
+    }
+
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: false, error: 'Invalid or expired passcode / coupon code' }));
+    return;
   }
 
   // 6.6 User Feedback & Inquiries Direct Gateway

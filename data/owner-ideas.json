@@ -15,7 +15,9 @@
     "stopLoss": "-4.5% below 20 EMA",
     "thesis": "Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.",
     "publishedAt": "2026-11-18",
-    "active": false
+    "active": false,
+    "isLocked": true,
+    "price": 199
   },
   {
     "id": "idea_auto_ancillary",
@@ -33,6 +35,8 @@
     "stopLoss": "-5.0% below swing low",
     "thesis": "Festive rural demand uptick combined with operating margin expansion from moderating input costs; daily RSI holding bullish momentum above 60.",
     "publishedAt": "2026-11-18",
-    "active": true
+    "active": true,
+    "isLocked": true,
+    "price": 199
   }
 ]
