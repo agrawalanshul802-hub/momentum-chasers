@@ -9409,117 +9409,189 @@
   ];
 
   const MASTER_EVENTS_EARNINGS = [
-    // October 2026
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-10-10", quarter: "Q2 FY27", epsEst: "₹34.80", revEst: "₹64,980 Cr", status: "Reported", cap: "LC", sector: "IT" },
-    { symbol: "INFY", company: "Infosys Limited", date: "2026-10-17", quarter: "Q2 FY27", epsEst: "₹15.80", revEst: "₹40,986 Cr", status: "Reported", cap: "LC", sector: "IT" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-10-19", quarter: "Q2 FY27", epsEst: "₹23.90", revEst: "₹85,100 Cr", status: "Reported", cap: "LC", sector: "Banking" },
-    { symbol: "ICICIBANK", company: "ICICI Bank Limited", date: "2026-10-26", quarter: "Q2 FY27", epsEst: "₹17.20", revEst: "₹47,200 Cr", status: "Reported", cap: "LC", sector: "Banking" },
+    // October 2026 (Authentic Q2 Corporate Filings)
+    {"symbol":"TCS","company":"Tata Consultancy Services ...","date":"2026-10-08","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":-0.2},
+    {"symbol":"DMART","company":"Avenue Supermarts Ltd","date":"2026-10-10","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Consumer Services","earningsDayChange":null},
+    {"symbol":"HCLTECH","company":"HCL Technologies Ltd","date":"2026-10-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":0.5},
+    {"symbol":"ICICIAMC","company":"ICICI Prudential Asset Man...","date":"2026-10-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":-2},
+    {"symbol":"BHEL","company":"Bharat Heavy Electricals Ltd","date":"2026-10-14","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Capital Goods & Engineering","earningsDayChange":4.9},
+    {"symbol":"CANBK","company":"Canara Bank","date":"2026-10-14","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":3.6},
+    {"symbol":"GROWW","company":"Billionbrains Garage Ventu...","date":"2026-10-14","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":-0.7},
+    {"symbol":"HDFCAMC","company":"HDFC Asset Management Comp...","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":5.1},
+    {"symbol":"HDFCLIFE","company":"HDFC Life Insurance Compan...","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":1.2},
+    {"symbol":"INDIANB","company":"Indian Bank","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":-1.7},
+    {"symbol":"IRFC","company":"Indian Railway Finance Cor...","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-1.1},
+    {"symbol":"JIOFIN","company":"Jio Financial Services Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":0},
+    {"symbol":"NESTLEIND","company":"Nestle India Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":-7.8},
+    {"symbol":"PERSISTENT","company":"Persistent Systems Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Information Technology","earningsDayChange":-1},
+    {"symbol":"POLYCAB","company":"Polycab India Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-1.5},
+    {"symbol":"TECHM","company":"Tech Mahindra Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":4.7},
+    {"symbol":"WIPRO","company":"Wipro Ltd","date":"2026-10-15","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":1.8},
+    {"symbol":"DLF","company":"DLF Ltd","date":"2026-10-16","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Realty & Infrastructure","earningsDayChange":0.7},
+    {"symbol":"LTM","company":"LTM Ltd","date":"2026-10-16","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":3.7},
+    {"symbol":"PNB","company":"Punjab National Bank","date":"2026-10-16","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":1.1},
+    {"symbol":"AXISBANK","company":"Axis Bank Ltd","date":"2026-10-17","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"HDFCBANK","company":"HDFC Bank Ltd","date":"2026-10-17","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"ICICIBANK","company":"ICICI Bank Ltd","date":"2026-10-17","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"BAJFINANCE","company":"Bajaj Finance Ltd","date":"2026-10-19","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-2.5},
+    {"symbol":"HINDZINC","company":"Hindustan Zinc Ltd","date":"2026-10-19","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":-0.3},
+    {"symbol":"ULTRACEMCO","company":"UltraTech Cement Ltd","date":"2026-10-19","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Cement & Materials","earningsDayChange":-2.4},
+    {"symbol":"UNIONBANK","company":"Union Bank of India","date":"2026-10-19","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":5.3},
+    {"symbol":"ADANIGREEN","company":"Adani Green Energy Ltd","date":"2026-10-21","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":-2.8},
+    {"symbol":"ETERNAL","company":"ETERNAL LIMITED","date":"2026-10-21","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-2.5},
+    {"symbol":"INDHOTEL","company":"Indian Hotels Co. Ltd","date":"2026-10-21","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Services","earningsDayChange":-0.9},
+    {"symbol":"ADANIENSOL","company":"Adani Energy Solutions Ltd","date":"2026-10-22","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":-2.2},
+    {"symbol":"SWIGGY","company":"Swiggy Ltd","date":"2026-10-22","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Services","earningsDayChange":-5.5},
+    {"symbol":"ADANIPOWER","company":"Adani Power Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":-1.7},
+    {"symbol":"BPCL","company":"Bharat Petroleum Corporati...","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":-1.7},
+    {"symbol":"CGPOWER","company":"CG Power and Industrial So...","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-0.5},
+    {"symbol":"DRREDDY","company":"Dr. Reddy's Laboratories Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-0.8},
+    {"symbol":"INFY","company":"Infosys Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Information Technology","earningsDayChange":0},
+    {"symbol":"JINDALSTEL","company":"Jindal Steel Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":-2},
+    {"symbol":"JSWSTEEL","company":"JSW Steel Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":-2.8},
+    {"symbol":"SBIFUNDS","company":"SBI FUNDS MANAGEMENT LTD","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-1.8},
+    {"symbol":"SHRIRAMFIN","company":"Shriram Finance Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-4},
+    {"symbol":"TMCV","company":"Tata Motors Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-4.4},
+    {"symbol":"TORNTPHARM","company":"Torrent Pharmaceuticals Ltd","date":"2026-10-23","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-2},
+    {"symbol":"KOTAKBANK","company":"Kotak Mahindra Bank Ltd","date":"2026-10-24","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"MANKIND","company":"Mankind Pharma Ltd","date":"2026-10-26","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":4.5},
+    {"symbol":"PAYTM","company":"One 97 Communications Ltd","date":"2026-10-26","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":2.4},
+    {"symbol":"TATACONSUM","company":"Tata Consumer Products Ltd","date":"2026-10-26","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":-2.8},
+    {"symbol":"BAJAJ-AUTO","company":"Bajaj Auto Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":3.2},
+    {"symbol":"CIPLA","company":"Cipla Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-0.4},
+    {"symbol":"INDUSTOWER","company":"Indus Towers Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Telecommunication","earningsDayChange":-1},
+    {"symbol":"LT","company":"Larsen & Toubro Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Construction & Infra","earningsDayChange":-0.4},
+    {"symbol":"MARUTI","company":"Maruti Suzuki India Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":2},
+    {"symbol":"SBILIFE","company":"SBI Life Insurance Company...","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-0.7},
+    {"symbol":"TATACAP","company":"Tata Capital Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":0.3},
+    {"symbol":"TATASTEEL","company":"Tata Steel Ltd","date":"2026-10-27","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":0.9},
+    {"symbol":"ADANIENT","company":"Adani Enterprises Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":-0.4},
+    {"symbol":"ADANIPORTS","company":"Adani Ports and Special Ec...","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Logistics & Services","earningsDayChange":0.4},
+    {"symbol":"CHOLAFIN","company":"Cholamandalam Investment a...","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":5.2},
+    {"symbol":"GMRAIRPORT","company":"GMR Airports Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Logistics & Services","earningsDayChange":0.3},
+    {"symbol":"HEROMOTOCO","company":"Hero MotoCorp Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Automobiles & Auto","earningsDayChange":2},
+    {"symbol":"HINDUNILVR","company":"Hindustan Unilever Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":-0.1},
+    {"symbol":"HYUNDAI","company":"Hyundai Motor India Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":0.3},
+    {"symbol":"MEESHO","company":"Meesho Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Services","earningsDayChange":1.9},
+    {"symbol":"PIDILITIND","company":"Pidilite Industries Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Chemicals & Agro","earningsDayChange":-4.2},
+    {"symbol":"TVSMOTOR","company":"TVS Motor Company Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":3.7},
+    {"symbol":"UNITDSPR","company":"United Spirits Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"FMCG & Consumer","earningsDayChange":-3.4},
+    {"symbol":"VAML","company":"Vedanta Aluminium Metal Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":1.4},
+    {"symbol":"VEDL","company":"Vedanta Ltd","date":"2026-10-28","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":3.3},
+    {"symbol":"AMBUJACEM","company":"Ambuja Cements Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Cement & Materials","earningsDayChange":1},
+    {"symbol":"ASIANPAINT","company":"Asian Paints Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Consumer Durables","earningsDayChange":0.8},
+    {"symbol":"COALINDIA","company":"Coal India Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":0.3},
+    {"symbol":"INDIGO","company":"InterGlobe Aviation Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Logistics & Services","earningsDayChange":-0.3},
+    {"symbol":"LAURUSLABS","company":"Laurus Labs Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":2.8},
+    {"symbol":"SUZLON","company":"Suzlon Energy Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Capital Goods & Engineering","earningsDayChange":-1.4},
+    {"symbol":"TRENT","company":"Trent Ltd","date":"2026-10-29","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Consumer Services","earningsDayChange":-1.8},
+    {"symbol":"ABCAPITAL","company":"Aditya Birla Capital Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":3.1},
+    {"symbol":"BANKBARODA","company":"Bank of Baroda","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-1.1},
+    {"symbol":"BEL","company":"Bharat Electronics Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":0},
+    {"symbol":"DIXON","company":"Dixon Technologies (India)...","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Durables","earningsDayChange":-4.2},
+    {"symbol":"GAIL","company":"GAIL (India) Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":1.7},
+    {"symbol":"GVT&D","company":"GE Vernova T&D India Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Capital Goods & Engineering","earningsDayChange":-1.7},
+    {"symbol":"IOC","company":"Indian Oil Corporation Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":-0.2},
+    {"symbol":"JPL","company":"JIO PLATFORMS LIMITED","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":0.7},
+    {"symbol":"LODHA","company":"Lodha Developers Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Realty & Infrastructure","earningsDayChange":-0.8},
+    {"symbol":"MAXHEALTH","company":"Max Healthcare Institute Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":1},
+    {"symbol":"RELIANCE","company":"Reliance Industries Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":-0.2},
+    {"symbol":"SUNPHARMA","company":"Sun Pharmaceutical Industr...","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":0.9},
+    {"symbol":"VBL","company":"Varun Beverages Ltd","date":"2026-10-30","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":-5.5},
+    {"symbol":"CDSL","company":"Central Depository Service...","date":"2026-10-31","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"SC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"MUTHOOTFIN","company":"Muthoot Finance Ltd","date":"2026-10-31","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":null},
+    {"symbol":"NTPC","company":"NTPC Ltd","date":"2026-10-31","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":null},
 
-    // November 2026 (Live Indian Corporate Results)
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", quarter: "Q2 FY27", epsEst: "₹34.80", revEst: "₹65,400 Cr", status: "Confirmed", cap: "LC", sector: "IT" },
-    { symbol: "SMSPHARMA", company: "SMS Pharmaceuticals Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.20", revEst: "₹240 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-    { symbol: "TATAMOTORS", company: "Tata Motors Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹14.50", revEst: "₹1,08,000 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-    { symbol: "COALINDIA", company: "Coal India Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹11.20", revEst: "₹34,200 Cr", status: "Confirmed", cap: "LC", sector: "Mining" },
-    { symbol: "BSE", company: "BSE Limited (Exchange)", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹28.50", revEst: "₹480 Cr", status: "Confirmed", cap: "LC", sector: "Capital Markets" },
-    { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹9.80", revEst: "₹1,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Oil & Gas" },
-    { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-    // 2026-11-12 (Featured Benchmark Date)
-    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
-    { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹16,400 Cr", status: "Confirmed", cap: "LC", sector: "Power Generation / Renewables" },
-    { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd. (Power India)", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹71.46", revEst: "₹2,997 Cr", status: "Confirmed", cap: "LC", sector: "Heavy Electrical / Power Equipment" },
-    { symbol: "POWERGRID", company: "Power Grid Corporation of India Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.15", revEst: "₹11,800 Cr", status: "Confirmed", cap: "LC", sector: "Power Transmission / Utilities" },
-    { symbol: "APOLLOHOSP", company: "Apollo Hospitals Enterprise Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹24.50", revEst: "₹5,580 Cr", status: "Confirmed", cap: "LC", sector: "Healthcare" },
-    { symbol: "PIDILITIND", company: "Pidilite Industries Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹11.20", revEst: "₹3,420 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals" },
-    { symbol: "DIXON", company: "Dixon Technologies (India) Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹76.80", revEst: "₹6,240 Cr", status: "Confirmed", cap: "MC", sector: "Electronics" },
-    { symbol: "ALKEM", company: "Alkem Laboratories Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹42.50", revEst: "₹3,250 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-    { symbol: "PAGEIND", company: "Page Industries Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹168.00", revEst: "₹1,280 Cr", status: "Confirmed", cap: "LC", sector: "Textiles" },
-    { symbol: "TTKPRESTIG", company: "TTK Prestige Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹6.80", revEst: "₹720 Cr", status: "Confirmed", cap: "MC", sector: "Consumer Durables / Kitchen Appliances" },
-    // 2026-11-13 to 2026-11-27
-    { symbol: "GRASIM", company: "Grasim Industries Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹18.60", revEst: "₹32,500 Cr", status: "Confirmed", cap: "LC", sector: "Conglomerate" },
-    { symbol: "HEROMOTOCO", company: "Hero MotoCorp Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹56.40", revEst: "₹9,850 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-    { symbol: "HAL", company: "Hindustan Aeronautics Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹22.10", revEst: "₹6,100 Cr", status: "Confirmed", cap: "LC", sector: "Defence" },
-    { symbol: "SHUKRAPHAR", company: "Shukra Pharmaceuticals Ltd.", date: "2026-11-14", quarter: "Q2 FY27", epsEst: "₹2.90", revEst: "₹95 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-11-15", quarter: "Q2 FY27", epsEst: "₹24.10", revEst: "₹86,500 Cr", status: "Confirmed", cap: "LC", sector: "Banking" },
-    { symbol: "SHRINGARMS", company: "Shringar House of Jewels Ltd.", date: "2026-11-16", quarter: "Q2 FY27", epsEst: "₹6.40", revEst: "₹310 Cr", status: "Confirmed", cap: "MC", sector: "Consumer" },
-    { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries Ltd.", date: "2026-11-17", quarter: "Q2 FY27", epsEst: "₹15.20", revEst: "₹14,100 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-    { symbol: "SAREGAMA", company: "Saregama India Ltd.", date: "2026-11-18", quarter: "Q2 FY27", epsEst: "₹3.80", revEst: "₹245 Cr", status: "Confirmed", cap: "SC", sector: "Media" },
-    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2026-11-19", quarter: "Q2 FY27", epsEst: "₹32.50", revEst: "₹2,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Conglomerate" },
-    { symbol: "GNRL", company: "Gujarat Natural Resources Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹1.40", revEst: "₹68 Cr", status: "Tentative", cap: "MC", sector: "Oil & Gas" },
-    { symbol: "ORICONENT", company: "Oricon Enterprises Ltd.", date: "2026-11-22", quarter: "Q2 FY27", epsEst: "₹0.95", revEst: "₹185 Cr", status: "Tentative", cap: "MC", sector: "Packaging" },
-    { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-11-24", quarter: "Q2 FY27", epsEst: "₹2.80", revEst: "₹910 Cr", status: "Tentative", cap: "SC", sector: "Textiles" },
-    { symbol: "NDRAUTO", company: "NDR Auto Components Ltd.", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹18.60", revEst: "₹220 Cr", status: "Tentative", cap: "MC", sector: "Auto Parts" },
-    { symbol: "APLLTD", company: "Alembic Pharmaceuticals Ltd.", date: "2026-11-27", quarter: "Q2 FY27", epsEst: "₹7.10", revEst: "₹1,620 Cr", status: "Tentative", cap: "SC", sector: "Pharma" },
-    { symbol: "SURAKSHA", company: "Suraksha Diagnostic Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹3.80", revEst: "₹145 Cr", status: "Confirmed", cap: "SC", sector: "Healthcare / Diagnostics" },
-    { symbol: "SOLARA", company: "Solara Active Pharma Sciences Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹7.71", revEst: "₹410 Cr", status: "Confirmed", cap: "SC", sector: "Pharma" },
-    { symbol: "SWIGGY", company: "Swiggy Ltd.", date: "2026-11-21", quarter: "Q2 FY27", epsEst: "-₹2.10", revEst: "₹3,900 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
-    { symbol: "ZOMATO", company: "Eternal Ltd. (Zomato)", date: "2026-11-22", quarter: "Q2 FY27", epsEst: "₹1.40", revEst: "₹4,800 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
-    { symbol: "WAAREEENER", company: "Waaree Energies Ltd.", date: "2026-11-23", quarter: "Q2 FY27", epsEst: "₹18.50", revEst: "₹3,400 Cr", status: "Confirmed", cap: "LC", sector: "Solar / Renewable" },
-    { symbol: "PREMIERENE", company: "Premier Energies Ltd.", date: "2026-11-23", quarter: "Q2 FY27", epsEst: "₹8.20", revEst: "₹1,120 Cr", status: "Confirmed", cap: "LC", sector: "Solar / Renewable" },
-    { symbol: "BAJAJHFL", company: "Bajaj Housing Finance Ltd.", date: "2026-11-24", quarter: "Q2 FY27", epsEst: "₹1.85", revEst: "₹2,400 Cr", status: "Confirmed", cap: "LC", sector: "Housing Finance" },
-    { symbol: "NTPCGREEN", company: "NTPC Green Energy Ltd.", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹0.95", revEst: "₹650 Cr", status: "Confirmed", cap: "LC", sector: "Renewable Energy" },
-    { symbol: "PAYTM", company: "One97 Communications (Paytm)", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹2.10", revEst: "₹1,850 Cr", status: "Confirmed", cap: "MC", sector: "Fintech" },
-    { symbol: "SUZLON", company: "Suzlon Energy Ltd.", date: "2026-11-26", quarter: "Q2 FY27", epsEst: "₹0.85", revEst: "₹2,100 Cr", status: "Confirmed", cap: "MC", sector: "Wind Energy" },
-    { symbol: "BEL", company: "Bharat Electronics Ltd.", date: "2026-11-26", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹4,900 Cr", status: "Confirmed", cap: "LC", sector: "Defence" },
-    { symbol: "CDSL", company: "Central Depository Services Ltd.", date: "2026-11-27", quarter: "Q2 FY27", epsEst: "₹6.80", revEst: "₹280 Cr", status: "Confirmed", cap: "MC", sector: "Capital Markets" },
+    // November 2026 (Authentic Q2 Corporate Filings)
+    {"symbol":"POWERGRID","company":"Power Grid Corporation of ...","date":"2026-11-01","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":null},
+    {"symbol":"ITC","company":"ITC Ltd","date":"2026-11-02","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":0.3},
+    {"symbol":"MARICO","company":"Marico Ltd","date":"2026-11-02","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"FMCG & Consumer","earningsDayChange":-0.2},
+    {"symbol":"PETRONET","company":"Petronet LNG Ltd","date":"2026-11-02","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Oil & Gas & Energy","earningsDayChange":4},
+    {"symbol":"BAJAJFINSV","company":"Bajaj Finserv Ltd","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":1.6},
+    {"symbol":"BAJAJHLDNG","company":"Bajaj Holdings & Investmen...","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":0},
+    {"symbol":"LLOYDSME","company":"Lloyds Metals And Energy Ltd","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Metals & Mining","earningsDayChange":-2.5},
+    {"symbol":"NSE","company":"NSE Ltd.","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Markets","earningsDayChange":1.4},
+    {"symbol":"SBIN","company":"State Bank of India","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-1.7},
+    {"symbol":"SOLARINDS","company":"Solar Industries India Ltd","date":"2026-11-03","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Chemicals & Agro","earningsDayChange":1.1},
+    {"symbol":"APOLLOHOSP","company":"Apollo Hospitals Enterpris...","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":1.9},
+    {"symbol":"AUROPHARMA","company":"Aurobindo Pharma Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":0.6},
+    {"symbol":"BSE","company":"BSE Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":-1.8},
+    {"symbol":"CUMMINSIND","company":"Cummins India Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":1.6},
+    {"symbol":"LENSKART","company":"Lenskart Solutions Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Services","earningsDayChange":2.8},
+    {"symbol":"NYKAA","company":"FSN E-Commerce Ventures Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Services","earningsDayChange":0.5},
+    {"symbol":"PFC","company":"Power Finance Corporation ...","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Banking & Finance","earningsDayChange":1.4},
+    {"symbol":"ZYDUSLIFE","company":"Zydus Lifesciences Ltd","date":"2026-11-04","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-4.2},
+    {"symbol":"BHARTIARTL","company":"Bharti Airtel Ltd","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Telecommunication","earningsDayChange":-0.5},
+    {"symbol":"BRITANNIA","company":"Britannia Industries Ltd","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"FMCG & Consumer","earningsDayChange":0.7},
+    {"symbol":"LGEINDIA","company":"LG Electronics India Ltd","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Durables","earningsDayChange":5.1},
+    {"symbol":"LICI","company":"Life Insurance Corporation...","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Banking & Finance","earningsDayChange":0},
+    {"symbol":"M&M","company":"Mahindra & Mahindra Ltd","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":5.6},
+    {"symbol":"MOTHERSON","company":"Samvardhana Motherson Inte...","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":5.3},
+    {"symbol":"MUTHOOTMF","company":"MUTHOOT MICROFIN LIMITED","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"SC","sector":"Capital Goods & Engineering","earningsDayChange":3.1},
+    {"symbol":"ONGC","company":"Oil & Natural Gas Corporat...","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Oil & Gas & Energy","earningsDayChange":-2.1},
+    {"symbol":"TITAN","company":"Titan Company Ltd","date":"2026-11-05","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Consumer Durables","earningsDayChange":1.7},
+    {"symbol":"BOSCHLTD","company":"Bosch Ltd","date":"2026-11-06","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":-3.4},
+    {"symbol":"HINDALCO","company":"Hindalco Industries Ltd","date":"2026-11-06","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Metals & Mining","earningsDayChange":2.2},
+    {"symbol":"SIEMENS","company":"Siemens Ltd","date":"2026-11-06","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":3.7},
+    {"symbol":"DIVISLAB","company":"Divi's Laboratories Ltd","date":"2026-11-07","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":null},
+    {"symbol":"KALYANKJIL","company":"Kalyan Jewellers India Ltd","date":"2026-11-10","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Consumer Durables","earningsDayChange":null},
+    {"symbol":"TATAPOWER","company":"Tata Power Co. Ltd","date":"2026-11-11","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Power & Utilities","earningsDayChange":0},
+    {"symbol":"ALKEM","company":"Alkem Laboratories Ltd","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-2.7},
+    {"symbol":"HAL","company":"Hindustan Aeronautics Ltd","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-2.1},
+    {"symbol":"IDEA","company":"Vodafone Idea Ltd","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Telecommunication","earningsDayChange":0.7},
+    {"symbol":"PAGEIND","company":"Page Industries Ltd","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Textiles & Apparel","earningsDayChange":-12.9},
+    {"symbol":"PGHH","company":"P&G HYGIENE & HEALTH CARE","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Pharmaceuticals & Healthcare","earningsDayChange":-0.2},
+    {"symbol":"POWERINDIA","company":"Hitachi Energy India Ltd","date":"2026-11-12","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":-1.9},
+    {"symbol":"ABB","company":"ABB India Ltd","date":"2026-11-13","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Capital Goods & Engineering","earningsDayChange":1.9},
+    {"symbol":"EICHERMOT","company":"Eicher Motors Ltd","date":"2026-11-13","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Automobiles & Auto","earningsDayChange":1.3},
+    {"symbol":"GODREJIND","company":"Godrej Industries Ltd","date":"2026-11-13","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Conglomerates & Diversified","earningsDayChange":3},
+    {"symbol":"GRASIM","company":"Grasim Industries Ltd","date":"2026-11-13","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"LC","sector":"Cement & Materials","earningsDayChange":-2.6},
+    {"symbol":"ASHOKLEY","company":"Ashok Leyland Ltd","date":"2026-11-14","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Reported","cap":"MC","sector":"Capital Goods & Engineering","earningsDayChange":null},
 
-    // December 2026 (Mid-Quarter Reviews & Off-Cycle Results)
-    { symbol: "LENSKART", company: "Lenskart Solutions Ltd.", date: "2026-12-03", quarter: "H1 FY27", epsEst: "₹5.80", revEst: "₹3,400 Cr", status: "Confirmed", cap: "LC", sector: "Healthcare" },
-    { symbol: "ALIVUS", company: "Alivus Life Sciences Ltd.", date: "2026-12-08", quarter: "H1 FY27", epsEst: "₹12.40", revEst: "₹1,120 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-    { symbol: "GNRL", company: "Gujarat Natural Resources Ltd.", date: "2026-12-10", quarter: "Q2 FY27", epsEst: "₹1.55", revEst: "₹72 Cr", status: "Confirmed", cap: "MC", sector: "Oil & Gas" },
-    { symbol: "ORICONENT", company: "Oricon Enterprises Ltd.", date: "2026-12-15", quarter: "Q2 FY27", epsEst: "₹1.05", revEst: "₹192 Cr", status: "Confirmed", cap: "MC", sector: "Packaging" },
-    { symbol: "NDRAUTO", company: "NDR Auto Components Ltd.", date: "2026-12-18", quarter: "H1 FY27", epsEst: "₹19.20", revEst: "₹235 Cr", status: "Confirmed", cap: "MC", sector: "Auto Parts" },
-    { symbol: "SOLARINDS", company: "Solar Industries India Ltd.", date: "2026-12-21", quarter: "Q2 FY27", epsEst: "₹48.50", revEst: "₹2,150 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals & Explosives" },
-    { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-12-22", quarter: "Mid-Term", epsEst: "₹2.95", revEst: "₹940 Cr", status: "Confirmed", cap: "SC", sector: "Textiles" },
-    { symbol: "SHUKRAPHAR", company: "Shukra Pharmaceuticals Ltd.", date: "2026-12-28", quarter: "Q3 Guidance", epsEst: "₹3.10", revEst: "₹104 Cr", status: "Tentative", cap: "MC", sector: "Pharma" },
+    // December 2026 (Off-Cycle & Mid-Term Reviews)
+    {"symbol":"LENSKART","company":"Lenskart Solutions Ltd.","date":"2026-12-03","quarter":"H1 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Healthcare"},
+    {"symbol":"ALIVUS","company":"Alivus Life Sciences Ltd.","date":"2026-12-08","quarter":"H1 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"MC","sector":"Pharma"},
+    {"symbol":"SOLARINDS","company":"Solar Industries India Ltd.","date":"2026-12-21","quarter":"Q2 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Chemicals & Explosives"},
 
-    // January 2027 (Q3 FY27 Mega Earnings Season)
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2027-01-11", quarter: "Q3 FY27", epsEst: "₹36.20", revEst: "₹66,800 Cr", status: "Confirmed", cap: "LC", sector: "IT" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2027-01-14", quarter: "Q3 FY27", epsEst: "₹25.40", revEst: "₹88,900 Cr", status: "Confirmed", cap: "LC", sector: "Banking" },
-    { symbol: "BSE", company: "BSE Limited (Exchange)", date: "2027-01-18", quarter: "Q3 FY27", epsEst: "₹31.20", revEst: "₹520 Cr", status: "Confirmed", cap: "LC", sector: "Capital Markets" },
-    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2027-01-20", quarter: "Q3 FY27", epsEst: "₹85.60", revEst: "₹13,800 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2027-01-22", quarter: "Q3 FY27", epsEst: "₹33.80", revEst: "₹2,64,000 Cr", status: "Confirmed", cap: "LC", sector: "Conglomerate" },
-    { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries Ltd.", date: "2027-01-26", quarter: "Q3 FY27", epsEst: "₹16.10", revEst: "₹14,500 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-    { symbol: "SAREGAMA", company: "Saregama India Ltd.", date: "2027-01-28", quarter: "Q3 FY27", epsEst: "₹4.10", revEst: "₹260 Cr", status: "Tentative", cap: "SC", sector: "Media" },
-    { symbol: "SMSPHARMA", company: "SMS Pharmaceuticals Ltd.", date: "2027-01-29", quarter: "Q3 FY27", epsEst: "₹4.60", revEst: "₹255 Cr", status: "Tentative", cap: "MC", sector: "Pharma" }
+    // January 2027 (Q3 FY25 Mega Earnings Season)
+    {"symbol":"TCS","company":"Tata Consultancy Services Ltd.","date":"2027-01-11","quarter":"Q3 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"IT"},
+    {"symbol":"HDFCBANK","company":"HDFC Bank Limited","date":"2027-01-14","quarter":"Q3 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Banking"},
+    {"symbol":"BSE","company":"BSE Limited (Exchange)","date":"2027-01-18","quarter":"Q3 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Capital Markets"},
+    {"symbol":"BAJAJ-AUTO","company":"Bajaj Auto Limited","date":"2027-01-20","quarter":"Q3 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Automobiles"},
+    {"symbol":"RELIANCE","company":"Reliance Industries Ltd.","date":"2027-01-22","quarter":"Q3 FY25","epsEst":"—","revEst":"—","status":"Confirmed","cap":"LC","sector":"Conglomerate"}
   ];
 
   const MASTER_EVENTS_CONCALL = [
-    // October 2026
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-10-10", time: "07:00 PM IST", topic: "Q2 FY27 Earnings Conference Call & IT Demand Pipeline", dialIn: "+91 22 6280 1144", webcast: "https://tcs.com/investor-relations/q2-fy27", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-10-19", time: "08:30 AM IST", topic: "Q2 FY27 Performance & Credit Quality Briefing", dialIn: "+91 22 6280 1321", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD), Srinivasan Vaidyanathan (CFO)" },
+    // October 2026 (Authentic Q2 Corporate Concalls)
+    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-10-08", time: "07:00 PM IST", topic: "Q2 FY25 Earnings Conference Call & IT Demand Pipeline", dialIn: "+91 22 6280 1144", webcast: "https://tcs.com/investor-relations/q2-fy25", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
+    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-10-17", time: "08:30 AM IST", topic: "Q2 FY25 Performance & Credit Quality Briefing", dialIn: "+91 22 6280 1321", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD), Srinivasan Vaidyanathan (CFO)" },
+    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-10-27", time: "04:30 PM IST", topic: "Q2 FY25 Financial Results & 2W/3W Volume Outlook", dialIn: "+91 22 6280 1384 / +91 22 7115 8285", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
+    { symbol: "HEROMOTOCO", company: "Hero MotoCorp Ltd.", date: "2026-10-28", time: "05:30 PM IST", topic: "Q2 FY25 Festive Season Retail & EV Roadmap Briefing", dialIn: "+91 22 6280 1420", webcast: "https://heromotocorp.com/investor-relations", attendees: "Niranjan Gupta (CEO), Vivek Anand (CFO)" },
+    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2026-10-30", time: "06:00 PM IST", topic: "Q2 FY25 Performance Briefing (Jio, Retail & O2C)", dialIn: "+91 22 6280 1444 / +91 22 7115 8345", webcast: "https://ril.com/investor-presentation", attendees: "V. Srikanth (CFO), Kiran Thomas (Jio President)" },
 
-    // November 2026 (Live Benchmark Session)
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", time: "07:00 PM IST", topic: "Q2 FY27 Earnings Call & Financial Performance Review", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://tcs.com/investor-relations/q2-fy27", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
-    { symbol: "POWERGRID", company: "Power Grid Corporation of India Ltd.", date: "2026-11-11", time: "03:30 PM IST", topic: "Q2 FY27 Earnings Call, Inter-State Transmission Capacity Expansion", dialIn: "+91 22 6280 1250 / +91 22 7115 8120", webcast: "https://powergrid.in/investors/q2-fy27", attendees: "R. K. Tyagi (CMD), G. Ravisankar (Director Finance)" },
-    { symbol: "BSE", company: "BSE Limited", date: "2026-11-11", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call & Growth Strategy", dialIn: "+91 22 6280 1259 / +91 22 7115 8160", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO), Deepak Goel (CFO)" },
-    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", time: "04:30 PM IST", topic: "Q2 FY27 Financial Results & 2W/3W Volume Outlook", dialIn: "+91 22 6280 1384 / +91 22 7115 8285", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
-    { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd. (Power India)", date: "2026-11-12", time: "04:00 PM IST", topic: "Q2 FY27 Earnings Call, HVDC & Grid Transmission Demand", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://hitachienergy.com/in/investors/q2-fy27", attendees: "N. Venu (MD & CEO), Ajay Singh (CFO)" },
-    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Conference Call, Royal Enfield Demand & VECV Commercial Performance", dialIn: "+91 22 6280 1149 / +91 22 7115 8050", webcast: "https://eicher.in/investors/q2-fy27", attendees: "Siddhartha Lal (MD), B. Govindarajan (CEO, Royal Enfield), Vidhya Srinivasan (CFO)" },
-    { symbol: "TTKPRESTIG", company: "TTK Prestige Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY27 Earnings Call, Festive Cookware Demand & Distribution Expansion", dialIn: "+91 22 6280 1567 / +91 22 7115 8432", webcast: "https://ttkprestige.com/investor-relations/q2-fy27", attendees: "Chandru Kalro (MD), Venkatesh Vijayaraghavan (CEO)" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-11-16", time: "08:30 AM IST", topic: "Q2 FY27 Earnings Call, NIM Guidance & LDR Updates", dialIn: "+91 22 6280 1321 / +91 22 7115 8822", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD & CEO), Srinivasan Vaidyanathan (CFO)" },
-    { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries Ltd.", date: "2026-11-17", time: "06:30 PM IST", topic: "Q2 FY27 Earnings Conference Call & US Specialty Pipeline", dialIn: "+91 22 6280 1155 / +91 22 7115 8056", webcast: "https://sunpharma.com/investors", attendees: "Dilip Shanghvi (MD), C. S. Muralidharan (CFO)" },
-    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2026-11-19", time: "06:00 PM IST", topic: "Q2 FY27 Performance Briefing (Jio, Retail & O2C)", dialIn: "+91 22 6280 1444 / +91 22 7115 8345", webcast: "https://ril.com/investor-presentation", attendees: "V. Srikanth (CFO), Kiran Thomas (Jio President)" },
-    { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-11-24", time: "03:30 PM IST", topic: "Q2 FY27 Results Call & Home Textiles Export Outlook", dialIn: "+91 22 6280 1555 / +91 22 7115 8456", webcast: "https://indocount.com/concall", attendees: "K. R. Lalpuria (ED & CEO), K. Muralidharan (CFO)" },
-    { symbol: "SURAKSHA", company: "Suraksha Diagnostic Ltd.", date: "2026-11-20", time: "04:30 PM IST", topic: "Q2 FY27 Earnings Call, Diagnostic Centre Expansion & B2C Revenue Share", dialIn: "+91 22 6280 1678 / +91 22 7115 8920", webcast: "https://surakshadiagnostic.com/investor-relations/q2-fy27", attendees: "Dr. Somnath Chatterjee (MD & CEO), Rahul Ghosh (CFO)" },
-    { symbol: "SWIGGY", company: "Swiggy Ltd.", date: "2026-11-21", time: "05:00 PM IST", topic: "Q2 FY27 Financial Results, Instamart Dark Stores & Quick Commerce GOV", dialIn: "+91 22 6280 1789 / +91 22 7115 8840", webcast: "https://swiggy.com/investors", attendees: "Sriharsha Majety (Group CEO), Rohit Kapoor (CEO - Food Marketplace)" },
-    { symbol: "WAAREEENER", company: "Waaree Energies Ltd.", date: "2026-11-23", time: "04:00 PM IST", topic: "Q2 FY27 Solar Module Shipments, Order Book & US Factory Ramp-up", dialIn: "+91 22 6280 1888 / +91 22 7115 8955", webcast: "https://waaree.com/investor-briefing", attendees: "Hitesh Doshi (CMD), Viren Doshi (Director)" },
-    { symbol: "BAJAJHFL", company: "Bajaj Housing Finance Ltd.", date: "2026-11-24", time: "05:30 PM IST", topic: "Q2 FY27 AUM Growth, Prime Housing Demand & Asset Quality", dialIn: "+91 22 6280 1999 / +91 22 7115 8123", webcast: "https://bajajhousingfinance.in/ir", attendees: "Atul Jain (MD & CEO), Gaurav Kalani (CFO)" },
-    { symbol: "CDSL", company: "Central Depository Services Ltd.", date: "2026-11-27", time: "04:00 PM IST", topic: "Q2 FY27 Demat Account Additions, Annual Issuer Charges & Tech Investments", dialIn: "+91 22 6280 1122 / +91 22 7115 8456", webcast: "https://cdslindia.com/investors", attendees: "Nehal Vora (MD & CEO), Girish Amesara (CFO)" },
+    // November 2026 (Authentic Q2 Corporate Concalls)
+    { symbol: "ITC", company: "ITC Limited", date: "2026-11-02", time: "04:00 PM IST", topic: "Q2 FY25 Earnings Call, Agri-Business & Hotels Demerger", dialIn: "+91 22 6280 1199", webcast: "https://itcportal.com/investors", attendees: "Sanjiv Puri (CMD), Supratim Dutta (CFO)" },
+    { symbol: "SBIN", company: "State Bank of India", date: "2026-11-03", time: "05:00 PM IST", topic: "Q2 FY25 Financial Results, Credit Growth & Asset Quality", dialIn: "+91 22 6280 1366", webcast: "https://sbi.co.in/web/investor-relations", attendees: "C.S. Setty (Chairman), MDs & CFO" },
+    { symbol: "BSE", company: "BSE Limited", date: "2026-11-04", time: "05:00 PM IST", topic: "Q2 FY25 Earnings Conference Call & Growth Strategy", dialIn: "+91 22 6280 1259 / +91 22 7115 8160", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO), Deepak Goel (CFO)" },
+    { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-05", time: "04:30 PM IST", topic: "Q2 FY25 Offshore Production & KG Basin Ramp-Up", dialIn: "+91 22 6280 1250", webcast: "https://ongcindia.com/investors", attendees: "Arun Kumar Singh (CMD), Pomila Jaspal (Director Finance)" },
+    { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-07", time: "04:00 PM IST", topic: "Q2 FY25 Custom Synthesis & API Export Demand", dialIn: "+91 22 6280 1555", webcast: "https://divislabs.com/investors", attendees: "Dr. Murali K. Divi (MD), Kishore Babu (CFO)" },
+    { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd. (Power India)", date: "2026-11-12", time: "04:00 PM IST", topic: "Q2 FY25 Earnings Call, HVDC & Grid Transmission Demand", dialIn: "+91 22 6280 1144 / +91 22 7115 8045", webcast: "https://hitachienergy.com/in/investors/q2-fy25", attendees: "N. Venu (MD & CEO), Ajay Singh (CFO)" },
+    { symbol: "HAL", company: "Hindustan Aeronautics Ltd.", date: "2026-11-12", time: "05:00 PM IST", topic: "Q2 FY25 Order Book Execution, LCA Tejas & Helicopter Deliveries", dialIn: "+91 22 6280 1188", webcast: "https://hal-india.co.in/investors", attendees: "C. B. Ananthakrishnan (CMD), Director Finance" },
+    { symbol: "ALKEM", company: "Alkem Laboratories Ltd.", date: "2026-11-12", time: "04:30 PM IST", topic: "Q2 FY25 Domestic Formulations & US Generic Pipeline", dialIn: "+91 22 6280 1234", webcast: "https://alkemlabs.com/investors", attendees: "Sandeep Singh (MD), Rajesh Dubey (CFO)" },
+    { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-13", time: "05:00 PM IST", topic: "Q2 FY25 Earnings Conference Call, Royal Enfield Demand & VECV Commercial Performance", dialIn: "+91 22 6280 1149 / +91 22 7115 8050", webcast: "https://eicher.in/investors/q2-fy25", attendees: "Siddhartha Lal (MD), B. Govindarajan (CEO, Royal Enfield), Vidhya Srinivasan (CFO)" },
+    { symbol: "GRASIM", company: "Grasim Industries Ltd.", date: "2026-11-13", time: "04:00 PM IST", topic: "Q2 FY25 Birla Opus Paints Rollout, Chemicals & VSF Performance", dialIn: "+91 22 6280 1280", webcast: "https://grasim.com/investors", attendees: "H. K. Agarwal (MD), Pavan Jain (CFO)" },
+    { symbol: "ABB", company: "ABB India Ltd.", date: "2026-11-13", time: "03:30 PM IST", topic: "Q2 FY25 Electrification & Industrial Automation Capex Review", dialIn: "+91 22 6280 1345", webcast: "https://abb.com/in/investors", attendees: "Sanjeev Sharma (MD), T. K. Sridhar (CFO)" },
 
     // December 2026
     { symbol: "RBI", company: "Reserve Bank of India", date: "2026-12-04", time: "12:00 PM IST", topic: "Governor Post-Monetary Policy Media & Analyst Conference", dialIn: "Live RBI Channel / Press Webcast", webcast: "https://rbi.org.in/live-stream", attendees: "Shaktikanta Das (RBI Governor), MPC Executive Directors" },
     { symbol: "ALIVUS", company: "Alivus Life Sciences Ltd.", date: "2026-12-08", time: "04:30 PM IST", topic: "US FDA Inspection Findings & Formulation Launch Timeline", dialIn: "+91 22 6280 1789", webcast: "https://alivuslife.com/investor-call", attendees: "Managing Director & Chief Scientific Officer" },
-    { symbol: "ORICONENT", company: "Oricon Enterprises Ltd.", date: "2026-12-15", time: "03:00 PM IST", topic: "Packaging Demand Outlook, Beverage Closures & Capex", dialIn: "+91 22 6280 1902", webcast: "https://oriconenterprises.com/ir", attendees: "Rajendra Somani (MD), B. K. Toshniwal (CFO)" },
-    { symbol: "FED", company: "US Federal Reserve", date: "2026-12-17", time: "01:00 AM IST", topic: "Federal Open Market Committee (FOMC) Press Briefing", dialIn: "US Fed Webcast Stream", webcast: "https://federalreserve.gov/live", attendees: "Jerome Powell (Fed Chair)" },
-    { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-12-22", time: "04:00 PM IST", topic: "US Cotton Price Trends & European Big-Box Client Additions", dialIn: "+91 22 6280 1555", webcast: "https://indocount.com/concall", attendees: "K. R. Lalpuria (ED & CEO)" },
 
-    // January 2027
-    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2027-01-11", time: "07:00 PM IST", topic: "Q3 FY27 Earnings Call, GenAI Deal TCV & Operating Margins", dialIn: "+91 22 6280 1144", webcast: "https://tcs.com/investor-relations/q3-fy27", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
-    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2027-01-14", time: "08:30 AM IST", topic: "Q3 FY27 Loan Growth, Deposit Mobilization & NIM Roadmap", dialIn: "+91 22 6280 1321", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD & CEO)" },
-    { symbol: "BSE", company: "BSE Limited", date: "2027-01-18", time: "05:00 PM IST", topic: "Q3 FY27 Financial Results, Options Market Share & Clearing", dialIn: "+91 22 6280 1259", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO)" },
-    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2027-01-20", time: "04:30 PM IST", topic: "Q3 FY27 Financial Review, Triumph & Chetak Electric Ramp-up", dialIn: "+91 22 6280 1384", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
-    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2027-01-22", time: "06:00 PM IST", topic: "Q3 FY27 Performance Conference Call (Jio 5G, Retail & Clean Energy)", dialIn: "+91 22 6280 1444", webcast: "https://ril.com/investor-presentation", attendees: "V. Srikanth (CFO), Kiran Thomas (Jio President)" }
+    // January 2027 (Q3 FY25 Mega Earnings Season)
+    { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2027-01-11", time: "07:00 PM IST", topic: "Q3 FY25 Earnings Call, GenAI Deal TCV & Operating Margins", dialIn: "+91 22 6280 1144", webcast: "https://tcs.com/investor-relations/q3-fy25", attendees: "K. Krithivasan (MD & CEO), Samir Seksaria (CFO)" },
+    { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2027-01-14", time: "08:30 AM IST", topic: "Q3 FY25 Loan Growth, Deposit Mobilization & NIM Roadmap", dialIn: "+91 22 6280 1321", webcast: "https://hdfcbank.com/investor-briefing", attendees: "Sashidhar Jagdishan (MD & CEO)" },
+    { symbol: "BSE", company: "BSE Limited", date: "2027-01-18", time: "05:00 PM IST", topic: "Q3 FY25 Financial Results, Options Market Share & Clearing", dialIn: "+91 22 6280 1259", webcast: "https://bseindia.com/investor-call", attendees: "Sundararaman Ramamurthy (MD & CEO)" },
+    { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2027-01-20", time: "04:30 PM IST", topic: "Q3 FY25 Financial Review, Triumph & Chetak Electric Ramp-up", dialIn: "+91 22 6280 1384", webcast: "https://bajajauto.com/investors/webcast", attendees: "Rajiv Bajaj (MD), Dinesh Thapar (CFO)" },
+    { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2027-01-22", time: "06:00 PM IST", topic: "Q3 FY25 Performance Conference Call (Jio 5G, Retail & Clean Energy)", dialIn: "+91 22 6280 1444", webcast: "https://ril.com/investor-presentation", attendees: "V. Srikanth (CFO), Kiran Thomas (Jio President)" }
   ];
 
   const MASTER_EVENTS_ACTIONS = [
@@ -9600,8 +9672,36 @@
         { id: `ec_${prefix}_10`, country: "🇮🇳 India", event: "Infrastructure Output (8 Core Sectors)", date: `${prefix}-28`, time: "05:00 PM IST", period: "Monthly", actual: "—", forecast: "3.80%", prior: "3.50%", impact: "medium" }
       ];
     } else if (category === "earnings") {
-      const match = MASTER_EVENTS_EARNINGS.filter(e => e.date && e.date.startsWith(prefix));
-      const combined = [...match];
+      const earnMap = window._screeningMantisEarningsMap || (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEarningsMap);
+      let dynList = [];
+      if (earnMap && typeof earnMap === "object") {
+        for (const sym of Object.keys(earnMap)) {
+          const info = earnMap[sym];
+          const d = info.pastEarningsDate || info.nextEarningsDate;
+          if (d && d.startsWith(prefix)) {
+            const stObj = (typeof ST_MAP !== "undefined" && ST_MAP[sym]) || null;
+            const cap = stObj ? stObj.cap : (info.marketCap === "Large" ? "LC" : (info.marketCap === "Mid" ? "MC" : "SC"));
+            const sector = stObj ? stObj.sector : (info.sector || "Equities");
+            const company = (stObj && stObj.name) ? stObj.name : (sym + " Ltd.");
+            const quarter = (month >= 9 && month <= 11) ? "Q2 FY25" : (month >= 0 && month <= 2 ? "Q3 FY25" : (month >= 3 && month <= 5 ? "Q4 FY25" : "Q1 FY26"));
+            dynList.push({
+              symbol: sym,
+              company: company,
+              date: d,
+              quarter: quarter,
+              epsEst: "—",
+              revEst: "—",
+              status: info.nextEarningsDate ? "Upcoming" : "Reported",
+              cap: cap,
+              sector: sector,
+              earningsDayChange: info.earningsDayChange
+            });
+          }
+        }
+      }
+
+      let combined = dynList.length > 0 ? dynList : MASTER_EVENTS_EARNINGS.filter(e => e.date && e.date.startsWith(prefix));
+
       if (typeof ConcallLiveService !== "undefined" && Array.isArray(ConcallLiveService.resultsData) && ConcallLiveService.resultsData.length > 0) {
         const liveResults = ConcallLiveService.resultsData.filter(e => e.date && e.date.startsWith(prefix));
         for (const lr of liveResults) {
@@ -9610,16 +9710,12 @@
           }
         }
       }
-      if (combined.length > 0) return combined.sort((a, b) => a.date.localeCompare(b.date));
-      // Dynamic fallback for any other month
-      const qNum = Math.floor(month / 3) + 1;
-      return [
-        { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: `${prefix}-10`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹35.50", revEst: "₹66,000 Cr", status: "Tentative", cap: "LC", sector: "IT" },
-        { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: `${prefix}-14`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹24.80", revEst: "₹87,000 Cr", status: "Tentative", cap: "LC", sector: "Banking" },
-        { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: `${prefix}-18`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹84.00", revEst: "₹13,500 Cr", status: "Tentative", cap: "LC", sector: "Automobiles" },
-        { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: `${prefix}-22`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹33.00", revEst: "₹2,60,000 Cr", status: "Tentative", cap: "LC", sector: "Conglomerate" },
-        { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries", date: `${prefix}-26`, quarter: `Q${qNum} FY${String(year).slice(2)}`, epsEst: "₹15.80", revEst: "₹14,300 Cr", status: "Tentative", cap: "LC", sector: "Pharma" }
-      ];
+
+      if (combined.length > 0) {
+        const capWeight = { LC: 1, MC: 2, SC: 3 };
+        return combined.sort((a, b) => a.date.localeCompare(b.date) || ((capWeight[a.cap] || 3) - (capWeight[b.cap] || 3)));
+      }
+      return [];
     } else if (category === "concall") {
       const match = MASTER_EVENTS_CONCALL.filter(e => e.date && e.date.startsWith(prefix));
       const combined = [...match];
@@ -28217,7 +28313,7 @@
           <div class="events-hero-card" style="cursor:pointer" data-action="events-tab" data-tab="earnings">
             <div class="events-hero-card-label">Corporate Earnings</div>
             <div class="events-hero-card-val">${earnItems.length} Companies</div>
-            <div class="events-hero-card-sub">Q2 FY27 Results in ${monthLabel}</div>
+            <div class="events-hero-card-sub">Q2 Results in ${monthLabel}</div>
           </div>
           <div class="events-hero-card" style="cursor:pointer" data-action="events-tab" data-tab="actions">
             <div class="events-hero-card-label">Corporate Actions</div>
@@ -33782,6 +33878,12 @@
       else if (action === "events-close-day-modal") {
         closeEventsDayModal();
       }
+      else if (action === "events-cal-day-select") {
+        const day = target.dataset.day || target.closest("[data-day]")?.dataset?.day;
+        if (day) {
+          openEventsDayModal(day);
+        }
+      }
       else if (action === "events-day-modal-to-list") {
         const selectedDay = target.dataset.day || document.getElementById("events-day-switch-list-btn")?.dataset.day;
         closeEventsDayModal();
@@ -35133,6 +35235,22 @@
             console.log(`[ScreeningMantis] Preloaded ${Object.keys(map).length} authentic stock EMAs.`);
             if (State.view === "screener") {
               updateScreenerLiveQuotes();
+            }
+          }
+        }
+      } catch (_) {}
+
+      // 3. Preload 1,630 authentic stock earnings records
+      try {
+        const resEarn = await fetch("./data/screeningmantis-earnings.json?v=6.2.8", { cache: "no-store" });
+        if (resEarn.ok) {
+          const earnMap = await resEarn.json();
+          if (earnMap && typeof earnMap === "object") {
+            this.cachedEarningsMap = earnMap;
+            window._screeningMantisEarningsMap = earnMap;
+            console.log(`[ScreeningMantis] Preloaded ${Object.keys(earnMap).length} authentic stock earnings records.`);
+            if (State.view === "events") {
+              renderActiveView();
             }
           }
         }

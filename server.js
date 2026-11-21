@@ -5757,56 +5757,17 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    const ALL_SCHEDULED_EARNINGS = [
-      // November 2026 (Live Indian Corporate Results)
-      { symbol: "TCS", company: "Tata Consultancy Services Ltd.", date: "2026-11-09", quarter: "Q2 FY27", epsEst: "₹34.80", revEst: "₹65,400 Cr", status: "Confirmed", cap: "LC", sector: "IT" },
-      { symbol: "SMSPHARMA", company: "SMS Pharmaceuticals Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.20", revEst: "₹240 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-      { symbol: "TATAMOTORS", company: "Tata Motors Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹14.50", revEst: "₹1,08,000 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-      { symbol: "COALINDIA", company: "Coal India Limited", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹11.20", revEst: "₹34,200 Cr", status: "Confirmed", cap: "LC", sector: "Mining" },
-      { symbol: "BSE", company: "BSE Limited (Exchange)", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹28.50", revEst: "₹480 Cr", status: "Confirmed", cap: "LC", sector: "Capital Markets" },
-      { symbol: "ONGC", company: "Oil and Natural Gas Corp Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹9.80", revEst: "₹1,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Oil & Gas" },
-      { symbol: "DIVISLAB", company: "Divi's Laboratories Ltd.", date: "2026-11-11", quarter: "Q2 FY27", epsEst: "₹21.40", revEst: "₹2,340 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-      // 2026-11-12 (Featured Benchmark Date)
-      { symbol: "BAJAJ-AUTO", company: "Bajaj Auto Limited", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹82.40", revEst: "₹13,200 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-      { symbol: "EICHERMOT", company: "Eicher Motors Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹40.18", revEst: "₹4,263 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles (Royal Enfield)" },
-      { symbol: "TATAPOWER", company: "Tata Power Company Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹16,400 Cr", status: "Confirmed", cap: "LC", sector: "Power Generation / Renewables" },
-      { symbol: "POWERINDIA", company: "Hitachi Energy India Ltd. (Power India)", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹71.46", revEst: "₹2,997 Cr", status: "Confirmed", cap: "LC", sector: "Heavy Electrical / Power Equipment" },
-      { symbol: "POWERGRID", company: "Power Grid Corporation of India Ltd.", date: "2026-11-10", quarter: "Q2 FY27", epsEst: "₹4.15", revEst: "₹11,800 Cr", status: "Confirmed", cap: "LC", sector: "Power Transmission / Utilities" },
-      { symbol: "APOLLOHOSP", company: "Apollo Hospitals Enterprise Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹24.50", revEst: "₹5,580 Cr", status: "Confirmed", cap: "LC", sector: "Healthcare" },
-      { symbol: "PIDILITIND", company: "Pidilite Industries Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹11.20", revEst: "₹3,420 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals" },
-      { symbol: "DIXON", company: "Dixon Technologies (India) Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹76.80", revEst: "₹6,240 Cr", status: "Confirmed", cap: "MC", sector: "Electronics" },
-      { symbol: "ALKEM", company: "Alkem Laboratories Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹42.50", revEst: "₹3,250 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-      { symbol: "PAGEIND", company: "Page Industries Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹168.00", revEst: "₹1,280 Cr", status: "Confirmed", cap: "LC", sector: "Textiles" },
-      { symbol: "TTKPRESTIG", company: "TTK Prestige Ltd.", date: "2026-11-12", quarter: "Q2 FY27", epsEst: "₹6.80", revEst: "₹720 Cr", status: "Confirmed", cap: "MC", sector: "Consumer Durables / Kitchen Appliances" },
-      // 2026-11-13 to 2026-11-27
-      { symbol: "GRASIM", company: "Grasim Industries Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹18.60", revEst: "₹32,500 Cr", status: "Confirmed", cap: "LC", sector: "Conglomerate" },
-      { symbol: "HEROMOTOCO", company: "Hero MotoCorp Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹56.40", revEst: "₹9,850 Cr", status: "Confirmed", cap: "LC", sector: "Automobiles" },
-      { symbol: "HAL", company: "Hindustan Aeronautics Ltd.", date: "2026-11-13", quarter: "Q2 FY27", epsEst: "₹22.10", revEst: "₹6,100 Cr", status: "Confirmed", cap: "LC", sector: "Defence" },
-      { symbol: "SHUKRAPHAR", company: "Shukra Pharmaceuticals Ltd.", date: "2026-11-14", quarter: "Q2 FY27", epsEst: "₹2.90", revEst: "₹95 Cr", status: "Confirmed", cap: "MC", sector: "Pharma" },
-      { symbol: "HDFCBANK", company: "HDFC Bank Limited", date: "2026-11-15", quarter: "Q2 FY27", epsEst: "₹24.10", revEst: "₹86,500 Cr", status: "Confirmed", cap: "LC", sector: "Banking" },
-      { symbol: "SHRINGARMS", company: "Shringar House of Jewels Ltd.", date: "2026-11-16", quarter: "Q2 FY27", epsEst: "₹6.40", revEst: "₹310 Cr", status: "Confirmed", cap: "MC", sector: "Consumer" },
-      { symbol: "SUNPHARMA", company: "Sun Pharmaceutical Industries Ltd.", date: "2026-11-17", quarter: "Q2 FY27", epsEst: "₹15.20", revEst: "₹14,100 Cr", status: "Confirmed", cap: "LC", sector: "Pharma" },
-      { symbol: "SAREGAMA", company: "Saregama India Ltd.", date: "2026-11-18", quarter: "Q2 FY27", epsEst: "₹3.80", revEst: "₹245 Cr", status: "Confirmed", cap: "SC", sector: "Media" },
-      { symbol: "RELIANCE", company: "Reliance Industries Ltd.", date: "2026-11-19", quarter: "Q2 FY27", epsEst: "₹32.50", revEst: "₹2,58,000 Cr", status: "Confirmed", cap: "LC", sector: "Conglomerate" },
-      { symbol: "GNRL", company: "Gujarat Natural Resources Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹1.40", revEst: "₹68 Cr", status: "Tentative", cap: "MC", sector: "Oil & Gas" },
-      { symbol: "ORICONENT", company: "Oricon Enterprises Ltd.", date: "2026-11-22", quarter: "Q2 FY27", epsEst: "₹0.95", revEst: "₹185 Cr", status: "Tentative", cap: "MC", sector: "Packaging" },
-      { symbol: "ICIL", company: "Indo Count Industries Ltd.", date: "2026-11-24", quarter: "Q2 FY27", epsEst: "₹2.80", revEst: "₹910 Cr", status: "Tentative", cap: "SC", sector: "Textiles" },
-      { symbol: "NDRAUTO", company: "NDR Auto Components Ltd.", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹18.60", revEst: "₹220 Cr", status: "Tentative", cap: "MC", sector: "Auto Parts" },
-      { symbol: "APLLTD", company: "Alembic Pharmaceuticals Ltd.", date: "2026-11-27", quarter: "Q2 FY27", epsEst: "₹7.10", revEst: "₹1,620 Cr", status: "Tentative", cap: "SC", sector: "Pharma" },
-      { symbol: "SURAKSHA", company: "Suraksha Diagnostic Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹3.80", revEst: "₹145 Cr", status: "Confirmed", cap: "SC", sector: "Healthcare / Diagnostics" },
-      { symbol: "SOLARA", company: "Solara Active Pharma Sciences Ltd.", date: "2026-11-20", quarter: "Q2 FY27", epsEst: "₹7.71", revEst: "₹410 Cr", status: "Confirmed", cap: "SC", sector: "Pharma" },
-      { symbol: "SWIGGY", company: "Swiggy Ltd.", date: "2026-11-21", quarter: "Q2 FY27", epsEst: "-₹2.10", revEst: "₹3,900 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
-      { symbol: "ZOMATO", company: "Eternal Ltd. (Zomato)", date: "2026-11-22", quarter: "Q2 FY27", epsEst: "₹1.40", revEst: "₹4,800 Cr", status: "Confirmed", cap: "LC", sector: "Consumer Tech" },
-      { symbol: "WAAREEENER", company: "Waaree Energies Ltd.", date: "2026-11-23", quarter: "Q2 FY27", epsEst: "₹18.50", revEst: "₹3,400 Cr", status: "Confirmed", cap: "LC", sector: "Solar / Renewable" },
-      { symbol: "PREMIERENE", company: "Premier Energies Ltd.", date: "2026-11-23", quarter: "Q2 FY27", epsEst: "₹8.20", revEst: "₹1,120 Cr", status: "Confirmed", cap: "LC", sector: "Solar / Renewable" },
-      { symbol: "SOLARINDS", company: "Solar Industries India Ltd.", date: "2026-12-21", quarter: "Q2 FY27", epsEst: "₹48.50", revEst: "₹2,150 Cr", status: "Confirmed", cap: "LC", sector: "Chemicals & Explosives" },
-      { symbol: "BAJAJHFL", company: "Bajaj Housing Finance Ltd.", date: "2026-11-24", quarter: "Q2 FY27", epsEst: "₹1.85", revEst: "₹2,400 Cr", status: "Confirmed", cap: "LC", sector: "Housing Finance" },
-      { symbol: "NTPCGREEN", company: "NTPC Green Energy Ltd.", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹0.95", revEst: "₹650 Cr", status: "Confirmed", cap: "LC", sector: "Renewable Energy" },
-      { symbol: "PAYTM", company: "One97 Communications (Paytm)", date: "2026-11-25", quarter: "Q2 FY27", epsEst: "₹2.10", revEst: "₹1,850 Cr", status: "Confirmed", cap: "MC", sector: "Fintech" },
-      { symbol: "SUZLON", company: "Suzlon Energy Ltd.", date: "2026-11-26", quarter: "Q2 FY27", epsEst: "₹0.85", revEst: "₹2,100 Cr", status: "Confirmed", cap: "MC", sector: "Wind Energy" },
-      { symbol: "BEL", company: "Bharat Electronics Ltd.", date: "2026-11-26", quarter: "Q2 FY27", epsEst: "₹3.40", revEst: "₹4,900 Cr", status: "Confirmed", cap: "LC", sector: "Defence" },
-      { symbol: "CDSL", company: "Central Depository Services Ltd.", date: "2026-11-27", quarter: "Q2 FY27", epsEst: "₹6.80", revEst: "₹280 Cr", status: "Confirmed", cap: "MC", sector: "Capital Markets" }
-    ];
+    // Lazy load authentic earnings dataset from local repository
+    let earnMap = null;
+    try {
+      if (!global._screeningMantisEarnings) {
+        const filePath = path.join(__dirname, 'data', 'screeningmantis-earnings.json');
+        if (fs.existsSync(filePath)) {
+          global._screeningMantisEarnings = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        }
+      }
+      earnMap = global._screeningMantisEarnings;
+    } catch (_) {}
 
     // Compute Monday-Sunday week bounds
     function getWeekBounds(dateStr) {
@@ -5821,12 +5782,41 @@ const server = http.createServer(async (req, res) => {
       return { start: fmt(mon), end: fmt(sun) };
     }
 
-    let filteredEvents = ALL_SCHEDULED_EARNINGS;
-    if (range === 'day') {
-      filteredEvents = ALL_SCHEDULED_EARNINGS.filter(e => e.date === date);
-    } else if (range === 'week') {
-      const bounds = getWeekBounds(date);
-      filteredEvents = ALL_SCHEDULED_EARNINGS.filter(e => e.date >= bounds.start && e.date <= bounds.end);
+    const bounds = getWeekBounds(date);
+    const monthPrefix = date.slice(0, 7);
+
+    let filteredEvents = [];
+    if (earnMap && typeof earnMap === 'object') {
+      const capOrder = { Large: 1, Mid: 2, Small: 3, Micro: 4 };
+      for (const [sym, info] of Object.entries(earnMap)) {
+        const pDate = info.pastEarningsDate || info.nextEarningsDate;
+        if (!pDate) continue;
+
+        let match = false;
+        if (range === 'day') {
+          match = (pDate === date);
+        } else if (range === 'week') {
+          match = (pDate >= bounds.start && pDate <= bounds.end);
+        } else {
+          match = pDate.startsWith(monthPrefix);
+        }
+
+        if (match) {
+          filteredEvents.push({
+            symbol: sym,
+            company: `${sym} Ltd.`,
+            date: pDate,
+            quarter: "Q2 FY25",
+            epsEst: "—",
+            revEst: "—",
+            status: info.nextEarningsDate ? "Upcoming" : "Reported",
+            cap: info.marketCap === "Large" ? "LC" : (info.marketCap === "Mid" ? "MC" : "SC"),
+            sector: info.sector || "Equities",
+            earningsDayChange: info.earningsDayChange
+          });
+        }
+      }
+      filteredEvents.sort((a, b) => a.date.localeCompare(b.date) || ((capOrder[a.cap] || 4) - (capOrder[b.cap] || 4)));
     }
 
     const payload = {
