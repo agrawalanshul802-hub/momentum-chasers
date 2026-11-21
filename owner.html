@@ -1652,9 +1652,57 @@
       }
     }
 
+    var pinLockoutTimer = null;
+    var pinFailedAttempts = 0;
+
+    function startPinLockout(seconds) {
+      if (pinLockoutTimer) clearInterval(pinLockoutTimer);
+      var remaining = seconds || 60;
+      var input = document.getElementById('pin-input');
+      var btn = document.getElementById('btn-unlock');
+      var errEl = document.getElementById('pin-error');
+
+      if (input) input.disabled = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+      }
+
+      function tick() {
+        if (remaining <= 0) {
+          clearInterval(pinLockoutTimer);
+          pinLockoutTimer = null;
+          pinFailedAttempts = 0;
+          if (input) {
+            input.disabled = false;
+            input.focus();
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '';
+            btn.style.cursor = '';
+            btn.textContent = 'Unlock Owner Studio';
+          }
+          if (errEl) errEl.style.display = 'none';
+          return;
+        }
+
+        if (btn) btn.textContent = '🔒 Locked (' + remaining + 's)';
+        if (errEl) {
+          errEl.innerHTML = '🔒 <strong>Security Lockout:</strong> Too many failed PIN attempts.<br>Please wait <strong>' + remaining + 's</strong> before trying again.';
+          errEl.style.display = 'block';
+        }
+        remaining--;
+      }
+
+      tick();
+      pinLockoutTimer = setInterval(tick, 1000);
+    }
+
     function verifyPinWithServer(pin, cb) {
       if (pin === '1234' || pin === 'momentum2026') {
-        cb(true);
+        cb({ valid: true });
         return;
       }
       fetch('/api/owner-ideas/verify-pin', {
@@ -1662,13 +1710,23 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pin: pin })
       })
-      .then(function(res) { return res.json(); })
-      .then(function(data) { cb(data && data.valid); })
-      .catch(function() { cb(pin === '1234'); });
+      .then(function(res) {
+        return res.json().then(function(data) {
+          return { status: res.status, data: data };
+        });
+      })
+      .then(function(result) {
+        cb(result.data || {});
+      })
+      .catch(function() {
+        cb({ valid: (pin === '1234' || pin === 'momentum2026') });
+      });
     }
 
     function handlePinSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
+      if (pinLockoutTimer) return false;
+
       var input = document.getElementById('pin-input');
       var pin = (input ? input.value : '').trim();
       var errEl = document.getElementById('pin-error');
@@ -1684,6 +1742,7 @@
 
       // Fast check for 1234 / momentum2026
       if (pin === '1234' || pin === 'momentum2026') {
+        pinFailedAttempts = 0;
         ownerPin = pin;
         sessionStorage.setItem('mc_owner_pin', pin);
         unlockUI();
@@ -1692,17 +1751,26 @@
         return false;
       }
 
-      verifyPinWithServer(pin, function(valid) {
-        if (valid) {
+      verifyPinWithServer(pin, function(res) {
+        if (res && res.valid) {
+          pinFailedAttempts = 0;
           ownerPin = pin;
           sessionStorage.setItem('mc_owner_pin', pin);
           unlockUI();
           showToast('Owner Studio Unlocked');
           fetchIdeas();
         } else {
-          if (errEl) {
-            errEl.textContent = 'Incorrect PIN. Default is 1234.';
-            errEl.style.display = 'block';
+          pinFailedAttempts++;
+          if (res && res.locked) {
+            startPinLockout(res.retryAfterSec || 60);
+          } else if (pinFailedAttempts >= 4) {
+            startPinLockout(60);
+          } else {
+            if (errEl) {
+              var rem = res && typeof res.attemptsRemaining === 'number' ? res.attemptsRemaining : Math.max(0, 4 - pinFailedAttempts);
+              errEl.textContent = 'Incorrect PIN. (' + rem + ' attempt' + (rem === 1 ? '' : 's') + ' remaining before temporary lockout)';
+              errEl.style.display = 'block';
+            }
           }
         }
       });

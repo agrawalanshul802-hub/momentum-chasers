@@ -5370,6 +5370,57 @@ function handleStaticFile(req, res, filePath, pathname) {
   });
 }
 
+// IP-based Rate Limiter for PIN authentication and brute-force defense
+const _pinAttemptMap = new Map(); // ip -> { count: number, lockedUntil: number, firstAttempt: number }
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    const parts = forwarded.split(',');
+    return parts[0].trim();
+  }
+  return (req.socket && req.socket.remoteAddress) || (req.connection && req.connection.remoteAddress) || 'unknown';
+}
+
+function checkPinRateLimit(ip) {
+  const now = Date.now();
+  const record = _pinAttemptMap.get(ip);
+  if (!record) return { allowed: true };
+
+  if (record.lockedUntil && now < record.lockedUntil) {
+    const remainingSec = Math.ceil((record.lockedUntil - now) / 1000);
+    return { allowed: false, retryAfterSec: remainingSec };
+  }
+
+  if (record.lockedUntil && now >= record.lockedUntil) {
+    record.count = 0;
+    record.lockedUntil = 0;
+  }
+  if (now - record.firstAttempt > 10 * 60 * 1000) {
+    record.count = 0;
+    record.firstAttempt = now;
+  }
+  return { allowed: true };
+}
+
+function recordFailedPinAttempt(ip) {
+  const now = Date.now();
+  let record = _pinAttemptMap.get(ip);
+  if (!record || (now - record.firstAttempt > 10 * 60 * 1000)) {
+    record = { count: 0, lockedUntil: 0, firstAttempt: now };
+  }
+  record.count += 1;
+  if (record.count >= 5) {
+    record.lockedUntil = now + 60 * 1000; // 60s cooldown
+  }
+  _pinAttemptMap.set(ip, record);
+  return record;
+}
+
+function recordSuccessfulPin(ip) {
+  _pinAttemptMap.delete(ip);
+}
+
 const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, 'http://localhost');
   parsedUrl.query = Object.fromEntries(parsedUrl.searchParams.entries());
@@ -6729,13 +6780,53 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // Verify PIN Endpoint
+  // Verify PIN Endpoint with Security Rate Limiting
   if (pathname === '/api/owner-ideas/verify-pin' && req.method === 'POST') {
+    const clientIp = getClientIp(req);
+    const rlCheck = checkPinRateLimit(clientIp);
+    if (!rlCheck.allowed) {
+      res.writeHead(429, {
+        'Content-Type': 'application/json',
+        'Retry-After': String(rlCheck.retryAfterSec)
+      });
+      res.end(JSON.stringify({
+        success: false,
+        valid: false,
+        locked: true,
+        retryAfterSec: rlCheck.retryAfterSec,
+        error: `Too many failed attempts. Security lockout active. Please wait ${rlCheck.retryAfterSec}s before retrying.`
+      }));
+      return;
+    }
+
     const body = await parseRequestBody(req);
     const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
     const isValid = isAuthorizedOwnerPin(pin);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, valid: isValid }));
+
+    if (isValid) {
+      recordSuccessfulPin(clientIp);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, valid: true }));
+    } else {
+      const rec = recordFailedPinAttempt(clientIp);
+      const isLocked = rec.lockedUntil > Date.now();
+      const remainingAttempts = Math.max(0, 5 - rec.count);
+      const statusCode = isLocked ? 429 : 200;
+      res.writeHead(statusCode, {
+        'Content-Type': 'application/json',
+        ...(isLocked ? { 'Retry-After': '60' } : {})
+      });
+      res.end(JSON.stringify({
+        success: false,
+        valid: false,
+        locked: isLocked,
+        retryAfterSec: isLocked ? 60 : 0,
+        attemptsRemaining: remainingAttempts,
+        error: isLocked
+          ? 'Too many failed PIN attempts. Locked for 60 seconds.'
+          : `Incorrect PIN. ${remainingAttempts} attempts remaining before temporary lockout.`
+      }));
+    }
     return;
   }
 
