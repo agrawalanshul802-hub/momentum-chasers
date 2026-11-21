@@ -4559,21 +4559,21 @@ body.theme-white .ema-status-pill.amber {
 
 .netflow-val {
     font-size: 11.5px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .netflow-ratio {
     font-size: 8.5px;
-    font-weight: 600;
-    opacity: 0.82;
+    font-weight: 700;
+    opacity: 0.92;
     letter-spacing: -0.2px;
 }
 
 .netflow-cell:hover {
     transform: scale(1.08);
-    filter: brightness(1.2);
+    filter: brightness(1.15);
     z-index: 2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .netflow-cell.active-cell {
@@ -4586,21 +4586,21 @@ body.theme-white .ema-status-pill.amber {
 
 /* Intensity Classes for Net Flow - Modern Toned Palette */
 .flow-p3 {
-    background: rgba(34, 197, 94, 0.26);
-    border: 1px solid rgba(74, 222, 128, 0.45);
-    color: #86efac;
+    background: rgba(34, 197, 94, 0.32);
+    border: 1px solid rgba(74, 222, 128, 0.55);
+    color: #bbf7d0;
 }
 
 .flow-p2 {
-    background: rgba(34, 197, 94, 0.16);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #4ade80;
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.38);
+    color: #86efac;
 }
 
 .flow-p1 {
-    background: rgba(34, 197, 94, 0.08);
-    border: 1px solid rgba(34, 197, 94, 0.18);
-    color: #22c55e;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
 }
 
 .flow-zero {
@@ -4610,21 +4610,21 @@ body.theme-white .ema-status-pill.amber {
 }
 
 .flow-n1 {
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.18);
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
     color: #fca5a5;
 }
 
 .flow-n2 {
-    background: rgba(239, 68, 68, 0.16);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.38);
+    color: #f87171;
 }
 
 .flow-n3 {
-    background: rgba(239, 68, 68, 0.26);
-    border: 1px solid rgba(248, 113, 113, 0.45);
-    color: #f87171;
+    background: rgba(239, 68, 68, 0.32);
+    border: 1px solid rgba(248, 113, 113, 0.55);
+    color: #fecaca;
 }
 
 /* ==========================================================================
@@ -4960,12 +4960,27 @@ body.theme-white .ema-status-pill.amber {
     background: var(--sf3);
 }
 
-/* White Theme for Net Flow */
+/* White Theme for Net Flow - Dark High-Contrast Vibrant Palette */
 body.theme-white .netflow-table-card,
 body.theme-white .netflow-breakdown-card,
 body.theme-white .netflow-stocks-column {
     background: #ffffff !important;
-    border-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.theme-white .netflow-header-cell {
+    color: #334155 !important;
+    font-weight: 700 !important;
+}
+
+body.theme-white .netflow-header-cell.font-bold {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .netflow-sector-name {
+    color: #0f172a !important;
+    font-weight: 700 !important;
 }
 
 body.theme-white .netflow-row:hover {
@@ -4973,15 +4988,95 @@ body.theme-white .netflow-row:hover {
 }
 
 body.theme-white .netflow-row.active-sector-row {
-    background: rgba(34, 197, 94, 0.06) !important;
-    border-color: #22c55e !important;
+    background: #f0fdf4 !important;
+    border: 1.5px solid #16a34a !important;
+    box-shadow: 0 0 0 1px #16a34a !important;
 }
 
 body.theme-white .netflow-stock-card,
 body.theme-white .netflow-filter-btn,
 body.theme-white .netflow-interactive-hint {
     background: #f8fafc !important;
-    border-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+    color: #334155 !important;
+}
+
+body.theme-white .netflow-interactive-hint strong {
+    color: #0f172a !important;
+}
+
+/* High-Contrast Dark Text & Crisp Tints for A/D Net Flow in Light Theme */
+body.theme-white .flow-p1 {
+    background: #dcfce7 !important;
+    border: 1px solid #86efac !important;
+    color: #15803d !important;
+}
+
+body.theme-white .flow-p2 {
+    background: #bbf7d0 !important;
+    border: 1px solid #4ade80 !important;
+    color: #166534 !important;
+}
+
+body.theme-white .flow-p3 {
+    background: #86efac !important;
+    border: 1px solid #22c55e !important;
+    color: #052e16 !important;
+}
+
+body.theme-white .flow-zero {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+}
+
+body.theme-white .flow-n1 {
+    background: #fee2e2 !important;
+    border: 1px solid #fca5a5 !important;
+    color: #b91c1c !important;
+}
+
+body.theme-white .flow-n2 {
+    background: #fecaca !important;
+    border: 1px solid #f87171 !important;
+    color: #991b1b !important;
+}
+
+body.theme-white .flow-n3 {
+    background: #fca5a5 !important;
+    border: 1px solid #ef4444 !important;
+    color: #450a0a !important;
+}
+
+body.theme-white .netflow-val {
+    font-weight: 800 !important;
+    color: inherit !important;
+}
+
+body.theme-white .netflow-ratio {
+    font-weight: 700 !important;
+    opacity: 0.95 !important;
+    color: inherit !important;
+}
+
+body.theme-white .adv-badge {
+    background: #dcfce7 !important;
+    border: 1px solid #86efac !important;
+    color: #15803d !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .dec-badge {
+    background: #fee2e2 !important;
+    border: 1px solid #fca5a5 !important;
+    color: #b91c1c !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .netflow-cell.active-cell {
+    outline: 2.5px solid #0f172a !important;
+    outline-offset: 1px !important;
+    box-shadow: 0 0 10px rgba(15, 23, 42, 0.3) !important;
 }
 
 @media (max-width: 900px) {
