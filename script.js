@@ -9961,7 +9961,7 @@
     previousView: "home",       // Tracks previous view for back navigation
     user: savedUser,            // Active user object { name, email, plan, avatar, broker }
     authTab: "signin",          // "signin" or "signup"
-    timeframe: "ath",           // "ath" = All-Time High, "d" = Daily, "w" = Weekly
+    timeframe: "d",             // "d" = Daily (default), "w" = Weekly
     marketCap: "all",           // "all", "LC", "MC", "SC"
     sector: "all",              // "all" or specific sector
     stockAlerts: getStoredStockAlerts(), // User configured stock alerts
@@ -32391,7 +32391,7 @@
               <div class="ob-pop-card ob-pop-bull">
                 <div class="ob-pop-badge">&uarr; BULLISH BREAKOUT</div>
                 <div class="ob-pop-stock">NIFTY 50 &bull; 25,030.35</div>
-                <div class="ob-pop-meta"><span class="ob-pop-gain">+2.01%</span> &bull; 15m 50/200 Golden Cross</div>
+                <div class="ob-pop-meta"><span class="ob-pop-gain">+2.01%</span> &bull; Daily 50/200 Golden Cross</div>
               </div>
 
               <div class="ob-pop-card ob-pop-bear">

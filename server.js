@@ -5292,8 +5292,9 @@ function handleStaticFile(req, res, filePath, pathname) {
 
     const isHtml = ext === '.html' || pathname === '/' || pathname === '/index.html' || pathname === '/login' || pathname === '/owner' || pathname === '/admin' || pathname.startsWith('/order-flow');
     const etag = `W/"${stat.size.toString(16)}-${Math.trunc(stat.mtimeMs).toString(16)}"`;
-    const cacheControl = isHtml 
-      ? 'no-cache, must-revalidate' 
+    const isCodeAsset = isHtml || ext === '.js' || ext === '.css';
+    const cacheControl = isCodeAsset 
+      ? 'no-cache, no-store, must-revalidate' 
       : 'public, max-age=300, must-revalidate';
 
     const headers = {
