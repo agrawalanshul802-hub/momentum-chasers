@@ -28435,51 +28435,48 @@
         const r = range || State.earningsRange || "month";
         const d = date || State.earningsDate || "2026-11-12";
 
-        // On static hosting (e.g. GitHub Pages) or when no local API base exists, enrich events directly
-        if (isStaticHost() || !getApiBase()) {
-          const rawEvents = getEventsForCategory("earnings", State.eventsYear, State.eventsMonth);
-          this.data = rawEvents.map(e => {
-            const q = getEventStockLiveQuote(e.symbol);
-            return {
-              ...e,
-              price: q.price,
-              chg: q.chg,
-              cap: q.cap || e.cap,
-              sector: q.sector || e.sector
-            };
-          });
-          this.lastSynced = new Date();
-          if (State.view === "events" && State.eventsTab === "earnings") {
-            const container = document.getElementById("events-content-area") || document.getElementById("view-container");
-            if (container) renderActiveView();
-          }
-          if (interactive) showToast(`Synced ${this.data.length} scheduled corporate earnings with live quotes`, "⚡");
-          return;
+        const targetMonth = State.eventsMonth;
+        const targetYear = State.eventsYear;
+        const monthPrefix = `${targetYear}-${String(targetMonth + 1).padStart(2, "0")}`;
+
+        const rawEvents = getEventsForCategory("earnings", targetYear, targetMonth);
+        let filtered = rawEvents;
+        if (r === "day") {
+          filtered = rawEvents.filter(e => e.date === d);
+        } else if (r === "week") {
+          const parts = d.split("-").map(Number);
+          const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+          const day = dt.getDay();
+          const diffToMon = day === 0 ? -6 : 1 - day;
+          const mon = new Date(parts[0], parts[1] - 1, parts[2] + diffToMon);
+          const sun = new Date(parts[0], parts[1] - 1, parts[2] + diffToMon + 6);
+          const pad = n => String(n).padStart(2, '0');
+          const fmt = x => `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`;
+          const bStart = fmt(mon);
+          const bEnd = fmt(sun);
+          filtered = rawEvents.filter(e => e.date >= bStart && e.date <= bEnd);
+        } else {
+          filtered = rawEvents.filter(e => e.date && e.date.startsWith(monthPrefix));
         }
 
-        const res = await fetch(`${getApiBase()}/api/earnings/live?range=${encodeURIComponent(r)}&date=${encodeURIComponent(d)}`, { cache: "no-store" });
-        const cType = res.headers.get("content-type") || "";
-        if (res.ok && cType.includes("json")) {
-          const json = await res.json();
-          if (json && Array.isArray(json.events) && json.events.length > 0) {
-            this.data = json.events.map(e => {
-              const q = getEventStockLiveQuote(e.symbol);
-              return {
-                ...e,
-                price: q.price,
-                chg: q.chg,
-                cap: q.cap || e.cap,
-                sector: q.sector || e.sector
-              };
-            });
-            this.lastSynced = new Date();
-            if (State.view === "events" && State.eventsTab === "earnings") {
-              const container = document.getElementById("events-content-area") || document.getElementById("view-container");
-              if (container) renderActiveView();
-            }
-            if (interactive) showToast(`Synced ${this.data.length} live scheduled corporate earnings`, "⚡");
-          }
+        this.data = filtered.map(e => {
+          const q = getEventStockLiveQuote(e.symbol);
+          const stObj = (typeof ST_MAP !== "undefined" && ST_MAP[e.symbol]) || null;
+          return {
+            ...e,
+            price: q.price,
+            chg: q.chg,
+            cap: q.cap || e.cap,
+            sector: q.sector || e.sector,
+            company: (stObj && stObj.name) ? stObj.name : (q.name || e.company)
+          };
+        });
+        this.lastSynced = new Date();
+        if (State.view === "events" && State.eventsTab === "earnings") {
+          const container = document.getElementById("events-content-area") || document.getElementById("view-container");
+          if (container) renderActiveView();
         }
+        if (interactive) showToast(`Synced ${this.data.length} scheduled corporate earnings with live quotes`, "⚡");
       } catch (err) {
         console.warn("EarningsLiveService notice:", err);
       } finally {
@@ -28618,6 +28615,9 @@
     let rangeFiltered = baseData;
     let rangeHeading = "";
 
+    const monthStr = String(State.eventsMonth + 1).padStart(2, "0");
+    const monthPrefix = `${State.eventsYear}-${monthStr}`;
+
     if (curRange === "day") {
       rangeFiltered = baseData.filter(item => item.date === curDate);
       rangeHeading = `Corporate Earnings for ${curDate} (Day View)`;
@@ -28625,7 +28625,8 @@
       rangeFiltered = baseData.filter(item => item.date >= weekBounds.start && item.date <= weekBounds.end);
       rangeHeading = `Corporate Earnings for This Week (${weekBounds.start} – ${weekBounds.end})`;
     } else {
-      rangeHeading = `Corporate Earnings Calendar — ${EVENTS_MONTH_NAMES[State.eventsMonth]} ${State.eventsYear}`;
+      rangeFiltered = baseData.filter(item => item.date && item.date.startsWith(monthPrefix));
+      rangeHeading = `Corporate Earnings Calendar — ${EVENTS_MONTH_NAMES[State.eventsMonth]} ${State.eventsYear} (${rangeFiltered.length} Scheduled Companies)`;
     }
 
     const resolvedSym = q ? resolveStockSymbol(q) : null;
@@ -28656,7 +28657,7 @@
         }
       });
 
-      // 2. If still no direct match, search broader stock universe (Suraksha, Solara, Swiggy, Zomato, etc.)
+      // 2. If still no direct match, search authentic ScreeningMantis & Master earnings maps
       const stillNoDirectMatch = !data.some(item => {
         const s = item.symbol.toUpperCase();
         const c = item.company.toLowerCase();
@@ -28664,20 +28665,25 @@
       });
 
       if (stillNoDirectMatch) {
-        const matched = findStockInUniverse(q);
-        if (matched && !data.some(d => d.symbol === matched.symbol)) {
+        const earnMap = window._screeningMantisEarningsMap || (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEarningsMap) || (typeof KNOWN_INDIAN_EARNINGS_CALENDAR !== "undefined" ? KNOWN_INDIAN_EARNINGS_CALENDAR : null);
+        const symKey = resolvedSym || cleanQ;
+        const earnInfo = (earnMap && (earnMap[symKey] || earnMap[cleanQ])) || null;
+        if (earnInfo && (earnInfo.pastEarningsDate || earnInfo.prev)) {
+          const stObj = (typeof ST_MAP !== "undefined" && ST_MAP[symKey]) || null;
+          const q = getEventStockLiveQuote(symKey);
           data.unshift({
-            symbol: matched.symbol,
-            company: matched.name,
-            date: matched.date || (curRange === "day" ? curDate : `${State.eventsYear}-${String(State.eventsMonth + 1).padStart(2, '0')}-20`),
-            quarter: "Q2 FY27",
-            epsEst: matched.epsEst || `₹${Math.max(1, (matched.price * 0.012)).toFixed(2)}`,
-            revEst: matched.revEst || `₹${formatNumber(Math.round(Math.max(50, matched.price * 1.4)), 0)} Cr`,
-            status: "Confirmed",
-            cap: matched.cap,
-            sector: matched.sector,
-            price: matched.price,
-            chg: matched.chg
+            symbol: symKey,
+            company: (stObj && stObj.name) ? stObj.name : (q.name || `${symKey} Ltd.`),
+            date: earnInfo.pastEarningsDate || earnInfo.prev,
+            quarter: "Q2 FY25",
+            epsEst: "—",
+            revEst: "—",
+            status: "Reported",
+            cap: stObj ? stObj.cap : (q.cap || "MC"),
+            sector: stObj ? stObj.sector : (q.sector || "Equities"),
+            price: q.price,
+            chg: q.chg,
+            earningsDayChange: earnInfo.earningsDayChange != null ? earnInfo.earningsDayChange : earnInfo.reaction
           });
         }
       }
@@ -28731,12 +28737,12 @@
       const chg = typeof item.chg === "number" ? item.chg : q.chg;
       const chgClass = chg >= 0 ? "val-green" : "val-red";
       const chgSign = chg >= 0 ? "+" : "";
-      const itemStatus = sanitizeEarningsField(item.status, "Confirmed");
+      const itemStatus = item.status || "Reported";
       const statusClass = itemStatus === "Confirmed" ? "val-green" : "val-amber";
-      const itemQuarter = sanitizeEarningsField(item.quarter, "Q2 FY27");
-      const itemEps = sanitizeEarningsField(item.epsEst, "₹" + Math.max(1, (price * 0.008)).toFixed(2));
-      const itemRev = sanitizeEarningsField(item.revEst, "₹" + formatNumber(Math.round(Math.max(50, price * 1.2)), 0) + " Cr");
-      const itemSector = sanitizeEarningsField(item.sector || q.sector, "Equities");
+      const itemQuarter = item.quarter || "Q2 FY25";
+      const itemEps = (item.epsEst && item.epsEst !== "—" && !String(item.epsEst).includes("undefined")) ? item.epsEst : "—";
+      const itemRev = (item.revEst && item.revEst !== "—" && !String(item.revEst).includes("undefined")) ? item.revEst : "—";
+      const itemSector = item.sector || q.sector || "Equities";
             const tvUrl = `https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(item.symbol)}`;
 
       return `
@@ -28890,23 +28896,7 @@
       });
     }
 
-    // 2. If still 0 matches, search broader stock universe
-    if (q && data.length === 0) {
-      const matched = findStockInUniverse(q);
-      if (matched) {
-        const monthStr = String(State.eventsMonth + 1).padStart(2, "0");
-        data = [{
-          symbol: matched.symbol,
-          company: matched.name,
-          date: matched.date || `${State.eventsYear}-${monthStr}-12`,
-          time: "04:30 PM IST",
-          topic: `Q2 FY27 Earnings Call, Operational Performance & Growth Outlook`,
-          dialIn: "+91 22 6280 1567 / +91 22 7115 8432",
-          webcast: `https://${matched.symbol.toLowerCase()}.com/investors`,
-          attendees: "Managing Director & Chief Financial Officer"
-        }];
-      }
-    }
+    // 2. Concall search complete (no mock injections)
 
     const monthLabel = `${EVENTS_MONTH_NAMES[State.eventsMonth]} ${State.eventsYear}`;
     const todayStr = new Date().toISOString().slice(0, 10);
@@ -29084,24 +29074,7 @@
       });
     }
 
-    // 2. If still 0 matches, search broader stock universe
-    if (q && data.length === 0) {
-      const matched = findStockInUniverse(q);
-      if (matched) {
-        const monthStr = String(State.eventsMonth + 1).padStart(2, "0");
-        const price = matched.price || 565.10;
-        data = [{
-          symbol: matched.symbol,
-          company: matched.name,
-          type: "Dividend",
-          exDate: `${State.eventsYear}-${monthStr}-18`,
-          recordDate: `${State.eventsYear}-${monthStr}-19`,
-          details: `Interim Dividend ₹${Math.max(1, (price * 0.01)).toFixed(2)} per share`,
-          yield: "1.06%",
-          ltp: price
-        }];
-      }
-    }
+    // 2. Corporate actions search complete (no mock injections)
 
     const monthLabel = `${EVENTS_MONTH_NAMES[State.eventsMonth]} ${State.eventsYear}`;
 
