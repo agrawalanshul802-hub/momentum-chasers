@@ -12320,16 +12320,11 @@
     const rec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sym]) ||
                 (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]);
     if (rec) {
-      const e10 = isW ? rec.wEma10 : rec.ema10;
-      const e20 = isW ? rec.wEma20 : rec.ema20;
-      const e50 = isW ? rec.wEma50 : rec.ema50;
-      const e200 = isW ? rec.wEma200 : rec.ema200;
-
       return [
-        (e10 != null && price > 0) ? (price >= e10) : Boolean(isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10),
-        (e20 != null && price > 0) ? (price >= e20) : Boolean(isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20),
-        (e50 != null && price > 0) ? (price >= e50) : Boolean(isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50),
-        (e200 != null && price > 0) ? (price >= e200) : Boolean(isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200)
+        Boolean(isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10),
+        Boolean(isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20),
+        Boolean(isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50),
+        Boolean(isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200)
       ];
     }
 
@@ -12732,10 +12727,10 @@
         const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
         const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
 
-        const above10 = (e10Val != null && price > 0) ? (price >= e10Val) : emas[0];
-        const above20 = (e20Val != null && price > 0) ? (price >= e20Val) : emas[1];
-        const above50 = (e50Val != null && price > 0) ? (price >= e50Val) : emas[2];
-        const above200 = (e200Val != null && price > 0) ? (price >= e200Val) : emas[3];
+        const above10 = smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0];
+        const above20 = smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1];
+        const above50 = smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2];
+        const above200 = smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3];
 
         const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
         const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
@@ -12753,14 +12748,33 @@
       if (crossCell) {
         const sSym = row.dataset.symbol || (Array.isArray(s) ? s[0] : s.symbol);
         const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sSym]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sSym]);
-        const isGolden = (() => {
-          if (smRec && smRec.ema50 != null && smRec.ema200 != null) return smRec.ema50 >= smRec.ema200;
-          if (smRec && smRec.emaCross) return smRec.emaCross === "bull";
-          return Array.isArray(s) ? (s[7] <= 5 || (s[5] && s[5].includes("a"))) : true;
-        })();
+        const tf = State.timeframe || "d";
+        const isW = tf === "w";
+        const cross = smRec ? (isW ? smRec.wEmaCross : smRec.emaCross) : null;
+        const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
+        const candleSuffix = candles != null ? `${candles}${isW ? 'w' : 'd'}` : '';
+
+        let label = "";
+        let tagCls = "";
+        if (cross === "bull") {
+          label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bullish (10>20)`;
+          tagCls = "bullish";
+        } else if (cross === "bear") {
+          label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bearish (10<20)`;
+          tagCls = "bearish";
+        } else {
+          const isGolden = Array.isArray(s) ? (s[7] <= 5 || (s[5] && s[5].includes("a"))) : true;
+          label = isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)";
+          tagCls = isGolden ? "bullish" : "bearish";
+        }
+
+        const tooltip = smRec ?
+          `ScreeningMantis Live: 10×20 Cross: ${cross === 'bull' ? 'Bullish' : cross === 'bear' ? 'Bearish' : 'Neutral'} (${candles || 0} candles) · 50 EMA: ₹${formatNumber(smRec.ema50)}, 200 EMA: ₹${formatNumber(smRec.ema200)}` :
+          `EMA Cross: ${label}`;
+
         crossCell.innerHTML = `
-          <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
-            ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
+          <span class="crossover-status-tag ${tagCls}" title="${escapeHtml(tooltip)}">
+            ${label}
           </span>
         `;
       }
@@ -13656,9 +13670,13 @@
         const emasB = getStockEmaStatus(b).filter(Boolean).length;
         diff = emasA - emasB;
       } else if (activeSortCol === "cross") {
-        const isGoldenA = (a[7] <= 5 || (a[5] && a[5].includes("a"))) ? 1 : 0;
-        const isGoldenB = (b[7] <= 5 || (b[5] && b[5].includes("a"))) ? 1 : 0;
-        diff = isGoldenA - isGoldenB;
+        const smA = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[a[0]]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[a[0]]);
+        const smB = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[b[0]]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[b[0]]);
+        const crossA = smA ? (State.timeframe === "w" ? smA.wEmaCross : smA.emaCross) : null;
+        const crossB = smB ? (State.timeframe === "w" ? smB.wEmaCross : smB.emaCross) : null;
+        const scoreA = crossA === "bull" ? 2 : (crossA === "bear" ? 0 : 1);
+        const scoreB = crossB === "bull" ? 2 : (crossB === "bear" ? 0 : 1);
+        diff = scoreA - scoreB;
       } else if (activeSortCol === "athDist") {
         const distA = getStockAthDistance(a).dist;
         const distB = getStockAthDistance(b).dist;
@@ -13843,10 +13861,10 @@
                 const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
                 const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
 
-                const above10 = (e10Val != null && price > 0) ? (price >= e10Val) : emas[0];
-                const above20 = (e20Val != null && price > 0) ? (price >= e20Val) : emas[1];
-                const above50 = (e50Val != null && price > 0) ? (price >= e50Val) : emas[2];
-                const above200 = (e200Val != null && price > 0) ? (price >= e200Val) : emas[3];
+                const above10 = smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0];
+                const above20 = smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1];
+                const above50 = smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2];
+                const above200 = smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3];
 
                 const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
                 const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
@@ -13863,9 +13881,36 @@
             </td>` : ''}
           ${State.screenerCols.cross !== false ? `
             <td style="text-align:center" class="stock-cross-cell">
-              <span class="crossover-status-tag ${isGolden ? "bullish" : "bearish"}">
-                ${isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)"}
-              </span>
+              ${(() => {
+                const tf = State.timeframe || "d";
+                const isW = tf === "w";
+                const cross = smRec ? (isW ? smRec.wEmaCross : smRec.emaCross) : null;
+                const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
+                const candleSuffix = candles != null ? `${candles}${isW ? 'w' : 'd'}` : '';
+
+                let label = "";
+                let tagCls = "";
+                if (cross === "bull") {
+                  label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bullish (10>20)`;
+                  tagCls = "bullish";
+                } else if (cross === "bear") {
+                  label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bearish (10<20)`;
+                  tagCls = "bearish";
+                } else {
+                  label = isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)";
+                  tagCls = isGolden ? "bullish" : "bearish";
+                }
+
+                const tooltip = smRec ? 
+                  `ScreeningMantis Live: 10×20 Cross: ${cross === 'bull' ? 'Bullish' : cross === 'bear' ? 'Bearish' : 'Neutral'} (${candles || 0} candles) · 50 EMA: ₹${formatNumber(smRec.ema50)}, 200 EMA: ₹${formatNumber(smRec.ema200)}` :
+                  `EMA Cross: ${label}`;
+
+                return `
+                  <span class="crossover-status-tag ${tagCls}" title="${escapeHtml(tooltip)}">
+                    ${label}
+                  </span>
+                `;
+              })()}
             </td>` : ''}
         </tr>
       `;
@@ -13951,7 +13996,7 @@
     State.screenerCols[col] = false;
     try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
     renderActiveView();
-    const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "50×200 Cross", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
+    const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "EMA Cross (10×20)", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
     showToast(`Removed "${colNames[col] || col}" column. Click "↺ Reset Columns" to restore anytime.`, "✂️");
   };
 
@@ -13991,7 +14036,7 @@
       athDist: "% From ATH",
       earnings: "Earnings",
       ema: "EMA",
-      cross: "50×200 Cross"
+      cross: "EMA Cross (10×20)"
     };
     const hiddenColsList = defaultColsList.filter(c => State.screenerCols && State.screenerCols[c] === false);
     const hasHiddenCols = hiddenColsList.length > 0;
@@ -14024,7 +14069,7 @@
     } else if (activeSortCol === "ema") {
       activeSortSummary = `EMA Alignment (${activeSortDir === "desc" ? "Above EMAs First ▼" : "Below EMAs First ▲"})`;
     } else if (activeSortCol === "cross") {
-      activeSortSummary = `50×200 EMA Cross (${activeSortDir === "desc" ? "Golden Cross First ▼" : "Death Cross First ▲"})`;
+      activeSortSummary = `EMA Cross (${activeSortDir === "desc" ? "Bullish (10>20) First ▼" : "Bearish (10<20) First ▲"})`;
     } else if (activeSortCol === "star") {
       activeSortSummary = `Watchlist Star (${activeSortDir === "desc" ? "Starred First ★" : "Unstarred First ☆"})`;
     } else if (activeSortCol === "athDist") {
@@ -14213,7 +14258,7 @@
               <option value="ticker" ${activeSortCol === "ticker" ? "selected" : ""}>Ticker & Name</option>
               <option value="sector" ${activeSortCol === "sector" ? "selected" : ""}>Sector</option>
               <option value="ema" ${activeSortCol === "ema" ? "selected" : ""}>EMA Status (10/20/50/200)</option>
-              <option value="cross" ${activeSortCol === "cross" ? "selected" : ""}>50×200 EMA Cross</option>
+              <option value="cross" ${activeSortCol === "cross" ? "selected" : ""}>EMA Cross (10×20)</option>
               <option value="athDist" ${activeSortCol === "athDist" ? "selected" : ""}>Distance from ATH (%)</option>
               <option value="earnings" ${activeSortCol === "earnings" ? "selected" : ""}>Earnings Date (📅)</option>
               <option value="star" ${activeSortCol === "star" ? "selected" : ""}>Watchlist Star (★)</option>
@@ -14260,7 +14305,7 @@
                 </label>
                 <label class="screener-col-item">
                   <input type="checkbox" data-action="toggle-screener-col-check" data-col="cross" ${State.screenerCols.cross !== false ? 'checked' : ''} />
-                  <span>50×200 EMA Cross</span>
+                  <span>EMA Cross (10×20)</span>
                 </label>
               </div>
             </div>
@@ -14347,13 +14392,13 @@
                   <span>EMA</span>
                   <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="hideScreenerCol(event, 'ema')">✕</button>
                 </th>` : ''}
-                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by 50×200 EMA Cross (Golden Cross first / Death Cross first)">
+                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by EMA Crossover (Bullish 10>20 first / Bearish 10<20 first)">
                   <div style="display:inline-flex;align-items:center;gap:6px">
                     <div>
-                      <div>50×200 EMA Cross</div>
+                      <div>EMA Cross (10×20)</div>
                       <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none !important;letter-spacing:0;margin-top:2px;">in 15min time frame</div>
                     </div>
-                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
+                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
                   </div>
                 </th>` : ''}
               </tr>
@@ -36310,7 +36355,7 @@
           "price": "Price",
           "chg": "Day % Change",
           "ema": "EMA Alignment",
-          "cross": "50×200 EMA Cross",
+          "cross": "EMA Cross (10×20)",
           "default": "Momentum Strength"
         };
         const dirLabel = State.screenerSortDir === "asc" ? "Ascending (▲)" : "Descending (▼)";
@@ -36915,7 +36960,7 @@
     lastSynced: null,
     cachedSectorIndices: null,
     cachedSnapshotResults: null,
-    cachedEmaMap: null,
+    cachedEmaMap: (typeof window !== 'undefined' && window._screeningMantisEmaMap) ? window._screeningMantisEmaMap : null,
 
     getStockEma(symbol, tf = "d", price = null) {
       if (!symbol) return null;
