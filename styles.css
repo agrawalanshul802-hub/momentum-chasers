@@ -2290,8 +2290,8 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     color: #ef4444;
     border: 1px solid rgba(239, 68, 68, 0.35);
     border-radius: 4px;
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     font-size: 10px;
     cursor: pointer;
     align-items: center;
@@ -2299,6 +2299,9 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     padding: 0;
     line-height: 1;
     transition: all 0.15s ease;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
 }
 
 .sidebar-watchlist-row:hover .sidebar-watchlist-remove-btn {
@@ -11434,6 +11437,10 @@ body.theme-white .stock-tv-pill:hover {
     transition: var(--transition);
     margin-left: 4px;
     border: 1px solid transparent;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
 }
 
 .watchlist-tv-link:hover,

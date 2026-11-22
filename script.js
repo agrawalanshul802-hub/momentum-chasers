@@ -12530,31 +12530,47 @@
     const countBadge = $("#watchlist-count");
     if (!container) return;
 
-    if (countBadge) countBadge.textContent = State.watchlist.length;
+    if (countBadge) countBadge.textContent = (State.watchlist || []).length;
 
-    if (State.watchlist.length === 0) {
+    if (!State.watchlist || State.watchlist.length === 0) {
       container.innerHTML = `<div style="font-size:11px;color:var(--mu);padding:6px 10px;">No starred stocks yet. Click ＋ above or ★ in screener to add.</div>`;
       return;
     }
 
     container.innerHTML = State.watchlist.map(sym => {
       const s = getStockBySymbol(sym);
+      const symbol = (s && s[0]) ? s[0] : sym;
+      const chg = (s && s[4] !== undefined) ? s[4] : 0;
+      const tvSym = getTradingViewSymbol(symbol);
       return `
-        <div class="sidebar-watchlist-row" data-action="open-stock" data-symbol="${s[0]}" title="View ${s[0]} details">
-          <span class="sidebar-watchlist-sym">★ ${s[0]}</span>
-          <div class="sidebar-watchlist-right">
-            <span class="sidebar-watchlist-chg ${getColorClass(s[4])}">
-              ${formatPercent(s[4])}
+        <div class="sidebar-watchlist-row" data-symbol="${symbol}">
+          <div class="sidebar-watchlist-info" data-action="open-stock" data-symbol="${symbol}" style="display:flex;align-items:center;gap:6px;flex:1;cursor:pointer;overflow:hidden;" title="View ${symbol} details">
+            <span class="sidebar-watchlist-sym">★ ${symbol}</span>
+            <span class="sidebar-watchlist-chg ${getColorClass(chg)}">
+              ${formatPercent(chg)}
             </span>
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="sidebar-tv-link" title="Open ${s[0]} chart directly on TradingView" onclick="event.stopPropagation()">
+          </div>
+          <div class="sidebar-watchlist-right" style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+            <a href="https://in.tradingview.com/chart/?symbol=${tvSym}" target="_blank" rel="noopener noreferrer" class="sidebar-tv-link" title="Open ${symbol} chart directly on TradingView" onclick="event.stopPropagation(); window.open(this.href, '_blank', 'noopener,noreferrer'); return false;">
               <span>↗</span>
             </a>
-            <button class="sidebar-watchlist-remove-btn" data-action="remove-watchlist-item" data-symbol="${s[0]}" title="Remove ${s[0]} from watchlist">✕</button>
+            <button type="button" class="sidebar-watchlist-remove-btn" data-action="remove-watchlist-item" data-symbol="${symbol}" title="Remove ${symbol} from watchlist" onclick="event.stopPropagation(); window.removeWatchlistItem && window.removeWatchlistItem('${symbol}'); return false;">✕</button>
           </div>
         </div>
       `;
     }).join("");
   }
+
+  window.removeWatchlistItem = function(sym) {
+    if (!sym) return;
+    State.watchlist = (State.watchlist || []).filter(s => s !== sym);
+    saveTickerPreferences();
+    renderTicker();
+    renderSidebarWatchlist();
+    if (typeof renderTickerModal === "function") renderTickerModal();
+    if (typeof renderActiveView === "function") renderActiveView();
+    if (typeof showToast === "function") showToast(`Removed ${sym} from Watchlist`, "☆");
+  };
 
   // ==========================================================================
   // 5. BANANAPATTERNS BREADTH DASHBOARD (FEATURE BREADTH)
@@ -34749,7 +34765,7 @@
 
       // Direct Click on any Stock Row or Tile across Screener & Tables
       const stockRow = e.target.closest("tr[data-symbol], .screener-row, [data-action='open-stock']");
-      if (stockRow && !e.target.closest("[data-action='toggle-star'], .ticker-star, .stock-tv-pill, [data-action='filter-sector'], .clickable-sector-badge, .col-close-btn, .col-action-btn, [data-action='select-netflow-session'], [data-action='filter-netflow-adv'], [data-action='filter-netflow-dec']")) {
+      if (stockRow && !e.target.closest("button, a, input, select, textarea, .sidebar-watchlist-remove-btn, [data-action='remove-watchlist-item'], .sidebar-tv-link, [data-action='toggle-star'], .ticker-star, .stock-tv-pill, [data-action='filter-sector'], .clickable-sector-badge, .col-close-btn, .col-action-btn, [data-action='select-netflow-session'], [data-action='filter-netflow-adv'], [data-action='filter-netflow-dec'], .idea-stock-photo-pill, .idea-stock-tv-action-btn")) {
         const sym = stockRow.dataset.symbol || stockRow.querySelector("[data-symbol]")?.dataset?.symbol;
         if (sym) {
           openStockDetail(sym);
@@ -35087,15 +35103,19 @@
       }
       else if (action === "remove-watchlist-item") {
         e.stopPropagation();
-        const sym = target.dataset.symbol;
+        const sym = (target && target.dataset.symbol) || (e.target.closest("[data-symbol]")?.dataset?.symbol);
         if (sym) {
-          State.watchlist = State.watchlist.filter(s => s !== sym);
-          saveTickerPreferences();
-          renderTicker();
-          renderSidebarWatchlist();
-          renderTickerModal();
-          renderActiveView();
-          showToast(`Removed ${sym} from Watchlist`, "☆");
+          if (typeof window.removeWatchlistItem === "function") {
+            window.removeWatchlistItem(sym);
+          } else {
+            State.watchlist = (State.watchlist || []).filter(s => s !== sym);
+            saveTickerPreferences();
+            renderTicker();
+            renderSidebarWatchlist();
+            if (typeof renderTickerModal === "function") renderTickerModal();
+            if (typeof renderActiveView === "function") renderActiveView();
+            if (typeof showToast === "function") showToast(`Removed ${sym} from Watchlist`, "☆");
+          }
         }
       }
       else if (action === "add-to-watchlist-dropdown") {
@@ -37064,6 +37084,7 @@
     window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
     window.refreshAllAlertsContainers = refreshAllAlertsContainers;
     window.renderAlertsGridHTML = renderAlertsGridHTML;
+    window.removeWatchlistItem = removeWatchlistItem;
     console.log("Momentum Chasers v2.5 initialized with Yahoo Finance Live Data Engine & BananaPatterns architecture.");
   }
 
