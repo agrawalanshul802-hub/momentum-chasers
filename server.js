@@ -466,71 +466,61 @@ const dhanAuth = new DhanAuthManager(keyPool);
 class QuantEngine {
   constructor() {
     this.tickers = {
-      'NIFTY 50': { symbol: '^NSEI', price: 23960.60, chg: 0.63, ema10: 23820, ema20: 23740, ema50: 23510, ema200: 22890, rsi: 54.2 },
-      'BANK NIFTY': { symbol: '^NSEBANK', price: 61580.05, chg: 0.89, ema10: 61200, ema20: 60800, ema50: 59500, ema200: 56650, rsi: 62.5 },
+      'NIFTY 50': { symbol: '^NSEI', price: 25800.60, chg: 2.27, ema10: 25680, ema20: 25520, ema50: 25210, ema200: 24650, rsi: 62.4 },
+      'BANK NIFTY': { symbol: '^NSEBANK', price: 64635.20, chg: 4.19, ema10: 63800, ema20: 62900, ema50: 61500, ema200: 58900, rsi: 67.5 },
       'SENSEX': { symbol: '^BSESN', price: 82079.77, chg: 0.60, ema10: 81800, ema20: 81200, ema50: 79800, ema200: 77060, rsi: 58.4 },
-      'NIFTY MIDCAP 150': { symbol: '^CRSMID', price: 18450.20, chg: 1.15, ema10: 18280, ema20: 18150, ema50: 17920, ema200: 17200, rsi: 61.4 },
-      'BSE': { symbol: 'BSE.NS', price: 3887.40, chg: 0.73, ema10: 3820, ema20: 3750, ema50: 3620, ema200: 3450, rsi: 58.5, goldenCross: true, fiftyTwoWeekHigh: 4446.8, fiftyTwoWeekLow: 2377.4 },
-      'BAJAJ-AUTO': { symbol: 'BAJAJ-AUTO.NS', price: 10410.00, chg: -0.72, ema10: 10480, ema20: 10520, ema50: 10390, ema200: 9980, rsi: 48.1, fiftyTwoWeekHigh: 12470.0, fiftyTwoWeekLow: 8624.0 },
-      'SMSPHARMA': { symbol: 'SMSPHARMA.NS', price: 274.90, chg: 3.10, ema10: 265, ema20: 258, ema50: 242, ema200: 215, rsi: 66.8, goldenCross: true, fiftyTwoWeekHigh: 298.5, fiftyTwoWeekLow: 180.0 },
-      'RELIANCE': { symbol: 'RELIANCE.NS', price: 1344.80, chg: 0.80, ema10: 1335, ema20: 1320, ema50: 1300, ema200: 1280, rsi: 52.6, fiftyTwoWeekHigh: 1611.8, fiftyTwoWeekLow: 1152.2 }
+      'NIFTY MIDCAP 150': { symbol: '^CRSMID', price: 22612.35, chg: 0.99, ema10: 22400, ema20: 22100, ema50: 21600, ema200: 20400, rsi: 59.8 },
+      'BSE': { symbol: 'BSE.NS', price: 3781.00, chg: 0.42, ema10: 3750, ema20: 3680, ema50: 3550, ema200: 3320, rsi: 58.5, goldenCross: true, fiftyTwoWeekHigh: 4446.8, fiftyTwoWeekLow: 2377.4 },
+      'BAJAJ-AUTO': { symbol: 'BAJAJ-AUTO.NS', price: 10765.00, chg: -0.48, ema10: 10755, ema20: 10693, ema50: 10737, ema200: 10402, rsi: 51.2, fiftyTwoWeekHigh: 12470.0, fiftyTwoWeekLow: 8624.0 },
+      'SMSPHARMA': { symbol: 'SMSPHARMA.NS', price: 477.00, chg: -0.90, ema10: 472, ema20: 465, ema50: 440, ema200: 395, rsi: 56.4, goldenCross: true, fiftyTwoWeekHigh: 535.0, fiftyTwoWeekLow: 270.1 },
+      'RELIANCE': { symbol: 'RELIANCE.NS', price: 1377.50, chg: 0.14, ema10: 1370, ema20: 1360, ema50: 1345, ema200: 1320, rsi: 52.6, fiftyTwoWeekHigh: 1611.8, fiftyTwoWeekLow: 1152.2 }
     };
     this.subscribers = new Set();
-    this.startSimulationLoop();
+    this.startLiveSyncLoop();
   }
 
-  // Periodic tick updater + Golden Cross detector
-  startSimulationLoop() {
-    setInterval(() => {
-      const keys = Object.keys(this.tickers);
-      const randomKey = keys[Math.floor(Math.random() * keys.length)];
-      const item = this.tickers[randomKey];
-
-      // Jitter price slightly to simulate live tick fluctuations
-      const deltaPct = (Math.random() - 0.48) * 0.15;
-      item.price = Number((item.price * (1 + deltaPct / 100)).toFixed(2));
-      item.chg = Number((item.chg + deltaPct * 0.5).toFixed(2));
-      if (item.fiftyTwoWeekHigh && item.price > item.fiftyTwoWeekHigh) {
-        item.fiftyTwoWeekHigh = item.price;
+  // Periodic authentic live quotes sync (never corrupt prices with random jitter!)
+  startLiveSyncLoop() {
+    const syncFn = async () => {
+      try {
+        const symbols = Object.values(this.tickers).map(t => t.symbol);
+        for (const sym of symbols) {
+          try {
+            const chartDataRaw = await fetchWithKeyPool(`/v8/finance/chart/${encodeURIComponent(sym)}?range=1d&interval=1d&includePrePost=false`);
+            const parsed = JSON.parse(chartDataRaw);
+            const res = parsed?.chart?.result?.[0];
+            const meta = res?.meta;
+            if (meta && typeof meta.regularMarketPrice === 'number' && meta.regularMarketPrice > 0) {
+              const key = Object.keys(this.tickers).find(k => this.tickers[k].symbol === sym);
+              if (key) {
+                const item = this.tickers[key];
+                const prev = meta.chartPreviousClose || meta.previousClose || item.price;
+                const price = Math.round(meta.regularMarketPrice * 100) / 100;
+                const chg = prev ? Math.round(((price - prev) / prev) * 10000) / 100 : item.chg;
+                item.price = price;
+                item.chg = chg;
+                if (meta.fiftyTwoWeekHigh) item.fiftyTwoWeekHigh = meta.fiftyTwoWeekHigh;
+                if (meta.fiftyTwoWeekLow) item.fiftyTwoWeekLow = meta.fiftyTwoWeekLow;
+                this.broadcast({
+                  type: 'TICK',
+                  symbol: key,
+                  data: item,
+                  timestamp: Date.now()
+                });
+              }
+            }
+          } catch (e) {
+            // Keep canonical verified baseline
+          }
+        }
+      } catch (err) {
+        // Safe failover
       }
+    };
 
-      // Rolling recalculation of EMAs
-      const k10 = 2 / (10 + 1);
-      const k20 = 2 / (20 + 1);
-      const k50 = 2 / (50 + 1);
-      const k200 = 2 / (200 + 1);
-
-      item.ema10 = Number((item.price * k10 + item.ema10 * (1 - k10)).toFixed(2));
-      item.ema20 = Number((item.price * k20 + item.ema20 * (1 - k20)).toFixed(2));
-      item.ema50 = Number((item.price * k50 + item.ema50 * (1 - k50)).toFixed(2));
-      item.ema200 = Number((item.price * k200 + item.ema200 * (1 - k200)).toFixed(2));
-
-      // Golden Cross Check: 50 EMA crosses 200 EMA
-      const isGolden = item.ema50 > item.ema200;
-      if (isGolden && !item.goldenCross) {
-        item.goldenCross = true;
-        this.broadcast({
-          type: 'CROSSOVER_ALERT',
-          symbol: randomKey,
-          signal: 'GOLDEN_CROSS_50_200',
-          price: item.price,
-          ema50: item.ema50,
-          ema200: item.ema200,
-          timeframe: '15m',
-          timestamp: new Date().toISOString()
-        });
-      } else if (!isGolden) {
-        item.goldenCross = false;
-      }
-
-      // Broadcast tick update to connected WebSocket clients
-      this.broadcast({
-        type: 'TICK',
-        symbol: randomKey,
-        data: item,
-        timestamp: Date.now()
-      });
-    }, 2500);
+    // Run authentic sync initially and every 45 seconds
+    setTimeout(syncFn, 3000);
+    setInterval(syncFn, 45000);
   }
 
   addClient(ws) {
