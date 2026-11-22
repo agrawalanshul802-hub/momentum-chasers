@@ -15,9 +15,35 @@
     "stopLoss": "-4.5% below 20 EMA",
     "thesis": "Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.",
     "publishedAt": "2026-11-18",
-    "active": false,
+    "active": true,
     "isLocked": true,
-    "price": 199
+    "price": 199,
+    "stocks": [
+      {
+        "symbol": "BEL",
+        "entry": "CMP / Pullback to 10 EMA",
+        "target": "+15% to +18% (New ATHs)",
+        "stopLoss": "-4.5% below 20 EMA"
+      },
+      {
+        "symbol": "HAL",
+        "entry": "CMP / Pullback to 10 EMA",
+        "target": "+15% to +18% (New ATHs)",
+        "stopLoss": "-4.5% below 20 EMA"
+      },
+      {
+        "symbol": "BDL",
+        "entry": "CMP / Pullback to 10 EMA",
+        "target": "+15% to +18% (New ATHs)",
+        "stopLoss": "-4.5% below 20 EMA"
+      },
+      {
+        "symbol": "COCHINSHIP",
+        "entry": "CMP / Pullback to 10 EMA",
+        "target": "+15% to +18% (New ATHs)",
+        "stopLoss": "-4.5% below 20 EMA"
+      }
+    ]
   },
   {
     "id": "idea_auto_ancillary",
@@ -37,6 +63,32 @@
     "publishedAt": "2026-11-18",
     "active": true,
     "isLocked": true,
-    "price": 199
+    "price": 199,
+    "stocks": [
+      {
+        "symbol": "M&M",
+        "entry": "Near 20 EMA breakout support",
+        "target": "+12% to +16%",
+        "stopLoss": "-5.0% below swing low"
+      },
+      {
+        "symbol": "TVSMOTOR",
+        "entry": "Near 20 EMA breakout support",
+        "target": "+12% to +16%",
+        "stopLoss": "-5.0% below swing low"
+      },
+      {
+        "symbol": "BOSCHLTD",
+        "entry": "Near 20 EMA breakout support",
+        "target": "+12% to +16%",
+        "stopLoss": "-5.0% below swing low"
+      },
+      {
+        "symbol": "MOTHERSON",
+        "entry": "Near 20 EMA breakout support",
+        "target": "+12% to +16%",
+        "stopLoss": "-5.0% below swing low"
+      }
+    ]
   }
 ]

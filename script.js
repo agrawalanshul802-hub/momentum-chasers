@@ -14586,13 +14586,19 @@
       title: 'Defense Sector Momentum',
       category: 'High Conviction Breakout',
       symbols: ['BEL', 'HAL', 'BDL', 'COCHINSHIP'],
+      stocks: [
+        { symbol: 'BEL', entry: 'CMP / Pullback to 10 EMA', target: '+15% to +18% (New ATHs)', stopLoss: '-4.5% below 20 EMA' },
+        { symbol: 'HAL', entry: 'CMP / Pullback to 10 EMA', target: '+15% to +18% (New ATHs)', stopLoss: '-4.5% below 20 EMA' },
+        { symbol: 'BDL', entry: 'CMP / Pullback to 10 EMA', target: '+15% to +18% (New ATHs)', stopLoss: '-4.5% below 20 EMA' },
+        { symbol: 'COCHINSHIP', entry: 'CMP / Pullback to 10 EMA', target: '+15% to +18% (New ATHs)', stopLoss: '-4.5% below 20 EMA' }
+      ],
       timeframe: '2-4 Weeks',
       entry: 'CMP / Pullback to 10 EMA',
       target: '+15% to +18% (New ATHs)',
       stopLoss: '-4.5% below 20 EMA',
       thesis: 'Heavy institutional accumulation, expanding multi-year defense export order books, and price holding firmly above rising 20 & 50 EMAs with 2.5x volume expansion.',
       publishedAt: '2026-11-18',
-      active: false,
+      active: true,
       isLocked: true,
       price: 199
     },
