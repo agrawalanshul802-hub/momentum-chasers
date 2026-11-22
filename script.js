@@ -36909,7 +36909,7 @@
 
     // Check initial hash for deep linking
     const hash = window.location.hash.slice(1);
-    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "orderflow", "login"];
+    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
     if (hash.startsWith("events-")) {
       State.eventsTab = hash.replace("events-", "");
       State.view = "events";
