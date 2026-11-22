@@ -11622,8 +11622,8 @@
             rev: 18,
             profit: 22,
             name: ipo[0],
-            high52: Math.round(p * 1.3 * 100) / 100,
-            low52: Math.round(p * 0.7 * 100) / 100,
+            high52: Math.round(Math.max(Number(ipo[2]) || p, Number(ipo[4]) || p, p) * 1.04 * 100) / 100,
+            low52: Math.round(Math.min(Number(ipo[2]) || p, Number(ipo[4]) || p, p) * 0.96 * 100) / 100,
             results: "2026-11-20",
             resultsStatus: "Confirmed",
             currency: "INR",
@@ -11802,117 +11802,6 @@
     const candleEma50 = [];
     const candleEma200 = [];
 
-    if (ipoMatch) {
-      // Authentic post-listing IPO candlestick generator
-      // ipoMatch: [company, listedOnStr, issuePrice, issueSize, listingClose, listingGainPct, currentPrice, currentReturnPct, year, ticker]
-      const issuePrice = Number(ipoMatch[2]) || basePrice;
-      const listingClose = Number(ipoMatch[4]) || basePrice;
-      const currentPrice = Number(ipoMatch[6]) || basePrice;
-      const listedOnStr = ipoMatch[1]; // e.g. "05 Nov 2026"
-
-      const parsedDate = new Date(listedOnStr);
-      const today = new Date(2026, 10, 20); // Reference Nov 20, 2026
-      const listingDate = isNaN(parsedDate.getTime()) ? new Date(today.getTime() - 14 * 86400 * 1000) : parsedDate;
-
-      // Generate trading day calendar strictly from listingDate to today (skipping weekends)
-      const tradingDays = [];
-      const cur = new Date(listingDate.getTime());
-      while (cur <= today) {
-        const dayOfWeek = cur.getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Skip Sunday (0) and Saturday (6)
-          const yyyy = cur.getFullYear();
-          const mm = String(cur.getMonth() + 1).padStart(2, "0");
-          const dd = String(cur.getDate()).padStart(2, "0");
-          tradingDays.push(`${yyyy}-${mm}-${dd}`);
-        }
-        cur.setDate(cur.getDate() + 1);
-      }
-
-      if (tradingDays.length === 0) {
-        const yyyy = listingDate.getFullYear();
-        const mm = String(listingDate.getMonth() + 1).padStart(2, "0");
-        const dd = String(listingDate.getDate()).padStart(2, "0");
-        tradingDays.push(`${yyyy}-${mm}-${dd}`);
-      }
-
-      const numSessions = tradingDays.length;
-      let prevClose = issuePrice;
-
-      for (let i = 0; i < numSessions; i++) {
-        const dateStr = tradingDays[i];
-        let open, close, high, low, vol;
-
-        if (i === 0) {
-          // Day 1: Authentic Listing Day
-          open = issuePrice;
-          close = listingClose;
-          high = Math.round(Math.max(open, close) * 1.025 * 100) / 100;
-          low = Math.round(Math.min(open, close) * 0.975 * 100) / 100;
-          vol = Math.round(1800000 + Math.random() * 800000); // Heavy listing day turnover
-        } else if (i === numSessions - 1) {
-          // Latest Session: Calibrated exactly to Current Price
-          close = currentPrice;
-          open = Math.round((prevClose + (close - prevClose) * 0.3) * 100) / 100;
-          high = Math.round(Math.max(open, close) * 1.018 * 100) / 100;
-          low = Math.round(Math.min(open, close) * 0.985 * 100) / 100;
-          vol = Math.round(650000 + Math.random() * 350000);
-        } else {
-          // Intermediate Post-Listing Sessions: Smooth progression between listing close and current price
-          const progress = i / (numSessions - 1);
-          const targetP = listingClose + (currentPrice - listingClose) * progress;
-          const wobble = (Math.sin(i * 1.2) * 0.015 + (Math.random() - 0.48) * 0.02) * targetP;
-          open = Math.round(prevClose * 100) / 100;
-          close = Math.round((targetP + wobble) * 100) / 100;
-          high = Math.round((Math.max(open, close) + Math.random() * (targetP * 0.015)) * 100) / 100;
-          low = Math.round((Math.min(open, close) - Math.random() * (targetP * 0.015)) * 100) / 100;
-          vol = Math.round(500000 + Math.random() * 400000);
-        }
-
-        candleData.push({ time: dateStr, open, high, low, close });
-        volumeData.push({ time: dateStr, value: vol, color: close >= open ? 'rgba(34, 197, 94, 0.45)' : 'rgba(239, 68, 68, 0.45)' });
-        prices.push(close);
-        volumes.push(vol);
-        prevClose = close;
-      }
-
-      // Calculate EMAs strictly according to available trading history
-      let ce10 = prices[0], ce20 = prices[0];
-      for (let i = 0; i < numSessions; i++) {
-        const p = prices[i];
-        const dateStr = candleData[i].time;
-        ce10 = ce10 + (p - ce10) * (2 / (10 + 1));
-        ce20 = ce20 + (p - ce20) * (2 / (20 + 1));
-
-        if (i >= 9) { // 10 EMA only after 10 sessions
-          candleEma10.push({ time: dateStr, value: Math.round(ce10 * 100) / 100 });
-          ema10.push(Math.round(ce10 * 10) / 10);
-        }
-        if (i >= 19) { // 20 EMA only after 20 sessions
-          candleEma20.push({ time: dateStr, value: Math.round(ce20 * 100) / 100 });
-          ema20.push(Math.round(ce20 * 10) / 10);
-        }
-      }
-      // Note: 50 EMA and 200 EMA are strictly NOT generated for newly listed IPOs (<50 sessions)
-
-      CHART_DATA[symbol] = {
-        isIpo: true,
-        ipoDetails: ipoMatch,
-        numSessions,
-        prices,
-        ema10,
-        ema20,
-        ema50: [],
-        ema200: [],
-        volumes,
-        candleData,
-        volumeData,
-        ema10Data: candleEma10,
-        ema20Data: candleEma20,
-        ema50Data: [],
-        ema200Data: []
-      };
-      return CHART_DATA[symbol];
-    }
 
     const baseDate = new Date();
     const numCandles = 60;
@@ -11932,13 +11821,14 @@
       let low = Math.round((Math.min(open, close) - Math.random() * (basePrice * 0.012)) * 100) / 100;
       let vol = Math.round(2200000 + (Math.random() - 0.5) * 1200000 + (close >= open ? 400000 : -200000));
 
-      // Precise calibration for benchmark session (matching Image 2)
+      // Precise calibration for benchmark session (matching Image 2 & screenshot standards)
       if (i === numCandles - 1) {
         close = basePrice;
-        open = symbol === "INDUSINDBK" ? 891.00 : Math.round((basePrice / (1 + (stock[4] / 100))) * 100) / 100;
-        high = symbol === "INDUSINDBK" ? 925.00 : Math.round(Math.max(open, close) * 1.015 * 100) / 100;
+        const dailyChg = (ipoMatch || Math.abs(stock[4]) > 10) ? (stock[4] >= 0 ? 0.35 : -0.15) : stock[4];
+        open = symbol === "INDUSINDBK" ? 891.00 : Math.round((basePrice / (1 + (dailyChg / 100))) * 100) / 100;
+        high = symbol === "INDUSINDBK" ? 925.00 : Math.round(Math.max(open, close) * 1.018 * 100) / 100;
         low = symbol === "INDUSINDBK" ? 891.00 : Math.round(Math.min(open, close) * 0.985 * 100) / 100;
-        vol = symbol === "INDUSINDBK" ? 3490000 : Math.round(2800000 + Math.random() * 600000);
+        vol = symbol === "INDUSINDBK" ? 3490000 : Math.round((ipoMatch ? 680000 : 2800000) + Math.random() * 320000);
       }
 
       candleData.push({ time: dateStr, open, high, low, close });
@@ -11970,6 +11860,8 @@
     }
 
     CHART_DATA[symbol] = {
+      isIpo: !!ipoMatch,
+      ipoDetails: ipoMatch,
       prices,
       ema10,
       ema20,
@@ -17478,6 +17370,10 @@
           const chg = ((last.close - last.open) / (last.open || 1)) * 100;
           chgEl.textContent = (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%";
           chgEl.className = "ohlc-chg " + (chg >= 0 ? "val-green" : "val-red");
+          if (volEl && data.volumeData && data.volumeData.length) {
+            const lastV = data.volumeData[data.volumeData.length - 1].value;
+            volEl.textContent = lastV >= 1e6 ? (lastV / 1e6).toFixed(2) + "M" : (lastV / 1e3).toFixed(1) + "K";
+          }
         }
         return;
       }
@@ -17901,8 +17797,8 @@
 
     const e10 = chart.ema10 && chart.ema10.length > 0 ? chart.ema10[chart.ema10.length - 1] : s[3] * 0.99;
     const e20 = chart.ema20 && chart.ema20.length > 0 ? chart.ema20[chart.ema20.length - 1] : s[3] * 0.98;
-    const e50 = chart.ema50 && chart.ema50.length > 0 ? chart.ema50[chart.ema50.length - 1] : (isIpo ? null : s[3] * 0.97);
-    const e200 = chart.ema200 && chart.ema200.length > 0 ? chart.ema200[chart.ema200.length - 1] : (isIpo ? null : s[3] * 0.95);
+    const e50 = chart.ema50 && chart.ema50.length > 0 ? chart.ema50[chart.ema50.length - 1] : s[3] * 0.97;
+    const e200 = chart.ema200 && chart.ema200.length > 0 ? chart.ema200[chart.ema200.length - 1] : s[3] * 0.95;
     const rsiVal = chart.rsi || (s[4] > 0 ? 58.4 : 46.2);
 
     const dist10 = ((s[3] - e10) / e10 * 100).toFixed(1);
@@ -17910,22 +17806,27 @@
     const dist52w = meta.high52 ? Math.max(0, (((meta.high52 - s[3]) / meta.high52) * 100)).toFixed(1) : "10.0";
 
     // Day's range and 52W range calculations
-    const dayLow = s[0] === "INDUSINDBK" ? 881.35 : Math.round((s[3] * (1 - Math.abs(s[4] || 1) * 0.015)) * 100) / 100;
-    const dayHigh = s[0] === "INDUSINDBK" ? 928.40 : Math.round((s[3] * (1 + Math.abs(s[4] || 1) * 0.018)) * 100) / 100;
+    const latestCandle = chart.candleData && chart.candleData.length > 0 ? chart.candleData[chart.candleData.length - 1] : null;
+    const dayLow = s[0] === "INDUSINDBK" ? 881.35 : (latestCandle ? latestCandle.low : Math.round((s[3] * 0.985) * 100) / 100);
+    const dayHigh = s[0] === "INDUSINDBK" ? 928.40 : (latestCandle ? latestCandle.high : Math.round((s[3] * 1.018) * 100) / 100);
     const dayPct = Math.min(100, Math.max(0, ((s[3] - dayLow) / (dayHigh - dayLow || 1)) * 100)).toFixed(1);
 
-    const w52Low = meta.low52 || (s[3] * 0.75);
-    const w52High = meta.high52 || (s[3] * 1.25);
+    const w52Low = meta.low52 || Math.round((s[3] * 0.75) * 100) / 100;
+    const w52High = meta.high52 || Math.round((s[3] * 1.25) * 100) / 100;
     const w52Pct = Math.min(100, Math.max(0, ((s[3] - w52Low) / (w52High - w52Low || 1)) * 100)).toFixed(1);
 
     const earnInfo = getStockEarningsDates(s);
 
     // Initial default OHLC values for header
-    const defaultOpen = s[0] === "INDUSINDBK" ? "891.00" : (s[3] * (1 - (s[4] / 100))).toFixed(2);
+    const defaultOpen = s[0] === "INDUSINDBK" ? "891.00" : (latestCandle ? latestCandle.open.toFixed(2) : (s[3] * (1 - (s[4] / 100))).toFixed(2));
     const defaultHigh = s[0] === "INDUSINDBK" ? "925.00" : dayHigh.toFixed(2);
     const defaultLow = s[0] === "INDUSINDBK" ? "891.00" : dayLow.toFixed(2);
     const defaultClose = s[3].toFixed(2);
-    const defaultChg = (s[4] >= 0 ? "+" : "") + s[4].toFixed(2) + "%";
+    const candleChgNum = latestCandle && latestCandle.open ? (((latestCandle.close - latestCandle.open) / latestCandle.open) * 100) : s[4];
+    const defaultChg = (candleChgNum >= 0 ? "+" : "") + candleChgNum.toFixed(2) + "%";
+    const defaultChgClass = candleChgNum >= 0 ? "val-green" : "val-red";
+    const rawVol = latestCandle && (latestCandle.vol || (chart.volumes && chart.volumes.length ? chart.volumes[chart.volumes.length - 1] : 0));
+    const defaultVol = rawVol ? (rawVol >= 1e6 ? (rawVol / 1e6).toFixed(2) + "M" : (rawVol / 1e3).toFixed(1) + "K") : "—";
 
     // AI Positives & Negatives List calculated dynamically from live indicators
     const positives = [];
@@ -18102,14 +18003,14 @@
                 <span style="color:var(--mu)">H: <strong id="tv-ohlc-h" style="color:var(--ink)">₹${defaultHigh}</strong></span>
                 <span style="color:var(--mu)">L: <strong id="tv-ohlc-l" style="color:var(--ink)">₹${defaultLow}</strong></span>
                 <span style="color:var(--mu)">C: <strong id="tv-ohlc-c" style="color:var(--ink)">₹${defaultClose}</strong></span>
-                <span id="tv-ohlc-chg" class="ohlc-chg ${s[4] >= 0 ? 'val-green' : 'val-red'}">${defaultChg}</span>
-                <span style="color:var(--mu);margin-left:4px;">Vol: <strong id="legend-vol-val" style="color:var(--ink)">—</strong></span>
+                <span id="tv-ohlc-chg" class="ohlc-chg ${defaultChgClass}">${defaultChg}</span>
+                <span style="color:var(--mu);margin-left:4px;">Vol: <strong id="legend-vol-val" style="color:var(--ink)">${defaultVol}</strong></span>
               </div>
               <div style="display:flex;gap:12px;align-items:center;font-size:11px;flex-wrap:wrap;">
                 <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>10 EMA: <strong id="legend-ema10-val">₹${formatNumber(e10)}</strong></span>
                 <span style="color:#22c55e;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>20 EMA: <strong id="legend-ema20-val">₹${formatNumber(e20)}</strong></span>
-                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">${isIpo && (!chart.ema50Data || chart.ema50Data.length === 0) ? 'N/A (IPO)' : '₹' + formatNumber(e50)}</strong></span>
-                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">${isIpo && (!chart.ema200Data || chart.ema200Data.length === 0) ? 'N/A (IPO)' : '₹' + formatNumber(e200)}</strong></span>
+                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">${e50 != null ? '₹' + formatNumber(e50) : 'N/A'}</strong></span>
+                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">${e200 != null ? '₹' + formatNumber(e200) : 'N/A'}</strong></span>
               </div>
             </div>
 
@@ -18161,8 +18062,8 @@
             <div class="tv-technical-momentum-bar">
               <div style="display:flex;align-items:center;gap:12px">
                 <span style="font-size:12px;font-weight:600">50×200 CROSS:</span>
-                <span class="nav-badge-pill" style="background:${e50 >= e200 ? 'var(--gs)' : 'var(--rs)'};color:${e50 >= e200 ? 'var(--g)' : 'var(--r)'};font-weight:700">
-                  ${e50 >= e200 ? '🟢 Golden Cross Confirmed' : '🔴 Death Cross Warning'}
+                <span class="nav-badge-pill" style="background:${e50 != null && e200 != null ? (e50 >= e200 ? 'var(--gs)' : 'var(--rs)') : 'rgba(255,255,255,0.06)'};color:${e50 != null && e200 != null ? (e50 >= e200 ? 'var(--g)' : 'var(--r)') : 'var(--mu)'};font-weight:700">
+                  ${e50 != null && e200 != null ? (e50 >= e200 ? '🟢 Golden Cross Confirmed' : '🔴 Death Cross Warning') : '⚪ EMA Calibrating'}
                 </span>
               </div>
               <div style="display:flex;align-items:center;gap:12px">
@@ -18252,7 +18153,7 @@
                 </div>
                 <div class="tv-stat-box">
                   <span class="tv-stat-lbl">50×200 Cross</span>
-                  <span class="tv-stat-val ${e50 >= e200 ? "val-green" : "val-red"}">${e50 >= e200 ? "Golden Cross" : "Death Cross"}</span>
+                  <span class="tv-stat-val ${e50 != null && e200 != null ? (e50 >= e200 ? "val-green" : "val-red") : "val-amber"}">${e50 != null && e200 != null ? (e50 >= e200 ? "Golden Cross" : "Death Cross") : "N/A"}</span>
                 </div>
                 <div class="tv-stat-box">
                   <span class="tv-stat-lbl">10 EMA Spread</span>
@@ -18260,7 +18161,7 @@
                 </div>
                 <div class="tv-stat-box">
                   <span class="tv-stat-lbl">200 EMA Support</span>
-                  <span class="tv-stat-val val-green">₹${formatNumber(e200)}</span>
+                  <span class="tv-stat-val val-green">${e200 != null ? '₹' + formatNumber(e200) : 'N/A'}</span>
                 </div>
               </div>
 
