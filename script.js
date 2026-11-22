@@ -12206,27 +12206,23 @@
     if (!s) return [false, false, false, false];
     const sym = Array.isArray(s) ? s[0] : (s.symbol || s);
     const tf = State.timeframe || "d";
+    const isW = tf === "w";
+    const price = Array.isArray(s) ? s[3] : (s.price || 0);
 
     // 1. Direct Live EMA from ScreeningMantis (Authentic Primary Source)
-    if (typeof ScreeningMantisClient !== "undefined" && typeof ScreeningMantisClient.getStockEma === "function") {
-      const smEma = ScreeningMantisClient.getStockEma(sym, tf);
-      if (smEma) return smEma;
-    }
-    if (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]) {
-      const rec = window._screeningMantisEmaMap[sym];
-      if (tf === "w") {
-        return [
-          Boolean(rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10),
-          Boolean(rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20),
-          Boolean(rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50),
-          Boolean(rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200)
-        ];
-      }
+    const rec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sym]) ||
+                (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]);
+    if (rec) {
+      const e10 = isW ? rec.wEma10 : rec.ema10;
+      const e20 = isW ? rec.wEma20 : rec.ema20;
+      const e50 = isW ? rec.wEma50 : rec.ema50;
+      const e200 = isW ? rec.wEma200 : rec.ema200;
+
       return [
-        Boolean(rec.aboveEma10),
-        Boolean(rec.aboveEma20),
-        Boolean(rec.aboveEma50),
-        Boolean(rec.aboveEma200)
+        (e10 != null && price > 0) ? (price >= e10) : Boolean(isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10),
+        (e20 != null && price > 0) ? (price >= e20) : Boolean(isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20),
+        (e50 != null && price > 0) ? (price >= e50) : Boolean(isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50),
+        (e200 != null && price > 0) ? (price >= e200) : Boolean(isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200)
       ];
     }
 
@@ -12629,16 +12625,21 @@
         const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
         const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
 
-        const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${emas[0] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `10 EMA: ${emas[0] ? 'Price Above' : 'Price Below'}`;
-        const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${emas[1] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `20 EMA: ${emas[1] ? 'Price Above' : 'Price Below'}`;
-        const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${emas[2] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `50 EMA: ${emas[2] ? 'Price Above' : 'Price Below'}`;
-        const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${emas[3] ? 'Above' : 'Below'} (ScreeningMantis Live)` : `200 EMA: ${emas[3] ? 'Price Above' : 'Price Below'}`;
+        const above10 = (e10Val != null && price > 0) ? (price >= e10Val) : emas[0];
+        const above20 = (e20Val != null && price > 0) ? (price >= e20Val) : emas[1];
+        const above50 = (e50Val != null && price > 0) ? (price >= e50Val) : emas[2];
+        const above200 = (e200Val != null && price > 0) ? (price >= e200Val) : emas[3];
+
+        const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
+        const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
+        const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (ScreeningMantis Live)` : `50 EMA: ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
+        const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (ScreeningMantis Live)` : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
 
         emaCell.innerHTML = `
-          <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
-          <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
-          <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
-          <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
+          <span class="ema-status-pill ${above10 ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
+          <span class="ema-status-pill ${above20 ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
+          <span class="ema-status-pill ${above50 ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
+          <span class="ema-status-pill ${above200 ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
         `;
       }
       const crossCell = row.querySelector(".stock-cross-cell");
@@ -13726,21 +13727,27 @@
               ${(() => {
                 const tf = State.timeframe || "d";
                 const isW = tf === "w";
+                const price = Array.isArray(s) ? s[3] : s.price;
                 const e10Val = smRec ? (isW ? smRec.wEma10 : smRec.ema10) : null;
                 const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
                 const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
                 const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
 
-                const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${emas[0] ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${emas[0] ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
-                const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${emas[1] ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${emas[1] ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
-                const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${emas[2] ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (ScreeningMantis Live)` : `50 EMA: ${emas[2] ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
-                const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${emas[3] ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (ScreeningMantis Live)` : `200 EMA: ${emas[3] ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
+                const above10 = (e10Val != null && price > 0) ? (price >= e10Val) : emas[0];
+                const above20 = (e20Val != null && price > 0) ? (price >= e20Val) : emas[1];
+                const above50 = (e50Val != null && price > 0) ? (price >= e50Val) : emas[2];
+                const above200 = (e200Val != null && price > 0) ? (price >= e200Val) : emas[3];
+
+                const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (ScreeningMantis Live)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
+                const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (ScreeningMantis Live)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
+                const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (ScreeningMantis Live)` : `50 EMA: ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
+                const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (ScreeningMantis Live)` : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
 
                 return `
-                  <span class="ema-status-pill ${emas[0] ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
-                  <span class="ema-status-pill ${emas[1] ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
-                  <span class="ema-status-pill ${emas[2] ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
-                  <span class="ema-status-pill ${emas[3] ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
+                  <span class="ema-status-pill ${above10 ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
+                  <span class="ema-status-pill ${above20 ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
+                  <span class="ema-status-pill ${above50 ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
+                  <span class="ema-status-pill ${above200 ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
                 `;
               })()}
             </td>` : ''}
@@ -18277,10 +18284,12 @@
     const symUpper = (s[0] || "").toUpperCase();
     const exBadge = bseSmeSymbols.has(symUpper) ? "BSE SME" : (symUpper === "VPFL" ? "NSE SME" : (meta.exchange || "NSE"));
 
-    const e10 = chart.ema10 && chart.ema10.length > 0 ? chart.ema10[chart.ema10.length - 1] : s[3] * 0.99;
-    const e20 = chart.ema20 && chart.ema20.length > 0 ? chart.ema20[chart.ema20.length - 1] : s[3] * 0.98;
-    const e50 = chart.ema50 && chart.ema50.length > 0 ? chart.ema50[chart.ema50.length - 1] : s[3] * 0.97;
-    const e200 = chart.ema200 && chart.ema200.length > 0 ? chart.ema200[chart.ema200.length - 1] : s[3] * 0.95;
+    const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[s[0]]) ||
+                  (window._screeningMantisEmaMap && window._screeningMantisEmaMap[s[0]]);
+    const e10 = (chart.ema10 && chart.ema10.length > 0) ? chart.ema10[chart.ema10.length - 1] : (smRec?.ema10 || s[3] * 0.99);
+    const e20 = (chart.ema20 && chart.ema20.length > 0) ? chart.ema20[chart.ema20.length - 1] : (smRec?.ema20 || s[3] * 0.98);
+    const e50 = (chart.ema50 && chart.ema50.length > 0) ? chart.ema50[chart.ema50.length - 1] : (smRec?.ema50 || s[3] * 0.97);
+    const e200 = (chart.ema200 && chart.ema200.length > 0) ? chart.ema200[chart.ema200.length - 1] : (smRec?.ema200 || s[3] * 0.95);
     const rsiVal = chart.rsi || (s[4] > 0 ? 58.4 : 46.2);
 
     const dist10 = ((s[3] - e10) / e10 * 100).toFixed(1);
@@ -36798,14 +36807,29 @@
     cachedSnapshotResults: null,
     cachedEmaMap: null,
 
-    getStockEma(symbol, tf = "d") {
+    getStockEma(symbol, tf = "d", price = null) {
       if (!symbol) return null;
       const cleanSym = String(symbol).toUpperCase().trim();
       const rec = (this.cachedEmaMap && this.cachedEmaMap[cleanSym]) ||
                   (window._screeningMantisEmaMap && window._screeningMantisEmaMap[cleanSym]);
       if (!rec) return null;
 
-      if (tf === "w") {
+      const isW = tf === "w";
+      const e10 = isW ? rec.wEma10 : rec.ema10;
+      const e20 = isW ? rec.wEma20 : rec.ema20;
+      const e50 = isW ? rec.wEma50 : rec.ema50;
+      const e200 = isW ? rec.wEma200 : rec.ema200;
+
+      if (typeof price === "number" && price > 0) {
+        return [
+          e10 != null ? (price >= e10) : Boolean(isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10),
+          e20 != null ? (price >= e20) : Boolean(isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20),
+          e50 != null ? (price >= e50) : Boolean(isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50),
+          e200 != null ? (price >= e200) : Boolean(isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200)
+        ];
+      }
+
+      if (isW) {
         return [
           Boolean(rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10),
           Boolean(rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20),
@@ -37444,6 +37468,9 @@
     renderUserAuthUI();
     setupGlobalEventListeners();
     setupHoldingModalEvents();
+    if (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.preloadStaticData) {
+      ScreeningMantisClient.preloadStaticData();
+    }
     try {
       renderActiveView();
     } catch (err) {
