@@ -14170,43 +14170,37 @@
                   <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
                     <td style="padding:7px 8px;font-weight:700;">
                       <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                        <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open ${escapeHtml(st.symbol)} stock details">
+                          ${escapeHtml(st.symbol)}
+                        </span>
                         ${stockImg ? `
-                          <span class="idea-stock-tag" 
-                                onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
-                                style="margin:0;cursor:pointer;" 
-                                title="Click to view verified technical chart photo for ${escapeHtml(st.symbol)}">
-                            ${escapeHtml(st.symbol)}
-                          </span>
                           <button class="idea-stock-photo-pill" 
                                   onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
-                                  title="Click to open ${escapeHtml(st.symbol)} chart screenshot photo">
-                            <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(st.symbol)}">
-                            <span>📷 Photo</span>
+                                  title="Click to view verified technical chart photo for ${escapeHtml(st.symbol)}">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                              <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span>Photo</span>
                           </button>
-                        ` : `
-                          <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="margin:0;cursor:pointer;" title="Click to open ${escapeHtml(st.symbol)} stock details">
-                            ${escapeHtml(st.symbol)}
-                          </span>
-                        `}
+                        ` : ''}
                       </div>
                     </td>
                     <td style="padding:7px 8px;color:var(--text);">${escapeHtml(st.entry || activeIdea.entry || 'CMP')}</td>
                     <td style="padding:7px 8px;color:var(--g);font-weight:700;">${escapeHtml(st.target || activeIdea.target || 'TBD')}</td>
                     <td style="padding:7px 8px;color:var(--r);font-weight:700;">${escapeHtml(st.stopLoss || activeIdea.stopLoss || 'TBD')}</td>
                     <td style="padding:7px 8px;text-align:right;white-space:nowrap;">
-                      ${stockImg ? `
-                        <button class="sm-tag-btn" 
-                                onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
-                                style="cursor:pointer;padding:4px 10px;background:rgba(79,209,161,0.2);color:#10b981;border:1px solid rgba(79,209,161,0.4);border-radius:4px;font-size:11px;font-weight:700;" 
-                                title="Open verified technical analysis chart for ${escapeHtml(st.symbol)}">
-                          📷 Setup Chart ↗
-                        </button>
-                      ` : `
-                        <button class="sm-tag-btn" data-action="open-stock" data-symbol="${escapeHtml(st.symbol)}" style="cursor:pointer;padding:3px 8px;background:rgba(79,209,161,0.15);color:#4fd1a1;border:1px solid rgba(79,209,161,0.3);border-radius:4px;font-size:11px;font-weight:700;margin-right:4px;" title="Open in-app interactive chart">Chart &rarr;</button>
-                        <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" target="_blank" rel="noopener noreferrer" class="sm-tag-btn" style="cursor:pointer;padding:3px 8px;background:rgba(37,99,235,0.18);color:#60a5fa;border:1px solid rgba(37,99,235,0.35);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="Open live chart on TradingView" onclick="event.stopPropagation()">
-                          <span>📊 TV ↗</span>
-                        </a>
-                      `}
+                      <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(st.symbol)}" 
+                         target="_blank" 
+                         rel="noopener noreferrer" 
+                         class="idea-stock-tv-action-btn" 
+                         title="Open ${escapeHtml(st.symbol)} live interactive chart on TradingView" 
+                         onclick="event.stopPropagation()">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <span>TradingView ↗</span>
+                      </a>
                     </td>
                   </tr>
                 `;
@@ -14235,27 +14229,31 @@
 
             return `
               <span style="display:inline-flex;align-items:center;gap:4px;margin-right:6px;margin-bottom:6px;">
+                <span class="idea-stock-tag" data-action="open-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;cursor:pointer;" title="Click to view deep dive on ${escapeHtml(sym)}">
+                  ${escapeHtml(sym)}
+                </span>
                 ${stockImg ? `
-                  <span class="idea-stock-tag" 
-                        onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
-                        style="margin:0;cursor:pointer;" 
-                        title="Click to view verified technical analysis chart for ${escapeHtml(sym)}">
-                    ${escapeHtml(sym)}
-                  </span>
                   <button class="idea-stock-photo-pill" 
                           onclick="event.stopPropagation(); window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(stockImg)}', '${escapeHtml(caption)}');" 
-                          title="Click to open ${escapeHtml(sym)} chart screenshot photo">
-                    <img src="${escapeHtml(stockImg)}" alt="${escapeHtml(sym)}">
-                    <span>📷 Photo</span>
+                          title="Click to view verified technical chart photo for ${escapeHtml(sym)}">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span>Photo</span>
                   </button>
-                ` : `
-                  <span class="idea-stock-tag" data-action="inspect-stock" data-symbol="${escapeHtml(sym)}" style="margin:0;" title="Click to view deep dive on ${escapeHtml(sym)}">
-                    ${escapeHtml(sym)}
-                  </span>
-                  <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" target="_blank" rel="noopener noreferrer" class="stock-tv-pill" title="Open ${escapeHtml(sym)} live chart on TradingView" onclick="event.stopPropagation()">
-                    📈 TV ↗
-                  </a>
-                `}
+                ` : ''}
+                <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(sym)}" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="idea-stock-tv-action-btn" 
+                   title="Open ${escapeHtml(sym)} live interactive chart on TradingView" 
+                   onclick="event.stopPropagation()">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                  </svg>
+                  <span>TV ↗</span>
+                </a>
               </span>
             `;
           }).join('')}
@@ -14269,42 +14267,7 @@
         </div>
       ` : ''}
 
-      ${(() => {
-        const imgs = Array.isArray(activeIdea.images) && activeIdea.images.length > 0
-          ? activeIdea.images
-          : (activeIdea.image ? [activeIdea.image] : []);
-        if (imgs.length === 0) return '';
-        return `
-          <div class="idea-images-section" style="margin-top:12px;">
-            <div style="font-size:11px;font-weight:700;color:var(--mu);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-              <span>📷 Chart Screenshots & Technical Analysis</span>
-              <span style="font-size:10px;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);padding:1px 6px;border-radius:8px;">${imgs.length} ${imgs.length === 1 ? 'Image' : 'Images'}</span>
-            </div>
-            <div class="idea-images-grid" style="display:flex;flex-wrap:wrap;gap:10px;">
-              ${imgs.map((src, i) => {
-                const stockForImg = (activeIdea.stocks && activeIdea.stocks[i]) || (activeIdea.symbols && activeIdea.symbols[i]) || null;
-                const sym = typeof stockForImg === 'string' ? stockForImg : (stockForImg && stockForImg.symbol ? stockForImg.symbol : '');
-                const stockMeta = sym ? ((typeof ST_MAP !== 'undefined' && ST_MAP[sym]) || null) : null;
-                const stockName = (stockMeta && stockMeta.name) ? stockMeta.name : (stockForImg && stockForImg.name ? stockForImg.name : '');
-                const label = sym ? `${sym}${stockName ? ' — ' + stockName : ''}` : `Setup ${i+1}`;
-                const caption = sym ? `${label} — ${activeIdea.title}` : activeIdea.title;
 
-                return `
-                  <div class="idea-image-thumb-wrap" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#000;cursor:pointer;max-width:${imgs.length === 1 ? '100%' : '340px'};flex:1 1 260px;" onclick="window.openOwnerIdeaLightbox && window.openOwnerIdeaLightbox('${escapeHtml(src)}', '${escapeHtml(caption)}')">
-                    <img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" style="width:100%;height:${imgs.length === 1 ? 'auto' : '175px'};max-height:360px;object-fit:${imgs.length === 1 ? 'contain' : 'cover'};display:block;" loading="lazy">
-                    <div style="position:absolute;top:6px;left:6px;background:rgba(15,23,42,0.85);color:#38bdf8;border:1px solid rgba(56,189,248,0.35);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);box-shadow:0 2px 6px rgba(0,0,0,0.5);">
-                      <span>📊 ${escapeHtml(sym || ('Chart ' + (i+1)))}</span>
-                    </div>
-                    <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.8);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);">
-                      <span>🔍 Click to Zoom</span>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      })()}
     `;
 
     if (!isLocked) {
@@ -32618,6 +32581,7 @@
       console.warn("saveStockAlerts error:", e);
     }
     updateDashboardAlertBadge();
+    updateHudAlertBadge();
   }
 
   function updateDashboardAlertBadge() {
@@ -32686,12 +32650,7 @@
           showToast(`🔔 ALERT TRIGGERED: ${item.alert.symbol} hit ${condDesc}! (LTP: ₹${formatNumber(item.price)})`, "🚨");
         });
       }
-      if (State.view === "home") {
-        const list = document.getElementById("dashboard-alerts-container");
-        if (list) {
-          list.innerHTML = renderAlertsGridHTML();
-        }
-      }
+      refreshAllAlertsContainers();
     }
   }
 
@@ -32723,18 +32682,18 @@
               </div>
 
               <!-- Dashboard Alert Button on Hero -->
-              <button class="dashboard-hero-alert-btn" data-action="open-stock-alert" title="Manage your stock alerts and track live price triggers">
+              <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track live price triggers">
                 <span class="hero-alert-icon">🔔</span>
                 <span class="hero-alert-label">Stock Alerts</span>
                 <span class="hero-alert-badge ${activeCount > 0 ? 'has-active' : ''}">${activeCount > 0 ? activeCount + ' Active' : '+ Add'}</span>
               </button>
             </div>
             <h1 class="home-hero-title">
-              <span class="home-hero-accent">Stock Screener</span> & Live Alerts Dashboard
+              <span class="home-hero-accent">Stock Screener</span> & Technical Intelligence
             </h1>
             <p class="home-hero-subtitle">
               Built for technical momentum research — track breakout price levels,<br>
-              moving average crossovers, and real-time stock alert triggers.
+              moving average crossovers, and real-time market trends.
             </p>
 
             <!-- Hero Search Bar -->
@@ -32760,12 +32719,87 @@
           </div>
         </div>
 
-        <!-- Dashboard Stock Alerts & Price Tracker Section -->
-        <div class="dashboard-alerts-section">
-          ${renderDashboardAlertsSectionHTML()}
-        </div>
+
       </div>
     `;
+  }
+
+  
+  // Stock Alerts & Live Price Tracker Modal Manager
+  window.openStockAlertsManagerModal = function() {
+    let modal = document.getElementById("stock-alerts-manager-modal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "stock-alerts-manager-modal";
+      modal.innerHTML = `
+        <div class="alerts-modal-dialog">
+          <button type="button" class="alerts-modal-close-btn" data-action="close-stock-alerts-manager" title="Close Alerts Manager">✕</button>
+          <div id="stock-alerts-manager-content">
+            ${renderDashboardAlertsSectionHTML()}
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+      const closeBtn = modal.querySelector('[data-action="close-stock-alerts-manager"]');
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          modal.style.display = "none";
+        });
+      }
+      window.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && modal.style.display === "flex") {
+          modal.style.display = "none";
+        }
+      });
+    } else {
+      const content = modal.querySelector("#stock-alerts-manager-content");
+      if (content) {
+        content.innerHTML = renderDashboardAlertsSectionHTML();
+      }
+    }
+
+    // Close user dropdown if open
+    const userDropdown = document.getElementById("header-user-dropdown-menu");
+    if (userDropdown) userDropdown.classList.remove("show");
+
+    modal.style.display = "flex";
+  };
+
+  window.closeStockAlertsManagerModal = function() {
+    const modal = document.getElementById("stock-alerts-manager-modal");
+    if (modal) modal.style.display = "none";
+  };
+
+  function updateHudAlertBadge() {
+    const activeCount = (State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length;
+    const hudVal = document.querySelector(".hud-stock-alerts-val");
+    if (hudVal) {
+      hudVal.innerHTML = activeCount > 0 ? `🔔 ${activeCount} Active` : `🔔 0 Active`;
+    }
+    const hudBadge = document.querySelector(".hud-stock-alerts-badge");
+    if (hudBadge) {
+      hudBadge.textContent = `${activeCount} Active`;
+    }
+    updateDashboardAlertBadge();
+  }
+
+  function refreshAllAlertsContainers() {
+    document.querySelectorAll("#dashboard-alerts-container, .stock-alerts-grid-target").forEach(container => {
+      container.innerHTML = renderAlertsGridHTML();
+    });
+
+    document.querySelectorAll(".alerts-filter-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.filter === (State.alertsFilter || "all"));
+    });
+
+    updateHudAlertBadge();
   }
 
   function renderDashboardAlertsSectionHTML() {
@@ -33579,13 +33613,21 @@
                 <span class="hud-detail-label">Market Feed</span>
                 <span class="hud-detail-val hud-live">● Live Stream (NSE/BSE)</span>
               </div>
-              <div class="hud-detail-card">
-                <span class="hud-detail-label">Terminal Tier</span>
-                <span class="hud-detail-val">Ultra-Low Latency</span>
+              <div class="hud-detail-card hud-clickable-card" data-action="open-stock-alerts-manager" style="cursor:pointer;" title="Click to view & manage Stock Alerts">
+                <span class="hud-detail-label">Stock Alerts</span>
+                <span class="hud-detail-val hud-stock-alerts-val" style="color:var(--g);font-weight:700;">🔔 ${(State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length} Active</span>
               </div>
             </div>
 
             <div class="hud-actions-list">
+              <button type="button" class="hud-action-item" data-action="open-stock-alerts-manager">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span>Stock Alerts &amp; Price Tracker</span>
+                <span class="hud-stock-alerts-badge" style="margin-left:auto;font-size:11px;background:rgba(34,197,94,0.15);color:#22c55e;padding:1px 6px;border-radius:10px;font-weight:700;">${(State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length} Active</span>
+              </button>
               <button type="button" class="hud-action-item" data-action="open-user-profile-modal">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -35100,6 +35142,12 @@
         $$(".timeframe-btn").forEach(b => b.classList.toggle("active", b.dataset.tf === State.timeframe));
         renderActiveView();
       }
+      else if (action === "open-stock-alerts-manager") {
+        openStockAlertsManagerModal();
+      }
+      else if (action === "close-stock-alerts-manager") {
+        closeStockAlertsManagerModal();
+      }
       else if (action === "open-stock-alert") {
         const btn = target.closest("[data-action='open-stock-alert']") || target;
         const sym = (btn && btn.dataset.symbol) || State.activeStock;
@@ -35107,6 +35155,74 @@
       }
       else if (action === "close-stock-alert-modal") {
         closeStockAlertModal();
+      }
+      else if (action === "filter-alerts") {
+        const btn = target.closest("[data-action='filter-alerts']") || target;
+        State.alertsFilter = (btn && btn.dataset.filter) || "all";
+        refreshAllAlertsContainers();
+      }
+      else if (action === "toggle-alert-active") {
+        const btn = target.closest("[data-action='toggle-alert-active']") || target;
+        const id = btn && btn.dataset.alertId;
+        const alert = (State.stockAlerts || []).find(a => a.id === id);
+        if (alert) {
+          alert.isActive = !alert.isActive;
+          saveStockAlerts();
+          refreshAllAlertsContainers();
+          if (typeof showToast === 'function') {
+            showToast(alert.isActive ? `▶ Resumed tracking ${alert.symbol}` : `⏸ Paused tracking ${alert.symbol}`, "⏱️");
+          }
+        }
+      }
+      else if (action === "rearm-alert") {
+        const btn = target.closest("[data-action='rearm-alert']") || target;
+        const id = btn && btn.dataset.alertId;
+        const alert = (State.stockAlerts || []).find(a => a.id === id);
+        if (alert) {
+          alert.isTriggered = false;
+          alert.isActive = true;
+          saveStockAlerts();
+          refreshAllAlertsContainers();
+          if (typeof showToast === 'function') {
+            showToast(`🔄 Re-armed alert for ${alert.symbol}`, "⚡");
+          }
+        }
+      }
+      else if (action === "edit-stock-alert") {
+        const btn = target.closest("[data-action='edit-stock-alert']") || target;
+        const id = btn && btn.dataset.alertId;
+        openStockAlertModal(null, id);
+      }
+      else if (action === "test-trigger-alert") {
+        const btn = target.closest("[data-action='test-trigger-alert']") || target;
+        const id = btn && btn.dataset.alertId;
+        const alert = (State.stockAlerts || []).find(a => a.id === id);
+        if (alert) {
+          alert.isTriggered = true;
+          alert.lastTriggeredAt = new Date().toISOString();
+          const s = getStockBySymbol(alert.symbol);
+          alert.triggeredPrice = s ? Number(s[3]) : alert.createdPrice;
+          saveStockAlerts();
+          playAlertChime();
+          if (typeof showToast === 'function') {
+            showToast(`🔔 TEST ALERT TRIGGERED: ${alert.symbol} condition met!`, "🚨");
+          }
+          refreshAllAlertsContainers();
+        }
+      }
+      else if (action === "delete-stock-alert") {
+        const btn = target.closest("[data-action='delete-stock-alert']") || target;
+        const id = btn && btn.dataset.alertId;
+        const idx = (State.stockAlerts || []).findIndex(a => a.id === id);
+        if (idx >= 0) {
+          const sym = State.stockAlerts[idx].symbol;
+          State.stockAlerts.splice(idx, 1);
+          saveStockAlerts();
+          refreshAllAlertsContainers();
+          if (typeof showToast === 'function') {
+            showToast(`🗑️ Deleted alert for ${sym}`, "🗑️");
+          }
+        }
       }
       else if (action === "toggle-screener-presets") {
         State.presetsCollapsed = !State.presetsCollapsed;
@@ -36944,6 +37060,9 @@
     window.saveStockAlerts = saveStockAlerts;
     window.renderHomeView = renderHomeView;
     window.renderDashboardAlertsSectionHTML = renderDashboardAlertsSectionHTML;
+    window.openStockAlertsManagerModal = openStockAlertsManagerModal;
+    window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
+    window.refreshAllAlertsContainers = refreshAllAlertsContainers;
     window.renderAlertsGridHTML = renderAlertsGridHTML;
     console.log("Momentum Chasers v2.5 initialized with Yahoo Finance Live Data Engine & BananaPatterns architecture.");
   }
