@@ -2558,7 +2558,7 @@
         state.holdings.forEach(h => {
           const base = (h.yahooSymbol || '').toUpperCase().replace(/\.(NS|BO|MCX)$/, '');
           const realPrevClose = getCachedPrevClose(base);
-          if (realPrevClose) {
+          if (realPrevClose && Math.abs(h.price - realPrevClose) <= (h.price * 0.25)) {
             state.dayOpen[h.id] = realPrevClose;
           } else {
             const rand = mulberry32(hashSeed(h.yahooSymbol + '-dayopen'));

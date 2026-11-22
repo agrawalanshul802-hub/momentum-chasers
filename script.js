@@ -2656,6 +2656,9 @@
 
   // Comprehensive stock symbol & search typo aliases (Available globally throughout app)
   const STOCK_TYPO_ALIASES = {
+    "SAMBHVSTEELTUBES": "SAMBHV",
+    "SAMBHVSTEEL": "SAMBHV",
+    "INDOMIM": "INDO-MIM",
     "TTKPRETIG": "TTKPRESTIG",
     "TTK": "TTKPRESTIG",
     "PRESTIGE": "TTKPRESTIG",
@@ -5857,20 +5860,21 @@
           if (raw) {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed) && parsed.length > 0) {
+              let needsRepair = false;
               parsed.forEach((h, idx) => {
                 if (!h.id) h.id = "h_" + (h.symbol || "stock").toLowerCase() + "_" + idx;
                 if (!h.broker) h.broker = h.account || "Zerodha";
                 const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+                const expectedPrev = (dPct !== 0 && (1 + (dPct / 100)) > 0) ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
                 let pClose = (h.prevClose && typeof h.prevClose === "number" && h.prevClose > 0) ? h.prevClose : null;
-                if (!pClose || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 1.5)) {
-                  pClose = dPct !== 0 ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
+                if (!pClose || Math.abs(h.cmp - pClose) > (h.cmp * 0.35) || (dPct === 0 && pClose !== h.cmp) || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 0.75)) {
+                  pClose = expectedPrev;
+                  needsRepair = true;
                 }
                 h.prevClose = pClose;
               });
-              if (parsed.length === 5 && !parsed.some(h => (h.cmp - h.buyPrice) < 0)) {
-                const def = this.getDefaultHoldings();
-                this.saveHoldings(def);
-                return def;
+              if (needsRepair) {
+                this.saveHoldings(parsed);
               }
               return parsed;
             }
@@ -5963,9 +5967,10 @@
             h.cmp = Math.round(newPrice * 100) / 100;
             if (chgPct != null && !isNaN(chgPct)) h.dayChangePct = Math.round(chgPct * 100) / 100;
             const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+            const expectedPrev = (dPct !== 0 && (1 + (dPct / 100)) > 0) ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
             let validPrev = (prevClose && typeof prevClose === "number" && prevClose > 0) ? prevClose : null;
-            if (!validPrev || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 1.5)) {
-              validPrev = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
+            if (!validPrev || Math.abs(h.cmp - validPrev) > (h.cmp * 0.35) || (dPct === 0 && validPrev !== h.cmp) || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 0.75)) {
+              validPrev = expectedPrev;
             }
             h.prevClose = Math.round(validPrev * 100) / 100;
             changed = true;
@@ -5989,7 +5994,12 @@
       try {
         const symbols = holdings.map(h => {
           const exch = h.exchange || "NSE";
-          return h.yahooSymbol || `${h.symbol}.${exch === "BSE" ? "BO" : "NS"}`;
+          let sym = (h.symbol || "").trim();
+          if (typeof resolveStockSymbol === "function") {
+            sym = resolveStockSymbol(sym) || sym;
+          }
+          const cleanSym = sym.replace(/\s+/g, "");
+          return h.yahooSymbol ? h.yahooSymbol.replace(/\s+/g, "") : `${cleanSym}.${exch === "BSE" ? "BO" : "NS"}`;
         });
         const query = [...new Set(symbols)].join(",");
         const path = `/v7/finance/quote?symbols=${encodeURIComponent(query)}`;
@@ -6031,9 +6041,10 @@
                   h.dayChangePct = Math.round((q.regularMarketChangePercent || 0) * 100) / 100;
                   const rawPrev = q.chartPreviousClose || (q.regularMarketPrice - (q.regularMarketChange || 0));
                   const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+                  const expectedPrev = (dPct !== 0 && (1 + (dPct / 100)) > 0) ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
                   let validPrev = (rawPrev && typeof rawPrev === "number" && rawPrev > 0) ? rawPrev : null;
-                  if (!validPrev || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 1.5)) {
-                    validPrev = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
+                  if (!validPrev || Math.abs(h.cmp - validPrev) > (h.cmp * 0.35) || (dPct === 0 && validPrev !== h.cmp) || (dPct !== 0 && Math.abs(((h.cmp - validPrev) / validPrev) * 100 - dPct) > 0.75)) {
+                    validPrev = expectedPrev;
                   }
                   h.prevClose = Math.round(validPrev * 100) / 100;
                   if (q.shortName && (!h.name || h.name === h.symbol)) {
@@ -28091,12 +28102,13 @@
       const buyVal = h.qty * h.buyPrice;
       const curVal = h.qty * h.cmp;
       const dPct = (typeof h.dayChangePct === "number" && !isNaN(h.dayChangePct)) ? h.dayChangePct : 0;
+      const expectedPrev = (dPct !== 0 && (1 + (dPct / 100)) > 0) ? Math.round((h.cmp / (1 + (dPct / 100))) * 100) / 100 : h.cmp;
       let pClose = (h.prevClose && typeof h.prevClose === "number" && h.prevClose > 0) ? h.prevClose : null;
-      if (!pClose || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 1.5)) {
-        pClose = dPct !== 0 ? (h.cmp / (1 + (dPct / 100))) : h.cmp;
-        h.prevClose = Math.round(pClose * 100) / 100;
+      if (!pClose || Math.abs(h.cmp - pClose) > (h.cmp * 0.35) || (dPct === 0 && pClose !== h.cmp) || (dPct !== 0 && Math.abs(((h.cmp - pClose) / pClose) * 100 - dPct) > 0.75)) {
+        pClose = expectedPrev;
       }
-      const todayPL = h.qty * (h.cmp - pClose);
+      h.prevClose = pClose;
+      const todayPL = dPct !== 0 ? (h.qty * (h.cmp - pClose)) : 0;
       totalInvested += buyVal;
       totalCurrent += curVal;
       totalTodayPL += todayPL;
@@ -28136,6 +28148,8 @@
       const gainAmt = curVal - buyVal;
       const gainPct = buyVal > 0 ? (gainAmt / buyVal) * 100 : 0;
       const dayChg = h.dayChangePct != null ? h.dayChangePct : 0;
+      const pClose = (dayChg !== 0 && h.prevClose) ? h.prevClose : h.cmp;
+      const dayPL = dayChg !== 0 ? (h.qty * (h.cmp - pClose)) : 0;
       const bookWeight = totalCurrent > 0 ? ((curVal / totalCurrent) * 100).toFixed(1) : "0.0";
       const exch = h.exchange || "NSE";
       const cleanSym = (h.symbol || "").trim().replace(/\s+/g, "");
@@ -28162,7 +28176,7 @@
           <td class="font-mono" style="text-align:right">${formatMoney(buyVal, 0)}</td>
           <td class="font-mono" style="text-align:right">
             ₹${formatNumber(h.cmp, 2)}
-            <div class="holding-cmp-day ${dayChg >= 0 ? 'val-green' : 'val-red'}">${dayChg >= 0 ? '+' : ''}${formatNumber(dayChg, 2)}% today</div>
+            <div class="holding-cmp-day ${dayChg >= 0 ? 'val-green' : 'val-red'}">${dayChg >= 0 ? '+' : ''}${formatNumber(dayChg, 2)}% today ${dayPL !== 0 ? `(${formatSignedMoney(dayPL, 0)})` : ''}</div>
           </td>
           <td class="font-mono" style="text-align:right">
             ${formatMoney(curVal, 0)}
