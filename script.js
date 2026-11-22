@@ -14241,7 +14241,7 @@
                   <div style="display:inline-flex;align-items:center;gap:6px">
                     <div>
                       <div>50×200 EMA Cross</div>
-                      
+                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none !important;letter-spacing:0;margin-top:2px;">in 15min time frame</div>
                     </div>
                     <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove 50×200 EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
                   </div>
