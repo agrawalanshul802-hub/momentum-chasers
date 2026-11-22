@@ -13626,16 +13626,15 @@
       }
       // Active Owner Idea filter
       if (State.activeOwnerIdeaId) {
-        if (typeof isOwnerIdeaUnlocked === "function" && !isOwnerIdeaUnlocked(State.activeOwnerIdeaId)) {
-          return false; // Protect locked VIP idea stocks from leaking into screener table until unlocked
-        }
-        const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
-          ? (State.ownerIdeas || [])
-          : OWNER_IDEAS_SEED;
-        const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
-        if (activeIdea && Array.isArray(activeIdea.symbols) && activeIdea.symbols.length > 0) {
-          const symsUpper = activeIdea.symbols.map(s => s.trim().toUpperCase());
-          if (!symsUpper.includes(stock[0].toUpperCase())) return false;
+        if (typeof isOwnerIdeaUnlocked === "function" && isOwnerIdeaUnlocked(State.activeOwnerIdeaId)) {
+          const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
+            ? (State.ownerIdeas || [])
+            : OWNER_IDEAS_SEED;
+          const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
+          if (activeIdea && Array.isArray(activeIdea.symbols) && activeIdea.symbols.length > 0) {
+            const symsUpper = activeIdea.symbols.map(s => s.trim().toUpperCase());
+            if (!symsUpper.includes(stock[0].toUpperCase())) return false;
+          }
         }
       }
 
@@ -13722,32 +13721,6 @@
 
   function renderScreenerRows(visibleStocks) {
     if (!visibleStocks || visibleStocks.length === 0) {
-      if (State.activeOwnerIdeaId && typeof isOwnerIdeaUnlocked === "function" && !isOwnerIdeaUnlocked(State.activeOwnerIdeaId)) {
-        const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
-          ? (State.ownerIdeas || [])
-          : OWNER_IDEAS_SEED;
-        const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId) || { title: 'Trading Idea' };
-        const count = (activeIdea.symbols || []).length;
-        const price = (typeof getIdeaPrice === 'function') ? getIdeaPrice(activeIdea) : 199;
-        return `
-          <tr>
-            <td colspan="10" style="text-align:center;padding:48px 20px;background:rgba(245,158,11,0.03);">
-              <div style="max-width:480px;margin:0 auto;">
-                <div style="font-size:32px;margin-bottom:8px;">🔒</div>
-                <div style="font-size:16px;font-weight:800;color:#ffffff;margin-bottom:4px;">
-                  ${escapeHtml(activeIdea.title)} (${count} Stocks) is Locked
-                </div>
-                <div style="font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.5;">
-                  These constituent stocks, verified buy ranges, and breakout targets are reserved for VIP access. Click below to unlock instantly.
-                </div>
-                <button type="button" onclick="window.openOwnerIdeaPaymentModal('${escapeHtml(activeIdea.id)}')" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#070b17;font-weight:900;font-size:13px;padding:9px 20px;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(245,158,11,0.3);">
-                  <span>⚡ Instant Pay ₹${price} &amp; Reveal Stocks</span>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }
       return `
         <tr>
           <td colspan="10" style="text-align:center;padding:36px;color:var(--mu)">
@@ -14676,6 +14649,7 @@
         localStorage.setItem('mc_unlocked_ideas', JSON.stringify(State.unlockedIdeas));
       } catch (_) {}
     }
+    State.activeOwnerIdeaId = ideaId; // Automatically reveal newly unlocked setup in screener!
     const wrap = document.getElementById('owner-ideas-chips-container');
     if (wrap) wrap.innerHTML = renderOwnerIdeaChipsHTML();
     if (State.view === 'screener') {
@@ -14940,48 +14914,14 @@
 
     `;
 
-    if (!isLocked) {
-      return `
-        <div class="owner-idea-intel-card">
-          ${innerContentHTML}
-        </div>
-      `;
+    if (isLocked) {
+      // Locked ideas show rest info in the popup modal screen when clicked, not inline on screener
+      return '';
     }
 
     return `
-      <div class="owner-idea-intel-card is-locked" style="position:relative;overflow:hidden;min-height:340px;">
-        <div class="idea-content-blurred">
-          ${innerContentHTML}
-        </div>
-        <div class="idea-lock-gate-overlay">
-          <div style="font-size:38px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,158,11,0.5));">🔒</div>
-          <div style="font-size:18px;font-weight:900;color:#ffffff;margin-bottom:4px;letter-spacing:-0.3px;">
-            VIP Curated Setup: ${escapeHtml(activeIdea.title)}
-          </div>
-          <div style="font-size:12.5px;color:#94a3b8;max-width:540px;margin-bottom:14px;line-height:1.5;">
-            Constituent stocks, verified entry trigger ranges, target prices, stop losses, and multi-timeframe chart breakdowns are reserved for VIP access.
-          </div>
-          <div style="display:inline-flex;align-items:baseline;gap:8px;margin-bottom:16px;background:rgba(245,158,11,0.1);padding:6px 16px;border-radius:20px;border:1px solid rgba(245,158,11,0.25);">
-            <span style="font-size:11px;color:#cbd5e1;text-transform:uppercase;font-weight:700;">Setup Access:</span>
-            <span style="font-size:22px;font-weight:900;color:#f59e0b;">₹${price}</span>
-            <span style="font-size:10px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.15);padding:1px 6px;border-radius:10px;">✓ Instant Unblur</span>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;">
-            <button type="button" class="btn-unlock-idea-cta" onclick="window.openOwnerIdeaPaymentModal('${escapeHtml(activeIdea.id)}')">
-              <span>⚡ Instant Pay ₹${price} &amp; Unlock Setup</span>
-            </button>
-            <button type="button" class="btn-unlock-code-cta" onclick="window.openOwnerIdeaCodeModal('${escapeHtml(activeIdea.id)}')">
-              <span>🔑 Enter Passcode / Coupon</span>
-            </button>
-          </div>
-          <div style="display:flex;align-items:center;gap:14px;font-size:11px;color:#64748b;flex-wrap:wrap;justify-content:center;">
-            <span>⚡ Instant Auto-Detection</span>
-            <span>•</span>
-            <span>📱 100% Direct UPI</span>
-            <span>•</span>
-            <span>🛡️ Lifetime Access</span>
-          </div>
-        </div>
+      <div class="owner-idea-intel-card">
+        ${innerContentHTML}
       </div>
     `;
   }
@@ -15019,22 +14959,56 @@
     modal.style.display = 'flex';
   };
 
-  // Payment & Autopayment Detection Modal Engine
+  // Payment & Autopayment Detection Modal Engine with VIP Details Screen
   let _autopayPollInterval = null;
   let _currentPaymentIdeaId = null;
   let _currentTxRef = null;
 
-  window.openOwnerIdeaPaymentModal = function(ideaId) {
+  // Primary Popup Screen for Paid/Locked Setup Details
+  window.openOwnerIdeaDetailModal = function(ideaId) {
     const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
       ? (State.ownerIdeas || [])
       : OWNER_IDEAS_SEED;
     const idea = ideasList.find(i => i.id === ideaId) || { title: 'Trading Idea', price: 199 };
     const price = getIdeaPrice(idea);
     const title = idea.title || 'VIP Setup';
+    const count = (idea.symbols || []).length;
 
     _currentPaymentIdeaId = ideaId;
     _currentTxRef = 'TX-MC-' + Date.now().toString().slice(-6);
 
+    // 1. Populate Setup Details Screen ("rest info")
+    const detailTitle = document.getElementById('idea-detail-title');
+    const detailCat = document.getElementById('idea-detail-category');
+    const detailTf = document.getElementById('idea-detail-timeframe');
+    const detailCount = document.getElementById('idea-detail-stocks-count');
+    const detailTarget = document.getElementById('idea-detail-target');
+    const detailEntry = document.getElementById('idea-detail-entry');
+    const detailSl = document.getElementById('idea-detail-stoploss');
+    const detailThesis = document.getElementById('idea-detail-thesis-text');
+    const detailThesisBox = document.getElementById('idea-detail-thesis-box');
+    const detailPrice = document.getElementById('idea-detail-price');
+    const detailPayCtaText = document.getElementById('idea-detail-pay-cta-text');
+
+    if (detailTitle) detailTitle.textContent = `VIP Curated Setup: ${title}`;
+    if (detailCat) detailCat.textContent = idea.category || 'High Conviction Swing';
+    if (detailTf) detailTf.textContent = idea.timeframe || '1-3 Months';
+    if (detailCount) detailCount.textContent = count ? `${count} Leaders` : '4 Leaders';
+    if (detailTarget) detailTarget.textContent = idea.target || '+12% to +18%';
+    if (detailEntry) detailEntry.textContent = idea.entry || 'Near EMA Support';
+    if (detailSl) detailSl.textContent = idea.stopLoss || '-5.0% below swing';
+
+    if (detailThesis && idea.thesis) {
+      detailThesis.textContent = idea.thesis;
+      if (detailThesisBox) detailThesisBox.style.display = 'block';
+    } else if (detailThesisBox) {
+      detailThesisBox.style.display = 'none';
+    }
+
+    if (detailPrice) detailPrice.textContent = `₹${price}`;
+    if (detailPayCtaText) detailPayCtaText.textContent = `⚡ Instant Pay ₹${price} & Unlock Setup`;
+
+    // 2. Prepare UPI Payment parameters
     const vpa = (State.gatewaySettings && State.gatewaySettings.directVpa) || '8767823878@slc';
     const isMasked = !!(State.gatewaySettings && State.gatewaySettings.maskBrand);
     const brandName = isMasked ? 'Candlewick Gateway' : 'Momentum Chasers';
@@ -15068,10 +15042,52 @@
     if (phonepeBtn) phonepeBtn.href = upiUrl;
     if (paytmBtn) paytmBtn.href = upiUrl;
 
+    // Show Details View by default
+    window.showIdeaDetailView();
+
     const modal = document.getElementById('idea-unlock-modal');
     if (modal) modal.style.display = 'flex';
+  };
 
-    startAutopayDetection(_currentTxRef, ideaId);
+  window.showIdeaDetailView = function() {
+    stopAutopayDetection();
+    const vDetails = document.getElementById('idea-modal-view-details');
+    const vPay = document.getElementById('idea-modal-view-pay');
+    const vCode = document.getElementById('idea-modal-view-code');
+    if (vDetails) vDetails.style.display = 'block';
+    if (vPay) vPay.style.display = 'none';
+    if (vCode) vCode.style.display = 'none';
+  };
+
+  window.showIdeaPaymentView = function() {
+    const vDetails = document.getElementById('idea-modal-view-details');
+    const vPay = document.getElementById('idea-modal-view-pay');
+    const vCode = document.getElementById('idea-modal-view-code');
+    if (vDetails) vDetails.style.display = 'none';
+    if (vPay) vPay.style.display = 'block';
+    if (vCode) vCode.style.display = 'none';
+    if (_currentPaymentIdeaId && _currentTxRef) {
+      startAutopayDetection(_currentTxRef, _currentPaymentIdeaId);
+    }
+  };
+
+  window.showIdeaCodeView = function() {
+    stopAutopayDetection();
+    const vDetails = document.getElementById('idea-modal-view-details');
+    const vPay = document.getElementById('idea-modal-view-pay');
+    const vCode = document.getElementById('idea-modal-view-code');
+    if (vDetails) vDetails.style.display = 'none';
+    if (vPay) vPay.style.display = 'none';
+    if (vCode) vCode.style.display = 'block';
+    const errEl = document.getElementById('idea-code-error');
+    const inp = document.getElementById('idea-code-input');
+    if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
+    if (inp) inp.value = '';
+  };
+
+  window.openOwnerIdeaPaymentModal = function(ideaId) {
+    window.openOwnerIdeaDetailModal(ideaId);
+    window.showIdeaPaymentView();
   };
 
   window.closeIdeaUnlockModal = function() {
@@ -15081,23 +15097,16 @@
   };
 
   window.switchToCodeUnlockModal = function() {
-    window.closeIdeaUnlockModal();
-    window.openOwnerIdeaCodeModal(_currentPaymentIdeaId);
+    window.showIdeaCodeView();
   };
 
   window.openOwnerIdeaCodeModal = function(ideaId) {
-    _currentPaymentIdeaId = ideaId;
-    const errEl = document.getElementById('idea-code-error');
-    const inp = document.getElementById('idea-code-input');
-    if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
-    if (inp) inp.value = '';
-    const modal = document.getElementById('idea-code-modal');
-    if (modal) modal.style.display = 'flex';
+    window.openOwnerIdeaDetailModal(ideaId);
+    window.showIdeaCodeView();
   };
 
   window.closeIdeaCodeModal = function() {
-    const modal = document.getElementById('idea-code-modal');
-    if (modal) modal.style.display = 'none';
+    window.closeIdeaUnlockModal();
   };
 
   window.copyIdeaModalVpa = function() {
@@ -35908,6 +35917,21 @@
         const btn = target.closest("[data-idea-id]");
         const ideaId = (btn && btn.dataset.ideaId) || target.dataset.ideaId;
         if (ideaId) {
+          const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
+            ? (State.ownerIdeas || [])
+            : OWNER_IDEAS_SEED;
+          const targetIdea = ideasList.find(i => i.id === ideaId);
+          const isUnlocked = (typeof isOwnerIdeaUnlocked === "function") ? isOwnerIdeaUnlocked(ideaId) : true;
+          const isLocked = targetIdea && targetIdea.isLocked !== false && !isUnlocked;
+
+          if (isLocked) {
+            // User clicked on paid setup: open popup screen with the rest of the info!
+            if (typeof window.openOwnerIdeaDetailModal === "function") {
+              window.openOwnerIdeaDetailModal(ideaId);
+            }
+            return;
+          }
+
           State.activeOwnerIdeaId = (State.activeOwnerIdeaId === ideaId ? null : ideaId);
           State.screenerPage = 1;
           if (State.activeOwnerIdeaId) {
