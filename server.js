@@ -3648,17 +3648,40 @@ const ScreeningMantisService = {
                 ema10: r.ema10,
                 ema20: r.ema20,
                 ema50: r.ema50,
+                ema150: r.ema150,
                 ema200: r.ema200,
                 wEma10: r.wEma10,
                 wEma20: r.wEma20,
                 wEma50: r.wEma50,
                 wEma200: r.wEma200,
                 emaCross: r.emaCross,
-                emaCrossCandles: r.emaCrossCandles
+                emaCrossCandles: r.emaCrossCandles,
+                wEmaCross: r.wEmaCross,
+                wEmaCrossCandles: r.wEmaCrossCandles,
+                rsi: r.rsi,
+                rsiAboveMa: Boolean(r.rsiAboveMa),
+                wRsi: r.wRsi,
+                wRsiAboveMa: Boolean(r.wRsiAboveMa),
+                volRatio: r.volRatio,
+                volRatio1d9d: r.volRatio1d9d,
+                wVolRatio: r.wVolRatio,
+                w52HighDist: r.w52HighDist,
+                emaDistPct: r.emaDistPct,
+                consolidationPct: r.consolidationPct,
+                breakoutCandles: r.breakoutCandles || [],
+                earningsDayChange: r.earningsDayChange,
+                pastEarningsDate: r.pastEarningsDate,
+                currentClose: r.currentClose,
+                chg1d: r.chg1d,
+                chg1w: r.chg1w,
+                pass: Boolean(r.pass)
               };
             }
           }
           fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-emas.json'), JSON.stringify(map, null, 2));
+          try {
+            fs.writeFileSync(path.join(__dirname, 'data', 'screeningmantis-emas.js'), 'window._screeningMantisEmaMap = ' + JSON.stringify(map) + ';\n', 'utf8');
+          } catch (_) { }
         } catch (_) { }
         return data;
       }

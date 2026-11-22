@@ -12344,25 +12344,19 @@
       ];
     }
 
-    // 3. High-momentum / all aligned preset tag
-    const tagsStr = (tf === "w" ? (Array.isArray(s) ? s[6] : "") : (Array.isArray(s) ? s[5] : "")) || "";
-    if (tagsStr.includes("a")) {
-      return [true, true, true, true];
-    }
+    // 3. Fallback evaluation based on distance from 52-week high & moving trend
+    const meta = (Array.isArray(s) && s[8]) ? s[8] : {};
+    const high52 = Number(meta.high52) || 0;
+    const low52 = Number(meta.low52) || 0;
+    const chg = Number(Array.isArray(s) ? s[4] : 0) || 0;
+    const range = high52 - low52;
+    const pos = (range > 0 && price > low52) ? (price - low52) / range : 0.5;
 
-    // 4. Compression / consolidation preset tag
-    if (tagsStr.includes("c")) {
-      return (Array.isArray(s) && s[4] >= 0) ? [true, true, false, true] : [false, false, false, true];
-    }
-
-    // 5. Heuristic based on crossover days and price momentum
-    const isGolden = Array.isArray(s) && s[7] !== undefined && s[7] <= 5;
-    const isUp = Array.isArray(s) && s[4] >= 0;
     return [
-      isUp,
-      isUp || tagsStr.includes("r") || tagsStr.includes("b"),
-      isGolden,
-      isGolden || (Array.isArray(s) && s[7] !== undefined && s[7] <= 8)
+      pos >= 0.55 || chg > 0.5,
+      pos >= 0.50 || chg >= 0,
+      pos >= 0.40,
+      pos >= 0.30
     ];
   };
 
@@ -13507,10 +13501,9 @@
 
   function stockMatchesPreset(stock, k) {
     if (!stock) return false;
-    const tagsD = stock[5] || "";
-    const tagsW = stock[6] || "";
-    const allTags = tagsD + tagsW;
-    const currentTags = (State.timeframe === "w" ? tagsW : tagsD) || "";
+    const sym = stock[0];
+    const tf = State.timeframe || "d";
+    const isW = tf === "w";
     const price = Number(stock[3]) || 0;
     const chg = Number(stock[4]) || 0;
     const meta = stock[8] || {};
@@ -13520,67 +13513,121 @@
     const pe = Number(meta.pe);
     const reaction = Number(meta.earningsReaction);
 
+    // Look up authentic live ScreeningMantis record
+    const sm = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sym]) ||
+               (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]);
+
     switch (k) {
-      // --- Technical Presets (PR) ---
-      case "a": { // All EMAs Aligned: 10 > 20 > 50 > 200 EMA
+      // --- Technical Presets (PRICE & MOMENTUM SETUPS) ---
+      case "a": { // All EMAs Aligned: 10 > 20 > 50 > 200 EMA & Price above all 4 EMAs
+        if (sm) {
+          const above10 = isW ? sm.wAboveEma10 : sm.aboveEma10;
+          const above20 = isW ? sm.wAboveEma20 : sm.aboveEma20;
+          const above50 = isW ? sm.wAboveEma50 : sm.aboveEma50;
+          const above200 = isW ? sm.wAboveEma200 : sm.aboveEma200;
+          const e10 = isW ? sm.wEma10 : sm.ema10;
+          const e20 = isW ? sm.wEma20 : sm.ema20;
+          const e50 = isW ? sm.wEma50 : sm.ema50;
+          const e200 = isW ? sm.wEma200 : sm.ema200;
+          const priceAbove = Boolean(above10 && above20 && above50 && above200);
+          const orderBullish = (e10 !== undefined && e20 !== undefined && e50 !== undefined && e200 !== undefined)
+            ? (e10 >= e20 && e20 >= e50 && e50 >= e200)
+            : true;
+          return priceAbove && orderBullish;
+        }
         const emas = typeof getStockEmaStatus === "function" ? getStockEmaStatus(stock) : null;
-        const liveAligned = Array.isArray(emas) && emas.length === 4 && emas[0] && emas[1] && emas[2] && emas[3];
-        return liveAligned || allTags.includes("a");
-      }
-      case "b": { // Breakout Stocks: Near 52W high/ATH resistance or momentum breakout
-        const nearHigh = high52 > 0 && price >= high52 * 0.95;
-        return nearHigh || allTags.includes("b") || (chg >= 2.5 && price >= high52 * 0.90);
-      }
-      case "v": { // Volume Breakout: Volume expansion or strong thrust
-        return allTags.includes("v") || chg >= 2.0;
-      }
-      case "r": { // RSI Above MA: Sustained momentum
-        return allTags.includes("r") || chg > 0 || (high52 > 0 && price >= high52 * 0.85);
-      }
-      case "c": { // EMA Convergence: Contracting spread / consolidation compression
-        return allTags.includes("c") || (Math.abs(chg) <= 1.2 && high52 > 0 && price >= high52 * 0.80);
-      }
-      case "p": { // Crossed Pivot: Crossed key pivot resistance from below
-        return allTags.includes("p") || (chg >= 1.0 && high52 > 0 && price >= high52 * 0.88);
-      }
-      case "i": { // IPO Breakout: Fresh listing / initial base breakout
-        return allTags.includes("i") || (high52 > 0 && price >= high52 * 0.96 && chg > 0);
+        return Array.isArray(emas) && emas.length === 4 && emas[0] && emas[1] && emas[2] && emas[3];
       }
 
-      // --- Financial & Results Presets (RS) ---
-      case "1": { // Excellent Results: High composite profit & revenue growth
-        const strong = (!isNaN(profit) && profit >= 20 && !isNaN(rev) && rev >= 15) || (!isNaN(profit) && profit >= 30);
-        return strong || allTags.includes("1");
+      case "b": { // Breakout Stocks: Near 52W High / ATH resistance (< 5% distance) or active breakout
+        if (sm) {
+          if (sm.w52HighDist !== undefined && sm.w52HighDist >= -5.0) return true;
+          if (Array.isArray(sm.breakoutCandles) && sm.breakoutCandles.length > 0) return true;
+        }
+        return high52 > 0 && price >= high52 * 0.95;
       }
+
+      case "v": { // Volume Breakout: Authentic 1.5x+ Volume expansion vs recent average
+        if (sm) {
+          const vRatio = isW ? (sm.wVolRatio || sm.volRatio) : (sm.volRatio || sm.volRatio1d9d);
+          if (vRatio !== undefined && vRatio >= 1.5) return true;
+        }
+        return false;
+      }
+
+      case "r": { // RSI Above MA: RSI > 9-period SMA of RSI from ScreeningMantis
+        if (sm) {
+          const rsiAbove = isW ? sm.wRsiAboveMa : sm.rsiAboveMa;
+          if (rsiAbove !== undefined) return Boolean(rsiAbove);
+        }
+        return false;
+      }
+
+      case "c": { // EMA Convergence: Tight EMA compression (|emaDistPct| <= 1.0% or consolidation <= 10%)
+        if (sm) {
+          if (sm.emaDistPct !== undefined && Math.abs(sm.emaDistPct) <= 1.0) return true;
+          if (sm.consolidationPct !== undefined && sm.consolidationPct <= 10.0) return true;
+        }
+        return false;
+      }
+
+      case "p": { // Crossed Pivot: Fresh bullish 10x20 crossover within last 5 candles or active breakout
+        if (sm) {
+          const cross = isW ? sm.wEmaCross : sm.emaCross;
+          const candles = isW ? sm.wEmaCrossCandles : sm.emaCrossCandles;
+          if (cross === "bull" && candles !== undefined && candles <= 5) return true;
+          if (Array.isArray(sm.breakoutCandles) && sm.breakoutCandles.length > 0) return true;
+        }
+        return false;
+      }
+
+      case "i": { // IPO Breakout: Fresh IPO listing trading near ATH / 52W high
+        const isIpo = (typeof IPO_PERF !== "undefined" && Array.isArray(IPO_PERF) && IPO_PERF.some(r => r[9] === sym)) ||
+                      (stock[1] === "SC" && (meta.name && (meta.name.includes("IPO") || meta.name.includes("Industries"))));
+        return isIpo && ((high52 > 0 && price >= high52 * 0.90) || chg > 0);
+      }
+
+      // --- Financial & Results Presets (EARNINGS GROWTH) ---
+      case "1": { // Excellent Results: High composite growth (Profit >= 25% YoY AND Revenue >= 15% YoY)
+        return (!isNaN(profit) && profit >= 25 && !isNaN(rev) && rev >= 15) || (!isNaN(profit) && profit >= 35);
+      }
+
       case "2": { // Profit Growth: Net profit up >= 20% YoY
-        return (!isNaN(profit) && profit >= 20) || allTags.includes("2");
+        return !isNaN(profit) && profit >= 20;
       }
+
       case "3": { // Revenue Growth: Sales revenue up >= 15% YoY
-        return (!isNaN(rev) && rev >= 15) || allTags.includes("3");
+        return !isNaN(rev) && rev >= 15;
       }
-      case "4": { // Margin Expansion: Profit growing faster than revenue
-        const expanding = (!isNaN(profit) && !isNaN(rev) && profit > rev && profit >= 10) || (!isNaN(profit) && profit >= 25);
-        return expanding || allTags.includes("4");
+
+      case "4": { // Margin Expansion: Profit growing faster than revenue (Profit > Rev AND Profit >= 12%)
+        return !isNaN(profit) && !isNaN(rev) && profit > rev && profit >= 12;
       }
-      case "5": { // Earnings Surprise: Positive post-earnings reaction or significant profit beat
-        const surprise = (!isNaN(reaction) && reaction > 0) || (!isNaN(profit) && profit >= 25);
-        return surprise || allTags.includes("5");
+
+      case "5": { // Earnings Surprise: Positive market reaction on earnings day (>= +2.5%) or large profit beat
+        if (sm && sm.earningsDayChange !== undefined && sm.earningsDayChange >= 2.5) return true;
+        if (!isNaN(reaction) && reaction >= 2.5) return true;
+        return !isNaN(profit) && profit >= 35;
       }
-      case "6": { // Turnaround: High operational acceleration from lower base
-        const turnaround = (!isNaN(profit) && profit >= 35) || (!isNaN(profit) && profit > 0 && !isNaN(rev) && rev > 15 && !isNaN(pe) && pe > 40);
-        return turnaround || allTags.includes("6");
+
+      case "6": { // Turnaround: High profit acceleration (>= 40% YoY or turnaround from low base)
+        return (!isNaN(profit) && profit >= 40) || (!isNaN(profit) && profit > 0 && !isNaN(rev) && rev >= 20 && !isNaN(pe) && pe > 35);
       }
-      case "7": { // Consistent Performers: Sustained YoY growth with sustainable PE
-        const steady = (!isNaN(profit) && profit >= 10 && !isNaN(rev) && rev >= 8 && !isNaN(pe) && pe > 0 && pe <= 65);
-        return steady || allTags.includes("7");
+
+      case "7": { // Consistent Performers: Sustained YoY profit & sales growth at reasonable PE
+        return !isNaN(profit) && profit >= 12 && !isNaN(rev) && rev >= 10 && !isNaN(pe) && pe > 0 && pe <= 60;
       }
-      case "8": { // Results + Breakout: Strong fundamentals + price breakout near high
-        const goodResults = (!isNaN(profit) && profit >= 15) || (!isNaN(rev) && rev >= 15) || allTags.includes("1") || allTags.includes("2");
-        const techBreakout = (high52 > 0 && price >= high52 * 0.93) || chg >= 1.5 || allTags.includes("b");
-        return (goodResults && techBreakout) || allTags.includes("8");
+
+      case "8": { // Results + Breakout: Strong fundamentals (Profit >= 15% or Rev >= 15%) + Technical Breakout
+        const strongResults = (!isNaN(profit) && profit >= 15) || (!isNaN(rev) && rev >= 15);
+        let techBreakout = false;
+        if (sm && sm.w52HighDist !== undefined && sm.w52HighDist >= -6.0) techBreakout = true;
+        else if (high52 > 0 && price >= high52 * 0.94) techBreakout = true;
+        return strongResults && techBreakout;
       }
+
       default:
-        return allTags.includes(k) || currentTags.includes(k);
+        return false;
     }
   }
 
