@@ -1110,6 +1110,30 @@
             </label>
           </div>
 
+          <!-- Locked / Paywall Settings -->
+          <div
+            style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:12px;margin:12px 0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" id="idea-locked" checked style="accent-color:#f59e0b;width:18px;height:18px;"
+                  onchange="updateLivePreview()">
+                <label for="idea-locked" style="font-size:12.5px;color:#fcd34d;font-weight:700;cursor:pointer;">
+                  🔒 VIP Locked Setup (User Pays to Access)
+                </label>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:6px;">
+                <label for="idea-price" style="font-size:11px;color:var(--text-muted);font-weight:600;">Unlock Price
+                  (₹):</label>
+                <input type="number" id="idea-price" class="form-input"
+                  style="width:90px;padding:5px 8px;font-size:12px;font-weight:700;" value="199" min="0" step="1"
+                  oninput="updateLivePreview()">
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+              When locked, free users see blurred targets, hidden constituent stocks, and an instant UPI unlock paywall.
+            </div>
+          </div>
+
           <!-- Actions -->
           <div style="display:flex;gap:10px;margin-top:20px;">
             <button type="submit" id="btn-submit-idea" class="btn-submit">
@@ -1726,9 +1750,57 @@
       }
     }
 
+    var pinLockoutTimer = null;
+    var pinFailedAttempts = 0;
+
+    function startPinLockout(seconds) {
+      if (pinLockoutTimer) clearInterval(pinLockoutTimer);
+      var remaining = seconds || 60;
+      var input = document.getElementById('pin-input');
+      var btn = document.getElementById('btn-unlock');
+      var errEl = document.getElementById('pin-error');
+
+      if (input) input.disabled = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+      }
+
+      function tick() {
+        if (remaining <= 0) {
+          clearInterval(pinLockoutTimer);
+          pinLockoutTimer = null;
+          pinFailedAttempts = 0;
+          if (input) {
+            input.disabled = false;
+            input.focus();
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '';
+            btn.style.cursor = '';
+            btn.textContent = 'Unlock Owner Studio';
+          }
+          if (errEl) errEl.style.display = 'none';
+          return;
+        }
+
+        if (btn) btn.textContent = '🔒 Locked (' + remaining + 's)';
+        if (errEl) {
+          errEl.innerHTML = '🔒 <strong>Security Lockout:</strong> Too many failed PIN attempts.<br>Please wait <strong>' + remaining + 's</strong> before trying again.';
+          errEl.style.display = 'block';
+        }
+        remaining--;
+      }
+
+      tick();
+      pinLockoutTimer = setInterval(tick, 1000);
+    }
+
     function verifyPinWithServer(pin, cb) {
       if (pin === '1234' || pin === 'momentum2026') {
-        cb(true);
+        cb({ valid: true });
         return;
       }
       fetch('/api/owner-ideas/verify-pin', {
@@ -1736,13 +1808,23 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pin: pin })
       })
-        .then(function (res) { return res.json(); })
-        .then(function (data) { cb(data && data.valid); })
-        .catch(function () { cb(pin === '1234'); });
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { status: res.status, data: data };
+          });
+        })
+        .then(function (result) {
+          cb(result.data || {});
+        })
+        .catch(function () {
+          cb({ valid: (pin === '1234' || pin === 'momentum2026') });
+        });
     }
 
     function handlePinSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
+      if (pinLockoutTimer) return false;
+
       var input = document.getElementById('pin-input');
       var pin = (input ? input.value : '').trim();
       var errEl = document.getElementById('pin-error');
@@ -1758,6 +1840,7 @@
 
       // Fast check for 1234 / momentum2026
       if (pin === '1234' || pin === 'momentum2026') {
+        pinFailedAttempts = 0;
         ownerPin = pin;
         sessionStorage.setItem('mc_owner_pin', pin);
         unlockUI();
@@ -1766,17 +1849,26 @@
         return false;
       }
 
-      verifyPinWithServer(pin, function (valid) {
-        if (valid) {
+      verifyPinWithServer(pin, function (res) {
+        if (res && res.valid) {
+          pinFailedAttempts = 0;
           ownerPin = pin;
           sessionStorage.setItem('mc_owner_pin', pin);
           unlockUI();
           showToast('Owner Studio Unlocked');
           fetchIdeas();
         } else {
-          if (errEl) {
-            errEl.textContent = 'Incorrect PIN. Default is 1234.';
-            errEl.style.display = 'block';
+          pinFailedAttempts++;
+          if (res && res.locked) {
+            startPinLockout(res.retryAfterSec || 60);
+          } else if (pinFailedAttempts >= 4) {
+            startPinLockout(60);
+          } else {
+            if (errEl) {
+              var rem = res && typeof res.attemptsRemaining === 'number' ? res.attemptsRemaining : Math.max(0, 4 - pinFailedAttempts);
+              errEl.textContent = 'Incorrect PIN. (' + rem + ' attempt' + (rem === 1 ? '' : 's') + ' remaining before temporary lockout)';
+              errEl.style.display = 'block';
+            }
           }
         }
       });
@@ -2125,6 +2217,7 @@
           '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:' + (idea.active ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)') + ';color:' + (idea.active ? '#22c55e' : '#94a3b8') + ';">' +
           (idea.active ? 'Active' : 'Hidden') +
           '</span>' +
+          (idea.isLocked !== false ? '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:700;">🔒 VIP Locked (₹' + (idea.price || 199) + ')</span>' : '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(56,189,248,0.15);color:#38bdf8;">🔓 Free</span>') +
           '</div>' +
           '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' +
           escapeHtml(idea.category || 'Setup') + ' · ' + escapeHtml(idea.timeframe || 'Swing') + ' · Published: ' + escapeHtml(idea.publishedAt || '') +
@@ -2168,6 +2261,8 @@
       var stopLoss = document.getElementById('idea-sl').value.trim();
       var thesis = document.getElementById('idea-thesis').value.trim();
       var active = document.getElementById('idea-active').checked;
+      var isLocked = document.getElementById('idea-locked') ? document.getElementById('idea-locked').checked : true;
+      var price = document.getElementById('idea-price') ? (parseFloat(document.getElementById('idea-price').value) || 199) : 199;
 
       var payload = {
         pin: ownerPin || '1234',
@@ -2191,7 +2286,9 @@
         thesis: thesis,
         images: attachedImages,
         image: attachedImages[0] || '',
-        active: active
+        active: active,
+        isLocked: isLocked,
+        price: price
       };
 
       fetch('/api/owner-ideas', {
@@ -2228,6 +2325,12 @@
       document.getElementById('idea-sl').value = idea.stopLoss || '';
       document.getElementById('idea-thesis').value = idea.thesis || '';
       document.getElementById('idea-active').checked = idea.active !== false;
+      if (document.getElementById('idea-locked')) {
+        document.getElementById('idea-locked').checked = idea.isLocked !== false;
+      }
+      if (document.getElementById('idea-price')) {
+        document.getElementById('idea-price').value = idea.price || 199;
+      }
 
       if (idea.stocks && Array.isArray(idea.stocks) && idea.stocks.length > 0) {
         selectedStocks = idea.stocks.map(function (s, idx) {
@@ -2275,6 +2378,8 @@
     function resetForm() {
       document.getElementById('idea-id').value = '';
       document.getElementById('idea-form').reset();
+      if (document.getElementById('idea-locked')) document.getElementById('idea-locked').checked = true;
+      if (document.getElementById('idea-price')) document.getElementById('idea-price').value = '199';
       selectedStocks = [];
       selectedSymbols = [];
       attachedImages = [];

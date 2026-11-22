@@ -4607,6 +4607,31 @@
   ];
 
   // ---------------------------------------------------------------------------
+  // NIFTY 100 Official Benchmark Constituents (Top 100 Indian Large-Cap Equities)
+  // 50 Nifty 50 Giants + 50 Nifty Next 50 Leaders = Exactly 100 Constituents
+  // ---------------------------------------------------------------------------
+  const NIFTY_100_SYMBOLS = [
+    // NIFTY 50 Bluechip Leaders (50)
+    "RELIANCE", "TCS", "HDFCBANK", "BHARTIARTL", "ICICIBANK", "INFY", "SBIN", "ITC", "LT", "BAJFINANCE",
+    "HCLTECH", "MARUTI", "SUNPHARMA", "M&M", "KOTAKBANK", "AXISBANK", "TITAN", "ULTRACEMCO", "NTPC", "ONGC",
+    "ADANIENT", "POWERGRID", "TATASTEEL", "COALINDIA", "BAJAJFINSV", "JSWSTEEL", "HINDUNILVR", "ADANIPORTS", "ASIANPAINT", "GRASIM",
+    "BEL", "TECHM", "EICHERMOT", "HINDALCO", "CIPLA", "TRENT", "NESTLEIND", "DRREDDY", "WIPRO", "BAJAJ-AUTO",
+    "APOLLOHOSP", "TATACONSUM", "SHRIRAMFIN", "BPCL", "DIVISLAB", "HEROMOTOCO", "INDUSINDBK", "SBILIFE", "HDFCLIFE", "BRITANNIA",
+
+    // NIFTY NEXT 50 High-Growth Large-Cap Leaders (50)
+    "ABB", "ADANIENSOL", "ADANIGREEN", "ADANIPOWER", "AMBUJACEM", "BAJAJHLDNG", "BAJAJHFL", "BANKBARODA", "BOSCHLTD", "BSE",
+    "CANBK", "CGPOWER", "CHOLAFIN", "CUMMINSIND", "DLF", "DMART", "ENRIN", "GAIL", "GODREJCP", "HAL",
+    "HDFCAMC", "HINDZINC", "HYUNDAI", "INDIGO", "IOC", "IRFC", "JINDALSTEL", "JIOFIN", "LTM", "MANKIND",
+    "MAXHEALTH", "MAZDOCK", "MOTHERSON", "MUTHOOTFIN", "PFC", "PIDILITIND", "PNB", "POLYCAB", "POWERINDIA", "SIEMENS",
+    "SOLARINDS", "SWIGGY", "TATAPOWER", "TMPV", "TORNTPHARM", "TVSMOTOR", "UNIONBANK", "VBL", "VEDL", "ZOMATO"
+  ];
+  const NIFTY_100_SYMBOLS_SET = new Set(NIFTY_100_SYMBOLS);
+  if (typeof window !== "undefined") {
+    window.NIFTY_100_SYMBOLS = NIFTY_100_SYMBOLS;
+    window.NIFTY_100_SYMBOLS_SET = NIFTY_100_SYMBOLS_SET;
+  }
+
+  // ---------------------------------------------------------------------------
   // Master 44 Nifty Sectoral & Thematic Indices Definition (Feature 03, Screener & Net Flow)
   // ---------------------------------------------------------------------------
   const MASTER_44_SECTORS = [
@@ -4651,7 +4676,7 @@
     { key: "NIFTY SERV SECTOR", label: "Services Sector (NIFTY SERV SECTOR)", broad: null, icon: "🤝", desc: "Commercial Services, IT, Financial, Healthcare & Telecom Giants", extraSyms: ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "ICICIBANK"] },
     { key: "NIFTY IPO", label: "Recent IPOs (NIFTY IPO)", broad: null, icon: "🚀", desc: "Newly Listed IPO Market Entrants & High Growth Tech Companies", extraSyms: ["BAJAJHFL", "SWIGGY", "HYUNDAI", "WAAREEENER", "PREMIERENE", "OLAELEC", "NTPCGREEN", "ACMESOLAR", "DOMS", "IREDA", "MANKIND", "JYOTICNC", "MEDANTA", "KRN", "AFCONS"] },
     { key: "NIFTY 50", label: "NIFTY 50 Benchmark (50 LargeCap)", broad: null, isNifty50: true, icon: "🇮🇳", desc: "The Benchmark 50 Largest & Most Liquid Indian Bluechip Giants" },
-    { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, cap: "LC", icon: "🏆", desc: "Top 100 Large-Cap Indian Companies representing 70%+ of Market Cap" },
+    { key: "NIFTY 100", label: "NIFTY 100 Benchmark (Top 100 LargeCap)", broad: null, isNifty100: true, icon: "🏆", desc: "Top 100 Large-Cap Indian Companies representing 70%+ of Market Cap" },
     { key: "NIFTY MIDCAP 150", label: "NIFTY MidCap 150 Benchmark (MidCap 150)", broad: null, cap: "MC", icon: "🎯", desc: "High-Growth Mid-Cap Enterprises ranked 101 to 250 by Market Cap" },
     { key: "NIFTY SMLCAP 250", label: "NIFTY SmallCap 250 Benchmark (SmallCap 250)", broad: null, cap: "SC", icon: "💫", desc: "Emerging Small-Cap Companies ranked 251 to 500 across India" }
   ];
@@ -4686,6 +4711,9 @@
     );
 
     if (secDef) {
+      if (secDef.isNifty100 || norm === "NIFTY 100" || norm === "NIFTY 100 BENCHMARK (TOP 100 LARGECAP)") {
+        return NIFTY_100_SYMBOLS_SET.has(stock[0]);
+      }
       if (secDef.isNifty50) {
         if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
           return (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) ? window.HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0]) : (stock[1] === "LC");
@@ -5447,6 +5475,24 @@
           if (live) {
             matchedStocks.push([item.symbol, live.cap || "LC", live.sector || item.sector, live.price || item.price, live.chg || item.chg, live.pat || "", live.tech || "", live.stars || 5, live]);
             seenSyms.add(item.symbol);
+          }
+        }
+      }
+    }
+
+    // 2b. Nifty 100 benchmark constituents (strictly 100 Large-Cap companies)
+    if (secDef && (secDef.isNifty100 || sectorKey === "NIFTY 100" || norm === "NIFTY 100")) {
+      const n100List = (typeof NIFTY_100_SYMBOLS !== "undefined") ? NIFTY_100_SYMBOLS : (typeof window !== "undefined" && window.NIFTY_100_SYMBOLS ? window.NIFTY_100_SYMBOLS : []);
+      for (const sym of n100List) {
+        if (!seenSyms.has(sym)) {
+          const live = (typeof ST_MAP !== "undefined") ? ST_MAP[sym] : null;
+          const stk = (typeof ST !== "undefined") ? ST.find(s => s[0] === sym) : null;
+          if (stk) {
+            matchedStocks.push(stk);
+            seenSyms.add(sym);
+          } else if (live) {
+            matchedStocks.push([sym, live.cap || "LC", live.sector || "LargeCap", live.price || 0, live.chg || 0, live.pat || "", live.tech || "", live.stars || 5, live]);
+            seenSyms.add(sym);
           }
         }
       }
@@ -26379,7 +26425,7 @@
     "NIFTY CAPITAL MKT": ["BSE", "MCX", "CDSL", "CAMS", "ANGELONE", "MOTILALOFS", "HDFCAMC", "UTIAMC", "NUVAMA", "ISEC"],
     "NIFTY REALTY": ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PRESTIGE", "PHOENIXLTD", "BRIGADE", "SOBHA", "SIGNATURE", "SUNTECK"],
     "NIFTY PVT BANK": ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "INDUSINDBK", "FEDERALBNK", "IDFCFIRSTB", "BANDHANBNK", "AUBANK", "YESBANK"],
-    "NIFTY 100": ["RELIANCE", "TCS", "HDFCBANK", "ICICIBANK", "BHARTIARTL", "SBIN", "INFY", "BAJFINANCE", "LT", "SUNPHARMA", "M&M", "MARUTI", "ITC", "NTPC", "POWERGRID", "ULTRACEMCO", "TITAN", "AXISBANK", "KOTAKBANK", "TATASTEEL", "HINDALCO", "COALINDIA", "ONGC", "BAJAJ-AUTO", "ADANIENT"],
+    "NIFTY 100": NIFTY_100_SYMBOLS,
     "NIFTY CONSUMPTION": ["HINDUNILVR", "ITC", "TITAN", "NESTLEIND", "BRITANNIA", "TATACONSUM", "DABUR", "GODREJCP", "MARICO", "VBL", "DMART", "DEVYANI"],
     "NIFTY TRANS LOGIS": ["ADANIPORTS", "INDIGO", "CONCOR", "DELHIVERY", "BLUEDART", "ALLCARGO", "MAHLOG", "TCI", "VRL", "GATEWAY"],
     "NIFTY MOBILITY": ["MARUTI", "M&M", "TMPV", "BAJAJ-AUTO", "TVSMOTOR", "ASHOKLEY", "INDIGO", "MOTHERSON", "IRCTC", "BHARATFORG"],
