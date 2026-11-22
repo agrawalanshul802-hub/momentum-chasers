@@ -4607,26 +4607,40 @@
   ];
 
   // ---------------------------------------------------------------------------
-  // NIFTY 100 Official Benchmark Constituents (Top 100 Indian Large-Cap Equities)
-  // 50 Nifty 50 Giants + 50 Nifty Next 50 Leaders = Exactly 100 Constituents
+  // NIFTY 50 Official Benchmark Constituents (The 50 Official Bluechip Giants)
   // ---------------------------------------------------------------------------
-  const NIFTY_100_SYMBOLS = [
-    // NIFTY 50 Bluechip Leaders (50)
+  const NIFTY_50_SYMBOLS = [
     "RELIANCE", "TCS", "HDFCBANK", "BHARTIARTL", "ICICIBANK", "INFY", "SBIN", "ITC", "LT", "BAJFINANCE",
     "HCLTECH", "MARUTI", "SUNPHARMA", "M&M", "KOTAKBANK", "AXISBANK", "TITAN", "ULTRACEMCO", "NTPC", "ONGC",
     "ADANIENT", "POWERGRID", "TATASTEEL", "COALINDIA", "BAJAJFINSV", "JSWSTEEL", "HINDUNILVR", "ADANIPORTS", "ASIANPAINT", "GRASIM",
     "BEL", "TECHM", "EICHERMOT", "HINDALCO", "CIPLA", "TRENT", "NESTLEIND", "DRREDDY", "WIPRO", "BAJAJ-AUTO",
-    "APOLLOHOSP", "TATACONSUM", "SHRIRAMFIN", "BPCL", "DIVISLAB", "HEROMOTOCO", "INDUSINDBK", "SBILIFE", "HDFCLIFE", "BRITANNIA",
+    "APOLLOHOSP", "TATACONSUM", "SHRIRAMFIN", "BPCL", "DIVISLAB", "HEROMOTOCO", "INDUSINDBK", "SBILIFE", "HDFCLIFE", "BRITANNIA"
+  ];
+  const NIFTY_50_SYMBOLS_SET = new Set(NIFTY_50_SYMBOLS);
 
-    // NIFTY NEXT 50 High-Growth Large-Cap Leaders (50)
+  // ---------------------------------------------------------------------------
+  // NIFTY NEXT 50 High-Growth Large-Cap Leaders (50)
+  // ---------------------------------------------------------------------------
+  const NIFTY_NEXT_50_SYMBOLS = [
     "ABB", "ADANIENSOL", "ADANIGREEN", "ADANIPOWER", "AMBUJACEM", "BAJAJHLDNG", "BAJAJHFL", "BANKBARODA", "BOSCHLTD", "BSE",
     "CANBK", "CGPOWER", "CHOLAFIN", "CUMMINSIND", "DLF", "DMART", "ENRIN", "GAIL", "GODREJCP", "HAL",
     "HDFCAMC", "HINDZINC", "HYUNDAI", "INDIGO", "IOC", "IRFC", "JINDALSTEL", "JIOFIN", "LTM", "MANKIND",
     "MAXHEALTH", "MAZDOCK", "MOTHERSON", "MUTHOOTFIN", "PFC", "PIDILITIND", "PNB", "POLYCAB", "POWERINDIA", "SIEMENS",
     "SOLARINDS", "SWIGGY", "TATAPOWER", "TMPV", "TORNTPHARM", "TVSMOTOR", "UNIONBANK", "VBL", "VEDL", "ZOMATO"
   ];
+  const NIFTY_NEXT_50_SYMBOLS_SET = new Set(NIFTY_NEXT_50_SYMBOLS);
+
+  // ---------------------------------------------------------------------------
+  // NIFTY 100 Official Benchmark Constituents (NIFTY 50 + NIFTY NEXT 50 = 100)
+  // ---------------------------------------------------------------------------
+  const NIFTY_100_SYMBOLS = [...NIFTY_50_SYMBOLS, ...NIFTY_NEXT_50_SYMBOLS];
   const NIFTY_100_SYMBOLS_SET = new Set(NIFTY_100_SYMBOLS);
+
   if (typeof window !== "undefined") {
+    window.NIFTY_50_SYMBOLS = NIFTY_50_SYMBOLS;
+    window.NIFTY_50_SYMBOLS_SET = NIFTY_50_SYMBOLS_SET;
+    window.NIFTY_NEXT_50_SYMBOLS = NIFTY_NEXT_50_SYMBOLS;
+    window.NIFTY_NEXT_50_SYMBOLS_SET = NIFTY_NEXT_50_SYMBOLS_SET;
     window.NIFTY_100_SYMBOLS = NIFTY_100_SYMBOLS;
     window.NIFTY_100_SYMBOLS_SET = NIFTY_100_SYMBOLS_SET;
   }
@@ -4711,14 +4725,11 @@
     );
 
     if (secDef) {
+      if (secDef.isNifty50 || norm === "NIFTY 50" || norm === "NIFTY 50 BENCHMARK (50 LARGECAP)") {
+        return NIFTY_50_SYMBOLS_SET.has(stock[0]);
+      }
       if (secDef.isNifty100 || norm === "NIFTY 100" || norm === "NIFTY 100 BENCHMARK (TOP 100 LARGECAP)") {
         return NIFTY_100_SYMBOLS_SET.has(stock[0]);
-      }
-      if (secDef.isNifty50) {
-        if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
-          return (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) ? window.HEATMAP_NIFTY50_DATA.some(s => s.symbol === stock[0]) : (stock[1] === "LC");
-        }
-        return stock[1] === "LC";
       }
       if (secDef.cap && stock[1] === secDef.cap) return true;
       if (secDef.broad && stock[2] === secDef.broad) return true;
@@ -5467,14 +5478,19 @@
       }
     }
 
-    // 2. Heatmap Nifty 50 constituents if Nifty 50 benchmark
-    if (secDef && secDef.isNifty50 && typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && Array.isArray(HEATMAP_NIFTY50_DATA)) {
-      const hm50 = (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA)) ? window.HEATMAP_NIFTY50_DATA : []; for (const item of hm50) {
-        if (!seenSyms.has(item.symbol)) {
-          const live = (typeof ST_MAP !== "undefined") ? ST_MAP[item.symbol] : null;
-          if (live) {
-            matchedStocks.push([item.symbol, live.cap || "LC", live.sector || item.sector, live.price || item.price, live.chg || item.chg, live.pat || "", live.tech || "", live.stars || 5, live]);
-            seenSyms.add(item.symbol);
+    // 2. Nifty 50 benchmark constituents (strictly the official 50 bluechip giants)
+    if (secDef && (secDef.isNifty50 || sectorKey === "NIFTY 50" || norm === "NIFTY 50")) {
+      const n50List = (typeof NIFTY_50_SYMBOLS !== "undefined") ? NIFTY_50_SYMBOLS : (typeof window !== "undefined" && window.NIFTY_50_SYMBOLS ? window.NIFTY_50_SYMBOLS : []);
+      for (const sym of n50List) {
+        if (!seenSyms.has(sym)) {
+          const live = (typeof ST_MAP !== "undefined") ? ST_MAP[sym] : null;
+          const stk = (typeof ST !== "undefined") ? ST.find(s => s[0] === sym) : null;
+          if (stk) {
+            matchedStocks.push(stk);
+            seenSyms.add(sym);
+          } else if (live) {
+            matchedStocks.push([sym, live.cap || "LC", live.sector || "LargeCap", live.price || 0, live.chg || 0, live.pat || "", live.tech || "", live.stars || 5, live]);
+            seenSyms.add(sym);
           }
         }
       }
@@ -19108,6 +19124,7 @@
     "logoText": "BRIT"
   }
 ];
+  if (typeof window !== 'undefined') window.HEATMAP_NIFTY50_DATA = HEATMAP_NIFTY50_DATA;
 
   // Comprehensive Additional Constituent Stocks for All 44 NSE Sectoral & Thematic Indices
   const HEATMAP_EXTRA_STOCKS = [
@@ -26418,7 +26435,7 @@
     "INSURANCE": ["HDFCLIFE", "SBILIFE", "ICICIPRULI", "LICI", "ICICIGI", "GICRE", "NIACL", "STARHEALTH", "POLICYBZR"],
     "TELECOM": ["BHARTIARTL", "TATACOMM", "INDUSTOWER", "HFCL", "TEJASNET", "STERLITE", "ROUTE", "ITI", "VODAFONE"],
     "SERVICES SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART", "BLS"],
-    "NIFTY 50": HEATMAP_NIFTY50_DATA.map(s => s.symbol),
+    "NIFTY 50": NIFTY_50_SYMBOLS,
     "NIFTY FIN SERVICE": ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "KOTAKBANK", "AXISBANK", "BAJAJFINSV", "JIOFIN", "CHOLAFIN", "SHRIRAMFIN", "HDFCLIFE", "SBILIFE"],
     "NIFTY SERV SECTOR": ["TCS", "BHARTIARTL", "INFY", "HDFCBANK", "INDIGO", "ZOMATO", "NAUKRI", "APOLLOHOSP", "IRCTC", "DMART"],
     "NIFTY AUTO": ["M&M", "MARUTI", "TMPV", "BAJAJ-AUTO", "EICHERMOT", "TVSMOTOR", "HEROMOTOCO", "BHARATFORG", "ASHOKLEY", "MOTHERSON", "BOSCHLTD", "MRF"],
