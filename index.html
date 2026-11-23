@@ -19,7 +19,7 @@
     <!-- Main Stylesheet & Favicon -->
     <link rel="icon" type="image/png" href="logo-icon.png">
     <link rel="apple-touch-icon" href="logo-icon.png">
-    <link rel="stylesheet" href="styles.css?v=6.4.6">
+    <link rel="stylesheet" href="styles.css?v=6.4.8">
 
     <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
     <script src="lightweight-charts.js"></script>
@@ -75,6 +75,11 @@
                     <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
                     <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
                 </svg>
+            </button>
+            <button class="ticker-ctrl-btn ticker-theme-btn" id="header-theme-toggle-btn"
+                data-action="toggle-theme-hud" title="Switch Theme (Midnight Dark / Crisp White)"
+                aria-label="Switch Theme">
+                <span id="header-theme-icon" style="font-size: 13px; line-height: 1;">🌙</span>
             </button>
         </div>
 
@@ -442,23 +447,25 @@
                 <input type="hidden" id="holding-edit-id" value="">
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div style="position:relative;">
+                    <div>
                         <label
                             style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">Symbol
                             <span style="color:var(--r)">*</span></label>
-                        <input type="text" id="holding-symbol-input" required placeholder="e.g. NTPC" autocomplete="off"
-                            style="width:100%;text-transform:uppercase;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
+                        <div style="position:relative;">
+                            <input type="text" id="holding-symbol-input" required placeholder="e.g. NTPC, RELIANCE, E2E" autocomplete="off"
+                                style="width:100%;text-transform:uppercase;padding:8px 12px;background:var(--sf);border:1px solid var(--bdr);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:700;box-sizing:border-box;">
+                            <div id="holding-symbol-autocomplete"
+                                style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--bdr);border-radius:6px;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                            </div>
+                        </div>
                         <div id="holding-cmp-indicator"
-                            style="display:none;font-size:11px;font-weight:600;color:var(--g);margin-top:5px;align-items:center;gap:6px;">
+                            style="display:none;font-size:11px;font-weight:600;color:var(--g);margin-top:6px;align-items:center;gap:6px;">
                             <span
                                 style="display:inline-block;width:6px;height:6px;background:var(--g);border-radius:50%;"></span>
                             <span id="holding-cmp-text">Live CMP: ₹0.00</span>
                             <button type="button" id="holding-use-cmp-btn"
                                 style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--g);border-radius:4px;font-size:10px;font-weight:700;padding:1px 6px;cursor:pointer;">Use
                                 as Buy Price</button>
-                        </div>
-                        <div id="holding-symbol-autocomplete"
-                            style="display:none;position:absolute;top:100%;left:0;right:0;z-index:1000;background:var(--sf2);border:1px solid var(--bdr);border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
                         </div>
                     </div>
                     <div>
@@ -682,19 +689,34 @@
                     </div>
                 </div>
 
-                <!-- Alert Condition Type -->
-                <div>
-                    <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
-                        Alert Trigger Condition <span style="color:var(--r)">*</span>
-                    </label>
-                    <select id="stock-alert-type-select" style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:600;box-sizing:border-box;">
-                        <option value="price_above">Price Crosses Above (Target / Resistance) 📈</option>
-                        <option value="price_below">Price Crosses Below (Stop Loss / Support) 📉</option>
-                        <option value="pct_gain">Day % Gain Exceeds (+% Momentum Thrust) 🚀</option>
-                        <option value="pct_drop">Day % Drop Exceeds (-% Drawdown Alert) ⚠️</option>
-                        <option value="breakout_52w">52-Week High Breakout (Within 2% of ATH) ⚡</option>
-                        <option value="ema_bullish">All 4 EMAs Bullish Aligned (10>20>50>200) 🟢</option>
-                    </select>
+                <!-- Alert Condition & Time Frame Grid -->
+                <div style="display:grid;grid-template-columns:1fr 140px;gap:10px;">
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
+                            Alert Trigger Condition <span style="color:var(--r)">*</span>
+                        </label>
+                        <select id="stock-alert-type-select" style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:600;box-sizing:border-box;">
+                            <option value="price_above">Price greater than (Target / Resistance) 📈</option>
+                            <option value="price_below">Price less than (Stop Loss / Support) 📉</option>
+                            <option value="ema_golden">EMA50 crossing up EMA200 (Golden Cross) 🌟</option>
+                            <option value="ema_pivot">EMA10 crossing up EMA20 (Pullback Pivot) 📈</option>
+                            <option value="ema_bullish">All 4 EMAs Bullish (10>20>50>200) 🟢</option>
+                            <option value="breakout_52w">52-Week High Breakout (Within 2% of ATH) ⚡</option>
+                            <option value="pct_gain">Day % Gain Exceeds (+% Momentum Thrust) 🚀</option>
+                            <option value="pct_drop">Day % Drop Exceeds (-% Drawdown Alert) ⚠️</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;">
+                            Time Frame <span style="color:var(--r)">*</span>
+                        </label>
+                        <select id="stock-alert-timeframe-select" style="width:100%;padding:9px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--radius-sm);color:var(--ink);font-size:13px;font-weight:600;box-sizing:border-box;">
+                            <option value="15 Min">15 Min</option>
+                            <option value="1 Day" selected>1 Day</option>
+                            <option value="1 Hour">1 Hour</option>
+                            <option value="1 Week">1 Week</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Target Price / Value Row -->
@@ -792,17 +814,39 @@
                         <div id="idea-detail-thesis-text" style="font-size:12px;color:#cbd5e1;line-height:1.5;"></div>
                     </div>
 
-                    <!-- Price Pill -->
-                    <div style="display:inline-flex;align-items:baseline;gap:8px;margin-bottom:16px;background:rgba(245,158,11,0.1);padding:6px 18px;border-radius:20px;border:1px solid rgba(245,158,11,0.25);">
-                        <span style="font-size:11px;color:#cbd5e1;text-transform:uppercase;font-weight:700;">Setup Access:</span>
-                        <span id="idea-detail-price" style="font-size:22px;font-weight:900;color:#f59e0b;">₹199</span>
-                        <span style="font-size:10px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.15);padding:1px 6px;border-radius:10px;">✓ Instant Unblur</span>
+                    <!-- VIP Subscription Plans Selector (Monthly / Quarterly / Yearly) -->
+                    <div class="vip-plan-picker" style="margin:16px 0 14px 0;">
+                        <div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
+                            👑 Select VIP Subscription Plan (Unlocks All Setups)
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center;">
+                            <!-- Monthly -->
+                            <div class="vip-plan-card" id="plan-tier-card-monthly" onclick="window.setVipPayPlan('monthly')" style="cursor:pointer;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 6px;transition:all 0.2s;">
+                                <div style="font-size:10.5px;color:#94a3b8;font-weight:700;text-transform:uppercase;">🗓️ Monthly</div>
+                                <div id="plan-tier-price-monthly" style="font-size:17px;font-weight:900;color:#ffffff;margin:2px 0;">₹999</div>
+                                <div style="font-size:9.5px;color:#64748b;">30 Days Pass</div>
+                            </div>
+                            <!-- Quarterly (Default Active) -->
+                            <div class="vip-plan-card is-active" id="plan-tier-card-quarterly" onclick="window.setVipPayPlan('quarterly')" style="cursor:pointer;background:rgba(34,197,94,0.1);border:1.5px solid #22c55e;border-radius:10px;padding:10px 6px;transition:all 0.2s;position:relative;">
+                                <span style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#22c55e;color:#0b101b;font-size:8px;font-weight:900;padding:1px 6px;border-radius:10px;white-space:nowrap;">POPULAR</span>
+                                <div style="font-size:10.5px;color:#4ade80;font-weight:700;text-transform:uppercase;">⚡ Quarterly</div>
+                                <div id="plan-tier-price-quarterly" style="font-size:17px;font-weight:900;color:#22c55e;margin:2px 0;">₹2,499</div>
+                                <div style="font-size:9.5px;color:#86efac;">90 Days Pass</div>
+                            </div>
+                            <!-- Yearly -->
+                            <div class="vip-plan-card" id="plan-tier-card-yearly" onclick="window.setVipPayPlan('yearly')" style="cursor:pointer;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 6px;transition:all 0.2s;position:relative;">
+                                <span style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#0b101b;font-size:8px;font-weight:900;padding:1px 6px;border-radius:10px;white-space:nowrap;">BEST VALUE</span>
+                                <div style="font-size:10.5px;color:#fcd34d;font-weight:700;text-transform:uppercase;">👑 Yearly</div>
+                                <div id="plan-tier-price-yearly" style="font-size:17px;font-weight:900;color:#f59e0b;margin:2px 0;">₹7,999</div>
+                                <div style="font-size:9.5px;color:#fde68a;">365 Days Pass</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Action CTAs -->
                     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;">
                         <button type="button" class="btn-unlock-idea-cta" id="idea-detail-pay-cta" onclick="window.showIdeaPaymentView()">
-                            <span id="idea-detail-pay-cta-text">⚡ Instant Pay ₹199 &amp; Unlock Setup</span>
+                            <span id="idea-detail-pay-cta-text">⚡ Instant Pay ₹2,499 &amp; Unlock VIP</span>
                         </button>
                         <button type="button" class="btn-unlock-code-cta" onclick="window.showIdeaCodeView()">
                             <span>🔑 Enter Passcode / Coupon</span>
@@ -815,7 +859,7 @@
                         <span>•</span>
                         <span>📱 100% Direct UPI</span>
                         <span>•</span>
-                        <span>🛡️ Lifetime Access</span>
+                        <span>🛡️ All Setups Included</span>
                     </div>
                 </div>
             </div>
@@ -834,23 +878,36 @@
                         <span style="font-size:22px;">🔒</span>
                         <div>
                             <h3 id="idea-modal-title" style="font-size:16px;font-weight:800;color:#ffffff;margin:0;">
-                                Unlock Research Setup
+                                Unlock VIP Research Setups
                             </h3>
                             <div id="idea-modal-subtitle" style="font-size:11.5px;color:var(--mu);margin-top:2px;">
-                                Instant 1-Click UPI Payment &amp; Auto-Detection
+                                Instant 1-Click UPI Payment • Unlocks All Setups
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Plan Switcher Pills in View 2 -->
+                <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
+                    <button type="button" class="vip-plan-pill" id="view2-plan-monthly" onclick="window.setVipPayPlan('monthly')" style="cursor:pointer;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;">
+                        🗓️ Monthly (₹999)
+                    </button>
+                    <button type="button" class="vip-plan-pill is-active" id="view2-plan-quarterly" onclick="window.setVipPayPlan('quarterly')" style="cursor:pointer;background:rgba(34,197,94,0.15);border:1px solid #22c55e;color:#22c55e;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;">
+                        ⚡ Quarterly (₹2,499)
+                    </button>
+                    <button type="button" class="vip-plan-pill" id="view2-plan-yearly" onclick="window.setVipPayPlan('yearly')" style="cursor:pointer;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;">
+                        👑 Yearly (₹7,999)
+                    </button>
+                </div>
+
                 <!-- Pricing Banner -->
                 <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
                     <div>
-                        <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Amount Payable</div>
-                        <div id="idea-modal-amount" style="font-size:24px;font-weight:900;color:#f59e0b;">₹199</div>
+                        <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;" id="idea-modal-plan-label">Quarterly VIP Access (90 Days)</div>
+                        <div id="idea-modal-amount" style="font-size:24px;font-weight:900;color:#f59e0b;">₹2,499</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:10px;background:rgba(34,197,94,0.15);color:#22c55e;padding:2px 8px;border-radius:12px;font-weight:700;display:inline-block;">✓ Instant Unblur</div>
+                        <div style="font-size:10px;background:rgba(34,197,94,0.15);color:#22c55e;padding:2px 8px;border-radius:12px;font-weight:700;display:inline-block;">✓ All Setups Unlocked</div>
                         <div id="idea-modal-brand" style="font-size:11px;color:#cbd5e1;margin-top:3px;">Momentum Chasers Gateway</div>
                     </div>
                 </div>
@@ -965,7 +1022,7 @@
     <script src="data/screeningmantis-emas.js?v=6.4.7"></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=6.4.7"></script>
+    <script src="script.js?v=6.4.8"></script>
 </body>
 
 </html>

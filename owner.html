@@ -1112,26 +1112,51 @@
 
           <!-- Locked / Paywall Settings -->
           <div
-            style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:12px;margin:12px 0;">
+            style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:14px;margin:12px 0;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
               <div style="display:flex;align-items:center;gap:8px;">
                 <input type="checkbox" id="idea-locked" checked style="accent-color:#f59e0b;width:18px;height:18px;"
                   onchange="updateLivePreview()">
-                <label for="idea-locked" style="font-size:12.5px;color:#fcd34d;font-weight:700;cursor:pointer;">
-                  🔒 VIP Locked Setup (User Pays to Access)
+                <label for="idea-locked" style="font-size:13px;color:#fcd34d;font-weight:700;cursor:pointer;">
+                  🔒 VIP Locked Setup (Subscriber Exclusive • Monthly / Quarterly / Yearly)
                 </label>
               </div>
-              <div style="display:inline-flex;align-items:center;gap:6px;">
-                <label for="idea-price" style="font-size:11px;color:var(--text-muted);font-weight:600;">Unlock Price
-                  (₹):</label>
-                <input type="number" id="idea-price" class="form-input"
-                  style="width:90px;padding:5px 8px;font-size:12px;font-weight:700;" value="199" min="0" step="1"
-                  oninput="updateLivePreview()">
+              <span style="font-size:10.5px;background:rgba(245,158,11,0.15);color:#f59e0b;padding:2px 8px;border-radius:12px;font-weight:700;border:1px solid rgba(245,158,11,0.3);">
+                👑 Subscription Model (Not One-by-One)
+              </span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin:8px 0 10px 0;line-height:1.4;">
+              When locked, free users cannot access stocks one-by-one. Users get instant access to <strong>ALL VIP setups</strong> by purchasing your Monthly, Quarterly, or Yearly VIP plans.
+            </div>
+
+            <!-- 3 Subscription Tiers Quick Inputs (Monthly, Quarterly, Yearly) -->
+            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;">
+              <div>
+                <label style="display:block;font-size:11px;color:#94a3b8;font-weight:700;margin-bottom:3px;">
+                  🗓️ Monthly Plan (₹)
+                </label>
+                <input type="number" id="idea-price-monthly" class="form-input"
+                  style="width:100%;padding:6px 8px;font-size:12px;font-weight:700;" value="999" min="1" step="1"
+                  oninput="handlePlanPriceInput()">
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;color:#4ade80;font-weight:700;margin-bottom:3px;">
+                  ⚡ Quarterly Plan (₹)
+                </label>
+                <input type="number" id="idea-price-quarterly" class="form-input"
+                  style="width:100%;padding:6px 8px;font-size:12px;font-weight:700;" value="2499" min="1" step="1"
+                  oninput="handlePlanPriceInput()">
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;color:#f59e0b;font-weight:700;margin-bottom:3px;">
+                  👑 Yearly Plan (₹)
+                </label>
+                <input type="number" id="idea-price-yearly" class="form-input"
+                  style="width:100%;padding:6px 8px;font-size:12px;font-weight:700;" value="7999" min="1" step="1"
+                  oninput="handlePlanPriceInput()">
               </div>
             </div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
-              When locked, free users see blurred targets, hidden constituent stocks, and an instant UPI unlock paywall.
-            </div>
+            <input type="hidden" id="idea-price" value="999">
           </div>
 
           <!-- Actions -->
@@ -1258,10 +1283,10 @@
           <div>
             <label class="form-label">Applies To Plan</label>
             <select id="coupon-applies" class="form-select">
-              <option value="all">🌟 All Passes</option>
-              <option value="tip">Single Tip Pass</option>
-              <option value="weekly">Weekly VIP Pass</option>
-              <option value="monthly">Monthly VIP Pass</option>
+              <option value="all">🌟 All VIP Passes</option>
+              <option value="monthly">🗓️ Monthly VIP Pass</option>
+              <option value="quarterly">⚡ Quarterly VIP Pass</option>
+              <option value="yearly">👑 Yearly VIP Pass</option>
             </select>
           </div>
           <div>
@@ -1317,21 +1342,23 @@
       </div>
 
       <form id="gateway-form" onsubmit="handleGatewaySubmit(event)" style="margin-top:18px;">
-        <!-- Pricing Row -->
+        <!-- Pricing Row (Monthly, Quarterly, Yearly) -->
         <div class="form-row-3">
           <div class="form-group">
-            <label class="form-label">Single Tip Pass Price (₹) *</label>
-            <input type="number" id="gw-price-tip" class="form-input" value="199" required>
+            <label class="form-label">🗓️ Monthly VIP Pass Price (₹) *</label>
+            <input type="number" id="gw-price-monthly" class="form-input" value="999" required oninput="syncGatewayPricesToIdeaForm()">
           </div>
           <div class="form-group">
-            <label class="form-label">Weekly VIP Pass Price (₹) *</label>
-            <input type="number" id="gw-price-weekly" class="form-input" value="999" required>
+            <label class="form-label">⚡ Quarterly VIP Pass Price (₹) * (3 Months)</label>
+            <input type="number" id="gw-price-quarterly" class="form-input" value="2499" required oninput="syncGatewayPricesToIdeaForm()">
           </div>
           <div class="form-group">
-            <label class="form-label">Monthly VIP Pass Price (₹) *</label>
-            <input type="number" id="gw-price-monthly" class="form-input" value="2499" required>
+            <label class="form-label">👑 Yearly VIP Pass Price (₹) * (12 Months)</label>
+            <input type="number" id="gw-price-yearly" class="form-input" value="7999" required oninput="syncGatewayPricesToIdeaForm()">
           </div>
         </div>
+        <input type="hidden" id="gw-price-tip" value="999">
+        <input type="hidden" id="gw-price-weekly" value="2499">
 
         <!-- Custom Payment Link (Optional direct link fallback) -->
         <div class="form-group">
@@ -1450,10 +1477,10 @@
           <div>
             <label class="form-label">Plan Tier</label>
             <select id="pass-tier" class="form-select">
-              <option value="Weekly VIP Pass (7 Days)">Weekly VIP Pass (7 Days)</option>
-              <option value="Monthly VIP Pass (30 Days)">Monthly VIP Pass (30 Days)</option>
-              <option value="Single Tip Pass (24 Hours)">Single Tip Pass (24 Hours)</option>
-              <option value="Lifetime Access">Lifetime Access</option>
+              <option value="Monthly VIP Pass (30 Days)">🗓️ Monthly VIP Pass (30 Days)</option>
+              <option value="Quarterly VIP Pass (90 Days)">⚡ Quarterly VIP Pass (90 Days)</option>
+              <option value="Yearly VIP Pass (365 Days)">👑 Yearly VIP Pass (365 Days)</option>
+              <option value="Lifetime Access">💎 Lifetime Access</option>
             </select>
           </div>
           <div>
@@ -2217,7 +2244,7 @@
           '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:' + (idea.active ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)') + ';color:' + (idea.active ? '#22c55e' : '#94a3b8') + ';">' +
           (idea.active ? 'Active' : 'Hidden') +
           '</span>' +
-          (idea.isLocked !== false ? '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:700;">🔒 VIP Locked (₹' + (idea.price || 199) + ')</span>' : '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(56,189,248,0.15);color:#38bdf8;">🔓 Free</span>') +
+          (idea.isLocked !== false ? '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:700;">🔒 VIP Subscription (Monthly • Quarterly • Yearly)</span>' : '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(56,189,248,0.15);color:#38bdf8;">🔓 Free</span>') +
           '</div>' +
           '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">' +
           escapeHtml(idea.category || 'Setup') + ' · ' + escapeHtml(idea.timeframe || 'Swing') + ' · Published: ' + escapeHtml(idea.publishedAt || '') +
@@ -2516,9 +2543,9 @@
         var c = allCoupons[i];
         var discountText = c.type === 'percent' ? (c.amount + '% OFF') : ('₹' + c.amount + ' OFF');
         var appliesText = 'All Passes';
-        if (c.appliesTo === 'tip') appliesText = 'Single Tip Pass';
-        else if (c.appliesTo === 'weekly') appliesText = 'Weekly VIP Pass';
-        else if (c.appliesTo === 'monthly') appliesText = 'Monthly VIP Pass';
+        if (c.appliesTo === 'monthly') appliesText = 'Monthly VIP Pass';
+        else if (c.appliesTo === 'quarterly') appliesText = 'Quarterly VIP Pass';
+        else if (c.appliesTo === 'yearly') appliesText = 'Yearly VIP Pass';
 
         html += '<tr>' +
           '<td><strong style="color:#f59e0b;font-family:monospace;font-size:13px;letter-spacing:0.05em;">' + escapeHtml(c.code) + '</strong></td>' +
@@ -2606,15 +2633,53 @@
     }
 
     // --- TAB 3: GATEWAY & PRIVACY SETTINGS ---
+    function syncPlanPricesFromIdeaForm() {
+      var m = document.getElementById('idea-price-monthly') ? document.getElementById('idea-price-monthly').value : '999';
+      var q = document.getElementById('idea-price-quarterly') ? document.getElementById('idea-price-quarterly').value : '2499';
+      var y = document.getElementById('idea-price-yearly') ? document.getElementById('idea-price-yearly').value : '7999';
+      if (document.getElementById('gw-price-monthly')) document.getElementById('gw-price-monthly').value = m;
+      if (document.getElementById('gw-price-quarterly')) document.getElementById('gw-price-quarterly').value = q;
+      if (document.getElementById('gw-price-yearly')) document.getElementById('gw-price-yearly').value = y;
+      if (document.getElementById('gw-price-tip')) document.getElementById('gw-price-tip').value = m;
+      if (document.getElementById('gw-price-weekly')) document.getElementById('gw-price-weekly').value = q;
+      if (document.getElementById('idea-price')) document.getElementById('idea-price').value = q;
+    }
+
+    function syncGatewayPricesToIdeaForm() {
+      var m = document.getElementById('gw-price-monthly') ? document.getElementById('gw-price-monthly').value : '999';
+      var q = document.getElementById('gw-price-quarterly') ? document.getElementById('gw-price-quarterly').value : '2499';
+      var y = document.getElementById('gw-price-yearly') ? document.getElementById('gw-price-yearly').value : '7999';
+      if (document.getElementById('idea-price-monthly')) document.getElementById('idea-price-monthly').value = m;
+      if (document.getElementById('idea-price-quarterly')) document.getElementById('idea-price-quarterly').value = q;
+      if (document.getElementById('idea-price-yearly')) document.getElementById('idea-price-yearly').value = y;
+      if (document.getElementById('idea-price')) document.getElementById('idea-price').value = q;
+    }
+
+    function handlePlanPriceInput() {
+      syncPlanPricesFromIdeaForm();
+    }
+
     function fetchGatewaySettings() {
       fetch('/api/owner/gateway-settings?_t=' + Date.now())
         .then(function (res) { return res.json(); })
         .then(function (data) {
           if (data && data.success && data.settings) {
             var s = data.settings;
-            if (document.getElementById('gw-price-tip')) document.getElementById('gw-price-tip').value = s.tipPrice || 199;
-            if (document.getElementById('gw-price-weekly')) document.getElementById('gw-price-weekly').value = s.weeklyPrice || 999;
-            if (document.getElementById('gw-price-monthly')) document.getElementById('gw-price-monthly').value = s.monthlyPrice || 2499;
+            var m = s.monthlyPrice || 999;
+            var q = s.quarterlyPrice || s.weeklyPrice || 2499;
+            var y = s.yearlyPrice || 7999;
+
+            if (document.getElementById('gw-price-monthly')) document.getElementById('gw-price-monthly').value = m;
+            if (document.getElementById('gw-price-quarterly')) document.getElementById('gw-price-quarterly').value = q;
+            if (document.getElementById('gw-price-yearly')) document.getElementById('gw-price-yearly').value = y;
+            if (document.getElementById('gw-price-tip')) document.getElementById('gw-price-tip').value = m;
+            if (document.getElementById('gw-price-weekly')) document.getElementById('gw-price-weekly').value = q;
+
+            if (document.getElementById('idea-price-monthly')) document.getElementById('idea-price-monthly').value = m;
+            if (document.getElementById('idea-price-quarterly')) document.getElementById('idea-price-quarterly').value = q;
+            if (document.getElementById('idea-price-yearly')) document.getElementById('idea-price-yearly').value = y;
+            if (document.getElementById('idea-price')) document.getElementById('idea-price').value = q;
+
             if (document.getElementById('gw-custom-link')) document.getElementById('gw-custom-link').value = s.customPaymentLink || '';
             if (document.getElementById('gw-telegram')) document.getElementById('gw-telegram').value = s.telegramBot || 'MomentumChasers_bot';
             if (document.getElementById('gw-vpa')) document.getElementById('gw-vpa').value = s.upiVpa || '8767823878@slc';
@@ -2631,9 +2696,11 @@
       var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
       var payload = {
         pin: activePin,
-        tipPrice: document.getElementById('gw-price-tip').value,
-        weeklyPrice: document.getElementById('gw-price-weekly').value,
         monthlyPrice: document.getElementById('gw-price-monthly').value,
+        quarterlyPrice: document.getElementById('gw-price-quarterly').value,
+        yearlyPrice: document.getElementById('gw-price-yearly').value,
+        tipPrice: document.getElementById('gw-price-monthly').value,
+        weeklyPrice: document.getElementById('gw-price-quarterly').value,
         customPaymentLink: document.getElementById('gw-custom-link').value,
         telegramBot: document.getElementById('gw-telegram').value,
         upiVpa: document.getElementById('gw-vpa').value,
