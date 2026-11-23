@@ -3880,6 +3880,499 @@
   </section>
 
 
+  
+  <!-- ================= REACT BITS PIPELINE COMPONENT ================= -->
+  <style>
+    .rb-pipeline-section {
+      padding: 56px 0 44px;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.05) 0%, rgba(6, 10, 20, 0) 70%);
+    }
+
+    .rb-pipeline-header {
+      text-align: left;
+      margin-bottom: 38px;
+    }
+
+    .rb-pipeline-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--cy, #10b981);
+      letter-spacing: 0.14em;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .rb-pipeline-eyebrow .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+      animation: rbPulse 1.8s infinite;
+    }
+
+    @keyframes rbPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .rb-pipeline-title {
+      font-size: clamp(1.75rem, 2.7vw, 2.4rem);
+      line-height: 1.2;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .rb-pipeline-desc {
+      font-size: 1.02rem;
+      color: var(--muted, #94a3b8);
+      line-height: 1.6;
+      max-width: 760px;
+      margin: 0;
+    }
+
+    /* === PIPELINE GRAPH CONTAINER === */
+    .rb-pipeline-container {
+      position: relative;
+      background: rgba(11, 18, 34, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 40px 32px 48px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .rb-pipeline-graph {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 28px 24px;
+      position: relative;
+      align-items: center;
+      z-index: 2;
+    }
+
+    /* Node Card */
+    .rb-pipe-node {
+      position: relative;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      z-index: 5;
+    }
+
+    .rb-pipe-node:hover {
+      transform: translateY(-4px);
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+
+    .rb-pipe-node.highlighted {
+      border-color: #10b981;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Grid positions for branching pipeline */
+    .rb-node-1 { grid-column: 1; grid-row: 1 / span 2; align-self: center; }
+    .rb-node-2 { grid-column: 2; grid-row: 1; }
+    .rb-node-3 { grid-column: 2; grid-row: 2; }
+    .rb-node-4 { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+    .rb-node-5 { grid-column: 4; grid-row: 1 / span 2; align-self: center; }
+
+    .rb-node-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .rb-tag-emerald { color: #10b981; }
+    .rb-tag-cyan { color: #22d3ee; }
+    .rb-tag-amber { color: #f59e0b; }
+    .rb-tag-gold { color: #eab308; }
+
+    .rb-node-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rb-node-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .rb-node-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .rb-node-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .rb-node-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 4px;
+      width: fit-content;
+    }
+
+    .rb-status-emerald {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .rb-status-cyan {
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      color: #38bdf8;
+    }
+
+    .rb-status-amber {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    /* Live pulse animation inside badge */
+    .rb-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    /* Flow Connectors (SVG overlay) */
+    .rb-pipeline-svg-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .rb-pipe-edge {
+      stroke: rgba(255, 255, 255, 0.12);
+      stroke-width: 2;
+      fill: none;
+      transition: stroke 0.3s ease;
+    }
+
+    .rb-pipe-edge-active {
+      stroke: #10b981;
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6));
+    }
+
+    .rb-pipe-flow-particle {
+      fill: #10b981;
+      filter: drop-shadow(0 0 8px #10b981);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .rb-pipeline-graph {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5, auto);
+        gap: 16px;
+      }
+      .rb-node-1 { grid-column: 1; grid-row: 1; }
+      .rb-node-2 { grid-column: 1; grid-row: 2; }
+      .rb-node-3 { grid-column: 1; grid-row: 3; }
+      .rb-node-4 { grid-column: 1; grid-row: 4; }
+      .rb-node-5 { grid-column: 1; grid-row: 5; }
+      .rb-pipeline-svg-layer { display: none; }
+      .rb-pipe-node::after {
+        content: "↓";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: #10b981;
+        opacity: 0.6;
+      }
+      .rb-node-5::after { display: none; }
+    }
+  </style>
+
+  <section class="sec rb-pipeline-section" id="pipeline" aria-label="Market Intelligence Data Pipeline">
+    <div class="wrap">
+      <div class="rb-pipeline-header">
+        <div class="rb-pipeline-eyebrow">
+          <span class="pulse-dot"></span>
+          <span>HOW MOMENTUM CHASERS WORKS &bull; LIVE PIPELINE</span>
+        </div>
+        <h2 class="rb-pipeline-title">
+          From Raw Exchange Ticks to <span class="ser" style="font-style:italic;color:var(--cy,#10b981);">Actionable Trade Setups.</span>
+        </h2>
+        <p class="rb-pipeline-desc">
+          Watch 2,000+ NSE stocks flow through our parallel 50×200 EMA multi-timeframe engine and live F&amp;O institutional order flow in real-time.
+        </p>
+      </div>
+
+      <div class="rb-pipeline-container" id="rb-pipeline-box">
+        <svg class="rb-pipeline-svg-layer" id="rb-pipeline-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.8"/>
+              <stop offset="50%" stop-color="#22d3ee" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+            </linearGradient>
+          </defs>
+          <g id="rb-edges-group"></g>
+          <g id="rb-particles-group"></g>
+        </svg>
+
+        <div class="rb-pipeline-graph">
+          <!-- STAGE 01: INGESTION -->
+          <div class="rb-pipe-node rb-node-1" data-node="1" onclick="promptToolAuth(event, 'Live Exchange Ticks Stream', '2,000+ real-time tick packets streaming per second directly from NSE/BSE')">
+            <span class="rb-node-tag rb-tag-emerald"><span class="rb-badge-dot"></span> Stage 01: Ingestion</span>
+            <div class="rb-node-header">
+              <div class="rb-node-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">📡</div>
+              <div>
+                <h3 class="rb-node-title">Live Exchange Ticks</h3>
+                <p class="rb-node-desc">NSE &amp; BSE Equity Cash Stream</p>
+              </div>
+            </div>
+            <p class="rb-node-desc">Direct ingestion of 2,000+ stock prices, volumes and order book snapshots.</p>
+            <div class="rb-node-status rb-status-emerald">
+              <span class="rb-badge-dot"></span> <span>2,000+ Stocks Streaming</span>
+            </div>
+          </div>
+
+          <!-- STAGE 02A: 50x200 EMA ENGINE -->
+          <div class="rb-pipe-node rb-node-2" data-node="2" onclick="promptToolAuth(event, '50×200 EMA Multi-Timeframe Engine', 'Real-time 15m and Daily golden cross detection with live trend confirmation')">
+            <span class="rb-node-tag rb-tag-cyan"><span class="rb-badge-dot"></span> Stage 02A: Technicals</span>
+            <div class="rb-node-header">
+              <div class="rb-node-icon" style="background:rgba(34,211,238,0.15);color:#22d3ee;">📈</div>
+              <div>
+                <h3 class="rb-node-title">50×200 EMA Engine</h3>
+                <p class="rb-node-desc">15m &amp; Daily Trend Analysis</p>
+              </div>
+            </div>
+            <p class="rb-node-desc">Calculates Golden/Death Crosses, 20 EMA pullbacks &amp; RSI momentum breakouts.</p>
+            <div class="rb-node-status rb-status-cyan">
+              <span class="rb-badge-dot"></span> <span>Golden Cross Active</span>
+            </div>
+          </div>
+
+          <!-- STAGE 02B: F&O ORDER FLOW -->
+          <div class="rb-pipe-node rb-node-3" data-node="3" onclick="promptToolAuth(event, 'F&O Institutional Order Flow', 'Institutional delta volume, option OI imbalances and smart money positioning')">
+            <span class="rb-node-tag rb-tag-amber"><span class="rb-badge-dot"></span> Stage 02B: Derivatives</span>
+            <div class="rb-node-header">
+              <div class="rb-node-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">🌊</div>
+              <div>
+                <h3 class="rb-node-title">F&amp;O Order Flow</h3>
+                <p class="rb-node-desc">Delta &amp; Option Imbalances</p>
+              </div>
+            </div>
+            <p class="rb-node-desc">Tracks institutional volume absorption, call/put OI build-ups &amp; short coverings.</p>
+            <div class="rb-node-status rb-status-amber">
+              <span class="rb-badge-dot"></span> <span>Net Long Smart Money</span>
+            </div>
+          </div>
+
+          <!-- STAGE 03: SMART SCREENER & SECTORS -->
+          <div class="rb-pipe-node rb-node-4" data-node="4" onclick="promptToolAuth(event, 'Smart Screener & Sector Heatmap', 'Ranking stocks across 44 sectoral benchmarks with relative volume and breadth')">
+            <span class="rb-node-tag rb-tag-emerald"><span class="rb-badge-dot"></span> Stage 03: Screening</span>
+            <div class="rb-node-header">
+              <div class="rb-node-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">⚡</div>
+              <div>
+                <h3 class="rb-node-title">Smart Screener</h3>
+                <p class="rb-node-desc">44 Sector Benchmarks</p>
+              </div>
+            </div>
+            <p class="rb-node-desc">Filters out market noise and isolates the top 1% momentum setups by sector turnover.</p>
+            <div class="rb-node-status rb-status-emerald">
+              <span class="rb-badge-dot"></span> <span>Top 1% Momentum Setups</span>
+            </div>
+          </div>
+
+          <!-- STAGE 04: TRADER TERMINAL -->
+          <div class="rb-pipe-node rb-node-5" data-node="5" onclick="openNavAuth(event, 'signin')">
+            <span class="rb-node-tag rb-tag-gold"><span class="rb-badge-dot"></span> Stage 04: Execution</span>
+            <div class="rb-node-header">
+              <div class="rb-node-icon" style="background:rgba(234,179,8,0.15);color:#eab308;">🎯</div>
+              <div>
+                <h3 class="rb-node-title">Trader Terminal</h3>
+                <p class="rb-node-desc">Instant Actionable Setup</p>
+              </div>
+            </div>
+            <p class="rb-node-desc">High-probability trade alerts with chart overlays, stop-loss and target projections.</p>
+            <div class="rb-node-status rb-status-emerald" style="background:rgba(16,185,129,0.2);color:#ffffff;border-color:#10b981;">
+              <span>⚡</span> <span>Trade Alert Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ========================================================
+    // REACT BITS PIPELINE CONTROLLER & SVG FLOW ENGINE
+    // ========================================================
+    (function initPipelineGraph() {
+      var box = document.getElementById('rb-pipeline-box');
+      var svg = document.getElementById('rb-pipeline-svg');
+      var edgesGroup = document.getElementById('rb-edges-group');
+      var particlesGroup = document.getElementById('rb-particles-group');
+      if (!box || !svg || !edgesGroup || !particlesGroup) return;
+
+      var connections = [
+        ['1', '2'], // Ingestion -> 50x200 EMA
+        ['1', '3'], // Ingestion -> F&O Order Flow
+        ['2', '4'], // 50x200 EMA -> Smart Screener
+        ['3', '4'], // F&O Order Flow -> Smart Screener
+        ['4', '5']  // Smart Screener -> Trader Terminal
+      ];
+
+      var paths = [];
+
+      function drawConnections() {
+        if (window.innerWidth <= 980) {
+          edgesGroup.innerHTML = '';
+          particlesGroup.innerHTML = '';
+          return;
+        }
+
+        var boxRect = box.getBoundingClientRect();
+        svg.setAttribute('viewBox', '0 0 ' + boxRect.width + ' ' + boxRect.height);
+        edgesGroup.innerHTML = '';
+        particlesGroup.innerHTML = '';
+        paths = [];
+
+        connections.forEach(function(pair, idx) {
+          var fromNode = box.querySelector('[data-node="' + pair[0] + '"]');
+          var toNode = box.querySelector('[data-node="' + pair[1] + '"]');
+          if (!fromNode || !toNode) return;
+
+          var fRect = fromNode.getBoundingClientRect();
+          var tRect = toNode.getBoundingClientRect();
+
+          // Connect right edge of fromNode to left edge of toNode
+          var x1 = fRect.right - boxRect.left;
+          var y1 = fRect.top + fRect.height / 2 - boxRect.top;
+          var x2 = tRect.left - boxRect.left;
+          var y2 = tRect.top + tRect.height / 2 - boxRect.top;
+
+          var dx = (x2 - x1) * 0.55;
+          var d = 'M ' + x1 + ' ' + y1 + ' C ' + (x1 + dx) + ' ' + y1 + ', ' + (x2 - dx) + ' ' + y2 + ', ' + x2 + ' ' + y2;
+
+          var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', d);
+          path.setAttribute('class', 'rb-pipe-edge rb-pipe-edge-active');
+          path.setAttribute('stroke', 'url(#edgeGrad)');
+          path.setAttribute('id', 'pipe-path-' + idx);
+          edgesGroup.appendChild(path);
+
+          // Flow particle
+          var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('r', '4');
+          circle.setAttribute('class', 'rb-pipe-flow-particle');
+          particlesGroup.appendChild(circle);
+
+          paths.push({
+            el: path,
+            particle: circle,
+            length: path.getTotalLength(),
+            progress: (idx * 0.22) % 1
+          });
+        });
+      }
+
+      function animateParticles() {
+        paths.forEach(function(item) {
+          item.progress = (item.progress + 0.007) % 1;
+          var pt = item.el.getPointAtLength(item.progress * item.length);
+          item.particle.setAttribute('cx', pt.x);
+          item.particle.setAttribute('cy', pt.y);
+        });
+        requestAnimationFrame(animateParticles);
+      }
+
+      // Interactivity: Highlight on Hover
+      var nodes = box.querySelectorAll('.rb-pipe-node');
+      nodes.forEach(function(node) {
+        node.addEventListener('mouseenter', function() {
+          var id = node.dataset.node;
+          nodes.forEach(function(n) { n.classList.remove('highlighted'); });
+          node.classList.add('highlighted');
+
+          // Highlight connected edges
+          connections.forEach(function(c, i) {
+            var edge = document.getElementById('pipe-path-' + i);
+            if (!edge) return;
+            if (c[0] === id || c[1] === id) {
+              edge.style.stroke = '#22d3ee';
+              edge.style.strokeWidth = '3.5';
+            } else {
+              edge.style.stroke = 'rgba(255,255,255,0.08)';
+              edge.style.strokeWidth = '1.5';
+            }
+          });
+        });
+
+        node.addEventListener('mouseleave', function() {
+          nodes.forEach(function(n) { n.classList.remove('highlighted'); });
+          connections.forEach(function(c, i) {
+            var edge = document.getElementById('pipe-path-' + i);
+            if (!edge) return;
+            edge.style.stroke = 'url(#edgeGrad)';
+            edge.style.strokeWidth = '2.5';
+          });
+        });
+      });
+
+      window.addEventListener('resize', drawConnections);
+      setTimeout(function() {
+        drawConnections();
+        animateParticles();
+      }, 300);
+    })();
+  </script>
+
   <section class="sec" id="hub" style="padding:42px 0 32px;">
     <div class="wrap">
       <div
