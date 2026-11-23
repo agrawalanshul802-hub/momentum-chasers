@@ -4212,35 +4212,35 @@
             </div>
           </div>
 
-          <!-- STAGE 03: SMART SCREENER & SECTORS -->
-          <div class="rb-pipe-node rb-node-4" data-node="4" onclick="promptToolAuth(event, 'Smart Screener & Sector Heatmap', 'Ranking stocks across 44 sectoral benchmarks with relative volume and breadth')">
+          <!-- STAGE 03: SMART SCREENER -->
+          <div class="rb-pipe-node rb-node-4" data-node="4" onclick="promptToolAuth(event, 'Smart Screener', 'Filtering 1,600+ NSE stocks to isolate the top 1% momentum setups by relative strength')">
             <span class="rb-node-tag rb-tag-emerald"><span class="rb-badge-dot"></span> Stage 03: Screening</span>
             <div class="rb-node-header">
               <div class="rb-node-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">⚡</div>
               <div>
                 <h3 class="rb-node-title">Smart Screener</h3>
-                <p class="rb-node-desc">44 Sector Benchmarks</p>
+                <p class="rb-node-desc">Momentum Presets &amp; Filters</p>
               </div>
             </div>
-            <p class="rb-node-desc">Filters out market noise and isolates the top 1% momentum setups by sector turnover.</p>
+            <p class="rb-node-desc">Filters out market noise and isolates the top 1% momentum setups by relative strength and volume.</p>
             <div class="rb-node-status rb-status-emerald">
               <span class="rb-badge-dot"></span> <span>Top 1% Momentum Setups</span>
             </div>
           </div>
 
-          <!-- STAGE 04: TRADER TERMINAL -->
+          <!-- STAGE 04: SECTOR HEATMAP -->
           <div class="rb-pipe-node rb-node-5" data-node="5" onclick="openNavAuth(event, 'signin')">
-            <span class="rb-node-tag rb-tag-gold"><span class="rb-badge-dot"></span> Stage 04: Execution</span>
+            <span class="rb-node-tag rb-tag-gold"><span class="rb-badge-dot"></span> Stage 04: Heatmap</span>
             <div class="rb-node-header">
-              <div class="rb-node-icon" style="background:rgba(234,179,8,0.15);color:#eab308;">🎯</div>
+              <div class="rb-node-icon" style="background:rgba(234,179,8,0.15);color:#eab308;">🗺️</div>
               <div>
-                <h3 class="rb-node-title">Trader Terminal</h3>
-                <p class="rb-node-desc">Instant Actionable Setup</p>
+                <h3 class="rb-node-title">Sector Heatmap</h3>
+                <p class="rb-node-desc">44 Sectors &amp; Money Flow</p>
               </div>
             </div>
-            <p class="rb-node-desc">High-probability trade alerts with chart overlays, stop-loss and target projections.</p>
+            <p class="rb-node-desc">Live performance matrix tracking capital rotation, turnover ratios and institutional money flow across 44 sectors.</p>
             <div class="rb-node-status rb-status-emerald" style="background:rgba(16,185,129,0.2);color:#ffffff;border-color:#10b981;">
-              <span>⚡</span> <span>Trade Alert Ready</span>
+              <span>📊</span> <span>44 Sectors Heatmap Live</span>
             </div>
           </div>
         </div>
@@ -4264,7 +4264,7 @@
         ['1', '3'], // Ingestion -> F&O Order Flow
         ['2', '4'], // 50x200 EMA -> Smart Screener
         ['3', '4'], // F&O Order Flow -> Smart Screener
-        ['4', '5']  // Smart Screener -> Trader Terminal
+        ['4', '5']  // Smart Screener -> Sector Heatmap
       ];
 
       var paths = [];
