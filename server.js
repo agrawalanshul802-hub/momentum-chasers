@@ -6064,10 +6064,11 @@ const server = http.createServer(async (req, res) => {
         const found = Object.keys(baseData?.indices || {}).find(k => k.toLowerCase() === targetIdx.toLowerCase() || targetIdx.toLowerCase().includes(k.toLowerCase()));
         if (found) idxKey = found;
       }
+      const isBank = targetIdx.toLowerCase().includes('bank') || idxKey.toLowerCase().includes('bank');
       let stocks = (baseData?.indices?.[idxKey]) || [];
       let stats = (baseData?.stats) || {
-        "Nifty 50": { price: "25,755.10", chg: "+240.80 (+0.94%) ↗", isUp: true },
-        "Nifty Bank": { price: "64,461.90", chg: "+1,398.90 (+2.22%) ↗", isUp: true }
+        "Nifty 50": { price: "25,349.65", chg: "-450.95 (-1.75%) ↘", isUp: false },
+        "Nifty Bank": { price: "62,585.35", chg: "-2,045.55 (-3.17%) ↘", isUp: false }
       };
 
       const now = new Date();
@@ -6078,9 +6079,9 @@ const server = http.createServer(async (req, res) => {
       const day = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).getDay();
       const isMarketHours = (day >= 1 && day <= 5) && ((hr > 9 || (hr === 9 && min >= 15)) && (hr < 15 || (hr === 15 && min <= 30)));
 
-      // If market is active or force refresh requested, try fetching live quotes
+      // Fetch fresh quotes from Yahoo Finance (for live market or latest EOD closing data)
       try {
-        const symbolsToFetch = stocks.slice(0, 45).map(s => s.symbol + '.NS').join(',') + (isBank ? ',^NSEBANK' : ',^NSEI');
+        const symbolsToFetch = stocks.map(s => s.symbol + '.NS').join(',') + (isBank ? ',^NSEBANK' : ',^NSEI');
         const session = await yahooSession.getSession();
         if (session && session.cookie && session.crumb) {
           const qUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolsToFetch)}&crumb=${encodeURIComponent(session.crumb)}`;
@@ -6146,8 +6147,8 @@ const server = http.createServer(async (req, res) => {
         status: "success",
         index: idxKey,
         isLive: isMarketHours,
-        dateLabel: "Live Market Feed",
-        asOfDate: isMarketHours ? `${istDateStr} (Live ${istTimeStr})` : `${istDateStr} (Live 03:30 pm)`,
+        dateLabel: isMarketHours ? "Live Market Feed" : "Market Closed (EOD)",
+        asOfDate: isMarketHours ? `${istDateStr} (Live ${istTimeStr})` : `${istDateStr} (3:30 pm Closing)`,
         stats,
         stocks
       };

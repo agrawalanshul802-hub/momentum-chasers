@@ -19311,14 +19311,14 @@
 
   const HEATMAP_INDEX_STATS = {
     "Nifty 50": {
-      "price": "25,755.10",
-      "chg": "+240.80 (+0.94%) ↗",
-      "isUp": true
+      "price": "25,349.65",
+      "chg": "-450.95 (-1.75%) ↘",
+      "isUp": false
     },
     "Nifty Bank": {
-      "price": "64,461.90",
-      "chg": "+1398.90 (+2.22%) ↗",
-      "isUp": true
+      "price": "62,585.35",
+      "chg": "-2,045.55 (-3.17%) ↘",
+      "isUp": false
     }
   };
 
@@ -28014,7 +28014,7 @@
   }
 
   function getHeatmapAsOfDateText() {
-    let label = State.heatmapDateLabel || "Live Market Feed";
+    let label = State.heatmapDateLabel || (State.heatmapIsLive ? "Live Market Feed" : "Market Closed (EOD)");
     let asOf = State.heatmapAsOfDate;
 
     if (!asOf || asOf.includes("02:12") || asOf.includes("2.12")) {
@@ -28027,10 +28027,13 @@
       if (isLiveMarket) {
         const istTimeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
         asOf = `${istDateStr} (Live ${istTimeStr})`;
+        label = "Live Market Feed";
       } else {
-        asOf = `${istDateStr} (Live 03:30 pm)`;
+        asOf = `${istDateStr} (3:30 pm Closing)`;
+        label = "Market Closed (EOD)";
       }
       State.heatmapAsOfDate = asOf;
+      State.heatmapDateLabel = label;
     }
 
     return `${label}: ${asOf}`;
@@ -28058,13 +28061,13 @@
         const data = await res.json();
 
         if (data && data.status === "success") {
-          let incomingAsOf = data.asOfDate || "20 Nov 2026 (Live 03:30 pm)";
+          let incomingAsOf = data.asOfDate || "23 Nov 2026 (3:30 pm Closing)";
           if (incomingAsOf.includes("02:12") || incomingAsOf.includes("2.12")) {
-            incomingAsOf = incomingAsOf.replace(/02:12\s*pm/gi, "03:30 pm").replace(/2:12/gi, "3:30");
+            incomingAsOf = incomingAsOf.replace(/02:12\s*pm/gi, "3:30 pm Closing").replace(/2:12/gi, "3:30");
           }
           State.heatmapAsOfDate = incomingAsOf;
           State.heatmapIsLive = Boolean(data.isLive);
-          State.heatmapDateLabel = data.dateLabel || "Live Market Feed";
+          State.heatmapDateLabel = data.dateLabel || (State.heatmapIsLive ? "Live Market Feed" : "Market Closed (EOD)");
 
           if (data.stats) {
             Object.assign(HEATMAP_INDEX_STATS, data.stats);
