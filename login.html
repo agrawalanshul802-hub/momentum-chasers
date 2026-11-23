@@ -4374,21 +4374,21 @@
   </script>
 
   
-  <!-- ================= REACT BITS CONTACT SHEET COMPONENT ================= -->
+    <!-- ================= REACT BITS CONTACT SHEET (STREAMING & DEVELOPING PRINTS) ================= -->
   <style>
     .rb-contact-sheet-section {
-      padding: 60px 0 52px;
+      padding: 60px 0 56px;
       position: relative;
       overflow: hidden;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      background: radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.04) 0%, rgba(6, 10, 20, 0) 70%), #060913;
+      background: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.05) 0%, rgba(6, 10, 20, 0) 70%), #060913;
     }
 
     .rb-sheet-header {
       text-align: left;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       position: relative;
-      z-index: 2;
+      z-index: 10;
     }
 
     .rb-sheet-eyebrow {
@@ -4433,20 +4433,30 @@
       margin: 0;
     }
 
-    /* Filter Bar */
+    /* Controls Bar */
+    .rb-sheet-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 22px;
+      position: relative;
+      z-index: 10;
+    }
+
     .rb-sheet-filters {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 22px;
     }
 
     .rb-sheet-filter-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 12.5px;
+      padding: 6px 15px;
+      font-size: 12px;
       font-weight: 700;
       color: #cbd5e1;
       cursor: pointer;
@@ -4467,248 +4477,396 @@
       box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
     }
 
-    /* === CONTACT SHEET FILM MATRIX === */
-    .rb-sheet-matrix-wrapper {
+    .rb-sheet-playback-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rb-playback-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .rb-playback-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    /* === 3D CONTACT SHEET STREAMING STAGE === */
+    .rb-contact-sheet-stage {
       position: relative;
-      background: rgba(10, 15, 28, 0.75);
+      width: 100%;
+      height: 640px;
+      background: radial-gradient(circle at center, #0d152a 0%, #060a16 75%, #03050c 100%);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
-      padding: 36px 28px 44px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.7);
       overflow: hidden;
-    }
-
-    /* Darkroom Film Sprocket Margin */
-    .rb-film-sprocket-track {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 8px 18px;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-      margin-bottom: 28px;
-      font-family: monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.35);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+      perspective: 1000px;
       user-select: none;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
-    .rb-sprocket-holes {
-      display: flex;
-      gap: 14px;
-    }
-
-    .rb-sprocket-hole {
-      width: 14px;
-      height: 9px;
-      border-radius: 2px;
-      background: #040711;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    /* Contact Sheet Grid (12 Prints) */
-    .rb-sheet-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 22px;
-      position: relative;
-      z-index: 2;
-    }
-
-    @media (max-width: 1200px) {
-      .rb-sheet-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 860px) {
-      .rb-sheet-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-      }
-    }
-
-    @media (max-width: 540px) {
-      .rb-sheet-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Individual Film Print Card */
-    .rb-print-card {
-      position: relative;
-      background: #090e1a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      transform-origin: center center;
-    }
-
-    /* Contact sheet print film border styling */
-    .rb-print-card::before {
-      content: "";
+    /* Darkroom Film Sprocket Decorative Border */
+    .rb-stage-sprocket-top,
+    .rb-stage-sprocket-bottom {
       position: absolute;
-      inset: 0;
-      border-radius: 14px;
-      border: 1px solid transparent;
-      transition: border-color 0.3s ease;
-      pointer-events: none;
-    }
-
-    /* Developing animation effect */
-    .rb-print-card .rb-print-chart {
-      filter: contrast(1.1) brightness(0.92) saturate(0.85);
-      transition: filter 0.35s ease, transform 0.35s ease;
-    }
-
-    .rb-print-card:hover {
-      transform: translateY(-7px) scale(1.025);
-      border-color: rgba(245, 158, 11, 0.45);
-      box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.8), 0 0 24px rgba(245, 158, 11, 0.22);
-      z-index: 10;
-    }
-
-    .rb-print-card:hover .rb-print-chart {
-      filter: contrast(1.15) brightness(1.05) saturate(1.2);
-    }
-
-    .rb-print-card:hover::before {
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    /* Top Strip in Print */
-    .rb-print-top {
+      left: 0;
+      right: 0;
+      height: 24px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
       font-family: monospace;
       font-size: 10px;
       font-weight: 700;
+      color: rgba(255, 255, 255, 0.25);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .rb-stage-sprocket-top { top: 10px; }
+    .rb-stage-sprocket-bottom { bottom: 10px; }
+
+    .rb-sprocket-pill-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .rb-sprocket-pill {
+      width: 12px;
+      height: 8px;
+      background: #03050a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+    }
+
+    /* Center Portal / Focal Badge (blankArea = 0.2) */
+    .rb-cs-center-portal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 25;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .rb-cs-portal-glow {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(16, 185, 129, 0.12) 40%, transparent 70%);
+      filter: blur(20px);
+      animation: portalBreathe 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes portalBreathe {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .rb-cs-portal-badge {
+      position: relative;
+      background: rgba(10, 16, 32, 0.92);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.25);
+      backdrop-filter: blur(12px);
+      padding: 14px 24px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      cursor: default;
+    }
+
+    .rb-cs-portal-badge .bolt {
+      color: #f59e0b;
+      font-size: 16px;
+      filter: drop-shadow(0 0 8px #f59e0b);
+    }
+
+    .rb-cs-portal-badge .text-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.15;
+    }
+
+    .rb-cs-portal-badge .b-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+    }
+
+    .rb-cs-portal-badge .b-tag {
+      font-size: 9px;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Center Stream Instruction Tip */
+    .rb-cs-hint {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.45);
+      background: rgba(10, 16, 30, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 14px;
+      border-radius: 999px;
+      z-index: 10;
+      pointer-events: none;
+      letter-spacing: 0.04em;
+    }
+
+    /* === IN-FLIGHT STREAMING PHOTO PRINT CARDS === */
+    .rb-stream-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .rb-stream-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 215px;
+      height: 250px;
+      margin-left: -107px;
+      margin-top: -125px;
+      background: #090e1c;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      padding: 11px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+      transform-origin: center center;
+      will-change: transform, opacity, filter;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    /* Darkroom developing visual transition */
+    .rb-stream-card.latent {
+      filter: contrast(1.4) brightness(0.7) saturate(0.3) grayscale(0.65);
+    }
+
+    .rb-stream-card.developed {
+      filter: contrast(1.15) brightness(1.02) saturate(1.15);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    /* Hover inspection state */
+    .rb-stream-card:hover,
+    .rb-stream-card.inspected {
+      z-index: 100 !important;
+      border-color: #f59e0b !important;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(245, 158, 11, 0.4) !important;
+      filter: contrast(1.2) brightness(1.1) saturate(1.25) !important;
+    }
+
+    /* Card Inner Elements */
+    .rb-card-meta-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+      font-size: 9.5px;
+      font-weight: 700;
       color: rgba(255, 255, 255, 0.4);
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       letter-spacing: 0.06em;
     }
 
-    .rb-print-exp {
+    .rb-card-meta-strip .exp-id {
       color: #f59e0b;
       font-weight: 800;
     }
 
-    /* Stock Identity */
-    .rb-print-header {
+    .rb-card-stock-head {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
 
-    .rb-print-sym {
-      font-size: 14.5px;
+    .rb-card-sym {
+      font-size: 14px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
-    .rb-print-name {
-      font-size: 11px;
+    .rb-card-cname {
+      font-size: 10.5px;
       color: #94a3b8;
       margin-top: 2px;
     }
 
-    .rb-print-price-box {
+    .rb-card-price-box {
       text-align: right;
     }
 
-    .rb-print-price {
-      font-size: 13.5px;
+    .rb-card-price {
+      font-size: 13px;
       font-weight: 800;
       color: #ffffff;
       font-feature-settings: "tnum";
     }
 
-    .rb-print-chg {
-      font-size: 11px;
+    .rb-card-chg {
+      font-size: 10.5px;
       font-weight: 700;
       margin-top: 2px;
     }
 
-    .chg-up { color: #10b981; }
-    .chg-down { color: #ef4444; }
+    .rb-val-up { color: #10b981; }
+    .rb-val-down { color: #ef4444; }
 
-    /* SVG Chart Canvas inside print */
-    .rb-print-chart-wrap {
-      position: relative;
-      height: 118px;
-      background: #050811;
-      border-radius: 8px;
+    /* SVG mini chart inside print */
+    .rb-card-chart-box {
+      flex: 1;
+      background: #040712;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 7px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      position: relative;
     }
 
-    .rb-print-chart-svg {
+    .rb-card-chart-svg {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    /* Print Badge & Meta */
-    .rb-print-footer {
+    /* Bottom Badge */
+    .rb-card-foot {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      align-items: center;
     }
 
-    .rb-print-tag {
-      font-size: 9.5px;
+    .rb-card-badge {
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.04em;
-      padding: 3px 7px;
-      border-radius: 6px;
+      padding: 2.5px 7px;
+      border-radius: 5px;
       text-transform: uppercase;
-      white-space: nowrap;
+      letter-spacing: 0.04em;
     }
 
-    .tag-bullish {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .rb-card-badge.tag-ema {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
       color: #34d399;
     }
 
-    .tag-breakout {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+    .rb-card-badge.tag-fno {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
       color: #fbbf24;
     }
 
-    .tag-orderflow {
-      background: rgba(34, 211, 238, 0.12);
-      border: 1px solid rgba(34, 211, 238, 0.3);
+    .rb-card-badge.tag-sec {
+      background: rgba(34, 211, 238, 0.15);
+      border: 1px solid rgba(34, 211, 238, 0.35);
       color: #38bdf8;
     }
 
-    .tag-sector {
-      background: rgba(234, 179, 8, 0.12);
-      border: 1px solid rgba(234, 179, 8, 0.3);
-      color: #facc15;
-    }
-
-    .rb-print-time {
-      font-size: 10px;
+    .rb-card-tf {
+      font-size: 9.5px;
       font-weight: 700;
       color: #64748b;
       font-family: monospace;
+    }
+
+    /* Caption Overlay drawer for inspected card */
+    .rb-sheet-inspect-drawer {
+      position: absolute;
+      bottom: 22px;
+      right: 22px;
+      background: rgba(10, 16, 32, 0.95);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(14px);
+      padding: 14px 18px;
+      border-radius: 14px;
+      z-index: 50;
+      max-width: 320px;
+      color: #ffffff;
+      display: none;
+      animation: fadeInDrawer 0.25s ease;
+    }
+
+    @keyframes fadeInDrawer {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .rb-inspect-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #f59e0b;
+      margin-bottom: 4px;
+    }
+
+    .rb-inspect-sub {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .rb-inspect-btn {
+      background: #10b981;
+      color: #06111f;
+      font-size: 11px;
+      font-weight: 800;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+    }
+
+    .rb-inspect-btn:hover {
+      background: #34d399;
     }
   </style>
 
@@ -4717,444 +4875,406 @@
       <div class="rb-sheet-header">
         <div class="rb-sheet-eyebrow">
           <span class="sheet-dot"></span>
-          <span>LIVE MARKET CONTACT SHEET &bull; DEVELOPING CHARTS</span>
+          <span>LIVE CONTACT SHEET &bull; PHOTOS STREAMING OUTWARD</span>
         </div>
         <h2 class="rb-sheet-title">
-          Visual Technical Showcase: <span class="ser" style="font-style:italic;color:#f59e0b;">Streaming &amp; Developing Prints.</span>
+          Live Market Contact Sheet: <span class="ser" style="font-style:italic;color:#f59e0b;">Streaming &amp; Developing Prints.</span>
         </h2>
         <p class="rb-sheet-desc">
-          Live technical prints stream out from the market core, developing dynamically like photographic prints. Inspect 50×200 EMA crossovers, institutional order flow spikes and sector momentum setups.
+          Photos stream out dynamically from the center, developing like physical darkroom photographic prints. Hover any print to inspect 50×200 EMA crossovers, F&amp;O order flow imbalances and sector breakouts.
         </p>
 
-        <!-- Category Filters -->
-        <div class="rb-sheet-filters">
-          <button class="rb-sheet-filter-btn active" data-filter="all" onclick="filterContactSheet(event, 'all')">All Setups (12)</button>
-          <button class="rb-sheet-filter-btn" data-filter="ema" onclick="filterContactSheet(event, 'ema')">50×200 EMA Crosses (4)</button>
-          <button class="rb-sheet-filter-btn" data-filter="orderflow" onclick="filterContactSheet(event, 'orderflow')">F&amp;O Order Flow (4)</button>
-          <button class="rb-sheet-filter-btn" data-filter="breakout" onclick="filterContactSheet(event, 'breakout')">Sector Breakouts (4)</button>
+        <!-- Interactive Control Bar -->
+        <div class="rb-sheet-controls">
+          <div class="rb-sheet-filters">
+            <button class="rb-sheet-filter-btn active" data-filter="all" onclick="setContactSheetFilter('all')">All Stream (12)</button>
+            <button class="rb-sheet-filter-btn" data-filter="ema" onclick="setContactSheetFilter('ema')">50×200 EMA Crosses</button>
+            <button class="rb-sheet-filter-btn" data-filter="fno" onclick="setContactSheetFilter('fno')">F&amp;O Order Flow</button>
+            <button class="rb-sheet-filter-btn" data-filter="breakout" onclick="setContactSheetFilter('breakout')">Sector Breakouts</button>
+          </div>
+          <div class="rb-sheet-playback-tools">
+            <button class="rb-playback-btn" id="rb-stream-pause-btn" onclick="toggleContactSheetPause()">
+              <span id="rb-pause-icon">⏸</span> <span id="rb-pause-text">Pause Stream</span>
+            </button>
+            <button class="rb-playback-btn" id="rb-stream-dir-btn" onclick="toggleContactSheetDirection()">
+              <span id="rb-dir-icon">🔄</span> <span id="rb-dir-text">Reverse</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="rb-sheet-matrix-wrapper">
-        <!-- Film Sprocket Header -->
-        <div class="rb-film-sprocket-track">
-          <div class="rb-sprocket-holes">
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
+      <!-- 3D Streaming Canvas Stage -->
+      <div class="rb-contact-sheet-stage" id="rb-contact-sheet-stage">
+        <!-- Film Sprocket Margins -->
+        <div class="rb-stage-sprocket-top">
+          <div class="rb-sprocket-pill-row">
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
           </div>
-          <span>MOMENTUM CHASERS 400 &bull; LIVE CONTACT SHEET 35MM &bull; 15M TIMEFRAME</span>
-          <div class="rb-sprocket-holes">
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
-            <span class="rb-sprocket-hole"></span>
+          <span>MOMENTUM CHASERS 400 &bull; LIVE 35MM CONTACT STREAM &bull; 15M TIMEFRAME</span>
+          <div class="rb-sprocket-pill-row">
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
           </div>
         </div>
 
-        <!-- 12-Card Contact Sheet Grid -->
-        <div class="rb-sheet-grid" id="rb-sheet-grid">
+        <div class="rb-stage-sprocket-bottom">
+          <div class="rb-sprocket-pill-row">
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+          </div>
+          <span>ISO 400 &bull; LATENT DEVELOPMENT ACCELERATION (RUSH 0.35) &bull; SPEED 0.1</span>
+          <div class="rb-sprocket-pill-row">
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+            <span class="rb-sprocket-pill"></span>
+          </div>
+        </div>
 
-          <!-- 01. RELIANCE -->
-          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'RELIANCE 50×200 EMA Cross', '50×200 EMA Golden Cross confirmed with 2.8x delivery volume surge')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #01</span>
-              <span>15M &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">RELIANCE</div>
-                <div class="rb-print-name">Reliance Ind.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,351.00</div>
-                <div class="rb-print-chg chg-down">-1.92%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <defs>
-                  <linearGradient id="relGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
-                    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                  </linearGradient>
-                </defs>
-                <path d="M 10 75 L 35 68 L 60 72 L 85 55 L 115 62 L 140 40 L 165 46 L 190 28" fill="none" stroke="#10b981" stroke-width="2.2"/>
-                <path d="M 10 75 L 35 68 L 60 72 L 85 55 L 115 62 L 140 40 L 165 46 L 190 28 L 190 100 L 10 100 Z" fill="url(#relGrad)"/>
-                <!-- EMA 50 line (cyan) -->
-                <path d="M 10 82 Q 90 68, 190 38" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,2"/>
-                <!-- EMA 200 line (amber) -->
-                <path d="M 10 70 Q 100 68, 190 64" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
-                <!-- Golden Cross Badge -->
-                <circle cx="115" cy="62" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-bullish">Golden Cross</span>
-              <span class="rb-print-time">50&gt;200 EMA</span>
+        <!-- Center Portal (blankArea = 0.2) -->
+        <div class="rb-cs-center-portal">
+          <div class="rb-cs-portal-glow"></div>
+          <div class="rb-cs-portal-badge">
+            <span class="bolt">⚡</span>
+            <div class="text-wrap">
+              <span class="b-name">MOMENTUM CHASERS</span>
+              <span class="b-tag">CORE STREAM &bull; 15M TECHNICALS</span>
             </div>
           </div>
+        </div>
 
-          <!-- 02. NIFTY 50 -->
-          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'NIFTY 50 Benchmark Heatmap', 'Key dynamic 200 EMA bounce zone with breadth accumulation')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #02</span>
-              <span>INDEX &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">NIFTY 50</div>
-                <div class="rb-print-name">NSE Benchmark</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">25,349.65</div>
-                <div class="rb-print-chg chg-down">-1.75%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 32 L 35 38 L 65 48 L 95 62 L 130 58 L 160 74 L 190 70" fill="none" stroke="#ef4444" stroke-width="2.2"/>
-                <line x1="10" y1="70" x2="190" y2="70" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,3"/>
-                <text x="12" y="86" fill="#f59e0b" font-size="9" font-family="monospace">200 EMA Support</text>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-sector">Support Test</span>
-              <span class="rb-print-time">Daily Trend</span>
-            </div>
-          </div>
+        <!-- In-Flight Streaming Cards Layer -->
+        <div class="rb-stream-layer" id="rb-stream-layer"></div>
 
-          <!-- 03. HDFC BANK -->
-          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'HDFCBANK F&O Order Flow', 'Institutional delta imbalance +142K with call OI absorption')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #03</span>
-              <span>F&amp;O &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">HDFCBANK</div>
-                <div class="rb-print-name">HDFC Bank Ltd.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,745.00</div>
-                <div class="rb-print-chg chg-up">+0.82%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <rect x="20" y="55" width="12" height="35" fill="#10b981" rx="2"/>
-                <rect x="45" y="42" width="12" height="48" fill="#10b981" rx="2"/>
-                <rect x="70" y="60" width="12" height="30" fill="#ef4444" rx="2"/>
-                <rect x="95" y="30" width="12" height="60" fill="#10b981" rx="2"/>
-                <rect x="120" y="24" width="12" height="66" fill="#10b981" rx="2"/>
-                <rect x="145" y="18" width="12" height="72" fill="#22d3ee" rx="2"/>
-                <rect x="170" y="12" width="12" height="78" fill="#10b981" rx="2"/>
-                <line x1="10" y1="90" x2="190" y2="90" stroke="rgba(255,255,255,0.1)"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-orderflow">Delta Long</span>
-              <span class="rb-print-time">+142K Net OI</span>
-            </div>
-          </div>
+        <!-- Stream Tip -->
+        <div class="rb-cs-hint">Move cursor to steer perspective &bull; Hover card to pause &amp; inspect</div>
 
-          <!-- 04. TATA MOTORS -->
-          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'TATAMOTORS Golden Cross', 'Heavy delivery volume spike + RSI bullish divergence at ₹785')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #04</span>
-              <span>15M &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">TATAMOTORS</div>
-                <div class="rb-print-name">Tata Motors</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹785.40</div>
-                <div class="rb-print-chg chg-up">+2.45%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 85 L 40 78 L 75 80 L 105 60 L 135 64 L 165 38 L 190 25" fill="none" stroke="#10b981" stroke-width="2.2"/>
-                <line x1="10" y1="45" x2="190" y2="45" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/>
-                <text x="12" y="40" fill="#f59e0b" font-size="9" font-family="monospace">Breakout Level ₹770</text>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-bullish">Vol Surge</span>
-              <span class="rb-print-time">RSI 68 Bullish</span>
-            </div>
-          </div>
-
-          <!-- 05. TCS -->
-          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'TCS Consolidation Breakout', 'Multi-week cup base breakout with tech sector rotation')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #05</span>
-              <span>TECH &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">TCS</div>
-                <div class="rb-print-name">Tata Consultancy</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹4,120.00</div>
-                <div class="rb-print-chg chg-up">+0.45%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 50 Q 100 85, 150 48 T 190 28" fill="none" stroke="#22d3ee" stroke-width="2.2"/>
-                <line x1="10" y1="48" x2="190" y2="48" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-sector">Cup &amp; Handle</span>
-              <span class="rb-print-time">ATH Retest</span>
-            </div>
-          </div>
-
-          <!-- 06. BANK NIFTY -->
-          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BANK NIFTY Short Covering', 'Option chain call unwinding + high gamma squeeze potential')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #06</span>
-              <span>F&amp;O &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">BANK NIFTY</div>
-                <div class="rb-print-name">Banking Index</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">62,585.35</div>
-                <div class="rb-print-chg chg-down">-3.17%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <rect x="25" y="40" width="10" height="50" fill="#ef4444" rx="1"/>
-                <rect x="50" y="55" width="10" height="35" fill="#ef4444" rx="1"/>
-                <rect x="75" y="65" width="10" height="25" fill="#ef4444" rx="1"/>
-                <rect x="100" y="50" width="10" height="40" fill="#10b981" rx="1"/>
-                <rect x="125" y="35" width="10" height="55" fill="#10b981" rx="1"/>
-                <rect x="150" y="20" width="10" height="70" fill="#22d3ee" rx="1"/>
-                <rect x="175" y="10" width="10" height="80" fill="#10b981" rx="1"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-orderflow">Gamma Squeeze</span>
-              <span class="rb-print-time">OI Shift</span>
-            </div>
-          </div>
-
-          <!-- 07. ICICI BANK -->
-          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'ICICIBANK Sector Momentum', 'Leader in private banks with 50 EMA dynamic bounce')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #07</span>
-              <span>15M &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">ICICIBANK</div>
-                <div class="rb-print-name">ICICI Bank Ltd.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,275.00</div>
-                <div class="rb-print-chg chg-up">+0.75%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 70 L 40 60 L 70 65 L 100 45 L 130 50 L 160 32 L 190 22" fill="none" stroke="#10b981" stroke-width="2.2"/>
-                <path d="M 10 78 Q 100 58, 190 30" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,2"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-bullish">50 EMA Bounce</span>
-              <span class="rb-print-time">Trend Up</span>
-            </div>
-          </div>
-
-          <!-- 08. SUN PHARMA -->
-          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'SUNPHARMA Blue Sky Breakout', 'All-time high trend with zero overhead resistance')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #08</span>
-              <span>PHARMA &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">SUNPHARMA</div>
-                <div class="rb-print-name">Sun Pharma Ltd.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,902.30</div>
-                <div class="rb-print-chg chg-up">+1.12%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 80 L 45 70 L 80 55 L 115 58 L 150 35 L 190 15" fill="none" stroke="#10b981" stroke-width="2.4"/>
-                <line x1="10" y1="58" x2="190" y2="58" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/>
-                <text x="12" y="52" fill="#f59e0b" font-size="9" font-family="monospace">ATH Clearance</text>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-sector">Blue Sky</span>
-              <span class="rb-print-time">ATH Leader</span>
-            </div>
-          </div>
-
-          <!-- 09. INFY -->
-          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'INFY MACD & 50 EMA Cross', '15m timeframe MACD momentum trigger with institutional volume')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #09</span>
-              <span>15M &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">INFY</div>
-                <div class="rb-print-name">Infosys Ltd.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,870.00</div>
-                <div class="rb-print-chg chg-up">+0.95%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 75 L 45 65 L 80 70 L 115 50 L 150 54 L 190 30" fill="none" stroke="#22d3ee" stroke-width="2"/>
-                <circle cx="115" cy="50" r="4" fill="#22d3ee" stroke="#ffffff" stroke-width="1"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-bullish">MACD Bullish</span>
-              <span class="rb-print-time">15m Trigger</span>
-            </div>
-          </div>
-
-          <!-- 10. L&T -->
-          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'L&T Capital Goods Momentum', 'Breakout continuation pattern with 44-sector relative strength')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #10</span>
-              <span>CAP GOODS &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">LT</div>
-                <div class="rb-print-name">Larsen &amp; Toubro</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹3,580.00</div>
-                <div class="rb-print-chg chg-up">+0.50%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 65 L 45 55 L 80 62 L 120 42 L 155 45 L 190 20" fill="none" stroke="#10b981" stroke-width="2.2"/>
-                <line x1="10" y1="62" x2="190" y2="62" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-sector">Sector Leader</span>
-              <span class="rb-print-time">Capital Goods</span>
-            </div>
-          </div>
-
-          <!-- 11. BHARTI AIRTEL -->
-          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BHARTIARTL Institutional Flow', 'Sustained institutional buying with multi-day high volume node')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #11</span>
-              <span>F&amp;O &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">BHARTIARTL</div>
-                <div class="rb-print-name">Bharti Airtel</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹1,610.00</div>
-                <div class="rb-print-chg chg-up">+0.65%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <rect x="25" y="45" width="10" height="45" fill="#10b981" rx="1"/>
-                <rect x="55" y="35" width="10" height="55" fill="#10b981" rx="1"/>
-                <rect x="85" y="50" width="10" height="40" fill="#ef4444" rx="1"/>
-                <rect x="115" y="25" width="10" height="65" fill="#10b981" rx="1"/>
-                <rect x="145" y="18" width="10" height="72" fill="#22d3ee" rx="1"/>
-                <rect x="175" y="10" width="10" height="80" fill="#10b981" rx="1"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-orderflow">Accumulation</span>
-              <span class="rb-print-time">Delivery 74%</span>
-            </div>
-          </div>
-
-          <!-- 12. BAJAJ FINANCE -->
-          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BAJFINANCE Trendline Bounce', 'Supertrend buy signal confirmed on 15m intraday chart')">
-            <div class="rb-print-top">
-              <span class="rb-print-exp">EXP #12</span>
-              <span>FINANCE &bull; LIVE</span>
-            </div>
-            <div class="rb-print-header">
-              <div>
-                <div class="rb-print-sym">BAJFINANCE</div>
-                <div class="rb-print-name">Bajaj Finance Ltd.</div>
-              </div>
-              <div class="rb-print-price-box">
-                <div class="rb-print-price">₹6,890.00</div>
-                <div class="rb-print-chg chg-up">+1.40%</div>
-              </div>
-            </div>
-            <div class="rb-print-chart-wrap">
-              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
-                <path d="M 10 82 L 40 75 L 75 70 L 110 52 L 150 48 L 190 22" fill="none" stroke="#10b981" stroke-width="2.2"/>
-                <path d="M 10 90 L 190 32" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2"/>
-              </svg>
-            </div>
-            <div class="rb-print-footer">
-              <span class="rb-print-tag tag-orderflow">Supertrend Buy</span>
-              <span class="rb-print-time">Support Bounce</span>
-            </div>
-          </div>
-
+        <!-- Inspected Card Drawer -->
+        <div class="rb-sheet-inspect-drawer" id="rb-inspect-drawer">
+          <div class="rb-inspect-title" id="rb-drawer-title">RELIANCE &bull; ₹1,351.00</div>
+          <div class="rb-inspect-sub" id="rb-drawer-sub">50×200 EMA Golden Cross confirmed with 2.8x delivery volume surge</div>
+          <button class="rb-inspect-btn" onclick="openNavAuth(event, 'signup')">Analyze in Terminal &rarr;</button>
         </div>
       </div>
     </div>
   </section>
 
   <script>
-    // ========================================================
-    // REACT BITS CONTACT SHEET FILTER & INTERACTIVE CONTROLLER
-    // ========================================================
-    function filterContactSheet(e, cat) {
-      if (e) e.preventDefault();
-      var btns = document.querySelectorAll('.rb-sheet-filter-btn');
-      btns.forEach(function(btn) {
-        if (btn.dataset.filter === cat) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
+    // =========================================================================
+    // REACT BITS CONTACT SHEET ENGINE (RADIAL 3D STREAMING & PRINTS DEVELOPING)
+    // =========================================================================
+    (function initContactSheetEngine() {
+      var stage = document.getElementById('rb-contact-sheet-stage');
+      var layer = document.getElementById('rb-stream-layer');
+      var drawer = document.getElementById('rb-inspect-drawer');
+      var dTitle = document.getElementById('rb-drawer-title');
+      var dSub = document.getElementById('rb-drawer-sub');
+      if (!stage || !layer) return;
+
+      // 12 Stock Print Definitions
+      var COLLECTION = [
+        {
+          id: 1, exp: 'EXP #01', sym: 'RELIANCE', name: 'Reliance Ind.', price: '₹1,351.00', chg: '-1.92%', up: false, cat: 'ema',
+          tag: 'Golden Cross', tf: '50>200 EMA',
+          desc: '50×200 EMA Golden Cross confirmed with 2.8x delivery volume surge and dynamic rebound.',
+          svg: '<path d="M 10 65 L 35 58 L 60 62 L 85 45 L 115 52 L 140 32 L 165 38 L 190 20" fill="none" stroke="#10b981" stroke-width="2.2"/><path d="M 10 75 Q 90 62, 190 30" fill="none" stroke="#22d3ee" stroke-width="1.4" stroke-dasharray="3,2"/><path d="M 10 65 Q 100 62, 190 58" fill="none" stroke="#f59e0b" stroke-width="1.4"/><circle cx="115" cy="52" r="3.5" fill="#10b981" stroke="#fff" stroke-width="1"/>'
+        },
+        {
+          id: 2, exp: 'EXP #02', sym: 'NIFTY 50', name: 'NSE Benchmark', price: '25,349.65', chg: '-1.75%', up: false, cat: 'breakout',
+          tag: '200 EMA Test', tf: 'Daily Support',
+          desc: 'Key dynamic 200 EMA support zone re-test with institutional order flow absorption.',
+          svg: '<path d="M 10 25 L 35 32 L 65 42 L 95 55 L 130 52 L 160 68 L 190 62" fill="none" stroke="#ef4444" stroke-width="2.2"/><line x1="10" y1="62" x2="190" y2="62" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,3"/><text x="12" y="78" fill="#f59e0b" font-size="8.5" font-family="monospace">200 EMA Support</text>'
+        },
+        {
+          id: 3, exp: 'EXP #03', sym: 'HDFCBANK', name: 'HDFC Bank Ltd.', price: '₹1,745.00', chg: '+0.82%', up: true, cat: 'fno',
+          tag: 'Delta Long', tf: '+142K Net OI',
+          desc: 'Heavy institutional delta volume buildup with call OI unwinding and upward breakout.',
+          svg: '<rect x="20" y="50" width="12" height="35" fill="#10b981" rx="2"/><rect x="45" y="38" width="12" height="47" fill="#10b981" rx="2"/><rect x="70" y="56" width="12" height="29" fill="#ef4444" rx="2"/><rect x="95" y="28" width="12" height="57" fill="#10b981" rx="2"/><rect x="120" y="22" width="12" height="63" fill="#10b981" rx="2"/><rect x="145" y="16" width="12" height="69" fill="#22d3ee" rx="2"/><rect x="170" y="10" width="12" height="75" fill="#10b981" rx="2"/>'
+        },
+        {
+          id: 4, exp: 'EXP #04', sym: 'TATAMOTORS', name: 'Tata Motors', price: '₹785.40', chg: '+2.45%', up: true, cat: 'ema',
+          tag: 'Vol Surge', tf: 'RSI 68 Bullish',
+          desc: 'Heavy delivery volume spike at breakout level ₹770 with RSI bullish momentum divergence.',
+          svg: '<path d="M 10 75 L 40 68 L 75 70 L 105 52 L 135 56 L 165 30 L 190 18" fill="none" stroke="#10b981" stroke-width="2.2"/><line x1="10" y1="38" x2="190" y2="38" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/><text x="12" y="33" fill="#f59e0b" font-size="8.5" font-family="monospace">Breakout ₹770</text>'
+        },
+        {
+          id: 5, exp: 'EXP #05', sym: 'TCS', name: 'Tata Consultancy', price: '₹4,120.00', chg: '+0.45%', up: true, cat: 'breakout',
+          tag: 'Cup & Handle', tf: 'ATH Retest',
+          desc: 'Multi-week consolidation breakout with IT sector relative strength leadership.',
+          svg: '<path d="M 10 42 Q 100 78, 150 40 T 190 22" fill="none" stroke="#22d3ee" stroke-width="2.2"/><line x1="10" y1="40" x2="190" y2="40" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>'
+        },
+        {
+          id: 6, exp: 'EXP #06', sym: 'BANK NIFTY', name: 'Banking Index', price: '62,585.35', chg: '-3.17%', up: false, cat: 'fno',
+          tag: 'Gamma Squeeze', tf: 'OI Shift',
+          desc: 'Option chain call unwinding and heavy put volume floor supporting reversal.',
+          svg: '<rect x="25" y="35" width="10" height="50" fill="#ef4444" rx="1"/><rect x="50" y="50" width="10" height="35" fill="#ef4444" rx="1"/><rect x="75" y="60" width="10" height="25" fill="#ef4444" rx="1"/><rect x="100" y="45" width="10" height="40" fill="#10b981" rx="1"/><rect x="125" y="30" width="10" height="55" fill="#10b981" rx="1"/><rect x="150" y="18" width="10" height="67" fill="#22d3ee" rx="1"/><rect x="175" y="10" width="10" height="75" fill="#10b981" rx="1"/>'
+        },
+        {
+          id: 7, exp: 'EXP #07', sym: 'ICICIBANK', name: 'ICICI Bank Ltd.', price: '₹1,275.00', chg: '+0.75%', up: true, cat: 'ema',
+          tag: '50 EMA Bounce', tf: 'Trend Up',
+          desc: 'Private bank index benchmark leader with high volume bounce off 50 EMA.',
+          svg: '<path d="M 10 65 L 40 55 L 70 60 L 100 40 L 130 45 L 160 28 L 190 18" fill="none" stroke="#10b981" stroke-width="2.2"/><path d="M 10 72 Q 100 52, 190 25" fill="none" stroke="#22d3ee" stroke-width="1.4" stroke-dasharray="3,2"/>'
+        },
+        {
+          id: 8, exp: 'EXP #08', sym: 'SUNPHARMA', name: 'Sun Pharma Ltd.', price: '₹1,902.30', chg: '+1.12%', up: true, cat: 'breakout',
+          tag: 'Blue Sky', tf: 'ATH Leader',
+          desc: 'Blue sky clearance at all-time high with zero overhead historical resistance.',
+          svg: '<path d="M 10 75 L 45 65 L 80 50 L 115 54 L 150 30 L 190 12" fill="none" stroke="#10b981" stroke-width="2.4"/><line x1="10" y1="52" x2="190" y2="52" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/><text x="12" y="46" fill="#f59e0b" font-size="8.5" font-family="monospace">ATH Clearance</text>'
+        },
+        {
+          id: 9, exp: 'EXP #09', sym: 'INFY', name: 'Infosys Ltd.', price: '₹1,870.00', chg: '+0.95%', up: true, cat: 'ema',
+          tag: 'MACD Bullish', tf: '15m Trigger',
+          desc: '15m timeframe MACD momentum zero-line crossover with volume confirmation.',
+          svg: '<path d="M 10 70 L 45 60 L 80 65 L 115 45 L 150 48 L 190 25" fill="none" stroke="#22d3ee" stroke-width="2"/><circle cx="115" cy="45" r="3.5" fill="#22d3ee" stroke="#fff" stroke-width="1"/>'
+        },
+        {
+          id: 10, exp: 'EXP #10', sym: 'LT', name: 'Larsen & Toubro', price: '₹3,580.00', chg: '+0.50%', up: true, cat: 'breakout',
+          tag: 'Sector Leader', tf: 'Cap Goods',
+          desc: 'Capital Goods breakout continuation setup with 44-sector relative volume surge.',
+          svg: '<path d="M 10 60 L 45 50 L 80 56 L 120 38 L 155 40 L 190 16" fill="none" stroke="#10b981" stroke-width="2.2"/><line x1="10" y1="56" x2="190" y2="56" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>'
+        },
+        {
+          id: 11, exp: 'EXP #11', sym: 'BHARTIARTL', name: 'Bharti Airtel', price: '₹1,610.00', chg: '+0.65%', up: true, cat: 'fno',
+          tag: 'Accumulation', tf: 'Delivery 74%',
+          desc: 'Institutional delivery accumulation node holding key support with low volatility.',
+          svg: '<rect x="25" y="40" width="10" height="45" fill="#10b981" rx="1"/><rect x="55" y="30" width="10" height="55" fill="#10b981" rx="1"/><rect x="85" y="45" width="10" height="40" fill="#ef4444" rx="1"/><rect x="115" y="22" width="10" height="63" fill="#10b981" rx="1"/><rect x="145" y="15" width="10" height="70" fill="#22d3ee" rx="1"/><rect x="175" y="8" width="10" height="77" fill="#10b981" rx="1"/>'
+        },
+        {
+          id: 12, exp: 'EXP #12', sym: 'BAJFINANCE', name: 'Bajaj Finance', price: '₹6,890.00', chg: '+1.40%', up: true, cat: 'fno',
+          tag: 'Supertrend', tf: 'Support Rebound',
+          desc: 'Supertrend buy signal confirmed on 15m intraday chart with risk-reward 1:3.',
+          svg: '<path d="M 10 75 L 40 68 L 75 64 L 110 46 L 150 42 L 190 18" fill="none" stroke="#10b981" stroke-width="2.2"/><path d="M 10 84 L 190 28" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2"/>'
         }
+      ];
+
+      // Configuration matching React Bits Contact Sheet props:
+      // count: 16 in flight, speed: 0.1, rush: 0.35, blankArea: 0.2
+      var COUNT = 16;
+      var speed = 0.0018; // base speed per frame
+      var rush = 0.35;    // perspective acceleration near edges
+      var blankArea = 0.18; // empty center fraction
+      var isPaused = false;
+      var currentFilter = 'all';
+
+      // Mouse steering
+      var mouseX = 0, mouseY = 0;
+      var targetTiltX = 0, targetTiltY = 0;
+
+      // In-flight cards state
+      var inFlight = [];
+      var collectionIndex = 0;
+
+      function createCardDOM(item, idx) {
+        var card = document.createElement('div');
+        card.className = 'rb-stream-card latent';
+        card.dataset.id = item.id;
+        card.dataset.cat = item.cat;
+        card.innerHTML =
+          '<div class="rb-card-meta-strip">' +
+            '<span class="exp-id">' + item.exp + '</span>' +
+            '<span>15M &bull; LIVE</span>' +
+          '</div>' +
+          '<div class="rb-card-stock-head">' +
+            '<div>' +
+              '<div class="rb-card-sym">' + item.sym + '</div>' +
+              '<div class="rb-card-cname">' + item.name + '</div>' +
+            '</div>' +
+            '<div class="rb-card-price-box">' +
+              '<div class="rb-card-price">' + item.price + '</div>' +
+              '<div class="rb-card-chg ' + (item.up ? 'rb-val-up' : 'rb-val-down') + '">' + item.chg + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="rb-card-chart-box">' +
+            '<svg class="rb-card-chart-svg" viewBox="0 0 200 90">' + item.svg + '</svg>' +
+          '</div>' +
+          '<div class="rb-card-foot">' +
+            '<span class="rb-card-badge tag-' + item.cat + '">' + item.tag + '</span>' +
+            '<span class="rb-card-tf">' + item.tf + '</span>' +
+          '</div>';
+
+        // Hover & Click Handlers
+        card.addEventListener('mouseenter', function() {
+          card.classList.add('inspected');
+          if (drawer && dTitle && dSub) {
+            dTitle.textContent = item.sym + ' • ' + item.price;
+            dSub.textContent = item.desc;
+            drawer.style.display = 'block';
+          }
+        });
+
+        card.addEventListener('mouseleave', function() {
+          card.classList.remove('inspected');
+        });
+
+        card.addEventListener('click', function(e) {
+          promptToolAuth(e, item.sym + ' ' + item.tag, item.desc);
+        });
+
+        layer.appendChild(card);
+        return card;
+      }
+
+      function getNextFilteredItem() {
+        var filtered = COLLECTION.filter(function(x) {
+          return currentFilter === 'all' || x.cat === currentFilter;
+        });
+        if (filtered.length === 0) filtered = COLLECTION;
+        var it = filtered[collectionIndex % filtered.length];
+        collectionIndex++;
+        return it;
+      }
+
+      function initParticles() {
+        layer.innerHTML = '';
+        inFlight = [];
+        var stageRect = stage.getBoundingClientRect();
+        var maxR = Math.hypot(stageRect.width / 2, stageRect.height / 2) * 1.15;
+
+        for (var i = 0; i < COUNT; i++) {
+          var item = getNextFilteredItem();
+          var cardEl = createCardDOM(item, i);
+          // Stagger progress evenly from blankArea to 1.0
+          var progress = blankArea + (i / COUNT) * (1.0 - blankArea);
+          var angle = (i * ((Math.PI * 2) / COUNT)) + ((i % 3) * 0.2);
+          var rot = ((i % 5) - 2) * 2.8;
+
+          inFlight.push({
+            el: cardEl,
+            item: item,
+            angle: angle,
+            progress: progress,
+            baseRot: rot,
+            maxR: maxR,
+            isHovered: false
+          });
+        }
+      }
+
+      // Main 60fps streaming animation loop
+      function streamLoop() {
+        var stageRect = stage.getBoundingClientRect();
+        var cx = stageRect.width / 2;
+        var cy = stageRect.height / 2;
+        var maxR = Math.hypot(cx, cy) * 1.15;
+
+        inFlight.forEach(function(p, i) {
+          if (!isPaused && !p.el.classList.contains('inspected')) {
+            p.progress += speed;
+
+            // When reaching boundary (or sinking to center if negative speed)
+            if (p.progress >= 1.05) {
+              p.progress = blankArea;
+              p.item = getNextFilteredItem();
+              // Update DOM content of card
+              p.el.querySelector('.rb-card-sym').textContent = p.item.sym;
+              p.el.querySelector('.rb-card-cname').textContent = p.item.name;
+              p.el.querySelector('.rb-card-price').textContent = p.item.price;
+              var chgEl = p.el.querySelector('.rb-card-chg');
+              chgEl.textContent = p.item.chg;
+              chgEl.className = 'rb-card-chg ' + (p.item.up ? 'rb-val-up' : 'rb-val-down');
+              p.el.querySelector('.rb-card-chart-svg').innerHTML = p.item.svg;
+              var badge = p.el.querySelector('.rb-card-badge');
+              badge.textContent = p.item.tag;
+              badge.className = 'rb-card-badge tag-' + p.item.cat;
+              p.el.querySelector('.rb-card-tf').textContent = p.item.tf;
+              p.angle = Math.random() * Math.PI * 2;
+            } else if (p.progress < blankArea) {
+              p.progress = 1.0;
+            }
+          }
+
+          // Acceleration near edges (rush prop)
+          var norm = (p.progress - blankArea) / (1.0 - blankArea);
+          if (norm < 0) norm = 0;
+          var effectiveDist = norm + (rush * Math.pow(norm, 2.5));
+          var r = blankArea * maxR + effectiveDist * (maxR * (1 - blankArea));
+
+          // Parallax mouse tilt offset
+          var px = targetTiltX * (1 - norm) * 45;
+          var py = targetTiltY * (1 - norm) * 35;
+
+          var x = Math.cos(p.angle) * r + px;
+          var y = Math.sin(p.angle) * r + py;
+
+          // Scale & Developing calculations
+          var scale = 0.22 + (norm * 0.82);
+          var opacity = norm < 0.12 ? (norm / 0.12) : (norm > 0.88 ? (1.0 - (norm - 0.88) / 0.12) : 1);
+          var rot = p.baseRot + (x * 0.02);
+
+          // Darkroom developing filter transition
+          if (norm > 0.32) {
+            p.el.classList.remove('latent');
+            p.el.classList.add('developed');
+          } else {
+            p.el.classList.remove('developed');
+            p.el.classList.add('latent');
+          }
+
+          if (!p.el.classList.contains('inspected')) {
+            p.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px, ' + (norm * 120).toFixed(0) + 'px) scale(' + scale.toFixed(3) + ') rotate(' + rot.toFixed(1) + 'deg)';
+            p.el.style.opacity = opacity.toFixed(2);
+            p.el.style.zIndex = Math.round(norm * 30);
+          }
+        });
+
+        requestAnimationFrame(streamLoop);
+      }
+
+      // Mouse steering listeners
+      stage.addEventListener('mousemove', function(e) {
+        var rect = stage.getBoundingClientRect();
+        targetTiltX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        targetTiltY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
       });
 
-      var cards = document.querySelectorAll('.rb-print-card');
-      cards.forEach(function(card) {
-        if (cat === 'all' || card.dataset.cat === cat) {
-          card.style.display = 'flex';
-          card.style.opacity = '1';
-          card.style.transform = 'scale(1)';
-        } else {
-          card.style.display = 'none';
-        }
+      stage.addEventListener('mouseleave', function() {
+        targetTiltX = 0;
+        targetTiltY = 0;
+        if (drawer) drawer.style.display = 'none';
       });
-    }
-    window.filterContactSheet = filterContactSheet;
+
+      // Controls
+      window.setContactSheetFilter = function(cat) {
+        currentFilter = cat;
+        var btns = document.querySelectorAll('.rb-sheet-filter-btn');
+        btns.forEach(function(b) {
+          if (b.dataset.filter === cat) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+        initParticles();
+      };
+
+      window.toggleContactSheetPause = function() {
+        isPaused = !isPaused;
+        var icon = document.getElementById('rb-pause-icon');
+        var txt = document.getElementById('rb-pause-text');
+        if (icon && txt) {
+          icon.textContent = isPaused ? '▶' : '⏸';
+          txt.textContent = isPaused ? 'Resume Stream' : 'Pause Stream';
+        }
+      };
+
+      window.toggleContactSheetDirection = function() {
+        speed = -speed;
+        var txt = document.getElementById('rb-dir-text');
+        if (txt) {
+          txt.textContent = speed < 0 ? 'Streaming Inward' : 'Streaming Outward';
+        }
+      };
+
+      initParticles();
+      requestAnimationFrame(streamLoop);
+      window.addEventListener('resize', initParticles);
+    })();
   </script>
+
 
   <section class="sec" id="hub" style="padding:42px 0 32px;">
     <div class="wrap">
