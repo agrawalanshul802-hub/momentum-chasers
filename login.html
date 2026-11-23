@@ -7072,7 +7072,7 @@
       const statusMsg = document.getElementById('feedback-status-msg');
 
       btn.disabled = true;
-      btnText.textContent = 'Sending to chasersmomentum@gmail.com...';
+      btnText.textContent = 'Sending feedback...';
       spinner.style.display = 'inline-block';
       statusMsg.style.display = 'none';
 
@@ -7089,30 +7089,53 @@
       };
 
       try {
-        // 1. Send via FormSubmit directly to chasersmomentum@gmail.com
-        let sentMail = false;
-        try {
-          const res = await fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-          if (res.ok) sentMail = true;
-        } catch (netErr) {
-          console.warn('FormSubmit external notification warning:', netErr);
-        }
+        // Fast primary delivery via backend API (< 200ms) with 4-second timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        // 2. Archive locally in backend API
+        let success = false;
         try {
-          await fetch('/api/feedback', {
+          const res = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: controller.signal
           });
-        } catch (_) { }
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.success) success = true;
+          }
+        } catch (apiErr) {
+          clearTimeout(timeoutId);
+          console.warn('Primary feedback endpoint timeout or offline, falling back:', apiErr);
+        }
+
+        // Secondary fallback to FormSubmit only if backend API failed
+        if (!success) {
+          try {
+            const fbRes = await fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+            if (fbRes.ok) success = true;
+          } catch (netErr) {
+            console.warn('FormSubmit fallback error:', netErr);
+          }
+        } else {
+          // Asynchronous client ping to FormSubmit as backup without blocking UI
+          fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        }
+
+        if (!success) throw new Error('Could not submit feedback');
 
         statusMsg.className = 'feedback-status-msg success';
         statusMsg.innerHTML = '<strong>✓ Feedback Delivered!</strong> Your message was sent directly to <code>chasersmomentum@gmail.com</code>. Thank you for helping us improve!';
@@ -7125,8 +7148,8 @@
         setTimeout(() => {
           btn.disabled = false;
           btnText.textContent = 'Send Feedback Directly →';
-          setTimeout(closeFeedbackModal, 2500);
-        }, 1500);
+          closeFeedbackModal();
+        }, 1200);
 
       } catch (err) {
         statusMsg.className = 'feedback-status-msg error';

@@ -7408,6 +7408,29 @@ const server = http.createServer(async (req, res) => {
         message: 'Feedback received and archived. Sent to chasersmomentum@gmail.com',
         id: feedbackItem.id
       }));
+
+      // Non-blocking background email dispatch to chasersmomentum@gmail.com
+      (async () => {
+        try {
+          await fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              name,
+              email: email || 'no-reply@momentum-chasers.com',
+              topic,
+              sentiment,
+              message,
+              _subject: `⚡ Momentum Chasers Feedback [${sentiment}]: ${topic} (${name})`,
+              _template: 'table',
+              _captcha: 'false',
+              _replyto: email || 'chasersmomentum@gmail.com'
+            })
+          });
+        } catch (e) {
+          console.warn('Background FormSubmit email dispatch warning:', e.message);
+        }
+      })();
       return;
     } catch (err) {
       console.error('Error handling feedback submission:', err);
