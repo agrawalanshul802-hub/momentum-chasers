@@ -1,18 +1,18 @@
 {
   "status": "success",
   "timestamp": "2026-11-23T17:05:32.449Z",
-  "asOfDate": "23 Nov 2026 (EOD Close)",
+  "asOfDate": "23 Nov 2026 (3:30 pm Closing)",
   "isLive": false,
-  "dateLabel": "EOD Market Close",
+  "dateLabel": "Market Closed (EOD)",
   "stats": {
     "Nifty 50": {
       "price": "25,349.65",
-      "chg": "-450.95 (-1.75%) ↘",
+      "chg": "-450.95 (-1.75%) \u2198",
       "isUp": false
     },
     "Nifty Bank": {
       "price": "62,585.35",
-      "chg": "-2049.85 (-3.17%) ↘",
+      "chg": "-2,049.85 (-3.17%) \u2198",
       "isUp": false
     }
   },

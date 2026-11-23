@@ -39,12 +39,12 @@
 
   // Benchmark Indices for Ticker & Breadth
   const IDX = [
-    ["NIFTY 50", 25514.30, 1.14, 286.25],
-    ["Nifty Bank", 63063.00, 1.65, 1022.40],
-    ["BSE Sensex", 82079.77, 0.60, 487.32],
-    ["Nifty LargeCap 100", 26398.60, 1.22, 318.50],
-    ["Nifty MidCap 150", 22612.35, 0.99, 221.60],
-    ["Nifty SmallCap 250", 17797.65, 0.74, 130.70]
+    ["NIFTY 50", 25349.65, -1.75, -450.95],
+    ["Nifty Bank", 62585.35, -3.17, -2049.85],
+    ["BSE Sensex", 82435.99, -1.77, -1483.72],
+    ["Nifty LargeCap 100", 26217.30, -1.67, -445.20],
+    ["Nifty MidCap 150", 22315.40, -1.31, -296.95],
+    ["Nifty SmallCap 250", 17548.80, -1.40, -248.85]
   ];
 
   // Stocks Catalog (Prompt specification with fundamental metrics + INDUSINDBK for TradingView benchmark)
@@ -5369,9 +5369,9 @@
     ],
     [
       "NIFTY 50",
-      25514.3,
-      1.14,
-      75.6,
+      25349.65,
+      -1.75,
+      68.4,
       [
         1,
         1,
@@ -5579,9 +5579,9 @@
     ],
     [
       "NIFTY BANK",
-      63063,
-      1.65,
-      79.7,
+      62585.35,
+      -3.17,
+      69.2,
       [
         1,
         1,
@@ -10828,7 +10828,7 @@
     sectorSortDir: "desc",      // "desc" (High to Low / closest to ATH) or "asc"
     sectorSearchQuery: "",      // Filter string in 44 Sector Indices table
     sectorSubTab: "turnover",   // "turnover" (Money Flow heatmap), "indices", "ranking", "turnover_ad", "cmf", "rs"
-    sectorTurnoverSortCol: "19-11", // default sorted by latest date (matching screenshot)
+    sectorTurnoverSortCol: "23-11", // default sorted by latest date (matching screenshot)
     sectorTurnoverSortDir: "desc",
     sectorTurnoverSearch: "",
     sectorTurnoverBaseline: 8,
@@ -10860,15 +10860,15 @@
     fiiDii: {
       periods: {
         day: {
-          date: "2026-11-20",
-          fiiBuy: 23596.40,
-          fiiSell: 13287.98,
-          fiiNet: 10308.42,
-          diiBuy: 18492.63,
-          diiSell: 23352.43,
-          diiNet: -4859.80,
-          from: "2026-11-20",
-          to: "2026-11-20",
+          date: "2026-11-23",
+          fiiBuy: 23473.70,
+          fiiSell: 17800.70,
+          fiiNet: 5673.00,
+          diiBuy: 16505.80,
+          diiSell: 19265.90,
+          diiNet: -2760.10,
+          from: "2026-11-23",
+          to: "2026-11-23",
           sessions: 1,
           expectedSessions: 1
         },
@@ -10880,7 +10880,7 @@
           diiSell: 90100.60,
           diiNet: -12698.39,
           from: "2026-11-16",
-          to: "2026-11-20",
+          to: "2026-11-23",
           sessions: 5,
           expectedSessions: 5
         },
@@ -10892,13 +10892,13 @@
           diiSell: 321943.89,
           diiNet: -60680.13,
           from: "2026-10-29",
-          to: "2026-11-20",
-          sessions: 17,
+          to: "2026-11-23",
+          sessions: 18,
           expectedSessions: 21
         }
       },
       daily: [],
-      latestDate: "2026-11-20",
+      latestDate: "2026-11-23",
       source: "Groww",
       updatedAt: new Date().toISOString(),
       status: "live",
@@ -10909,9 +10909,9 @@
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
-    heatmapAsOfDate: "20 Nov 2026 (Live 03:30 pm)",
-    heatmapIsLive: true,
-    heatmapDateLabel: "Live Market Feed",
+    heatmapAsOfDate: "23 Nov 2026 (3:30 pm Closing)",
+    heatmapIsLive: false,
+    heatmapDateLabel: "Market Closed (EOD)",
     activeSectorIndex: "",
     heatmapSortBy: "mcap",      // "mcap", "volume", "turnover", "equal"
     heatmapPerfBy: "d",         // "d", "w", "15m"
@@ -15556,7 +15556,7 @@
   // ==========================================================================
 
   function getFallbackSectorTurnoverData() {
-    const dates = ["19-11", "18-11", "17-11", "16-11", "13-11", "12-11", "11-11", "09-11", "08-11", "06-11", "05-11", "04-11", "03-11", "02-11", "30-10"];
+    const dates = ["23-11", "20-11", "19-11", "18-11", "17-11", "16-11", "13-11", "12-11", "11-11", "09-11", "08-11", "06-11", "05-11", "04-11", "03-11"];
 
     const sectorsDef = [
       { id: 'pvt_bank', name: 'Private Banks', sym: 'NIFTY PVT BANK', base: 9200, category: 'Banking' },
@@ -15729,8 +15729,8 @@
 
   function buildTurnoverTableHTML(data) {
     const dates = data.dates || [
-      '19-11', '18-11', '17-11', '16-11', '13-11', '12-11', '11-11', '10-11',
-      '09-11', '08-11', '06-11', '05-11', '04-11',
+      '23-11', '20-11', '19-11', '18-11', '17-11', '16-11', '13-11', '12-11',
+      '11-11', '10-11', '09-11', '08-11', '06-11', '05-11', '04-11',
       '03-11', '02-11', '30-10', '29-10', '28-10',
       '27-10', '26-10', '23-10', '22-10', '21-10',
       '20-10', '19-10', '16-10', '15-10', '14-10'
@@ -15746,7 +15746,7 @@
     }
 
     // Sort
-    const sortCol = State.sectorTurnoverSortCol || '19-11';
+    const sortCol = State.sectorTurnoverSortCol || '23-11';
     const sortDir = State.sectorTurnoverSortDir || 'desc';
 
     sectors.sort((a, b) => {
@@ -17428,7 +17428,7 @@
     const historyDates = (State.fiiDii && Array.isArray(State.fiiDii.daily) && State.fiiDii.daily.length > 0)
       ? State.fiiDii.daily.map(x => x.date).filter(Boolean)
       : [
-        "2026-11-18", "2026-11-17", "2026-11-16", "2026-11-13", "2026-11-12",
+        "2026-11-23", "2026-11-20", "2026-11-19", "2026-11-18", "2026-11-17", "2026-11-16", "2026-11-13", "2026-11-12",
         "2026-11-11", "2026-11-09", "2026-11-08", "2026-11-06", "2026-11-05",
         "2026-11-04", "2026-11-03", "2026-11-02", "2026-10-30", "2026-10-29",
         "2026-10-28", "2026-10-27", "2026-10-26", "2026-10-23", "2026-10-22",
