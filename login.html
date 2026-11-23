@@ -6616,6 +6616,284 @@
     }
   </script>
 
+
+  <!-- ================= REACT BITS PRELOADER COMPONENT (STAIRS & PERCENTAGE VARIANT) ================= -->
+  <style>
+    .rb-preloader-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(4, 7, 15, 0.98);
+      overflow: hidden;
+      font-family: "Manrope", system-ui, -apple-system, sans-serif;
+    }
+
+    .rb-preloader-stairs {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .rb-stair-col {
+      flex: 1;
+      height: 100%;
+      background: linear-gradient(180deg, #060a16 0%, #0d1527 50%, #060a16 100%);
+      border-right: 1px solid rgba(255, 255, 255, 0.035);
+      transform: translateY(-100%);
+      transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .rb-stair-col.active {
+      transform: translateY(0);
+      transition-delay: calc(var(--stair-i) * 0.07s);
+    }
+
+    .rb-stair-col.exit {
+      transform: translateY(100%);
+      transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+      transition-delay: calc(var(--stair-i) * 0.07s);
+    }
+
+    .rb-preloader-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 32px 24px;
+      max-width: 520px;
+      width: 90%;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .rb-preloader-content.fade-out {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+
+    .rb-preloader-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #ffffff;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(16, 185, 129, 0.2);
+    }
+
+    .rb-preloader-badge span.bolt {
+      color: #10b981;
+      font-size: 15px;
+      filter: drop-shadow(0 0 8px #10b981);
+    }
+
+    .rb-counter-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .rb-counter-val {
+      font-size: clamp(4rem, 11vw, 7.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #ffffff 30%, #10b981 85%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rb-counter-pct {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: #10b981;
+      margin-left: 6px;
+    }
+
+    .rb-progress-track {
+      width: 100%;
+      max-width: 320px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .rb-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #22d3ee 60%, #f59e0b 100%);
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.8);
+      transition: width 0.08s linear;
+    }
+
+    .rb-status-msg {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #cbd5e1;
+      letter-spacing: 0.02em;
+      min-height: 22px;
+      margin-bottom: 6px;
+    }
+
+    .rb-sub-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+  </style>
+
+  <div id="rb-preloader" class="rb-preloader-overlay" aria-hidden="true" style="display:none;">
+    <!-- Staggered Stairs Columns (variant="stairs") -->
+    <div class="rb-preloader-stairs">
+      <div class="rb-stair-col" style="--stair-i:0"></div>
+      <div class="rb-stair-col" style="--stair-i:1"></div>
+      <div class="rb-stair-col" style="--stair-i:2"></div>
+      <div class="rb-stair-col" style="--stair-i:3"></div>
+      <div class="rb-stair-col" style="--stair-i:4"></div>
+    </div>
+
+    <!-- Center Counter & Status (variant="percentage") -->
+    <div class="rb-preloader-content">
+      <div class="rb-preloader-badge">
+        <span class="bolt">⚡</span>
+        <span>MOMENTUM CHASERS</span>
+      </div>
+      <div class="rb-counter-row">
+        <span id="rb-preloader-count" class="rb-counter-val font-mono">0</span>
+        <span class="rb-counter-pct">%</span>
+      </div>
+      <div class="rb-progress-track">
+        <div id="rb-progress-bar" class="rb-progress-fill"></div>
+      </div>
+      <div id="rb-status-text" class="rb-status-msg">Authenticating secure terminal session...</div>
+      <div class="rb-sub-label">NSE &bull; BSE Technical Intelligence Gateway</div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================================
+    // REACT BITS PRELOADER CONTROLLER (STAIRS & PERCENTAGE)
+    // ========================================================
+    (function() {
+      function triggerPreloader(options) {
+        options = options || {};
+        var duration = typeof options.duration === 'number' ? options.duration : 2200;
+        var targetUrl = options.targetUrl || 'index.html#screener';
+        var onComplete = options.onComplete;
+
+        var el = document.getElementById('rb-preloader');
+        if (!el) {
+          if (targetUrl) window.location.href = targetUrl;
+          return;
+        }
+
+        // Close any active auth modal
+        if (typeof window.closeAuth === 'function') {
+          try { window.closeAuth(); } catch (e) { }
+        }
+
+        el.style.display = 'flex';
+        el.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        var stairs = el.querySelectorAll('.rb-stair-col');
+        var content = el.querySelector('.rb-preloader-content');
+        if (content) content.classList.remove('fade-out');
+
+        // Animate stairs in
+        stairs.forEach(function(col) {
+          col.classList.remove('exit');
+          col.classList.add('active');
+        });
+
+        var countEl = document.getElementById('rb-preloader-count');
+        var barEl = document.getElementById('rb-progress-bar');
+        var statusEl = document.getElementById('rb-status-text');
+
+        var statuses = [
+          { at: 0, text: 'Authenticating trader credentials...' },
+          { at: 30, text: 'Synchronizing 50×200 EMA & Live Order Flow Engine...' },
+          { at: 70, text: 'Session authenticated! Decrypting Terminal Access...' },
+          { at: 92, text: 'Launching Momentum Chasers Pro Dashboard...' }
+        ];
+
+        var startTime = performance.now();
+
+        function frame(now) {
+          var elapsed = now - startTime;
+          var progress = Math.min(1, elapsed / duration);
+          // Ease out cubic
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var currentVal = Math.round(eased * 100);
+
+          if (countEl) countEl.textContent = currentVal;
+          if (barEl) barEl.style.width = currentVal + '%';
+
+          for (var i = statuses.length - 1; i >= 0; i--) {
+            if (currentVal >= statuses[i].at) {
+              if (statusEl && statusEl.textContent !== statuses[i].text) {
+                statusEl.textContent = statuses[i].text;
+              }
+              break;
+            }
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            // Finish animation with stairs exit wipe
+            setTimeout(function() {
+              if (content) content.classList.add('fade-out');
+              stairs.forEach(function(col) {
+                col.classList.remove('active');
+                col.classList.add('exit');
+              });
+
+              setTimeout(function() {
+                if (typeof onComplete === 'function') {
+                  onComplete();
+                } else if (targetUrl) {
+                  window.location.href = targetUrl;
+                }
+              }, 580);
+            }, 180);
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      window.triggerPreloader = triggerPreloader;
+      window.Preloader = {
+        start: triggerPreloader
+      };
+    })();
+  </script>
+
 </body>
 
 </html>
