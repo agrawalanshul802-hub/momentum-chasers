@@ -3818,9 +3818,8 @@
         <a class="lk" href="javascript:void(0)" onclick="handleCtaClick(event, 'signup')">Market Insights</a>
       </nav>
       <div class="nr">
-        <a class="lg" href="javascript:void(0)" id="nav-login-link" onclick="handleCtaClick(event, 'signin')">Login</a>
-        <a class="btn sm" href="javascript:void(0)" id="nav-signin-btn" onclick="handleCtaClick(event, 'signup')">Sign
-          In</a>
+        <a class="lg" href="javascript:void(0)" id="nav-login-link" onclick="openNavAuth(event, 'signin')">Login</a>
+        <a class="btn sm" href="javascript:void(0)" id="nav-signin-btn" onclick="openNavAuth(event, 'signin')">Sign In</a>
       </div>
     </div>
   </header>
@@ -4187,6 +4186,56 @@
   </nav>
 
   <script>
+    function isUserLoggedIn() {
+      try {
+        var u = localStorage.getItem("momentum_auth_user");
+        if (u && u.length > 5) return true;
+        var t = localStorage.getItem("supabase.auth.token");
+        if (t && t.length > 5) return true;
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i) || "";
+          if (k.startsWith("sb-") && k.endsWith("-auth-token")) {
+            var v = localStorage.getItem(k);
+            if (v && v.includes("access_token")) return true;
+          }
+        }
+        if (window.MomentumAuth && typeof window.MomentumAuth.getUser === "function" && window.MomentumAuth.getUser()) return true;
+      } catch (e) { }
+      return false;
+    }
+    window.isUserLoggedIn = isUserLoggedIn;
+
+    function openNavAuth(e, mode) {
+      if (e) {
+        try { e.preventDefault(); e.stopPropagation(); } catch (err) { }
+      }
+      closeToolAccessModal();
+      var signinBtn = document.getElementById("nav-signin-btn");
+      var loginLink = document.getElementById("nav-login-link");
+      if (signinBtn) signinBtn.classList.remove("nav-auth-highlight");
+      if (loginLink) loginLink.classList.remove("nav-auth-highlight");
+      var banner = document.getElementById("auth-tool-banner");
+      if (banner) banner.style.display = "none";
+      if (isUserLoggedIn()) {
+        window.location.href = "index.html";
+        return;
+      }
+      var m = mode || "signin";
+      if (typeof window.openAuth === "function") {
+        window.openAuth(m);
+      } else if (typeof openDirectAuth === "function") {
+        openDirectAuth(m);
+      } else {
+        var authModal = document.getElementById("auth-modal");
+        if (authModal) {
+          authModal.style.display = "flex";
+          authModal.classList.add("active");
+          authModal.setAttribute("aria-hidden", "false");
+        }
+      }
+    }
+    window.openNavAuth = openNavAuth;
+
     function promptToolAuth(e, toolName, toolDesc) {
       if (e) {
         try { e.preventDefault(); e.stopPropagation(); } catch (err) { }
@@ -4240,11 +4289,14 @@
       var banner = document.getElementById("auth-tool-banner");
       var bTitle = document.getElementById("auth-tool-banner-title");
       var bText = document.getElementById("auth-tool-banner-text");
-      var name = toolName || (document.getElementById("access-modal-tool-title") ? document.getElementById("access-modal-tool-title").textContent : "Market Analytics");
-      if (banner) {
-        banner.style.display = "block";
-        if (bTitle) bTitle.textContent = "Log In or Sign Up to Access " + name;
-        if (bText) bText.textContent = "Create an account or sign in to get instant access to " + name + " and full live market screening.";
+      if (toolName) {
+        if (banner) {
+          banner.style.display = "block";
+          if (bTitle) bTitle.textContent = "Log In or Sign Up to Access " + toolName;
+          if (bText) bText.textContent = "Create an account or sign in to get instant access to " + toolName + " and full live market screening.";
+        }
+      } else {
+        if (banner) banner.style.display = "none";
       }
       if (typeof window.openAuth === "function") {
         window.openAuth(m);
@@ -4279,6 +4331,7 @@
       promptToolAuth(e, "Market Analytics Suite", "Scan 2,000+ stocks across EMAs, RSI & volume breakouts");
     }
     window.handleCtaClick = handleCtaClick;
+    window.openNavAuth = window.openNavAuth || openNavAuth;
 
     var ANALYTICS_MENU = [
       { t: "Smart Screener", d: "Scan 2,000+ stocks across EMAs, RSI & volume breakouts", i: "&#9889;" },
