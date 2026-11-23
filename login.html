@@ -8075,7 +8075,7 @@
   </script>
 
 
-  <!-- ================= REACT BITS PRELOADER COMPONENT (STAIRS & PERCENTAGE VARIANT) ================= -->
+  <!-- ================= REACT BITS PRELOADER COMPONENT (STAIRS WITH ANIMATED LOGO) ================= -->
   <style>
     .rb-preloader-overlay {
       position: fixed;
@@ -8134,13 +8134,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 24px;
-      width: 100%;
-      max-width: 520px;
       opacity: 0;
-      transform: scale(0.96) translateY(12px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.9) translateY(12px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
     }
 
     .rb-preloader-content.visible {
@@ -8150,136 +8147,109 @@
 
     .rb-preloader-content.fade-out {
       opacity: 0;
-      transform: scale(0.95) translateY(-14px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: scale(0.92) translateY(-16px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
 
-    .rb-preloader-card {
-      background: rgba(9, 14, 26, 0.90);
+    .rb-logo-card {
+      position: relative;
+      background: rgba(9, 14, 26, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      padding: 36px 36px 32px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 45px rgba(16, 185, 129, 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      border-radius: 36px;
+      padding: 44px 48px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
-      width: 100%;
-    }
-
-    .rb-preloader-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 999px;
-      padding: 7px 18px;
-      font-size: 12.5px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: #ffffff;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    .rb-preloader-badge span.bolt {
-      color: #10b981;
-      font-size: 14px;
-      filter: drop-shadow(0 0 8px #10b981);
-    }
-
-    .rb-preloader-title {
-      font-size: clamp(1.45rem, 3.8vw, 2.05rem);
-      font-weight: 700;
-      color: #f8fafc;
-      letter-spacing: -0.025em;
-      margin: 0 0 16px 0;
-      display: inline-flex;
-      align-items: baseline;
       justify-content: center;
-      gap: 1px;
-      line-height: 1.2;
+      box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.85),
+                  0 0 50px rgba(16, 185, 129, 0.18),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
     }
 
-    .rb-pulse-dots span {
-      display: inline-block;
-      color: #10b981;
-      animation: rbPulseDot 1.4s infinite;
-    }
-    .rb-pulse-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .rb-pulse-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes rbPulseDot {
-      0%, 20% { opacity: 0.2; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(-3px); }
-      100% { opacity: 0.2; transform: translateY(0); }
+    .rb-logo-halo {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(245, 181, 68, 0.25) 45%, rgba(34, 211, 238, 0.15) 70%, transparent 100%);
+      filter: blur(35px);
+      animation: rbHaloPulse 2.4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .rb-counter-row {
+    .rb-logo-ring {
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      border-top-color: rgba(16, 185, 129, 0.85);
+      border-right-color: rgba(245, 181, 68, 0.65);
+      border-bottom-color: rgba(34, 211, 238, 0.45);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+      animation: rbRingSpin 3.2s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .rb-logo-wrap {
+      position: relative;
+      z-index: 3;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: center;
-      line-height: 1;
-      margin-bottom: 18px;
     }
 
-    .rb-counter-val {
-      font-size: clamp(3.6rem, 9.5vw, 5.8rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #ffffff 30%, #10b981 85%, #22d3ee 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-feature-settings: "tnum";
-      font-variant-numeric: tabular-nums;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    .rb-animated-logo {
+      width: clamp(120px, 26vw, 150px);
+      height: clamp(120px, 26vw, 150px);
+      object-fit: contain;
+      display: block;
+      animation: rbLogoFloat 2.4s ease-in-out infinite;
+      will-change: transform, filter;
     }
 
-    .rb-counter-pct {
-      font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-      font-weight: 800;
-      color: #10b981;
-      margin-left: 4px;
+    @keyframes rbLogoFloat {
+      0% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6))
+                drop-shadow(0 0 20px rgba(16, 185, 129, 0.35))
+                drop-shadow(0 0 40px rgba(245, 181, 68, 0.2));
+      }
+      50% {
+        transform: translateY(-8px) scale(1.05);
+        filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.7))
+                drop-shadow(0 0 32px rgba(16, 185, 129, 0.65))
+                drop-shadow(0 0 60px rgba(245, 181, 68, 0.45));
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6))
+                drop-shadow(0 0 20px rgba(16, 185, 129, 0.35))
+                drop-shadow(0 0 40px rgba(245, 181, 68, 0.2));
+      }
     }
 
-    .rb-progress-track {
-      width: 100%;
-      max-width: 340px;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    @keyframes rbHaloPulse {
+      0%, 100% {
+        opacity: 0.5;
+        transform: scale(0.9);
+      }
+      50% {
+        opacity: 0.95;
+        transform: scale(1.18);
+      }
     }
 
-    .rb-progress-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #10b981 0%, #22d3ee 60%, #38bdf8 100%);
-      border-radius: 999px;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.8);
-      transition: width 0.08s linear;
-    }
-
-    .rb-status-msg {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #cbd5e1;
-      letter-spacing: 0.01em;
-      min-height: 22px;
-      margin-bottom: 8px;
-    }
-
-    .rb-sub-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.38);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+    @keyframes rbRingSpin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 
@@ -8294,40 +8264,27 @@
       <div class="rb-stair-col" style="--stair-i:5"></div>
     </div>
 
-    <!-- Center Counter & Status (variant="percentage") -->
+    <!-- Center Animated Logo (Only Logo, No Text) -->
     <div class="rb-preloader-content">
-      <div class="rb-preloader-card">
-        <div class="rb-preloader-badge">
-          <span class="bolt">⚡</span>
-          <span>MOMENTUM CHASERS</span>
+      <div class="rb-logo-card">
+        <div class="rb-logo-halo"></div>
+        <div class="rb-logo-ring"></div>
+        <div class="rb-logo-wrap">
+          <img src="logo-icon.png" alt="Momentum Chasers" class="rb-animated-logo">
         </div>
-        <h2 class="rb-preloader-title">
-          <span class="rb-title-text">loading your experience</span><span class="rb-pulse-dots"><span>.</span><span>.</span><span>.</span></span>
-        </h2>
-        <div class="rb-counter-row">
-          <span id="rb-preloader-count" class="rb-counter-val">0</span>
-          <span class="rb-counter-pct">%</span>
-        </div>
-        <div class="rb-progress-track">
-          <div id="rb-progress-bar" class="rb-progress-fill"></div>
-        </div>
-        <div id="rb-status-text" class="rb-status-msg">Authenticating trader credentials...</div>
-        <div class="rb-sub-label">NSE &bull; BSE Live Algorithmic Order Flow</div>
       </div>
     </div>
   </div>
 
   <script>
     // ========================================================
-    // REACT BITS PRELOADER CONTROLLER (STAIRS & PERCENTAGE)
+    // REACT BITS PRELOADER CONTROLLER (STAIRS WITH ANIMATED LOGO)
     // ========================================================
     (function() {
       function triggerPreloader(options) {
         options = options || {};
-        var duration = typeof options.duration === 'number' ? options.duration : 1800;
+        var duration = typeof options.duration === 'number' ? options.duration : 1600;
         var targetUrl = options.targetUrl || 'index.html#screener';
-        var customText = options.text || 'loading your experience';
-        var customSub = options.subText || 'Authenticating trader credentials...';
         var onComplete = options.onComplete;
 
         var el = document.getElementById('rb-preloader');
@@ -8341,13 +8298,6 @@
         if (authModal) {
           authModal.style.display = 'none';
         }
-
-        // Update text labels
-        var titleEl = el.querySelector('.rb-title-text');
-        if (titleEl && customText) titleEl.textContent = customText;
-
-        var statusEl = document.getElementById('rb-status-text');
-        if (statusEl && customSub) statusEl.textContent = customSub;
 
         el.style.display = 'flex';
         el.setAttribute('aria-hidden', 'false');
@@ -8368,72 +8318,31 @@
           col.classList.add('active');
         });
 
-        // Show content card smoothly after stairs drop
+        // Show animated logo smoothly after stairs begin dropping
         setTimeout(function() {
           if (content) content.classList.add('visible');
-        }, 120);
+        }, 100);
 
-        var countEl = document.getElementById('rb-preloader-count');
-        var barEl = document.getElementById('rb-progress-bar');
+        // Run animation for duration, then exit stairs and navigate
+        setTimeout(function() {
+          // 1. Fade out logo
+          if (content) content.classList.add('fade-out');
 
-        var statuses = [
-          { at: 0, text: customSub || 'Authenticating trader credentials...' },
-          { at: 35, text: 'Synchronizing 50×200 EMA & Live Order Flow Engine...' },
-          { at: 70, text: 'Session authenticated! Decrypting Terminal Access...' },
-          { at: 92, text: 'Launching Momentum Chasers Pro Dashboard...' }
-        ];
+          // 2. Lift stair columns away in staggered diagonal wave
+          stairs.forEach(function(col) {
+            col.classList.remove('active');
+            col.classList.add('exit');
+          });
 
-        var startTime = performance.now();
-
-        function frame(now) {
-          var elapsed = now - startTime;
-          var progress = Math.min(1, elapsed / duration);
-          // Quartic ease out
-          var eased = 1 - Math.pow(1 - progress, 4);
-          var currentVal = Math.round(eased * 100);
-
-          if (countEl) countEl.textContent = currentVal;
-          if (barEl) barEl.style.width = currentVal + '%';
-
-          for (var i = statuses.length - 1; i >= 0; i--) {
-            if (currentVal >= statuses[i].at) {
-              if (statusEl && statusEl.textContent !== statuses[i].text) {
-                statusEl.textContent = statuses[i].text;
-              }
-              break;
+          // 3. Complete navigation as stairs uncover screen
+          setTimeout(function() {
+            if (typeof onComplete === 'function') {
+              onComplete();
+            } else if (targetUrl) {
+              window.location.href = targetUrl;
             }
-          }
-
-          if (progress < 1) {
-            requestAnimationFrame(frame);
-          } else {
-            if (countEl) countEl.textContent = '100';
-            if (barEl) barEl.style.width = '100%';
-
-            // Smooth exit transition:
-            // 1. Fade out center content
-            setTimeout(function() {
-              if (content) content.classList.add('fade-out');
-
-              // 2. Lift stair columns away in staggered diagonal wave
-              stairs.forEach(function(col) {
-                col.classList.remove('active');
-                col.classList.add('exit');
-              });
-
-              // 3. Complete navigation as stairs finish uncovering screen
-              setTimeout(function() {
-                if (typeof onComplete === 'function') {
-                  onComplete();
-                } else if (targetUrl) {
-                  window.location.href = targetUrl;
-                }
-              }, 620);
-            }, 180);
-          }
-        }
-
-        requestAnimationFrame(frame);
+          }, 620);
+        }, duration);
       }
 
       window.triggerPreloader = triggerPreloader;
