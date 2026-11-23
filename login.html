@@ -4196,19 +4196,19 @@
             </div>
           </div>
 
-          <!-- STAGE 02B: F&O ORDER FLOW -->
-          <div class="rb-pipe-node rb-node-3" data-node="3" onclick="promptToolAuth(event, 'F&O Institutional Order Flow', 'Institutional delta volume, option OI imbalances and smart money positioning')">
-            <span class="rb-node-tag rb-tag-amber"><span class="rb-badge-dot"></span> Stage 02B: Derivatives</span>
+          <!-- STAGE 02B: SECTOR TURNOVER -->
+          <div class="rb-pipe-node rb-node-3" data-node="3" onclick="promptToolAuth(event, 'Sector Turnover &amp; Money Flow', 'NSE Bhavcopy turnover ratio comparison against historical multi-session baselines')">
+            <span class="rb-node-tag rb-tag-amber"><span class="rb-badge-dot"></span> Stage 02B: Turnover</span>
             <div class="rb-node-header">
-              <div class="rb-node-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">🌊</div>
+              <div class="rb-node-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">🔄</div>
               <div>
-                <h3 class="rb-node-title">F&amp;O Order Flow</h3>
-                <p class="rb-node-desc">Delta &amp; Option Imbalances</p>
+                <h3 class="rb-node-title">Sector Turnover</h3>
+                <p class="rb-node-desc">Bhavcopy Money Flow</p>
               </div>
             </div>
-            <p class="rb-node-desc">Tracks institutional volume absorption, call/put OI build-ups &amp; short coverings.</p>
+            <p class="rb-node-desc">Monitors daily turnover surges and multi-session baseline ratios across 44 sectors to spot capital rotation.</p>
             <div class="rb-node-status rb-status-amber">
-              <span class="rb-badge-dot"></span> <span>Net Long Smart Money</span>
+              <span class="rb-badge-dot"></span> <span>Institutional Flow 1.5x</span>
             </div>
           </div>
 
@@ -4261,9 +4261,9 @@
 
       var connections = [
         ['1', '2'], // Ingestion -> 50x200 EMA
-        ['1', '3'], // Ingestion -> F&O Order Flow
+        ['1', '3'], // Ingestion -> Sector Turnover
         ['2', '4'], // 50x200 EMA -> Smart Screener
-        ['3', '4'], // F&O Order Flow -> Smart Screener
+        ['3', '4'], // Sector Turnover -> Smart Screener
         ['4', '5']  // Smart Screener -> Sector Heatmap
       ];
 
