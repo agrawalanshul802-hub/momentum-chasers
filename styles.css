@@ -638,6 +638,7 @@ body.theme-white .ticker-theme-btn:hover {
 }
 
 .ticker-theme-btn {
+    display: none !important;
     color: #e2e8f0;
     font-size: 13px;
     padding: 0 8px;
