@@ -34704,19 +34704,7 @@
     }
 
     const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
-    const vipPillHTML = (sub && sub.active && sub.daysRemaining > 0) ? `
-      <button class="header-vip-pill" onclick="window.openOwnerIdeaPaymentModal ? window.openOwnerIdeaPaymentModal() : null" title="👑 VIP Research Pass Active • ${sub.daysRemaining} Days Left (Valid till ${new Date(sub.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })})">
-        <span class="header-vip-pill-icon">👑</span>
-        <span class="header-vip-pill-label">VIP Active</span>
-        <span class="header-vip-pill-days">${sub.daysRemaining}d left</span>
-      </button>
-    ` : (sub && sub.expired ? `
-      <button class="header-vip-pill is-expired" onclick="window.openOwnerIdeaPaymentModal ? window.openOwnerIdeaPaymentModal() : null" title="⚠️ VIP Pass Expired. Click to renew access!">
-        <span class="header-vip-pill-icon">⚠️</span>
-        <span class="header-vip-pill-label">VIP Expired</span>
-        <span class="header-vip-pill-days">Renew</span>
-      </button>
-    ` : "");
+    const vipPillHTML = "";
 
     const vipHudCardHTML = (sub && sub.active && sub.daysRemaining > 0) ? `
       <div class="hud-vip-status-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(16,185,129,0.08)); border: 1px solid rgba(245,158,11,0.35); border-radius: 8px; padding: 10px 12px; margin-bottom: 2px;">
@@ -34769,7 +34757,6 @@
       const avatar = State.user.avatar && State.user.avatar.length <= 3 ? State.user.avatar : initial;
 
       headerAuth.innerHTML = `
-        ${vipPillHTML}
         <div class="header-user-wrapper" id="header-user-wrapper">
           <button class="header-user-pill-btn" id="header-user-dropdown-btn" data-action="toggle-user-dropdown" title="Account: ${escapeHtml(rawName)} (${escapeHtml(email)})" aria-expanded="false" aria-haspopup="true">
             <div class="header-avatar-circle">
@@ -34868,7 +34855,6 @@
       `;
     } else {
       headerAuth.innerHTML = `
-        ${vipPillHTML}
         <div class="header-user-wrapper" id="header-user-wrapper">
           <a href="login.html" class="header-login-btn" id="header-login-btn" title="Sign In to Momentum Chasers">
             <span class="header-login-icon">🔐</span>

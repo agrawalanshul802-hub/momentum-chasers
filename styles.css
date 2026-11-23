@@ -15029,7 +15029,7 @@ body.theme-white .vip-plan-pill.is-active {
 
 /* Header VIP Pill Badge & Validity Counter */
 .header-vip-pill {
-    display: inline-flex;
+    display: none !important;
     align-items: center;
     gap: 6px;
     height: 28px;
