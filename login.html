@@ -4373,6 +4373,789 @@
     })();
   </script>
 
+  
+  <!-- ================= REACT BITS CONTACT SHEET COMPONENT ================= -->
+  <style>
+    .rb-contact-sheet-section {
+      padding: 60px 0 52px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.04) 0%, rgba(6, 10, 20, 0) 70%), #060913;
+    }
+
+    .rb-sheet-header {
+      text-align: left;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .rb-sheet-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #f59e0b;
+      letter-spacing: 0.14em;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .rb-sheet-eyebrow .sheet-dot {
+      width: 7px;
+      height: 7px;
+      background: #f59e0b;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #f59e0b;
+      animation: sheetPulse 1.8s infinite;
+    }
+
+    @keyframes sheetPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+
+    .rb-sheet-title {
+      font-size: clamp(1.75rem, 2.7vw, 2.4rem);
+      line-height: 1.2;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .rb-sheet-desc {
+      font-size: 1.02rem;
+      color: var(--muted, #94a3b8);
+      line-height: 1.6;
+      max-width: 780px;
+      margin: 0;
+    }
+
+    /* Filter Bar */
+    .rb-sheet-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .rb-sheet-filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .rb-sheet-filter-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .rb-sheet-filter-btn.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbd38d;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+    }
+
+    /* === CONTACT SHEET FILM MATRIX === */
+    .rb-sheet-matrix-wrapper {
+      position: relative;
+      background: rgba(10, 15, 28, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 36px 28px 44px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    /* Darkroom Film Sprocket Margin */
+    .rb-film-sprocket-track {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px 18px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      margin-bottom: 28px;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .rb-sprocket-holes {
+      display: flex;
+      gap: 14px;
+    }
+
+    .rb-sprocket-hole {
+      width: 14px;
+      height: 9px;
+      border-radius: 2px;
+      background: #040711;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Contact Sheet Grid (12 Prints) */
+    .rb-sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 1200px) {
+      .rb-sheet-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .rb-sheet-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .rb-sheet-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Individual Film Print Card */
+    .rb-print-card {
+      position: relative;
+      background: #090e1a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      transform-origin: center center;
+    }
+
+    /* Contact sheet print film border styling */
+    .rb-print-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      transition: border-color 0.3s ease;
+      pointer-events: none;
+    }
+
+    /* Developing animation effect */
+    .rb-print-card .rb-print-chart {
+      filter: contrast(1.1) brightness(0.92) saturate(0.85);
+      transition: filter 0.35s ease, transform 0.35s ease;
+    }
+
+    .rb-print-card:hover {
+      transform: translateY(-7px) scale(1.025);
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.8), 0 0 24px rgba(245, 158, 11, 0.22);
+      z-index: 10;
+    }
+
+    .rb-print-card:hover .rb-print-chart {
+      filter: contrast(1.15) brightness(1.05) saturate(1.2);
+    }
+
+    .rb-print-card:hover::before {
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    /* Top Strip in Print */
+    .rb-print-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    .rb-print-exp {
+      color: #f59e0b;
+      font-weight: 800;
+    }
+
+    /* Stock Identity */
+    .rb-print-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .rb-print-sym {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    .rb-print-name {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .rb-print-price-box {
+      text-align: right;
+    }
+
+    .rb-print-price {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      font-feature-settings: "tnum";
+    }
+
+    .rb-print-chg {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .chg-up { color: #10b981; }
+    .chg-down { color: #ef4444; }
+
+    /* SVG Chart Canvas inside print */
+    .rb-print-chart-wrap {
+      position: relative;
+      height: 118px;
+      background: #050811;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .rb-print-chart-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Print Badge & Meta */
+    .rb-print-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .rb-print-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 3px 7px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tag-bullish {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .tag-breakout {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .tag-orderflow {
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      color: #38bdf8;
+    }
+
+    .tag-sector {
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      color: #facc15;
+    }
+
+    .rb-print-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      font-family: monospace;
+    }
+  </style>
+
+  <section class="sec rb-contact-sheet-section" id="contact-sheet" aria-label="Stock Market Technical Contact Sheet">
+    <div class="wrap">
+      <div class="rb-sheet-header">
+        <div class="rb-sheet-eyebrow">
+          <span class="sheet-dot"></span>
+          <span>LIVE MARKET CONTACT SHEET &bull; DEVELOPING CHARTS</span>
+        </div>
+        <h2 class="rb-sheet-title">
+          Visual Technical Showcase: <span class="ser" style="font-style:italic;color:#f59e0b;">Streaming &amp; Developing Prints.</span>
+        </h2>
+        <p class="rb-sheet-desc">
+          Live technical prints stream out from the market core, developing dynamically like photographic prints. Inspect 50×200 EMA crossovers, institutional order flow spikes and sector momentum setups.
+        </p>
+
+        <!-- Category Filters -->
+        <div class="rb-sheet-filters">
+          <button class="rb-sheet-filter-btn active" data-filter="all" onclick="filterContactSheet(event, 'all')">All Setups (12)</button>
+          <button class="rb-sheet-filter-btn" data-filter="ema" onclick="filterContactSheet(event, 'ema')">50×200 EMA Crosses (4)</button>
+          <button class="rb-sheet-filter-btn" data-filter="orderflow" onclick="filterContactSheet(event, 'orderflow')">F&amp;O Order Flow (4)</button>
+          <button class="rb-sheet-filter-btn" data-filter="breakout" onclick="filterContactSheet(event, 'breakout')">Sector Breakouts (4)</button>
+        </div>
+      </div>
+
+      <div class="rb-sheet-matrix-wrapper">
+        <!-- Film Sprocket Header -->
+        <div class="rb-film-sprocket-track">
+          <div class="rb-sprocket-holes">
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+          </div>
+          <span>MOMENTUM CHASERS 400 &bull; LIVE CONTACT SHEET 35MM &bull; 15M TIMEFRAME</span>
+          <div class="rb-sprocket-holes">
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+            <span class="rb-sprocket-hole"></span>
+          </div>
+        </div>
+
+        <!-- 12-Card Contact Sheet Grid -->
+        <div class="rb-sheet-grid" id="rb-sheet-grid">
+
+          <!-- 01. RELIANCE -->
+          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'RELIANCE 50×200 EMA Cross', '50×200 EMA Golden Cross confirmed with 2.8x delivery volume surge')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #01</span>
+              <span>15M &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">RELIANCE</div>
+                <div class="rb-print-name">Reliance Ind.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,351.00</div>
+                <div class="rb-print-chg chg-down">-1.92%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <defs>
+                  <linearGradient id="relGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 10 75 L 35 68 L 60 72 L 85 55 L 115 62 L 140 40 L 165 46 L 190 28" fill="none" stroke="#10b981" stroke-width="2.2"/>
+                <path d="M 10 75 L 35 68 L 60 72 L 85 55 L 115 62 L 140 40 L 165 46 L 190 28 L 190 100 L 10 100 Z" fill="url(#relGrad)"/>
+                <!-- EMA 50 line (cyan) -->
+                <path d="M 10 82 Q 90 68, 190 38" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <!-- EMA 200 line (amber) -->
+                <path d="M 10 70 Q 100 68, 190 64" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+                <!-- Golden Cross Badge -->
+                <circle cx="115" cy="62" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-bullish">Golden Cross</span>
+              <span class="rb-print-time">50&gt;200 EMA</span>
+            </div>
+          </div>
+
+          <!-- 02. NIFTY 50 -->
+          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'NIFTY 50 Benchmark Heatmap', 'Key dynamic 200 EMA bounce zone with breadth accumulation')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #02</span>
+              <span>INDEX &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">NIFTY 50</div>
+                <div class="rb-print-name">NSE Benchmark</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">25,349.65</div>
+                <div class="rb-print-chg chg-down">-1.75%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 32 L 35 38 L 65 48 L 95 62 L 130 58 L 160 74 L 190 70" fill="none" stroke="#ef4444" stroke-width="2.2"/>
+                <line x1="10" y1="70" x2="190" y2="70" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <text x="12" y="86" fill="#f59e0b" font-size="9" font-family="monospace">200 EMA Support</text>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-sector">Support Test</span>
+              <span class="rb-print-time">Daily Trend</span>
+            </div>
+          </div>
+
+          <!-- 03. HDFC BANK -->
+          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'HDFCBANK F&O Order Flow', 'Institutional delta imbalance +142K with call OI absorption')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #03</span>
+              <span>F&amp;O &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">HDFCBANK</div>
+                <div class="rb-print-name">HDFC Bank Ltd.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,745.00</div>
+                <div class="rb-print-chg chg-up">+0.82%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <rect x="20" y="55" width="12" height="35" fill="#10b981" rx="2"/>
+                <rect x="45" y="42" width="12" height="48" fill="#10b981" rx="2"/>
+                <rect x="70" y="60" width="12" height="30" fill="#ef4444" rx="2"/>
+                <rect x="95" y="30" width="12" height="60" fill="#10b981" rx="2"/>
+                <rect x="120" y="24" width="12" height="66" fill="#10b981" rx="2"/>
+                <rect x="145" y="18" width="12" height="72" fill="#22d3ee" rx="2"/>
+                <rect x="170" y="12" width="12" height="78" fill="#10b981" rx="2"/>
+                <line x1="10" y1="90" x2="190" y2="90" stroke="rgba(255,255,255,0.1)"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-orderflow">Delta Long</span>
+              <span class="rb-print-time">+142K Net OI</span>
+            </div>
+          </div>
+
+          <!-- 04. TATA MOTORS -->
+          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'TATAMOTORS Golden Cross', 'Heavy delivery volume spike + RSI bullish divergence at ₹785')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #04</span>
+              <span>15M &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">TATAMOTORS</div>
+                <div class="rb-print-name">Tata Motors</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹785.40</div>
+                <div class="rb-print-chg chg-up">+2.45%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 85 L 40 78 L 75 80 L 105 60 L 135 64 L 165 38 L 190 25" fill="none" stroke="#10b981" stroke-width="2.2"/>
+                <line x1="10" y1="45" x2="190" y2="45" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/>
+                <text x="12" y="40" fill="#f59e0b" font-size="9" font-family="monospace">Breakout Level ₹770</text>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-bullish">Vol Surge</span>
+              <span class="rb-print-time">RSI 68 Bullish</span>
+            </div>
+          </div>
+
+          <!-- 05. TCS -->
+          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'TCS Consolidation Breakout', 'Multi-week cup base breakout with tech sector rotation')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #05</span>
+              <span>TECH &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">TCS</div>
+                <div class="rb-print-name">Tata Consultancy</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹4,120.00</div>
+                <div class="rb-print-chg chg-up">+0.45%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 50 Q 100 85, 150 48 T 190 28" fill="none" stroke="#22d3ee" stroke-width="2.2"/>
+                <line x1="10" y1="48" x2="190" y2="48" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-sector">Cup &amp; Handle</span>
+              <span class="rb-print-time">ATH Retest</span>
+            </div>
+          </div>
+
+          <!-- 06. BANK NIFTY -->
+          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BANK NIFTY Short Covering', 'Option chain call unwinding + high gamma squeeze potential')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #06</span>
+              <span>F&amp;O &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">BANK NIFTY</div>
+                <div class="rb-print-name">Banking Index</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">62,585.35</div>
+                <div class="rb-print-chg chg-down">-3.17%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <rect x="25" y="40" width="10" height="50" fill="#ef4444" rx="1"/>
+                <rect x="50" y="55" width="10" height="35" fill="#ef4444" rx="1"/>
+                <rect x="75" y="65" width="10" height="25" fill="#ef4444" rx="1"/>
+                <rect x="100" y="50" width="10" height="40" fill="#10b981" rx="1"/>
+                <rect x="125" y="35" width="10" height="55" fill="#10b981" rx="1"/>
+                <rect x="150" y="20" width="10" height="70" fill="#22d3ee" rx="1"/>
+                <rect x="175" y="10" width="10" height="80" fill="#10b981" rx="1"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-orderflow">Gamma Squeeze</span>
+              <span class="rb-print-time">OI Shift</span>
+            </div>
+          </div>
+
+          <!-- 07. ICICI BANK -->
+          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'ICICIBANK Sector Momentum', 'Leader in private banks with 50 EMA dynamic bounce')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #07</span>
+              <span>15M &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">ICICIBANK</div>
+                <div class="rb-print-name">ICICI Bank Ltd.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,275.00</div>
+                <div class="rb-print-chg chg-up">+0.75%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 70 L 40 60 L 70 65 L 100 45 L 130 50 L 160 32 L 190 22" fill="none" stroke="#10b981" stroke-width="2.2"/>
+                <path d="M 10 78 Q 100 58, 190 30" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,2"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-bullish">50 EMA Bounce</span>
+              <span class="rb-print-time">Trend Up</span>
+            </div>
+          </div>
+
+          <!-- 08. SUN PHARMA -->
+          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'SUNPHARMA Blue Sky Breakout', 'All-time high trend with zero overhead resistance')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #08</span>
+              <span>PHARMA &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">SUNPHARMA</div>
+                <div class="rb-print-name">Sun Pharma Ltd.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,902.30</div>
+                <div class="rb-print-chg chg-up">+1.12%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 80 L 45 70 L 80 55 L 115 58 L 150 35 L 190 15" fill="none" stroke="#10b981" stroke-width="2.4"/>
+                <line x1="10" y1="58" x2="190" y2="58" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,3"/>
+                <text x="12" y="52" fill="#f59e0b" font-size="9" font-family="monospace">ATH Clearance</text>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-sector">Blue Sky</span>
+              <span class="rb-print-time">ATH Leader</span>
+            </div>
+          </div>
+
+          <!-- 09. INFY -->
+          <div class="rb-print-card" data-cat="ema" onclick="promptToolAuth(event, 'INFY MACD & 50 EMA Cross', '15m timeframe MACD momentum trigger with institutional volume')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #09</span>
+              <span>15M &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">INFY</div>
+                <div class="rb-print-name">Infosys Ltd.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,870.00</div>
+                <div class="rb-print-chg chg-up">+0.95%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 75 L 45 65 L 80 70 L 115 50 L 150 54 L 190 30" fill="none" stroke="#22d3ee" stroke-width="2"/>
+                <circle cx="115" cy="50" r="4" fill="#22d3ee" stroke="#ffffff" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-bullish">MACD Bullish</span>
+              <span class="rb-print-time">15m Trigger</span>
+            </div>
+          </div>
+
+          <!-- 10. L&T -->
+          <div class="rb-print-card" data-cat="breakout" onclick="promptToolAuth(event, 'L&T Capital Goods Momentum', 'Breakout continuation pattern with 44-sector relative strength')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #10</span>
+              <span>CAP GOODS &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">LT</div>
+                <div class="rb-print-name">Larsen &amp; Toubro</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹3,580.00</div>
+                <div class="rb-print-chg chg-up">+0.50%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 65 L 45 55 L 80 62 L 120 42 L 155 45 L 190 20" fill="none" stroke="#10b981" stroke-width="2.2"/>
+                <line x1="10" y1="62" x2="190" y2="62" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2,2"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-sector">Sector Leader</span>
+              <span class="rb-print-time">Capital Goods</span>
+            </div>
+          </div>
+
+          <!-- 11. BHARTI AIRTEL -->
+          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BHARTIARTL Institutional Flow', 'Sustained institutional buying with multi-day high volume node')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #11</span>
+              <span>F&amp;O &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">BHARTIARTL</div>
+                <div class="rb-print-name">Bharti Airtel</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹1,610.00</div>
+                <div class="rb-print-chg chg-up">+0.65%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <rect x="25" y="45" width="10" height="45" fill="#10b981" rx="1"/>
+                <rect x="55" y="35" width="10" height="55" fill="#10b981" rx="1"/>
+                <rect x="85" y="50" width="10" height="40" fill="#ef4444" rx="1"/>
+                <rect x="115" y="25" width="10" height="65" fill="#10b981" rx="1"/>
+                <rect x="145" y="18" width="10" height="72" fill="#22d3ee" rx="1"/>
+                <rect x="175" y="10" width="10" height="80" fill="#10b981" rx="1"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-orderflow">Accumulation</span>
+              <span class="rb-print-time">Delivery 74%</span>
+            </div>
+          </div>
+
+          <!-- 12. BAJAJ FINANCE -->
+          <div class="rb-print-card" data-cat="orderflow" onclick="promptToolAuth(event, 'BAJFINANCE Trendline Bounce', 'Supertrend buy signal confirmed on 15m intraday chart')">
+            <div class="rb-print-top">
+              <span class="rb-print-exp">EXP #12</span>
+              <span>FINANCE &bull; LIVE</span>
+            </div>
+            <div class="rb-print-header">
+              <div>
+                <div class="rb-print-sym">BAJFINANCE</div>
+                <div class="rb-print-name">Bajaj Finance Ltd.</div>
+              </div>
+              <div class="rb-print-price-box">
+                <div class="rb-print-price">₹6,890.00</div>
+                <div class="rb-print-chg chg-up">+1.40%</div>
+              </div>
+            </div>
+            <div class="rb-print-chart-wrap">
+              <svg class="rb-print-chart-svg rb-print-chart" viewBox="0 0 200 110">
+                <path d="M 10 82 L 40 75 L 75 70 L 110 52 L 150 48 L 190 22" fill="none" stroke="#10b981" stroke-width="2.2"/>
+                <path d="M 10 90 L 190 32" fill="none" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2"/>
+              </svg>
+            </div>
+            <div class="rb-print-footer">
+              <span class="rb-print-tag tag-orderflow">Supertrend Buy</span>
+              <span class="rb-print-time">Support Bounce</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ========================================================
+    // REACT BITS CONTACT SHEET FILTER & INTERACTIVE CONTROLLER
+    // ========================================================
+    function filterContactSheet(e, cat) {
+      if (e) e.preventDefault();
+      var btns = document.querySelectorAll('.rb-sheet-filter-btn');
+      btns.forEach(function(btn) {
+        if (btn.dataset.filter === cat) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      var cards = document.querySelectorAll('.rb-print-card');
+      cards.forEach(function(card) {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = 'flex';
+          card.style.opacity = '1';
+          card.style.transform = 'scale(1)';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    window.filterContactSheet = filterContactSheet;
+  </script>
+
   <section class="sec" id="hub" style="padding:42px 0 32px;">
     <div class="wrap">
       <div
