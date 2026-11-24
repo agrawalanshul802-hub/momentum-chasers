@@ -16570,3 +16570,528 @@ body.theme-white .hud-vip-status-card {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(16, 185, 129, 0.06)) !important;
     border: 1px solid rgba(245, 158, 11, 0.3) !important;
 }
+
+/* ==========================================================================
+   VIP CHECKOUT & UNLOCK MODAL (MODERN FINTECH SUITE)
+   ========================================================================== */
+.vip-checkout-window {
+    max-width: 440px !important;
+    width: 100%;
+    background: #0b111e !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    padding: 18px 18px !important;
+    position: relative;
+    overflow-y: auto;
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+}
+
+.vip-checkout-window::-webkit-scrollbar {
+    width: 4px;
+}
+.vip-checkout-window::-webkit-scrollbar-track {
+    background: transparent;
+}
+.vip-checkout-window::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+}
+
+/* Modal Nav Bar */
+.vip-checkout-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.vip-nav-back-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transition: all 0.15s ease;
+}
+
+.vip-nav-back-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.vip-security-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+/* Header */
+.vip-checkout-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.vip-lock-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(16, 185, 129, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+
+.vip-checkout-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.vip-checkout-subtitle {
+    font-size: 10.5px;
+    color: #94a3b8;
+    margin-top: 1px;
+}
+
+/* Plan Switcher Segmented Control */
+.vip-plan-segmented-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+.vip-plan-pill {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #94a3b8;
+    border-radius: 8px;
+    padding: 6px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: center;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+.vip-plan-pill:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.vip-plan-pill.is-active {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.45) !important;
+    color: #22c55e !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.vip-pill-icon-row {
+    font-size: 10.5px;
+}
+
+.vip-pill-price-row {
+    font-size: 9.5px;
+    opacity: 0.85;
+}
+
+/* Pricing Hero Card */
+.vip-price-hero-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(6, 182, 212, 0.08) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.vip-price-plan-name {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.vip-price-amount {
+    font-size: 24px;
+    font-weight: 900;
+    color: #22c55e;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-top: 1px;
+}
+
+.vip-price-badge {
+    font-size: 9.5px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 800;
+    display: inline-block;
+}
+
+.vip-price-gateway {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* QR Code Card */
+.vip-qr-showcase {
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.vip-qr-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fcd34d;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.vip-qr-frame {
+    display: inline-block;
+    padding: 6px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.vip-qr-frame img {
+    width: 140px;
+    height: 140px;
+    display: block;
+}
+
+.vip-upi-copy-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+    background: rgba(11, 17, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 3px 10px;
+}
+
+.vip-upi-copy-row code {
+    font-size: 11px;
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+.vip-copy-btn {
+    background: none;
+    border: none;
+    color: #f59e0b;
+    font-size: 10.5px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.vip-copy-btn:hover {
+    color: #fbbf24;
+}
+
+/* 1-Click Intent Buttons */
+.vip-intent-section {
+    margin-bottom: 10px;
+}
+
+.vip-intent-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.vip-intent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.upi-app-btn {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+    text-decoration: none;
+    border-radius: 8px !important;
+    padding: 7px 4px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.upi-app-btn:hover {
+    background: rgba(51, 65, 85, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Radar Pulse */
+.vip-radar-card {
+    background: rgba(34, 197, 94, 0.07);
+    border: 1px solid rgba(34, 197, 94, 0.22);
+    border-radius: 9px;
+    padding: 8px 10px;
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.autopay-radar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.autopay-radar-dot::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid #22c55e;
+    animation: radar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    opacity: 0.7;
+}
+
+@keyframes radar-ping {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    80%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+.vip-radar-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4fd1a1;
+}
+
+.vip-radar-subtitle {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+/* Manual UTR Bar */
+.vip-utr-bar {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    padding: 3px;
+    margin-bottom: 9px;
+    display: flex;
+    gap: 6px;
+}
+
+#idea-utr-input {
+    flex: 1;
+    background: rgba(11, 16, 27, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 7px !important;
+    padding: 6px 10px !important;
+    color: #ffffff !important;
+    font-size: 11.5px !important;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+#idea-utr-input:focus {
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2) !important;
+}
+
+#btn-verify-utr {
+    background: rgba(34, 197, 94, 0.18) !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+    color: #4ade80 !important;
+    border-radius: 7px !important;
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+#btn-verify-utr:hover {
+    background: #22c55e !important;
+    color: #070b17 !important;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+/* Main CTA Button */
+#btn-autopay-confirm {
+    width: 100% !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 11px 14px !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+    margin-top: 2px !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    letter-spacing: 0.2px;
+}
+
+#btn-autopay-confirm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5) !important;
+    background: linear-gradient(135deg, #22c55e 0%, #059669 100%) !important;
+}
+
+#btn-autopay-confirm:active {
+    transform: translateY(0);
+}
+
+/* Coupon Footer Link */
+.vip-passcode-link {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.15s ease;
+    padding: 3px;
+}
+
+.vip-passcode-link:hover {
+    color: #94a3b8;
+}
+
+/* White Theme Support for Checkout Window */
+body.theme-white .vip-checkout-window {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+}
+body.theme-white .vip-checkout-title {
+    color: #0f172a;
+}
+body.theme-white .vip-checkout-subtitle {
+    color: #64748b;
+}
+body.theme-white .vip-plan-segmented-bar {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+}
+body.theme-white .vip-plan-pill {
+    color: #64748b;
+}
+body.theme-white .vip-plan-pill.is-active {
+    background: #ffffff !important;
+    border-color: #22c55e !important;
+    color: #16a34a !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+body.theme-white .vip-price-hero-card {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+body.theme-white .vip-qr-showcase {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+body.theme-white .vip-qr-title {
+    color: #b45309;
+}
+body.theme-white .vip-upi-copy-row {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+body.theme-white .upi-app-btn {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #0f172a !important;
+}
+body.theme-white .vip-utr-bar {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+body.theme-white #idea-utr-input {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+body.theme-white #idea-detail-title,
+body.theme-white #idea-modal-view-code h3 {
+    color: #0f172a !important;
+}
+body.theme-white #idea-code-input {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
