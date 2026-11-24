@@ -4119,29 +4119,9 @@ body.theme-white .ema-status-pill.amber {
 }
 
 /* TradingView Outbound Action Button */
-.tv-link-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #1e293b;
-    color: #e2e8f0 !important;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    border: 1px solid var(--ln);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.tv-link-btn:hover {
-    background: #334155;
-    color: #38bdf8 !important;
-    border-color: #38bdf8;
-    transform: translateY(-1px);
+.tv-link-btn,
+.sector-header-tv-btn {
+    display: none !important;
 }
 
 .svg-chart-element {

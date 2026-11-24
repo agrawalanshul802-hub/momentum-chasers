@@ -16281,10 +16281,6 @@
               <span>📈</span>
               <span>View Sector Chart</span>
             </button>
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSectorSymbol(sectorIndex)}" target="_blank" rel="noopener noreferrer" class="sector-header-tv-btn" title="Open ${escapeHtml(sectorIndex)} sector index live chart on TradingView ↗">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-              <span>TradingView ↗</span>
-            </a>
           </div>
         </div>
         <div class="table-card-container">
@@ -18853,11 +18849,6 @@
             <button class="tv-view-toggle-btn" data-action="toggle-chart-width" title="${State.chartFullWidth ? 'Restore Watchlist & Stats Panel' : 'Expand to Full Width'}">
               <span>${State.chartFullWidth ? '◫ Split View' : '⛶ Full Width'}</span>
             </button>
-
-            <!-- Direct TradingView.com Link -->
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="tv-link-btn" title="Open full interactive chart directly on TradingView.com">
-              <span>TradingView ↗</span>
-            </a>
 
             <!-- Close (X) Button to return to previous section -->
             <button class="tv-close-btn" data-action="go-back" title="Close and return (Esc)">
