@@ -13654,11 +13654,21 @@
         return false;
       }
 
-      case "c": { // EMA Convergence: Tight EMA compression (|emaDistPct| <= 1.0% or consolidation <= 10%)
+      case "c": { // EMA Convergence: Tight EMA compression (spread <= 3.5%, |emaDistPct| <= 3.0% or consolidation <= 15%)
         if (sm) {
-          if (sm.emaDistPct !== undefined && Math.abs(sm.emaDistPct) <= 1.0) return true;
-          if (sm.consolidationPct !== undefined && sm.consolidationPct <= 10.0) return true;
+          const e10 = isW ? sm.wEma10 : sm.ema10;
+          const e20 = isW ? sm.wEma20 : sm.ema20;
+          const e50 = isW ? sm.wEma50 : sm.ema50;
+          if (e10 && e20 && e50 && e10 > 0 && e20 > 0 && e50 > 0) {
+            const maxEma = Math.max(e10, e20, e50);
+            const minEma = Math.min(e10, e20, e50);
+            const spreadPct = ((maxEma - minEma) / minEma) * 100;
+            if (spreadPct <= 3.5) return true;
+          }
+          if (sm.emaDistPct !== undefined && Math.abs(sm.emaDistPct) <= 3.0) return true;
+          if (sm.consolidationPct !== undefined && sm.consolidationPct <= 15.0) return true;
         }
+        if (stock[5] && stock[5].includes("c")) return true;
         return false;
       }
 
