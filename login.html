@@ -3758,6 +3758,151 @@
       color: #5eead4;
       gap: 10px;
     }
+
+    /* ==========================================================================
+       REACT BITS ROTATING TEXT (@react-bits/RotatingText-JS-CSS)
+       ========================================================================== */
+    .text-rotate {
+      display: inline-flex;
+      flex-wrap: wrap;
+      white-space: pre-wrap;
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .text-rotate-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .text-rotate-word {
+      display: inline-flex;
+      overflow: hidden;
+    }
+
+    .text-rotate-lines {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .text-rotate-element {
+      display: inline-block;
+      will-change: transform, opacity;
+      transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 0.32s ease;
+    }
+
+    .text-rotate-element.enter {
+      transform: translateY(115%) scale(0.92);
+      opacity: 0;
+    }
+
+    .text-rotate-element.active {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .text-rotate-element.exit {
+      transform: translateY(-115%) scale(0.92);
+      opacity: 0;
+      transition: transform 0.28s cubic-bezier(0.5, 0, 0.75, 0),
+                  opacity 0.24s ease;
+    }
+
+    .text-rotate-space {
+      white-space: pre;
+      display: inline-block;
+    }
+
+    .text-rotate-highlight {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0.08em 0.38em;
+      border-radius: 0.28em;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(16, 185, 129, 0.28));
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #4ade80;
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      text-shadow: 0 0 18px rgba(74, 222, 128, 0.45);
+      transition: width 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .text-rotate-highlight-content {
+      display: inline-flex;
+      flex-shrink: 0;
+      white-space: pre;
+      position: relative;
+    }
+
+    .auth-rotating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      margin: 4px 0 14px 0;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .auth-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseLiveDot 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseLiveDot {
+      0%, 100% { opacity: 0.6; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .auth-pill-label {
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+    }
+
+    .text-rotate-inline {
+      display: inline-flex;
+      align-items: center;
+      color: #f59e0b;
+      font-weight: 800;
+      text-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .rotating-break {
+      display: inline;
+    }
+
+    @media (max-width: 768px) {
+      .text-rotate-highlight {
+        font-size: 0.9em;
+        padding: 0.06em 0.3em;
+      }
+      .rotating-break {
+        display: block;
+      }
+    }
+
   </style>
 
   <!-- Supabase Auth Client Library & Integration -->
@@ -3810,7 +3955,7 @@
           <img src="logo-icon.png?v=2" alt="Momentum Chasers Logo" class="auth-badge-logo">
           <span>MOMENTUM CHASERS</span>
         </div>
-        <h1>Make Smarter Financial Decisions with Market Intelligence.</h1>
+        <h1>Make Smarter Financial Decisions with <br class="rotating-break"><span class="text-rotate text-rotate-highlight" id="hero-rotating-text" data-rotating-texts='["Market Intelligence", "15m Order Flow", "50×200 EMA Scans", "Breakout Signals", "Sector Heatmaps"]'><span class="text-rotate-sr-only">Market Intelligence</span><span class="text-rotate-highlight-content">Market Intelligence</span></span></h1>
         <p class="lead">Explore stock market analytics, advanced screening tools and real-time market insights. Analyse
           stocks, track sector performance, monitor market sentiment and understand market activity before making your
           financial decisions.</p>
@@ -7130,5 +7275,145 @@
       start: triggerPreloader
     };
   </script>
+
+  <script>
+    // ==========================================================================
+    // REACT BITS ROTATING TEXT CONTROLLER (@react-bits/RotatingText-JS-CSS)
+    // ==========================================================================
+    function initRotatingText(selectorOrEl, options) {
+      var elements = typeof selectorOrEl === 'string'
+        ? Array.prototype.slice.call(document.querySelectorAll(selectorOrEl))
+        : [selectorOrEl].filter(Boolean);
+
+      elements.forEach(function(el) {
+        if (!el || el.getAttribute('data-rotating-active') === 'true') return;
+        el.setAttribute('data-rotating-active', 'true');
+
+        var texts = options && options.texts;
+        if (!texts) {
+          try {
+            texts = JSON.parse(el.getAttribute('data-rotating-texts') || '[]');
+          } catch (_) { }
+        }
+        if (!Array.isArray(texts) || !texts.length) {
+          var fallback = (el.textContent || '').trim();
+          if (fallback) texts = [fallback];
+          else return;
+        }
+
+        var interval = (options && options.interval) || 2400;
+        var staggerDuration = (options && options.staggerDuration !== undefined) ? options.staggerDuration : 24;
+        var currentIndex = 0;
+        var isPaused = false;
+
+        el.addEventListener('mouseenter', function() { isPaused = true; });
+        el.addEventListener('mouseleave', function() { isPaused = false; });
+
+        function createWordElements(text) {
+          var words = text.split(' ');
+          var frag = document.createDocumentFragment();
+          var totalCharIdx = 0;
+
+          words.forEach(function(w, wIdx) {
+            var wordSpan = document.createElement('span');
+            wordSpan.className = 'text-rotate-word';
+
+            for (var i = 0; i < w.length; i++) {
+              var charSpan = document.createElement('span');
+              charSpan.className = 'text-rotate-element enter';
+              charSpan.textContent = w[i];
+              charSpan.style.transitionDelay = (totalCharIdx * staggerDuration) + 'ms';
+              wordSpan.appendChild(charSpan);
+              totalCharIdx++;
+            }
+
+            frag.appendChild(wordSpan);
+
+            if (wIdx < words.length - 1) {
+              var spaceSpan = document.createElement('span');
+              spaceSpan.className = 'text-rotate-space';
+              spaceSpan.textContent = ' ';
+              frag.appendChild(spaceSpan);
+            }
+          });
+
+          return { frag: frag, totalChars: totalCharIdx };
+        }
+
+        function renderInitial() {
+          el.innerHTML = '';
+          var srOnly = document.createElement('span');
+          srOnly.className = 'text-rotate-sr-only';
+          srOnly.textContent = texts[0];
+          el.appendChild(srOnly);
+
+          var contentWrap = document.createElement('span');
+          contentWrap.className = 'text-rotate-highlight-content';
+
+          var res = createWordElements(texts[0]);
+          contentWrap.appendChild(res.frag);
+          el.appendChild(contentWrap);
+
+          setTimeout(function() {
+            var chars = contentWrap.querySelectorAll('.text-rotate-element');
+            chars.forEach(function(c) {
+              c.classList.remove('enter');
+              c.classList.add('active');
+            });
+          }, 30);
+        }
+
+        function next() {
+          if (isPaused) return;
+          currentIndex = (currentIndex + 1) % texts.length;
+
+          var srOnly = el.querySelector('.text-rotate-sr-only');
+          if (srOnly) srOnly.textContent = texts[currentIndex];
+
+          var oldWrap = el.querySelector('.text-rotate-highlight-content');
+          if (oldWrap) {
+            var oldChars = oldWrap.querySelectorAll('.text-rotate-element');
+            oldChars.forEach(function(c, i) {
+              c.style.transitionDelay = (i * (staggerDuration * 0.6)) + 'ms';
+              c.classList.remove('active');
+              c.classList.add('exit');
+            });
+
+            setTimeout(function() {
+              if (oldWrap.parentNode === el) el.removeChild(oldWrap);
+
+              var newWrap = document.createElement('span');
+              newWrap.className = 'text-rotate-highlight-content';
+              var res = createWordElements(texts[currentIndex]);
+              newWrap.appendChild(res.frag);
+              el.appendChild(newWrap);
+
+              setTimeout(function() {
+                var chars = newWrap.querySelectorAll('.text-rotate-element');
+                chars.forEach(function(c) {
+                  c.classList.remove('enter');
+                  c.classList.add('active');
+                });
+              }, 25);
+            }, 300);
+          }
+        }
+
+        renderInitial();
+        setInterval(next, interval);
+      });
+    }
+
+    // Auto-initialize RotatingText components when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        initRotatingText('.text-rotate');
+      });
+    } else {
+      initRotatingText('.text-rotate');
+    }
+    window.initRotatingText = initRotatingText;
+  </script>
+
 </body>
 </html>
