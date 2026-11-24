@@ -151,9 +151,14 @@ async function run() {
     const s = sectors.find(x => x.name === name);
     console.log(name.padEnd(20), Object.entries(s.days).map(([d, v]) => d + ':' + v.formattedRatio).slice(0, 6).join(' '));
   });
+  return { latestDate: dates[0], totalSectors: sectors.length };
 }
 
-run().catch(err => {
-  console.error('[TurnoverUpdater] Error:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  run().catch(err => {
+    console.error('[TurnoverUpdater] Error:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { runSectorTurnoverUpdate: run };

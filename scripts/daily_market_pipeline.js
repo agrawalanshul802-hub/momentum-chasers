@@ -1,14 +1,16 @@
 /**
  * MOMENTUM CHASERS - AUTOMATED DAILY MARKET DATA PIPELINE
- * 
- * Scheduled Batches:
- *  - Stage 1 (3:45 PM - 3:50 PM IST): Official Closing Quotes, 44 Sector Benchmarks, EMAs, Market Breadth & Heatmap
- *  - Stage 2 (7:00 PM - 7:15 PM IST): FII / DII Institutional Net Flows & Final Sector Turnover
+ *
+ * Scheduled Batches (Zero Placeholder Values — 100% Real Exchange Sources):
+ *  - Stage 1 (3:45 PM - 3:50 PM IST): Official Closing Quotes, 44 Sector Benchmarks, EMAs, Market Breadth & Heatmap Constituents
+ *  - Stage 2 (7:00 PM - 7:15 PM IST): Real FII / DII Cash Activity (Groww) & Official Sector Turnover (ScreeningMantis)
  */
 
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { runFiiScraper } = require('./fetch-fii-dii');
+const { runSectorTurnoverUpdate } = require('./update-sector-turnover');
 
 const SECTOR_TICKER_MAP = {
   'NIFTY 50': '^NSEI',
@@ -82,7 +84,7 @@ function fetchV8Quote(symbol) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       },
-      timeout: 6000
+      timeout: 7000
     }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
@@ -100,7 +102,8 @@ function fetchV8Quote(symbol) {
               regularMarketPrice: Number(price.toFixed(2)),
               regularMarketChange: Number(chg.toFixed(2)),
               regularMarketChangePercent: Number(pct.toFixed(2)),
-              previousClose: Number(prev.toFixed(2))
+              previousClose: Number(prev.toFixed(2)),
+              regularMarketVolume: Number(meta.regularMarketVolume || 0)
             });
           }
         } catch (_) { }
@@ -112,8 +115,7 @@ function fetchV8Quote(symbol) {
   });
 }
 
-// Pool runner for parallel throttling
-async function poolAll(items, fn, concurrency = 6) {
+async function poolAll(items, fn, concurrency = 8) {
   const results = [];
   const executing = [];
   for (const item of items) {
@@ -131,7 +133,7 @@ async function poolAll(items, fn, concurrency = 6) {
 }
 
 // ==============================================================================
-// 1. STAGE 1: 3:45 PM EOD MARKET UPDATE (Sectors, Breadth, Heatmap)
+// 1. STAGE 1: 3:45 PM EOD MARKET UPDATE (Sectors, EMAs, Heatmap Constituents)
 // ==============================================================================
 async function runEodMarketUpdate() {
   const dateStr = getTodayDateStr();
@@ -145,15 +147,38 @@ async function runEodMarketUpdate() {
     timestamp: new Date().toISOString(),
     quoteMatches: 0,
     updatedSectors: 0,
+    updatedHeatmapStocks: 0,
     nifty50: null,
     bankNifty: null,
     errors: []
   };
 
-  const symbolsToFetch = [...new Set(Object.values(SECTOR_TICKER_MAP))];
-  console.log(`Fetching official closing quotes for ${symbolsToFetch.length} index benchmarks...`);
+  // Collect all index tickers AND heatmap constituent symbols
+  const hmPath = path.join(__dirname, '..', 'data', 'heatmap-cache.json');
+  let hmData = null;
+  const constituentSyms = new Set();
+  if (fs.existsSync(hmPath)) {
+    try {
+      hmData = JSON.parse(fs.readFileSync(hmPath, 'utf8'));
+      if (hmData.indices) {
+        Object.values(hmData.indices).forEach(arr => {
+          if (Array.isArray(arr)) {
+            arr.forEach(item => {
+              if (item && item.symbol) constituentSyms.add(item.symbol + '.NS');
+            });
+          }
+        });
+      }
+    } catch (e) {
+      results.errors.push(`Error reading heatmap-cache.json: ${e.message}`);
+    }
+  }
 
-  const rawQuotes = await poolAll(symbolsToFetch, fetchV8Quote, 8);
+  const indexSyms = [...new Set(Object.values(SECTOR_TICKER_MAP))];
+  const allToFetch = [...new Set([...indexSyms, ...constituentSyms])];
+  console.log(`Fetching official closing quotes for ${indexSyms.length} benchmarks & ${constituentSyms.size} heatmap stocks...`);
+
+  const rawQuotes = await poolAll(allToFetch, fetchV8Quote, 10);
   const quoteMap = {};
   for (const q of rawQuotes) {
     if (q && q.symbol) {
@@ -162,7 +187,7 @@ async function runEodMarketUpdate() {
   }
 
   results.quoteMatches = Object.keys(quoteMap).length;
-  console.log(`✓ Retrieved ${results.quoteMatches} authentic index quotes.`);
+  console.log(`✓ Retrieved ${results.quoteMatches} real closing quotes.`);
 
   // Update Sector JSON files
   const sectorFiles = [
@@ -188,7 +213,6 @@ async function runEodMarketUpdate() {
           count++;
         }
 
-        // Recalculate EMA status against today's closing price
         const closeP = sec.currentClose || 0;
         if (sec.ema10) sec.aboveEma10 = closeP >= sec.ema10;
         if (sec.ema20) sec.aboveEma20 = closeP >= sec.ema20;
@@ -204,48 +228,73 @@ async function runEodMarketUpdate() {
     }
   }
 
-  // Update Heatmap Cache
-  const hmPath = path.join(__dirname, '..', 'data', 'heatmap-cache.json');
-  if (fs.existsSync(hmPath)) {
+  // Update Heatmap Cache (both Index Stats AND Stock Tiles)
+  if (hmData) {
     try {
-      const hmData = JSON.parse(fs.readFileSync(hmPath, 'utf8'));
       hmData.asOfDate = dateLabel;
       hmData.dateLabel = 'Market Closed (3:30 PM Official EOD)';
       hmData.isLive = false;
+      hmData.timestamp = new Date().toISOString();
+      hmData.stats = hmData.stats || {};
 
-      const n50Q = quoteMap['^NSEI'];
-      const bankQ = quoteMap['^NSEBANK'];
+      // Update sector stats inside heatmap-cache.json
+      for (const [secName, ticker] of Object.entries(SECTOR_TICKER_MAP)) {
+        const q = quoteMap[ticker];
+        if (q && q.regularMarketPrice !== undefined) {
+          const p = Number(q.regularMarketPrice).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          const chg = Number(q.regularMarketChange || 0).toFixed(2);
+          const chgPct = Number(q.regularMarketChangePercent || 0).toFixed(2);
+          const isUp = Number(q.regularMarketChange || 0) >= 0;
 
-      if (n50Q && n50Q.regularMarketPrice) {
-        const p = Number(n50Q.regularMarketPrice).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const chg = Number(n50Q.regularMarketChange || 0).toFixed(2);
-        const chgPct = Number(n50Q.regularMarketChangePercent || 0).toFixed(2);
-        const isUp = Number(n50Q.regularMarketChange || 0) >= 0;
-        results.nifty50 = { price: p, chg: chg, pct: chgPct, isUp: isUp };
-        hmData.stats = hmData.stats || {};
-        hmData.stats['Nifty 50'] = {
-          price: p,
-          chg: `${chg > 0 ? '+' : ''}${chg} (${chgPct > 0 ? '+' : ''}${chgPct}%) ${isUp ? '↗' : '↘'}`,
-          isUp: isUp
-        };
+          if (secName === 'NIFTY 50') {
+            results.nifty50 = { price: p, chg, pct: chgPct, isUp };
+            hmData.stats['Nifty 50'] = {
+              price: p,
+              chg: `${Number(chg) > 0 ? '+' : ''}${chg} (${Number(chgPct) > 0 ? '+' : ''}${chgPct}%) ${isUp ? '↗' : '↘'}`,
+              isUp
+            };
+          } else if (secName === 'NIFTY BANK') {
+            results.bankNifty = { price: p, chg, pct: chgPct, isUp };
+            hmData.stats['Nifty Bank'] = {
+              price: p,
+              chg: `${Number(chg) > 0 ? '+' : ''}${chg} (${Number(chgPct) > 0 ? '+' : ''}${chgPct}%) ${isUp ? '↗' : '↘'}`,
+              isUp
+            };
+          }
+
+          hmData.stats[secName] = {
+            price: p,
+            chg: `${Number(chgPct) > 0 ? '+' : ''}${chgPct}% ${isUp ? '↗' : '↘'}`,
+            isUp
+          };
+        }
       }
 
-      if (bankQ && bankQ.regularMarketPrice) {
-        const p = Number(bankQ.regularMarketPrice).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const chg = Number(bankQ.regularMarketChange || 0).toFixed(2);
-        const chgPct = Number(bankQ.regularMarketChangePercent || 0).toFixed(2);
-        const isUp = Number(bankQ.regularMarketChange || 0) >= 0;
-        results.bankNifty = { price: p, chg: chg, pct: chgPct, isUp: isUp };
-        hmData.stats = hmData.stats || {};
-        hmData.stats['Nifty Bank'] = {
-          price: p,
-          chg: `${chg > 0 ? '+' : ''}${chg} (${chgPct > 0 ? '+' : ''}${chgPct}%) ${isUp ? '↗' : '↘'}`,
-          isUp: isUp
-        };
+      // Update individual stock tiles across all heatmap indices
+      let hmStockCount = 0;
+      if (hmData.indices) {
+        for (const arr of Object.values(hmData.indices)) {
+          if (Array.isArray(arr)) {
+            for (const item of arr) {
+              const q = quoteMap[item.symbol + '.NS'];
+              if (q && q.regularMarketPrice !== undefined) {
+                item.price = q.regularMarketPrice;
+                item.chg = q.regularMarketChangePercent;
+                if (q.regularMarketVolume > 0) {
+                  item.volume = q.regularMarketVolume > 10000000
+                    ? (q.regularMarketVolume / 10000000).toFixed(2) + ' Cr'
+                    : (q.regularMarketVolume / 100000).toFixed(1) + ' L';
+                }
+                hmStockCount++;
+              }
+            }
+          }
+        }
       }
+      results.updatedHeatmapStocks = hmStockCount;
 
       fs.writeFileSync(hmPath, JSON.stringify(hmData, null, 2), 'utf8');
-      console.log(`✓ Updated data/heatmap-cache.json with official EOD metrics.`);
+      console.log(`✓ Updated data/heatmap-cache.json (${hmStockCount} constituent stock tiles refreshed).`);
     } catch (hmErr) {
       results.errors.push(`Failed updating heatmap-cache.json: ${hmErr.message}`);
     }
@@ -267,6 +316,7 @@ async function runEodMarketUpdate() {
     dateLabel: dateLabel,
     quoteMatches: results.quoteMatches,
     updatedSectors: results.updatedSectors,
+    updatedHeatmapStocks: results.updatedHeatmapStocks,
     nifty50: results.nifty50,
     bankNifty: results.bankNifty,
     errors: results.errors
@@ -278,34 +328,32 @@ async function runEodMarketUpdate() {
 }
 
 // ==============================================================================
-// 2. STAGE 2: 7:00 PM FII / DII INSTITUTIONAL UPDATE
+// 2. STAGE 2: 7:00 PM REAL FII / DII & SECTOR TURNOVER UPDATE (NO PLACEHOLDERS)
 // ==============================================================================
 async function runFiiDiiUpdate(customData) {
   const dateStr = getTodayDateStr();
   console.log(`\n======================================================`);
-  console.log(`[STAGE 2] 7:00 PM FII / DII Pipeline - Date: ${dateStr}`);
+  console.log(`[STAGE 2] 7:00 PM FII / DII & Sector Turnover - Date: ${dateStr}`);
   console.log(`======================================================`);
 
   const results = {
     date: dateStr,
     timestamp: new Date().toISOString(),
     fiiData: null,
+    sectorTurnover: null,
+    source: 'Groww + ScreeningMantis Official Feeds',
     errors: []
   };
 
   const fiiPath = path.join(__dirname, '..', 'data', 'fii-dii-history.json');
-  let fiiList = [];
-  try {
-    if (fs.existsSync(fiiPath)) {
-      fiiList = JSON.parse(fs.readFileSync(fiiPath, 'utf8'));
-    }
-  } catch (_) {
-    fiiList = [];
-  }
 
-  let todayEntry = null;
-
+  // If manual values explicitly submitted via Owner Studio UI
   if (customData && (customData.fiiNet !== undefined || customData.fiiBuy !== undefined)) {
+    let fiiList = [];
+    try {
+      if (fs.existsSync(fiiPath)) fiiList = JSON.parse(fs.readFileSync(fiiPath, 'utf8'));
+    } catch (_) { }
+
     const fBuy = Number(customData.fiiBuy || 0);
     const fSell = Number(customData.fiiSell || 0);
     const fNet = customData.fiiNet !== undefined ? Number(customData.fiiNet) : Number((fBuy - fSell).toFixed(2));
@@ -313,7 +361,7 @@ async function runFiiDiiUpdate(customData) {
     const dSell = Number(customData.diiSell || 0);
     const dNet = customData.diiNet !== undefined ? Number(customData.diiNet) : Number((dBuy - dSell).toFixed(2));
 
-    todayEntry = {
+    const todayEntry = {
       date: customData.date || dateStr,
       fiiBuy: fBuy,
       fiiSell: fSell,
@@ -322,34 +370,34 @@ async function runFiiDiiUpdate(customData) {
       diiSell: dSell,
       diiNet: dNet
     };
-  } else {
-    // If running via cron without custom payload: check if latest date already exists, or append verified
-    const existing = fiiList.find(x => x.date === dateStr);
-    if (existing) {
-      todayEntry = existing;
-      console.log(`FII/DII data for ${dateStr} already exists in history: Net ₹${existing.fiiNet} Cr.`);
-    } else {
-      // Default placeholder or latest published session
-      todayEntry = {
-        date: dateStr,
-        fiiBuy: 19840.50,
-        fiiSell: 18210.20,
-        fiiNet: 1630.30,
-        diiBuy: 15420.80,
-        diiSell: 14950.40,
-        diiNet: 470.40
-      };
-    }
-  }
 
-  if (todayEntry) {
     fiiList = fiiList.filter(item => item.date !== todayEntry.date);
     fiiList.unshift(todayEntry);
-    fs.writeFileSync(fiiPath, JSON.stringify(fiiList, null, 2), 'utf8');
+    fiiList.sort((a, b) => b.date.localeCompare(a.date));
+    fs.writeFileSync(fiiPath, JSON.stringify(fiiList, null, 2) + '\n', 'utf8');
     results.fiiData = todayEntry;
-    console.log(`✓ Saved data/fii-dii-history.json with ${todayEntry.date} figures:`);
-    console.log(`  - FII Net: ₹${todayEntry.fiiNet} Cr (Buy: ₹${todayEntry.fiiBuy} Cr / Sell: ₹${todayEntry.fiiSell} Cr)`);
-    console.log(`  - DII Net: ₹${todayEntry.diiNet} Cr (Buy: ₹${todayEntry.diiBuy} Cr / Sell: ₹${todayEntry.diiSell} Cr)`);
+    results.source = 'Owner Studio Manual Entry';
+    console.log(`✓ Saved Owner Studio FII/DII entry for ${todayEntry.date}: FII Net ₹${todayEntry.fiiNet} Cr.`);
+  } else {
+    // Automated real scraper from Groww (zero placeholders!)
+    try {
+      const fiiRes = await runFiiScraper();
+      results.fiiData = fiiRes?.latest || null;
+      console.log(`✓ Real FII/DII data synced from Groww. Latest session: ${results.fiiData?.date}`);
+    } catch (err) {
+      results.errors.push(`Groww FII/DII fetch error: ${err.message}`);
+      console.error(`✗ Groww FII/DII fetch error:`, err.message);
+    }
+
+    // Automated real sector turnover sync from ScreeningMantis
+    try {
+      const toRes = await runSectorTurnoverUpdate();
+      results.sectorTurnover = toRes;
+      console.log(`✓ Real Sector Turnover synced (${toRes?.totalSectors} sectors, latest date: ${toRes?.latestDate}).`);
+    } catch (err) {
+      results.errors.push(`ScreeningMantis sector turnover error: ${err.message}`);
+      console.error(`✗ ScreeningMantis turnover error:`, err.message);
+    }
   }
 
   // Update pipeline status
@@ -363,14 +411,16 @@ async function runFiiDiiUpdate(customData) {
 
   pipelineStatus.fiiDii = {
     lastRun: new Date().toISOString(),
-    status: 'success',
-    date: dateStr,
-    entry: todayEntry,
+    status: results.errors.length === 0 ? 'success' : 'partial',
+    date: results.fiiData?.date || dateStr,
+    source: results.source,
+    entry: results.fiiData,
+    sectorTurnover: results.sectorTurnover,
     errors: results.errors
   };
 
   fs.writeFileSync(statusPath, JSON.stringify(pipelineStatus, null, 2), 'utf8');
-  console.log(`✓ Stage 2 FII/DII Update Complete! Saved to data/pipeline-status.json.`);
+  console.log(`✓ Stage 2 Real FII/DII & Sector Turnover Update Complete!`);
   return results;
 }
 

@@ -2,10 +2,12 @@ name: Automated Daily Market Data Pipeline
 
 on:
   schedule:
-    # 10:15 UTC = 3:45 PM IST (Monday - Friday) -> Stage 1: Market EOD Closes, Sectors, Breadth & Heatmap
+    # 10:15 UTC = 3:45 PM IST (Mon - Fri) -> Stage 1: Market EOD Closes, 44 Sectors, EMAs & Heatmap Constituents
     - cron: '15 10 * * 1-5'
-    # 13:30 UTC = 7:00 PM IST (Monday - Friday) -> Stage 2: Official FII / DII & Sector Turnover
+    # 13:30 UTC = 7:00 PM IST (Mon - Fri) -> Stage 2: Real FII / DII (Groww) & Official Sector Turnover
     - cron: '30 13 * * 1-5'
+    # 15:00 UTC = 8:30 PM IST (Mon - Fri) -> Stage 2 Verification Pass: Finalized Exchange Settlements
+    - cron: '0 15 * * 1-5'
   workflow_dispatch:
     inputs:
       mode:
@@ -42,16 +44,23 @@ jobs:
             echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
           elif [ "${{ github.event.schedule }}" = "15 10 * * 1-5" ]; then
             echo "MODE=eod" >> $GITHUB_ENV
-          elif [ "${{ github.event.schedule }}" = "30 13 * * 1-5" ]; then
-            echo "MODE=fii" >> $GITHUB_ENV
           else
-            echo "MODE=all" >> $GITHUB_ENV
+            echo "MODE=fii" >> $GITHUB_ENV
           fi
 
-      - name: Execute Daily Market Pipeline
+      - name: Execute Daily Market Pipeline (Real Exchange Feeds)
         run: |
           echo "Executing pipeline with mode: $MODE"
           node scripts/daily_market_pipeline.js --mode=$MODE
+
+      - name: Sync Nifty 500 Screener Universe (at 3:45 PM / All)
+        if: env.MODE == 'eod' || env.MODE == 'all'
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          sleep 3
+          node scripts/build-nifty500-universe.js || true
+          kill $SERVER_PID || true
 
       - name: Commit and Push Updated Market Data
         run: |
@@ -59,7 +68,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/
           if git diff --staged --quiet; then
-            echo "No data changes to commit."
+            echo "No new data changes to commit."
           else
             git commit -m "chore(data): automated daily market update [$MODE] [skip ci]"
             git push origin main

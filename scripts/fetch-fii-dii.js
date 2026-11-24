@@ -122,9 +122,14 @@ async function main() {
   fs.mkdirSync(path.dirname(historyPath), { recursive: true });
   fs.writeFileSync(historyPath, JSON.stringify(merged, null, 2) + '\n', 'utf8');
   console.log(`Updated ${historyPath} with ${merged.length} historical sessions. Latest: ${merged[0].date}`);
+  return { latest: merged[0], totalSessions: merged.length, parsedCount: newRecords.length };
 }
 
-main().catch(err => {
-  console.error('Scraper failed:', err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error('Scraper failed:', err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { fetchGrowwPage, parseGrowwRows, runFiiScraper: main };
