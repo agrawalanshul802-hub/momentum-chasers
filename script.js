@@ -5180,7 +5180,6 @@
     ["b", "Breakout Stocks", "Close above the highest high of prior 20 sessions (established resistance)."],
     ["v", "Volume Breakout", "Session volume exceeds 2.0x of the 20-day moving average volume."],
     ["c", "EMA Convergence", "Spread between 10, 20, and 50 EMA is under 2% and contracting (VCP compression)."],
-    ["p", "Crossed Pivot", "Close has crossed the key resistance pivot level (R1) from below."],
     ["i", "IPO Breakout", "Listed within the past 12 months and breaking out from its initial consolidation base."]
   ];
 
