@@ -1892,14 +1892,15 @@ body.theme-white .ticker-inline-suggestion-row:hover {
 .sidebar-logo-icon {
     width: 28px;
     height: 28px;
-    background: #ffffff;
+    background: #0b111e;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2px;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -1913,6 +1914,14 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     height: 100%;
     object-fit: contain;
     display: block;
+}
+
+.sidebar-logo-img.logo-theme-light {
+    display: none !important;
+}
+
+.sidebar-logo-img.logo-theme-dark {
+    display: block !important;
 }
 
 .sidebar-brand-text {
@@ -8735,7 +8744,7 @@ body.theme-white .events-table tbody tr:hover td {
     width: 22px;
     height: 22px;
     object-fit: contain;
-    background: #ffffff;
+    background: #0b111e;
     border-radius: 5px;
     padding: 2px;
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
@@ -8749,9 +8758,18 @@ body.theme-white .sidebar-logo-icon {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+body.theme-white .sidebar-logo-img.logo-theme-dark {
+    display: none !important;
+}
+
+body.theme-white .sidebar-logo-img.logo-theme-light {
+    display: block !important;
+}
+
 body.theme-white .home-hero-logo-img {
     background: #ffffff;
     border: 1px solid #e2e8f0;
+    content: url('logo-icon-dark.png?v=2');
 }
 
 /* ==========================================================================

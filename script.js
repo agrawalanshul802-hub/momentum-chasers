@@ -33651,7 +33651,7 @@
             <div class="home-hero-badges-container" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;">
               <!-- Momentum Chasers Logo Centered on Top -->
               <div class="home-hero-eyebrow" style="margin-bottom:0;">
-                <img src="logo-icon.png" alt="Momentum Chasers" class="home-hero-logo-img" />
+                <img src="${(State && State.theme === 'white') ? 'logo-icon-dark.png?v=2' : 'logo-icon.png?v=2'}" alt="Momentum Chasers" class="home-hero-logo-img" />
                 <span>MOMENTUM CHASERS</span>
               </div>
               <!-- Status & Alert Pills Centered Directly Underneath -->
@@ -37605,6 +37605,13 @@
       document.body.classList.add("theme-midnight");
       document.body.classList.remove("theme-white");
     }
+
+    const isWhite = (theme === "white");
+    document.querySelectorAll(".sidebar-logo-img.logo-theme-dark").forEach(el => el.style.display = isWhite ? "none" : "block");
+    document.querySelectorAll(".sidebar-logo-img.logo-theme-light").forEach(el => el.style.display = isWhite ? "block" : "none");
+    document.querySelectorAll(".home-hero-logo-img").forEach(el => {
+      el.src = isWhite ? "logo-icon-dark.png?v=2" : "logo-icon.png?v=2";
+    });
 
     const themeIcon = $("#theme-btn-icon");
     const themeText = $("#theme-btn-text");
