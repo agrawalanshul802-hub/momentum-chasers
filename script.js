@@ -13604,6 +13604,20 @@
   let _screenerFilteredCache = null;
   let _screenerFilterKey = "";
 
+  // Authentic IPO Lookup Cache for O(1) matching
+  let _recentIpoCache = null;
+  function getRecentIpoCache() {
+    if (_recentIpoCache) return _recentIpoCache;
+    _recentIpoCache = new Map();
+    if (typeof IPO_PERF !== "undefined" && Array.isArray(IPO_PERF)) {
+      IPO_PERF.forEach(r => {
+        if (r[9]) _recentIpoCache.set(String(r[9]).trim().toUpperCase(), r);
+        if (r[0]) _recentIpoCache.set(String(r[0]).trim().toUpperCase(), r);
+      });
+    }
+    return _recentIpoCache;
+  }
+
   function stockMatchesPreset(stock, k) {
     if (!stock) return false;
     const sym = stock[0];
@@ -13617,10 +13631,17 @@
     const rev = Number(meta.rev);
     const pe = Number(meta.pe);
     const reaction = Number(meta.earningsReaction);
+    const tags = stock[5] || "";
+    const isCurated = stock._origIdx !== undefined ? stock._origIdx < 511 : true;
 
     // Look up authentic live ScreeningMantis record
     const sm = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sym]) ||
       (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]);
+
+    // Look up authentic ScreeningMantis earnings record
+    const smEarn = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEarningsMap && ScreeningMantisClient.cachedEarningsMap[sym]) ||
+      (window._screeningMantisEarningsMap && window._screeningMantisEarningsMap[sym]);
+    const earnDayChg = (smEarn && typeof smEarn.dayChange === "number") ? smEarn.dayChange : (sm && typeof sm.earningsDayChange === "number" ? sm.earningsDayChange : null);
 
     switch (k) {
       // --- Technical Presets (PRICE & MOMENTUM SETUPS) ---
@@ -13658,7 +13679,6 @@
           if (vRatio !== undefined && vRatio >= 1.2) return true;
         }
         if (stock[5] && stock[5].includes("v")) return true;
-        const meta = stock[8] || {};
         if (meta.volRatio && Number(meta.volRatio) >= 1.2) return true;
         return false;
       }
@@ -13699,49 +13719,67 @@
         return false;
       }
 
-      case "i": { // IPO Breakout: Fresh IPO listing trading near ATH / 52W high
-        const isIpo = (typeof IPO_PERF !== "undefined" && Array.isArray(IPO_PERF) && IPO_PERF.some(r => r[9] === sym)) ||
-          (stock[1] === "SC" && (meta.name && (meta.name.includes("IPO") || meta.name.includes("Industries"))));
-        return isIpo && ((high52 > 0 && price >= high52 * 0.90) || chg > 0);
+      case "i": { // IPO Breakout: Authentic recent Indian IPO (2024-2026) trading near ATH / 52W high or momentum breakout
+        const ipoMap = getRecentIpoCache();
+        const ipo = ipoMap.get((sym || "").toUpperCase());
+        if (!ipo || !ipo[8] || ipo[8] < 2024) return false;
+        const nearHigh = (high52 > 0 && price >= high52 * 0.90) || (sm && sm.w52HighDist !== undefined && sm.w52HighDist >= -10.0);
+        const momentum = chg >= 2.0 && high52 > 0 && price >= high52 * 0.85;
+        const isFresh = high52 === 0 && (chg > 0 || (ipo[2] && price >= ipo[2]));
+        return Boolean(nearHigh || momentum || isFresh);
       }
 
       // --- Financial & Results Presets (EARNINGS GROWTH) ---
-      case "1": { // Excellent Results: High composite growth (Profit >= 25% YoY AND Revenue >= 15% YoY)
-        return (!isNaN(profit) && profit >= 25 && !isNaN(rev) && rev >= 15) || (!isNaN(profit) && profit >= 35);
+      case "1": { // Excellent Results: High composite growth (Profit >= 22% YoY AND Revenue >= 15% YoY)
+        if (tags.includes("1")) return true;
+        return isCurated && (!isNaN(profit) && profit >= 22 && !isNaN(rev) && rev >= 15);
       }
 
       case "2": { // Profit Growth: Net profit up >= 20% YoY
-        return !isNaN(profit) && profit >= 20;
+        if (tags.includes("2")) return true;
+        return isCurated && (!isNaN(profit) && profit >= 20);
       }
 
       case "3": { // Revenue Growth: Sales revenue up >= 15% YoY
-        return !isNaN(rev) && rev >= 15;
+        if (tags.includes("3")) return true;
+        return isCurated && (!isNaN(rev) && rev >= 15);
       }
 
       case "4": { // Margin Expansion: Profit growing faster than revenue (Profit > Rev AND Profit >= 12%)
-        return !isNaN(profit) && !isNaN(rev) && profit > rev && profit >= 12;
+        if (tags.includes("4")) return true;
+        return isCurated && (!isNaN(profit) && !isNaN(rev) && profit > rev && profit >= 12);
       }
 
-      case "5": { // Earnings Surprise: Positive market reaction on earnings day (>= +2.5%) or large profit beat
-        if (sm && sm.earningsDayChange !== undefined && sm.earningsDayChange >= 2.5) return true;
-        if (!isNaN(reaction) && reaction >= 2.5) return true;
-        return !isNaN(profit) && profit >= 35;
+      case "5": { // Earnings Surprise: Positive market reaction on earnings day (>= +2.0%) or verified profit beat
+        if (tags.includes("5")) return true;
+        if (earnDayChg !== null && earnDayChg >= 2.0) return true;
+        if (!isNaN(reaction) && reaction >= 2.0) return true;
+        return false;
       }
 
-      case "6": { // Turnaround: High profit acceleration (>= 40% YoY or turnaround from low base)
-        return (!isNaN(profit) && profit >= 40) || (!isNaN(profit) && profit > 0 && !isNaN(rev) && rev >= 20 && !isNaN(pe) && pe > 35);
+      case "6": { // Turnaround: High operational acceleration (profit >= 28% from cyclical base or loss-to-profit flip)
+        if (tags.includes("6")) return true;
+        if (isCurated) {
+          if (pe < 0 && profit > 0) return true;
+          if (profit >= 28 && rev <= profit * 0.7 && profit > 0) return true;
+        }
+        return false;
       }
 
       case "7": { // Consistent Performers: Sustained YoY profit & sales growth at reasonable PE
-        return !isNaN(profit) && profit >= 12 && !isNaN(rev) && rev >= 10 && !isNaN(pe) && pe > 0 && pe <= 60;
+        if (tags.includes("7")) return true;
+        return isCurated && (!isNaN(profit) && profit >= 12 && !isNaN(rev) && rev >= 10 && !isNaN(pe) && pe > 0 && pe <= 60);
       }
 
       case "8": { // Results + Breakout: Strong fundamentals (Profit >= 15% or Rev >= 15%) + Technical Breakout
-        const strongResults = (!isNaN(profit) && profit >= 15) || (!isNaN(rev) && rev >= 15);
+        if (tags.includes("8")) return true;
+        const goodResults = tags.includes("1") || tags.includes("2") || tags.includes("3") ||
+          (isCurated && ((!isNaN(profit) && profit >= 18) || (!isNaN(rev) && rev >= 15)));
         let techBreakout = false;
         if (sm && sm.w52HighDist !== undefined && sm.w52HighDist >= -6.0) techBreakout = true;
         else if (high52 > 0 && price >= high52 * 0.94) techBreakout = true;
-        return strongResults && techBreakout;
+        else if (chg >= 2.5) techBreakout = true;
+        return Boolean(goodResults && techBreakout);
       }
 
       default:
