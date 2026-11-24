@@ -34753,8 +34753,6 @@
     }
 
     const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
-    const userStatus = localStorage.getItem("mc_user_status") || "online";
-    const statusDotColor = userStatus === "online" ? "#10b981" : (userStatus === "away" ? "#f59e0b" : "#ef4444");
     const themePref = localStorage.getItem("momentum_theme_pref") || (State.theme === "white" ? "white" : "midnight");
 
     const vipHudCardHTML = (sub && sub.active && sub.daysRemaining > 0) ? `
@@ -34797,7 +34795,6 @@
           <button class="header-user-pill-btn kokonut-trigger-btn" id="header-user-dropdown-btn" data-action="toggle-user-dropdown" title="Account: ${escapeHtml(rawName)} (${escapeHtml(email)})" aria-expanded="false" aria-haspopup="true">
             <div class="header-avatar-circle" style="background: linear-gradient(135deg, #10b981, #059669);">
               ${escapeHtml(avatar)}
-              <span class="header-avatar-online-dot" id="header-avatar-status-dot" style="background:${statusDotColor};box-shadow:0 0 6px ${statusDotColor};"></span>
             </div>
             <div class="header-user-details">
               <span class="header-user-name">${escapeHtml(rawName)}</span>
@@ -34817,7 +34814,6 @@
                 <div class="kokonut-header-card">
                   <div class="hud-avatar-wrap">
                     <div class="hud-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">${escapeHtml(avatar)}</div>
-                    <span class="hud-status-dot" id="hud-status-dot" style="background:${statusDotColor};box-shadow:0 0 6px ${statusDotColor};"></span>
                   </div>
                   <div class="hud-user-info">
                     <div class="hud-user-name-row">
@@ -34829,22 +34825,6 @@
                 </div>
 
                 ${vipHudCardHTML}
-
-                <!-- Status Row -->
-                <div class="kokonut-control-row">
-                  <span class="kokonut-row-label">Status</span>
-                  <div class="kokonut-status-group">
-                    <button type="button" class="kokonut-status-pill ${userStatus === 'online' ? 'active' : ''}" data-action="set-user-status" data-status="online" title="Online">
-                      <span class="kokonut-dot kokonut-dot--online"></span> Online
-                    </button>
-                    <button type="button" class="kokonut-status-pill ${userStatus === 'away' ? 'active' : ''}" data-action="set-user-status" data-status="away" title="Away">
-                      <span class="kokonut-dot kokonut-dot--away"></span> Away
-                    </button>
-                    <button type="button" class="kokonut-status-pill ${userStatus === 'busy' ? 'active' : ''}" data-action="set-user-status" data-status="busy" title="Do Not Disturb">
-                      <span class="kokonut-dot kokonut-dot--busy"></span> DND
-                    </button>
-                  </div>
-                </div>
 
                 <!-- Theme Row -->
                 <div class="kokonut-control-row">
@@ -38545,30 +38525,7 @@
       };
     });
 
-    // 2. Status switcher
-    document.querySelectorAll("[data-action='set-user-status']").forEach(btn => {
-      btn.onclick = function (e) {
-        e.stopPropagation();
-        const status = btn.dataset.status || "online";
-        localStorage.setItem("mc_user_status", status);
-        const color = status === "online" ? "#10b981" : (status === "away" ? "#f59e0b" : "#ef4444");
-
-        document.querySelectorAll("[data-action='set-user-status']").forEach(b => {
-          b.classList.toggle("active", b.dataset.status === status);
-        });
-
-        const trigDot = document.getElementById("header-avatar-status-dot");
-        const hudDot = document.getElementById("hud-status-dot");
-        if (trigDot) { trigDot.style.background = color; trigDot.style.boxShadow = "0 0 6px " + color; }
-        if (hudDot) { hudDot.style.background = color; hudDot.style.boxShadow = "0 0 6px " + color; }
-
-        if (typeof showToast === "function") {
-          showToast("Status set to " + status.toUpperCase(), status === "online" ? "🟢" : (status === "away" ? "🟡" : "🔴"));
-        }
-      };
-    });
-
-    // 3. Theme switcher
+    // 2. Theme switcher
     document.querySelectorAll("[data-action='set-app-theme']").forEach(btn => {
       btn.onclick = function (e) {
         e.stopPropagation();

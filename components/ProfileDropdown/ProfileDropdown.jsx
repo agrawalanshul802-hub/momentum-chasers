@@ -51,12 +51,6 @@ const SAMPLE_ITEMS = [
   { label: 'VIP Pass & Billing', icon: <CreditCard className="size-4" />, value: 'Extend' },
 ];
 
-const STATUSES = [
-  { id: 'online', label: 'Online', name: 'Online', dot: 'bg-emerald-500' },
-  { id: 'away', label: 'Away', name: 'Away', dot: 'bg-amber-400' },
-  { id: 'busy', label: 'DND', name: 'Do not disturb', dot: 'bg-red-500' },
-];
-
 const THEMES = [
   { id: 'light', label: 'Light', Icon: Sun },
   { id: 'dark', label: 'Dark', Icon: Moon },
@@ -84,8 +78,7 @@ function viaOf(event) {
   return event.detail === 0 ? 'keyboard' : 'pointer';
 }
 
-function Avatar({ account, tone = 0, status = 'online', className = '' }) {
-  const dotColor = status === 'online' ? '#10b981' : (status === 'away' ? '#f59e0b' : '#ef4444');
+function Avatar({ account, tone = 0, className = '' }) {
   return (
     <span
       aria-hidden="true"
@@ -96,10 +89,6 @@ function Avatar({ account, tone = 0, status = 'online', className = '' }) {
       }}
     >
       {initialsOf(account)}
-      <span
-        className="kokonut-avatar-dot"
-        style={{ backgroundColor: dotColor }}
-      />
     </span>
   );
 }
@@ -194,7 +183,6 @@ export default function ProfileDropdown({
   onAccountChange,
   items = SAMPLE_ITEMS,
   defaultTheme = 'dark',
-  defaultStatus = 'online',
   onSignOut,
   holdDuration = 1200,
   className = ''
@@ -203,7 +191,6 @@ export default function ProfileDropdown({
   const [phase, setPhase] = useState('closed');
   const [page, setPage] = useState('main');
   const [accountId, setAccountId] = useState(defaultAccountId ?? accounts[0]?.id);
-  const [status, setStatus] = useState(defaultStatus);
   const [theme, setTheme] = useState(defaultTheme);
 
   const wrapperRef = useRef(null);
@@ -237,7 +224,7 @@ export default function ProfileDropdown({
           setPage('main');
         }}
       >
-        <Avatar account={account} status={status} />
+        <Avatar account={account} />
         <div className="kokonut-trigger-info">
           <span className="kokonut-trigger-name">{account.name}</span>
           <span className="kokonut-trigger-plan">{account.plan || 'NORMAL'}</span>
@@ -257,31 +244,13 @@ export default function ProfileDropdown({
             {/* MAIN PAGE */}
             <div className="kokonut-page" style={{ width: PANEL_W }}>
               <div className="kokonut-header-card">
-                <Avatar account={account} status={status} className="kokonut-avatar-large" />
+                <Avatar account={account} className="kokonut-avatar-large" />
                 <div className="kokonut-header-user">
                   <div className="kokonut-header-name-row">
                     <span className="kokonut-header-name">{account.name}</span>
                     <span className="kokonut-header-plan">{account.plan || 'NORMAL'}</span>
                   </div>
                   <span className="kokonut-header-email">{account.email}</span>
-                </div>
-              </div>
-
-              {/* STATUS ROW */}
-              <div className="kokonut-control-row">
-                <span className="kokonut-row-label">Status</span>
-                <div className="kokonut-status-group">
-                  {STATUSES.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`kokonut-status-pill ${status === s.id ? 'active' : ''}`}
-                      onClick={() => setStatus(s.id)}
-                    >
-                      <span className={`kokonut-dot kokonut-dot--${s.id}`} />
-                      {s.label}
-                    </button>
-                  ))}
                 </div>
               </div>
 
@@ -380,7 +349,7 @@ export default function ProfileDropdown({
                         setPage('main');
                       }}
                     >
-                      <Avatar account={entry} status={checked ? status : undefined} className="size-7" />
+                      <Avatar account={entry} className="size-7" />
                       <div className="flex-1 text-left min-w-0">
                         <div className="truncate text-sm font-semibold">{entry.name}</div>
                         <div className="truncate text-xs opacity-60">{entry.email}</div>
