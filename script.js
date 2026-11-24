@@ -5337,623 +5337,623 @@
   // Sectoral & Thematic Indices Dashboard (44 NSE Benchmarks)
   // Format: [Index Name, Price, % Chg, RSI, [10, 20, 50, 200 EMA status], % dist 20 EMA, 10x20 crossover days]
   const SC = [
+  [
+    "NIFTY IT",
+    31850.8,
+    1.69,
+    47.8,
     [
-      "NIFTY IT",
-      30919.45,
-      -1.1,
-      42.8,
-      [
-        0,
-        0,
-        0,
-        0
-      ],
-      -2.67,
-      26
-    ],
-    [
-      "NIFTY IND TOURISM",
-      8384.65,
-      0.65,
-      67.6,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.12,
-      14
-    ],
-    [
-      "NIFTY 50",
-      25349.65,
-      -1.75,
-      68.4,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.86,
-      14
-    ],
-    [
-      "NIFTY FIN SERVICE",
-      28299.65,
-      1.1,
-      75.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.52,
-      12
-    ],
-    [
-      "NIFTY SERV SECTOR",
-      32602.1,
-      0.32,
-      69.1,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.64,
-      23
-    ],
-    [
-      "NIFTY AUTO",
-      28601.3,
-      4.4,
-      66.4,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      3.19,
-      12
-    ],
-    [
-      "NIFTY CAPITAL MKT",
-      5788.05,
-      0.09,
-      64.7,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.59,
-      13
-    ],
-    [
-      "NIFTY REALTY",
-      922.8,
-      0.45,
-      64.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.86,
-      12
-    ],
-    [
-      "NIFTY PVT BANK",
-      30746.95,
-      1.39,
-      77.4,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.9,
-      13
-    ],
-    [
-      "NIFTY 100",
-      26398.6,
-      1.22,
-      73.7,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.71,
-      13
-    ],
-    [
-      "NIFTY CONSUMPTION",
-      12254.9,
-      2.08,
-      71.7,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.35,
-      13
-    ],
-    [
-      "NIFTY TRANS LOGIS",
-      26589.55,
-      2.79,
-      66.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.33,
-      12
-    ],
-    [
-      "NIFTY MOBILITY",
-      23893.55,
-      2.7,
-      66.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.21,
-      12
-    ],
-    [
-      "NIFTY INFRA",
-      9630.2,
-      1.12,
-      73.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.68,
-      14
-    ],
-    [
-      "NIFTY HOUSING",
-      12242.65,
-      1.52,
-      71.4,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.87,
-      13
-    ],
-    [
-      "NIFTY RURAL",
-      15707.8,
-      2.16,
-      73.5,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.63,
-      12
-    ],
-    [
-      "NIFTY OIL AND GAS",
-      11491.15,
-      0.86,
-      69.7,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.54,
-      13
-    ],
-    [
-      "NIFTY BANK",
-      62585.35,
-      -3.17,
-      69.2,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      3.64,
-      11
-    ],
-    [
-      "NIFTY CORE HOUSING",
-      15511.8,
-      2.05,
-      66.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.05,
-      11
-    ],
-    [
-      "NIFTY PSU BANK",
-      9760.7,
-      2.28,
-      82.7,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      5.71,
-      16
-    ],
-    [
-      "NIFTY COMMODITIES",
-      9624.75,
-      1.14,
-      59.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.56,
-      12
-    ],
-    [
-      "NIFTY PHARMA",
-      28376.75,
-      0.62,
-      66,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.76,
-      15
-    ],
-    [
-      "NIFTY CONSR DURBL",
-      38641.8,
-      3.63,
-      60.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.83,
-      10
-    ],
-    [
-      "NIFTY HEALTHCARE",
-      17342.1,
-      0.56,
-      71.3,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.19,
-      14
-    ],
-    [
-      "NIFTY IND DIGITAL",
-      8579.25,
-      -0.82,
-      46.4,
-      [
-        0,
-        0,
-        1,
-        1
-      ],
-      -1.48,
-      24
-    ],
-    [
-      "NIFTY EV",
-      3224.5,
-      3.17,
-      64.3,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.42,
-      11
-    ],
-    [
-      "NIFTY FMCG",
-      48560.5,
-      2.08,
-      71.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.95,
-      12
-    ],
-    [
-      "NIFTY MS IND CONS",
-      18620.95,
-      2.18,
-      65.2,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.75,
-      11
-    ],
-    [
-      "NIFTY MIDSML HLTH",
-      53901.9,
-      0.5,
-      65.1,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.65,
-      14
-    ],
-    [
-      "NIFTY MEDIA",
-      1781.75,
-      -0.06,
-      70.1,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      2.13,
-      33
-    ],
-    [
-      "NIFTY METAL",
-      12301,
-      0.64,
-      47.4,
-      [
-        0,
-        0,
-        0,
-        1
-      ],
-      -1.13,
-      10
-    ],
-    [
-      "NIFTY PSE",
-      9516.1,
-      1.57,
-      56.7,
-      [
-        1,
-        1,
-        1,
-        0
-      ],
-      0.58,
-      11
-    ],
-    [
-      "NIFTY MS FIN SERV",
-      22208,
-      0.22,
-      63,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.17,
-      9
-    ],
-    [
-      "NIFTY INTERNET",
-      1411.4,
-      -1.24,
-      54.2,
-      [
-        0,
-        1,
-        1,
-        1
-      ],
-      -0.55,
-      10
-    ],
-    [
-      "NIFTY MIDCAP 150",
-      22612.35,
-      0.99,
-      60.9,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.85,
-      10
-    ],
-    [
-      "NIFTY CPSE",
-      6258.85,
-      1.44,
-      55.8,
-      [
-        1,
-        1,
-        1,
-        0
-      ],
-      0.62,
-      12
-    ],
-    [
-      "NIFTY MNC",
-      30823.3,
-      2.56,
-      60.8,
-      [
-        1,
-        1,
-        1,
-        0
-      ],
-      1.63,
-      9
-    ],
-    [
-      "NIFTY MS IT TELCM",
-      9991.15,
-      -0.06,
-      45.4,
-      [
-        0,
-        0,
-        0,
-        1
-      ],
-      -0.83,
+      1,
+      1,
+      1,
       1
     ],
+    -1.15,
+    27
+  ],
+  [
+    "NIFTY IND TOURISM",
+    8421.8,
+    -1.01,
+    71.3,
     [
-      "NIFTY RAILWAYS PSU",
-      2615.9,
-      2.26,
-      54.2,
-      [
-        1,
-        1,
-        1,
-        0
-      ],
-      0.73,
-      9
+      1,
+      1,
+      1,
+      1
     ],
+    2.12,
+    15
+  ],
+  [
+    "NIFTY 50",
+    25349.65,
+    -1.75,
+    78.1,
     [
-      "NIFTY ENERGY",
-      37402.95,
-      1.14,
-      59.3,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.85,
-      11
+      1,
+      1,
+      1,
+      1
     ],
+    2.44,
+    15
+  ],
+  [
+    "NIFTY FIN SERVICE",
+    28153.5,
+    -2.49,
+    79.3,
     [
-      "NIFTY IPO",
-      2440.4,
-      0.59,
-      57.5,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.66,
-      9
+      1,
+      1,
+      1,
+      1
     ],
+    3.72,
+    13
+  ],
+  [
+    "NIFTY SERV SECTOR",
+    32707.65,
+    -0.97,
+    73.2,
     [
-      "NIFTY SMLCAP 250",
-      17797.65,
-      0.74,
-      55.8,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      0.66,
-      7
+      1,
+      1,
+      1,
+      1
     ],
+    1.59,
+    24
+  ],
+  [
+    "NIFTY AUTO",
+    28490.7,
+    -1.03,
+    67.6,
     [
-      "NIFTY CHEMICALS",
-      28683.7,
-      1.28,
-      60.4,
-      [
-        1,
-        1,
-        1,
-        1
-      ],
-      1.5,
-      7
+      1,
+      1,
+      1,
+      1
     ],
+    3.14,
+    13
+  ],
+  [
+    "NIFTY CAPITAL MKT",
+    5740.05,
+    -0.72,
+    64.2,
     [
-      "NIFTY IND DEFENCE",
-      8990.2,
-      1.61,
-      48.9,
-      [
-        1,
-        0,
-        0,
-        1
-      ],
-      0.12,
-      3
-    ]
-  ];
+      0,
+      1,
+      1,
+      1
+    ],
+    0.39,
+    14
+  ],
+  [
+    "NIFTY REALTY",
+    941.85,
+    0.31,
+    68,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.95,
+    13
+  ],
+  [
+    "NIFTY PVT BANK",
+    30659.85,
+    -3.19,
+    82,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    4.86,
+    14
+  ],
+  [
+    "NIFTY 100",
+    26217.3,
+    -1.67,
+    76.2,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.22,
+    14
+  ],
+  [
+    "NIFTY CONSUMPTION",
+    11240.8,
+    -0.65,
+    73.3,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    2.46,
+    14
+  ],
+  [
+    "NIFTY TRANS LOGIS",
+    26496.2,
+    -0.89,
+    68.1,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.34,
+    13
+  ],
+  [
+    "NIFTY MOBILITY",
+    23790.25,
+    -1.02,
+    68.3,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.29,
+    13
+  ],
+  [
+    "NIFTY INFRA",
+    9530.35,
+    -1.64,
+    75.6,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.87,
+    15
+  ],
+  [
+    "NIFTY HOUSING",
+    12074.85,
+    -2.33,
+    73.9,
+    [
+      0,
+      1,
+      1,
+      1
+    ],
+    2.34,
+    14
+  ],
+  [
+    "NIFTY RURAL",
+    15604.05,
+    -1.3,
+    75,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.68,
+    13
+  ],
+  [
+    "NIFTY OIL AND GAS",
+    11306.9,
+    -2.01,
+    70.9,
+    [
+      0,
+      1,
+      1,
+      1
+    ],
+    1.6,
+    14
+  ],
+  [
+    "NIFTY BANK",
+    62585.35,
+    -3.17,
+    83.2,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    5.04,
+    12
+  ],
+  [
+    "NIFTY CORE HOUSING",
+    4580.4,
+    -2.15,
+    70,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    2.71,
+    12
+  ],
+  [
+    "NIFTY PSU BANK",
+    9559.65,
+    -3.25,
+    84,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    5.67,
+    17
+  ],
+  [
+    "NIFTY COMMODITIES",
+    9840.5,
+    -1.95,
+    61.1,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    0.72,
+    13
+  ],
+  [
+    "NIFTY PHARMA",
+    28288.85,
+    -0.35,
+    66.1,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    0.66,
+    16
+  ],
+  [
+    "NIFTY CONSR DURBL",
+    38715.25,
+    0.59,
+    59.5,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.16,
+    11
+  ],
+  [
+    "NIFTY HEALTHCARE",
+    17432.2,
+    -0.24,
+    73.8,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.6,
+    15
+  ],
+  [
+    "NIFTY IND DIGITAL",
+    8694.75,
+    0.55,
+    50.6,
+    [
+      0,
+      1,
+      1,
+      1
+    ],
+    -0.57,
+    25
+  ],
+  [
+    "NIFTY EV",
+    3208.95,
+    -1.04,
+    65.6,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.44,
+    12
+  ],
+  [
+    "NIFTY FMCG",
+    48312.55,
+    -0.46,
+    71.6,
+    [
+      1,
+      1,
+      1,
+      0
+    ],
+    2.36,
+    13
+  ],
+  [
+    "NIFTY MS IND CONS",
+    18662.35,
+    -0.57,
+    67.4,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    2.08,
+    12
+  ],
+  [
+    "NIFTY MIDSML HLTH",
+    54242.1,
+    -0.09,
+    67.8,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.12,
+    15
+  ],
+  [
+    "NIFTY MEDIA",
+    1749.2,
+    -0.37,
+    63,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    0.49,
+    34
+  ],
+  [
+    "NIFTY METAL",
+    11819.25,
+    -3.68,
+    46.6,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    -1.12,
+    11
+  ],
+  [
+    "NIFTY PSE",
+    9340.1,
+    -1.98,
+    57.3,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    0.58,
+    12
+  ],
+  [
+    "NIFTY MS FIN SERV",
+    22251.25,
+    -0.98,
+    66.2,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.93,
+    10
+  ],
+  [
+    "NIFTY INTERNET",
+    1411.6,
+    -0.25,
+    55.1,
+    [
+      0,
+      1,
+      1,
+      1
+    ],
+    -0.25,
+    11
+  ],
+  [
+    "NIFTY MIDCAP 150",
+    22750.8,
+    0.61,
+    63.2,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    1.2,
+    11
+  ],
+  [
+    "NIFTY CPSE",
+    6146.3,
+    -1.6,
+    54.6,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    0.34,
+    13
+  ],
+  [
+    "NIFTY MNC",
+    30560.05,
+    -0.81,
+    60.7,
+    [
+      1,
+      1,
+      1,
+      0
+    ],
+    1.3,
+    10
+  ],
+  [
+    "NIFTY MS IT TELCM",
+    10179.6,
+    0.49,
+    53.8,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    0.45,
+    1
+  ],
+  [
+    "NIFTY RAILWAYS PSU",
+    5420.15,
+    -1.85,
+    51.6,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    -0.09,
+    10
+  ],
+  [
+    "NIFTY ENERGY",
+    36655.1,
+    -1.78,
+    58,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    0.51,
+    12
+  ],
+  [
+    "NIFTY IPO",
+    2409.35,
+    -1.26,
+    57.3,
+    [
+      0,
+      1,
+      1,
+      1
+    ],
+    0.52,
+    10
+  ],
+  [
+    "NIFTY SMLCAP 250",
+    17785.5,
+    -0.1,
+    55.4,
+    [
+      1,
+      1,
+      1,
+      1
+    ],
+    0.48,
+    8
+  ],
+  [
+    "NIFTY CHEMICALS",
+    28414.2,
+    -0.83,
+    59.7,
+    [
+      1,
+      1,
+      1,
+      0
+    ],
+    1.13,
+    8
+  ],
+  [
+    "NIFTY IND DEFENCE",
+    8839.95,
+    -1.33,
+    47.7,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    -0.19,
+    4
+  ]
+];
 
   // Advance/Decline Net Flow Matrix (Feature 04) - Tracking All 44 Nifty Sectoral & Thematic Indices
   // Format: [Sector, [Session 0 (Live), Session 1, Session 2, ..., Session 20]]
@@ -10907,7 +10907,7 @@
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
-    heatmapAsOfDate: "23 Nov 2026 (3:30 pm Closing)",
+    heatmapAsOfDate: "24 Nov 2026 (3:30 pm Closing)",
     heatmapIsLive: false,
     heatmapDateLabel: "Market Closed (EOD)",
     activeSectorIndex: "",
@@ -28029,21 +28029,24 @@
     let label = State.heatmapDateLabel || (State.heatmapIsLive ? "Live Market Feed" : "Market Closed (EOD)");
     let asOf = State.heatmapAsOfDate;
 
-    if (!asOf || asOf.includes("02:12") || asOf.includes("2.12")) {
-      const now = new Date();
-      const istDateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
-      const hr = parseInt(now.toLocaleTimeString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }), 10);
-      const min = parseInt(now.toLocaleTimeString('en-US', { minute: 'numeric', timeZone: 'Asia/Kolkata' }), 10);
-      const day = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).getDay();
-      const isLiveMarket = (day >= 1 && day <= 5) && ((hr > 9 || (hr === 9 && min >= 15)) && (hr < 15 || (hr === 15 && min <= 30)));
-      if (isLiveMarket) {
-        const istTimeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
-        asOf = `${istDateStr} (Live ${istTimeStr})`;
-        label = "Live Market Feed";
-      } else {
-        asOf = `${istDateStr} (3:30 pm Closing)`;
-        label = "Market Closed (EOD)";
-      }
+    const now = new Date();
+    const istDateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+    const hr = parseInt(now.toLocaleTimeString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }), 10);
+    const min = parseInt(now.toLocaleTimeString('en-US', { minute: 'numeric', timeZone: 'Asia/Kolkata' }), 10);
+    const day = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).getDay();
+    const isLiveMarket = (day >= 1 && day <= 5) && ((hr > 9 || (hr === 9 && min >= 15)) && (hr < 15 || (hr === 15 && min <= 30)));
+
+    if (isLiveMarket) {
+      const istTimeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+      State.heatmapIsLive = true;
+      State.heatmapDateLabel = "Live Market Feed";
+      State.heatmapAsOfDate = `${istDateStr} (Live ${istTimeStr})`;
+      return `Live Feed: ${State.heatmapAsOfDate}`;
+    }
+
+    if (!asOf || asOf.includes("23 Nov") || asOf.includes("02:12") || asOf.includes("2.12")) {
+      asOf = `${istDateStr} (3:30 pm Closing)`;
+      label = "Market Closed (EOD)";
       State.heatmapAsOfDate = asOf;
       State.heatmapDateLabel = label;
     }
@@ -28073,7 +28076,7 @@
         const data = await res.json();
 
         if (data && data.status === "success") {
-          let incomingAsOf = data.asOfDate || "23 Nov 2026 (3:30 pm Closing)";
+          let incomingAsOf = data.asOfDate || "24 Nov 2026 (3:30 pm Closing)";
           if (incomingAsOf.includes("02:12") || incomingAsOf.includes("2.12")) {
             incomingAsOf = incomingAsOf.replace(/02:12\s*pm/gi, "3:30 pm Closing").replace(/2:12/gi, "3:30");
           }
@@ -28377,13 +28380,22 @@
             <div class="heatmap-select-wrap">
               <span>Index:</span>
               <select id="heatmap-index-select" class="heatmap-select">
-                <option value="All Sectors" ${isAllSectors ? "selected" : ""}>📊 All Sectors (44 Indices)</option>
-                <option value="All Stocks" ${activeNorm === "ALL STOCKS" ? "selected" : ""}>📈 All Stocks</option>
-                ${(typeof SC !== "undefined" ? SC : []).map((sec, idx) => {
-      const secName = sec[0];
-      const isSel = (activeNorm === secName.toUpperCase() || activeNorm === secName.replace(/^NIFTY\s+/, '').toUpperCase());
-      return `<option value="${secName}" ${isSel ? "selected" : ""}>${idx + 1}. ${secName}</option>`;
-    }).join("")}
+                <optgroup label="Core Heatmaps">
+                  <option value="Nifty 50" ${activeNorm === "NIFTY 50" || activeNorm === "NIFTY50" ? "selected" : ""}>⭐ Nifty 50 (Bluechips)</option>
+                  <option value="Nifty Bank" ${activeNorm === "NIFTY BANK" || activeNorm === "BANK" ? "selected" : ""}>🏦 Nifty Bank</option>
+                  <option value="Nifty MidCap 150" ${activeNorm === "NIFTY MIDCAP 150" || activeNorm === "MIDCAP 150" || activeNorm === "NIFTY MIDCAP" ? "selected" : ""}>📊 Nifty MidCap 150</option>
+                  <option value="Nifty SmallCap 250" ${activeNorm === "NIFTY SMLCAP 250" || activeNorm === "NIFTY SMALLCAP 250" || activeNorm === "SMALLCAP 250" ? "selected" : ""}>📈 Nifty SmallCap 250</option>
+                  <option value="NIFTY IPO" ${activeNorm === "NIFTY IPO" || activeNorm === "IPO" || activeNorm === "IPO UNIVERSE" ? "selected" : ""}>🚀 Nifty IPO Universe</option>
+                  <option value="All Sectors" ${isAllSectors ? "selected" : ""}>📊 All Sectors (44 Indices)</option>
+                  <option value="All Stocks" ${activeNorm === "ALL STOCKS" ? "selected" : ""}>🌐 All Stocks</option>
+                </optgroup>
+                <optgroup label="44 Sectoral & Thematic Indices">
+                  ${(typeof SC !== "undefined" ? SC : []).filter(sec => sec[0] !== "NIFTY 50").map((sec, idx) => {
+                    const secName = sec[0];
+                    const isSel = (activeNorm === secName.toUpperCase() || activeNorm === secName.replace(/^NIFTY\s+/, '').toUpperCase());
+                    return `<option value="${secName}" ${isSel ? "selected" : ""}>${secName}</option>`;
+                  }).join("")}
+                </optgroup>
               </select>
             </div>
 
@@ -37713,11 +37725,16 @@
             }
           });
           console.log(`[ScreeningMantis] Successfully updated ${updatedCount} sector indices with live quotes.`);
-          if (State.view === "sectors") {
+          if (State.view === "sectors" || State.view === "heatmap") {
             const container = document.getElementById("view-container");
             if (container) {
-              container.innerHTML = renderSectorsView();
-              setupSectorEvents();
+              if (State.view === "sectors") {
+                container.innerHTML = renderSectorsView();
+                setupSectorEvents();
+              } else if (State.view === "heatmap") {
+                container.innerHTML = renderHeatmapView();
+                setupHeatmapEvents();
+              }
             }
           }
         }
