@@ -18827,15 +18827,6 @@
               <span class="tv-exchange-badge">${exBadge}</span>
               <span class="tv-dropdown-caret">▼</span>
             </div>
-
-            <!-- Direct Chart Button right beside the stock symbol & name -->
-            <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="tv-direct-chart-hero-btn" title="Open ${s[0]} live chart directly on TradingView.com">
-              <span style="font-size:14px">📊</span>
-              <span>Open TradingView Chart</span>
-              <span style="font-size:12px;opacity:0.8">↗</span>
-            </a>
-
-            
           </div>
 
           <div class="tv-topbar-right">
@@ -18908,6 +18899,11 @@
             <div class="chart-stage-wrapper" style="position:relative;width:100%;height:520px;min-height:520px;background:#0c1017;border:1px solid var(--ln);border-radius:8px;overflow:hidden;">
               <div id="canvas-candlestick-box" style="width:100%;height:100%;min-height:520px;"></div>
               <div class="chart-watermark-symbol" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:72px;font-weight:900;color:rgba(255,255,255,0.035);pointer-events:none;user-select:none;font-family:var(--font-mono);letter-spacing:2px;">${s[0]}</div>
+
+              <!-- Corner TradingView Logo Action Button -->
+              <a href="https://in.tradingview.com/chart/?symbol=${getTradingViewSymbol(s[0])}" target="_blank" rel="noopener noreferrer" class="tv-corner-logo-btn" title="Open ${s[0]} live chart on TradingView">
+                <img src="tradingview-logo-white.png" alt="TradingView" class="tv-corner-logo-img" />
+              </a>
             </div>
 
             <!-- TradingView Live Bridge Bar (Hidden) -->

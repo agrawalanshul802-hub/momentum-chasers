@@ -11470,26 +11470,54 @@ body.theme-white .stock-tv-pill:hover {
 
 /* 3. Hero Header TradingView Button in Stock View */
 .tv-direct-chart-hero-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #ffffff !important;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-    transition: var(--transition);
-    white-space: nowrap;
+    display: none !important;
 }
 
-.tv-direct-chart-hero-btn:hover {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+/* Corner TradingView Logo Action Button (Bottom Left of Chart Stage) */
+.tv-corner-logo-btn {
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    opacity: 0.85;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.tv-corner-logo-btn:hover {
+    opacity: 1;
+    background: rgba(15, 23, 42, 0.95);
+    border-color: rgba(56, 189, 248, 0.6);
+    box-shadow: 0 4px 18px rgba(56, 189, 248, 0.3);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.55);
-    color: #ffffff !important;
+}
+
+.tv-corner-logo-img {
+    height: 18px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+body.theme-white .tv-corner-logo-btn {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(0, 0, 0, 0.14);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-white .tv-corner-logo-img {
+    filter: invert(1);
 }
 
 /* 4. Stock View Workspace (Replacing Canvas Chart with Rich Technical Momentum Station) */
