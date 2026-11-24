@@ -54,7 +54,6 @@ const SAMPLE_ITEMS = [
 const THEMES = [
   { id: 'light', label: 'Light', Icon: Sun },
   { id: 'dark', label: 'Dark', Icon: Moon },
-  { id: 'system', label: 'System', Icon: Monitor },
 ];
 
 const PANEL_W = 310;
