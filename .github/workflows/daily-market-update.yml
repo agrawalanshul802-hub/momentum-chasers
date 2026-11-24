@@ -1,0 +1,73 @@
+name: Automated Daily Market Data Pipeline
+
+on:
+  schedule:
+    # 10:15 UTC = 3:45 PM IST (Monday - Friday) -> Stage 1: Market EOD Closes, Sectors, Breadth & Heatmap
+    - cron: '15 10 * * 1-5'
+    # 13:30 UTC = 7:00 PM IST (Monday - Friday) -> Stage 2: Official FII / DII & Sector Turnover
+    - cron: '30 13 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Update Batch to Run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - eod
+          - fii
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determine Pipeline Mode
+        id: select-mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.schedule }}" = "15 10 * * 1-5" ]; then
+            echo "MODE=eod" >> $GITHUB_ENV
+          elif [ "${{ github.event.schedule }}" = "30 13 * * 1-5" ]; then
+            echo "MODE=fii" >> $GITHUB_ENV
+          else
+            echo "MODE=all" >> $GITHUB_ENV
+          fi
+
+      - name: Execute Daily Market Pipeline
+        run: |
+          echo "Executing pipeline with mode: $MODE"
+          node scripts/daily_market_pipeline.js --mode=$MODE
+
+      - name: Commit and Push Updated Market Data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore(data): automated daily market update [$MODE] [skip ci]"
+            git push origin main
+            echo "Pushed updated market data to main."
+          fi
+
+      - name: Trigger Render Production Deploy
+        run: |
+          echo "Triggering Render webhook deploy..."
+          curl -s -X POST "https://api.render.com/deploy/srv-dbtc8k5g1s2s739de7k0?key=Bozf8x-_Y9I" || true
+          echo "Render deploy triggered successfully."

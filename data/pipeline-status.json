@@ -1,0 +1,38 @@
+{
+  "eodMarket": {
+    "lastRun": "2026-11-24T18:48:03.000Z",
+    "status": "success",
+    "date": "2026-11-25",
+    "dateLabel": "25 Nov 2026 (3:30 pm Closing)",
+    "quoteMatches": 40,
+    "updatedSectors": 40,
+    "nifty50": {
+      "price": "25,349.65",
+      "chg": "-450.95",
+      "pct": "-1.75",
+      "isUp": false
+    },
+    "bankNifty": {
+      "price": "62,585.35",
+      "chg": "-2049.85",
+      "pct": "-3.17",
+      "isUp": false
+    },
+    "errors": []
+  },
+  "fiiDii": {
+    "lastRun": "2026-11-24T18:48:03.002Z",
+    "status": "success",
+    "date": "2026-11-25",
+    "entry": {
+      "date": "2026-11-25",
+      "fiiBuy": 19840.5,
+      "fiiSell": 18210.2,
+      "fiiNet": 1630.3,
+      "diiBuy": 15420.8,
+      "diiSell": 14950.4,
+      "diiNet": 470.4
+    },
+    "errors": []
+  }
+}

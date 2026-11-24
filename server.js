@@ -7461,6 +7461,52 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // 6.5. Admin Pipeline Controls (EOD Market Update & FII/DII Updates)
+  if (pathname === '/api/admin/pipeline/status' && req.method === 'GET') {
+    const statusPath = path.join(__dirname, 'data', 'pipeline-status.json');
+    let st = {};
+    try {
+      if (fs.existsSync(statusPath)) st = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    } catch (_) { st = {}; }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, status: st }));
+    return;
+  }
+
+  if (pathname === '/api/admin/pipeline/run' && req.method === 'POST') {
+    let rawBody = '';
+    req.on('data', chunk => rawBody += chunk);
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(rawBody || '{}');
+        const pin = (payload.pin || req.headers['x-owner-pin'] || '').toString().trim();
+        if (!isAuthorizedOwnerPin(pin)) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+          return;
+        }
+
+        const mode = (payload.mode || 'all').toLowerCase();
+        const pipelineModule = require('./scripts/daily_market_pipeline');
+        let result = {};
+
+        if (mode === 'eod' || mode === 'all') {
+          result.eod = await pipelineModule.runEodMarketUpdate();
+        }
+        if (mode === 'fii' || mode === 'all') {
+          result.fii = await pipelineModule.runFiiDiiUpdate(payload.customFiiData);
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, mode, result }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
   // 7. Static File Serving
   const reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
   let decodedPath;

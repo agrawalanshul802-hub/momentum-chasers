@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "echo 'Build complete'"
+    "build": "echo 'Build complete'",
+    "pipeline:eod": "node scripts/daily_market_pipeline.js --mode=eod",
+    "pipeline:fii": "node scripts/daily_market_pipeline.js --mode=fii",
+    "pipeline:all": "node scripts/daily_market_pipeline.js --mode=all"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -1192,6 +1192,9 @@
     <button class="owner-tab-btn" id="btn-tab-subscribers" onclick="switchOwnerTab('subscribers')">
       <span>👥</span> <span>VIP Passes & Customer Log</span>
     </button>
+    <button class="owner-tab-btn" id="btn-tab-pipeline" onclick="switchOwnerTab('pipeline')">
+      <span>⚡</span> <span>Daily Market Pipeline</span>
+    </button>
   </nav>
 
   <!-- TAB 1: IDEAS STUDIO -->
@@ -1768,6 +1771,134 @@
       </div>
     </div>
   </div>
+
+
+  <!-- TAB 5: DAILY MARKET PIPELINE -->
+  <div id="tab-pipeline" class="tab-panel" style="display:none;max-width:1100px;margin:0 auto;">
+    
+    <!-- Header Overview Card -->
+    <div class="studio-card" style="margin-bottom:24px;background:linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(14,22,44,0.7) 100%);border:1px solid rgba(16,185,129,0.25);">
+      <div class="card-title" style="color:#10b981;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span>⚡</span> <span>Daily Market Data Pipeline &amp; Automation</span>
+        </div>
+        <span style="font-size:12px;padding:4px 12px;border-radius:20px;background:rgba(16,185,129,0.15);color:#34d399;font-weight:700;border:1px solid rgba(16,185,129,0.3);">
+          ● GitHub Actions Cron Enabled
+        </span>
+      </div>
+      <div class="card-subtitle" style="font-size:13.5px;color:#cbd5e1;line-height:1.6;margin-top:8px;">
+        Momentum Chasers operates on a dual-stage verified EOD market pipeline. This eliminates live tick scraping limits, avoids NSE IP blocks, and provides 100% verified closing numbers for swing trading.
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:14px;margin-top:18px;">
+        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
+          <div style="color:#f5b544;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;">
+            <span>🕒</span> Stage 1: 3:45 PM – 3:50 PM IST
+          </div>
+          <div style="font-size:12.5px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+            Closing prices for 2,000+ stocks, 44 Sector Indices, 50×200 EMAs, Market Breadth &amp; Heatmap.
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
+          <div style="color:#38bdf8;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;">
+            <span>🕒</span> Stage 2: 7:00 PM – 7:15 PM IST
+          </div>
+          <div style="font-size:12.5px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+            Official NSE/BSE institutional FII &amp; DII cash net purchases/sales and delivery sector turnover.
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
+          <div style="color:#a78bfa;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;">
+            <span>🤖</span> Cloud Automation
+          </div>
+          <div style="font-size:12.5px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+            Runs automatically on GitHub Actions on weekdays, commits data, and triggers Render deployment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Stage Control Grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(440px, 1fr));gap:24px;">
+      
+      <!-- STAGE 1 CARD -->
+      <div class="studio-card">
+        <div class="card-title" style="color:#f5b544;">
+          <span>📊</span> <span>Stage 1: Market EOD Pipeline (3:45 PM)</span>
+        </div>
+        <div class="card-subtitle">
+          Updates 44 Sector Benchmarks, EMA crossing statuses, Market Breadth &amp; Heatmap cache.
+        </div>
+
+        <div id="pipeline-eod-status-box" style="margin:16px 0;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:12.5px;color:#cbd5e1;">
+          <div style="font-weight:700;margin-bottom:4px;color:#ffffff;">Latest EOD Status:</div>
+          <div id="pipeline-eod-last-run">Checking status...</div>
+        </div>
+
+        <button type="button" class="btn-primary" id="btn-run-pipeline-eod" onclick="triggerPipelineRun('eod')"
+          style="width:100%;padding:12px;font-size:14px;font-weight:700;border-radius:8px;background:linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          ⚡ Trigger 3:45 PM Market EOD Update Now
+        </button>
+
+        <div id="pipeline-eod-console" style="display:none;margin-top:14px;padding:12px;border-radius:8px;background:#050914;border:1px solid rgba(255,255,255,0.1);font-family:monospace;font-size:12px;color:#34d399;max-height:160px;overflow-y:auto;white-space:pre-wrap;"></div>
+      </div>
+
+      <!-- STAGE 2 CARD -->
+      <div class="studio-card">
+        <div class="card-title" style="color:#38bdf8;">
+          <span>🏛️</span> <span>Stage 2: FII &amp; DII Institutional Pipeline (7:00 PM)</span>
+        </div>
+        <div class="card-subtitle">
+          Updates official FII and DII cash buy/sell figures in <code>fii-dii-history.json</code>.
+        </div>
+
+        <form id="pipeline-fii-form" onsubmit="handleFiiSubmit(event)" style="margin-top:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div>
+              <label class="form-label" style="font-size:12px;">FII Buy (₹ Cr)</label>
+              <input type="number" step="0.01" id="fii-buy-inp" class="form-input" placeholder="e.g. 23473.7" oninput="calcFiiNet()">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:12px;">FII Sell (₹ Cr)</label>
+              <input type="number" step="0.01" id="fii-sell-inp" class="form-input" placeholder="e.g. 17800.7" oninput="calcFiiNet()">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div>
+              <label class="form-label" style="font-size:12px;">DII Buy (₹ Cr)</label>
+              <input type="number" step="0.01" id="dii-buy-inp" class="form-input" placeholder="e.g. 16505.8" oninput="calcFiiNet()">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:12px;">DII Sell (₹ Cr)</label>
+              <input type="number" step="0.01" id="dii-sell-inp" class="form-input" placeholder="e.g. 19265.9" oninput="calcFiiNet()">
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;margin-bottom:14px;font-size:12.5px;">
+            <span>FII Net: <strong id="fii-net-preview" style="color:#10b981;">₹0.00 Cr</strong></span>
+            <span>DII Net: <strong id="dii-net-preview" style="color:#ef4444;">₹0.00 Cr</strong></span>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button type="submit" class="btn-primary" id="btn-run-pipeline-fii"
+              style="flex:1;padding:12px;font-size:13.5px;font-weight:700;border-radius:8px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+              📊 Save 7:00 PM FII/DII Figures
+            </button>
+            <button type="button" class="btn-outline" onclick="triggerPipelineRun('fii')" title="Auto-fetch or run default" style="padding:12px 16px;">
+              🔄 Auto Run
+            </button>
+          </div>
+        </form>
+
+        <div id="pipeline-fii-console" style="display:none;margin-top:14px;padding:12px;border-radius:8px;background:#050914;border:1px solid rgba(255,255,255,0.1);font-family:monospace;font-size:12px;color:#38bdf8;max-height:160px;overflow-y:auto;white-space:pre-wrap;"></div>
+      </div>
+
+    </div>
+  </div>
+
 
   <div id="toast" class="toast">
     <span>✅</span> <span id="toast-msg">Idea Published!</span>
@@ -2744,7 +2875,7 @@
       activeTab = tabName;
       sessionStorage.setItem('mc_owner_active_tab', tabName);
 
-      var tabs = ['ideas', 'coupons', 'gateway', 'subscribers'];
+      var tabs = ['ideas', 'coupons', 'gateway', 'subscribers', 'pipeline'];
       tabs.forEach(function (t) {
         var btn = document.getElementById('btn-tab-' + t);
         var panel = document.getElementById('tab-' + t);
@@ -2761,6 +2892,7 @@
       else if (tabName === 'coupons') fetchCoupons();
       else if (tabName === 'gateway') fetchGatewaySettings();
       else if (tabName === 'subscribers') { fetchMasterCode(); fetchPurchases(); }
+      else if (tabName === 'pipeline') { fetchPipelineStatus(); }
     }
 
     // --- TAB 2: COUPONS MANAGER ---
@@ -3508,7 +3640,137 @@
     setTimeout(initOwnerPublishSlide, 300);
   });
 
-</script>
+
+    // --- TAB 5: DAILY MARKET PIPELINE CONTROLLER ---
+    function fetchPipelineStatus() {
+      fetch('/api/admin/pipeline/status?_t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && data.status) {
+            renderPipelineStatus(data.status);
+          }
+        })
+        .catch(function(err) {
+          console.warn('Pipeline status fetch error:', err);
+        });
+    }
+
+    function renderPipelineStatus(status) {
+      var eodBox = document.getElementById('pipeline-eod-last-run');
+      if (eodBox && status.eodMarket) {
+        var e = status.eodMarket;
+        var timeStr = e.lastRun ? new Date(e.lastRun).toLocaleString('en-IN') : 'Never';
+        eodBox.innerHTML = '<strong>Last EOD Run:</strong> ' + timeStr + '<br>' +
+          '<strong>Date:</strong> ' + (e.dateLabel || e.date || 'N/A') + '<br>' +
+          '<strong>Quotes Matched:</strong> ' + (e.quoteMatches || 0) + ' / 44 sector indices updated.' +
+          (e.nifty50 ? '<br><strong>Nifty 50:</strong> ₹' + e.nifty50.price + ' (' + e.nifty50.pct + '%)' : '');
+      }
+
+      var fiiConsole = document.getElementById('pipeline-fii-console');
+      if (fiiConsole && status.fiiDii && status.fiiDii.entry) {
+        var f = status.fiiDii.entry;
+        fiiConsole.style.display = 'block';
+        fiiConsole.textContent = 'Latest FII/DII (' + f.date + '):\n' +
+          '• FII Buy: ₹' + f.fiiBuy + ' Cr | FII Sell: ₹' + f.fiiSell + ' Cr | FII Net: ₹' + f.fiiNet + ' Cr\n' +
+          '• DII Buy: ₹' + f.diiBuy + ' Cr | DII Sell: ₹' + f.diiSell + ' Cr | DII Net: ₹' + f.diiNet + ' Cr';
+      }
+    }
+
+    function calcFiiNet() {
+      var fb = parseFloat(document.getElementById('fii-buy-inp').value) || 0;
+      var fs = parseFloat(document.getElementById('fii-sell-inp').value) || 0;
+      var db = parseFloat(document.getElementById('dii-buy-inp').value) || 0;
+      var ds = parseFloat(document.getElementById('dii-sell-inp').value) || 0;
+
+      var fNet = (fb - fs).toFixed(2);
+      var dNet = (db - ds).toFixed(2);
+
+      var fnEl = document.getElementById('fii-net-preview');
+      var dnEl = document.getElementById('dii-net-preview');
+
+      if (fnEl) {
+        fnEl.textContent = (fNet >= 0 ? '+₹' : '-₹') + Math.abs(fNet) + ' Cr';
+        fnEl.style.color = fNet >= 0 ? '#10b981' : '#ef4444';
+      }
+      if (dnEl) {
+        dnEl.textContent = (dNet >= 0 ? '+₹' : '-₹') + Math.abs(dNet) + ' Cr';
+        dnEl.style.color = dNet >= 0 ? '#10b981' : '#ef4444';
+      }
+    }
+
+    function triggerPipelineRun(mode, customData) {
+      var pin = getOwnerPin();
+      var btnId = mode === 'eod' ? 'btn-run-pipeline-eod' : 'btn-run-pipeline-fii';
+      var consoleId = mode === 'eod' ? 'pipeline-eod-console' : 'pipeline-fii-console';
+
+      var btn = document.getElementById(btnId);
+      var consoleEl = document.getElementById(consoleId);
+
+      if (btn) btn.disabled = true;
+      if (consoleEl) {
+        consoleEl.style.display = 'block';
+        consoleEl.textContent = 'Running ' + mode.toUpperCase() + ' update... Please wait.';
+      }
+
+      fetch('/api/admin/pipeline/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-owner-pin': pin
+        },
+        body: JSON.stringify({
+          pin: pin,
+          mode: mode,
+          customFiiData: customData || null
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (btn) btn.disabled = false;
+        if (data && data.success) {
+          showToast('✓ ' + mode.toUpperCase() + ' pipeline executed successfully!', '⚡');
+          if (consoleEl) {
+            consoleEl.textContent = '✓ Execution Success (' + new Date().toLocaleTimeString('en-IN') + '):\n' +
+              JSON.stringify(data.result, null, 2);
+          }
+          fetchPipelineStatus();
+        } else {
+          showToast('Failed: ' + (data.error || 'Server error'), '⚠️');
+          if (consoleEl) consoleEl.textContent = 'Error: ' + (data.error || 'Unknown error');
+        }
+      })
+      .catch(function(err) {
+        if (btn) btn.disabled = false;
+        showToast('Network error triggering pipeline', '❌');
+        if (consoleEl) consoleEl.textContent = 'Network Error: ' + err.message;
+      });
+    }
+
+    function handleFiiSubmit(e) {
+      e.preventDefault();
+      var fb = parseFloat(document.getElementById('fii-buy-inp').value) || 0;
+      var fs = parseFloat(document.getElementById('fii-sell-inp').value) || 0;
+      var db = parseFloat(document.getElementById('dii-buy-inp').value) || 0;
+      var ds = parseFloat(document.getElementById('dii-sell-inp').value) || 0;
+
+      if (!fb && !fs && !db && !ds) {
+        showToast('Please enter FII or DII figures', '⚠️');
+        return;
+      }
+
+      var custom = {
+        fiiBuy: fb,
+        fiiSell: fs,
+        fiiNet: (fb - fs).toFixed(2),
+        diiBuy: db,
+        diiSell: ds,
+        diiNet: (db - ds).toFixed(2)
+      };
+
+      triggerPipelineRun('fii', custom);
+    }
+
+  </script>
 </body>
 
 </html>
