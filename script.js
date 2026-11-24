@@ -10490,11 +10490,11 @@
   const EVENTS_HOLIDAYS = MASTER_EVENTS_HOLIDAYS;
   // BananaPatterns Market Breadth Metric Data (Feature Breadth)
   let BREADTH = {
-    nifty50: { ema10: 68, ema20: 54, ema50: 42, ema200: 71 },
-    banknifty: { ema10: 70, ema20: 62, ema50: 48, ema200: 74 },
-    sensex: { ema10: 66, ema20: 56, ema50: 44, ema200: 72 },
-    midcap150: { ema10: 72, ema20: 61, ema50: 48, ema200: 65 },
-    smallcap250: { ema10: 58, ema20: 44, ema50: 36, ema200: 52 }
+    nifty50: { ema10: 80, ema20: 82, ema50: 82, ema200: 74 },
+    banknifty: { ema10: 100, ema20: 100, ema50: 100, ema200: 100 },
+    sensex: { ema10: 73, ema20: 77, ema50: 80, ema200: 73 },
+    midcap150: { ema10: 46, ema20: 53, ema50: 48, ema200: 48 },
+    smallcap250: { ema10: 50, ema20: 52, ema50: 46, ema200: 43 }
   };
   let BREADTH_LAST_UPDATED = "Live Market Session";
 
@@ -10507,48 +10507,72 @@
 
   function calculateLiveMarketBreadth() {
     try {
-      const n50Idx = IDX.find(i => i[0] === "NIFTY 50" || i[0] === "Nifty 50");
-      const bankIdx = IDX.find(i => i[0] === "Nifty Bank" || i[0] === "BANKNIFTY" || i[0] === "Bank Nifty");
-      const sensexIdx = IDX.find(i => i[0] === "BSE Sensex" || i[0] === "SENSEX" || i[0] === "Sensex");
-      const midIdx = IDX.find(i => i[0] === "Nifty MidCap 150");
-      const smIdx = IDX.find(i => i[0] === "Nifty SmallCap 250");
+      const smMap = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap) ||
+        (window._screeningMantisEmaMap) || {};
 
-      const n50Chg = n50Idx ? (Number(n50Idx[2]) || 0) : 0;
-      const bankChg = bankIdx ? (Number(bankIdx[2]) || 0) : 0;
-      const sensexChg = sensexIdx ? (Number(sensexIdx[2]) || 0) : 0;
-      const midChg = midIdx ? (Number(midIdx[2]) || 0) : 0;
-      const smChg = smIdx ? (Number(smIdx[2]) || 0) : 0;
+      function computeIndexBreadth(symbols) {
+        if (!Array.isArray(symbols) || symbols.length === 0) return null;
+        let a10 = 0, a20 = 0, a50 = 0, a200 = 0;
+        let count = 0;
 
-      let hmGreenRatio = 0.5;
-      if (typeof window !== "undefined" && Array.isArray(window.HEATMAP_NIFTY50_DATA) && HEATMAP_NIFTY50_DATA.length > 0) {
-        const greenCount = HEATMAP_NIFTY50_DATA.filter(s => (s.chg || 0) >= 0).length;
-        hmGreenRatio = greenCount / HEATMAP_NIFTY50_DATA.length;
+        symbols.forEach(sym => {
+          const sUpper = String(sym).trim().toUpperCase();
+          const stock = (typeof ST !== "undefined" && Array.isArray(ST)) ? ST.find(s => s[0] === sUpper) : null;
+          const sm = smMap[sUpper];
+          if (!stock && !sm) return;
+          count++;
+
+          const price = stock ? Number(stock[3]) : (sm ? Number(sm.currentClose) : 0);
+          const is10 = (sm && sm.aboveEma10 !== undefined) ? Boolean(sm.aboveEma10) : ((sm && sm.ema10) ? (price >= sm.ema10) : (stock && stock[8] && stock[8].ema10 ? price >= stock[8].ema10 : false));
+          const is20 = (sm && sm.aboveEma20 !== undefined) ? Boolean(sm.aboveEma20) : ((sm && sm.ema20) ? (price >= sm.ema20) : (stock && stock[8] && stock[8].ema20 ? price >= stock[8].ema20 : false));
+          const is50 = (sm && sm.aboveEma50 !== undefined) ? Boolean(sm.aboveEma50) : ((sm && sm.ema50) ? (price >= sm.ema50) : (stock && stock[8] && stock[8].ema50 ? price >= stock[8].ema50 : false));
+          const is200 = (sm && sm.aboveEma200 !== undefined) ? Boolean(sm.aboveEma200) : ((sm && sm.ema200) ? (price >= sm.ema200) : (stock && stock[8] && stock[8].ema200 ? price >= stock[8].ema200 : false));
+
+          if (is10) a10++;
+          if (is20) a20++;
+          if (is50) a50++;
+          if (is200) a200++;
+        });
+
+        if (count === 0) return null;
+        return {
+          ema10: Math.round((a10 / count) * 100),
+          ema20: Math.round((a20 / count) * 100),
+          ema50: Math.round((a50 / count) * 100),
+          ema200: Math.round((a200 / count) * 100)
+        };
       }
 
-      BREADTH.nifty50.ema10 = Math.min(98, Math.max(12, Math.round(52 + n50Chg * 7 + (hmGreenRatio - 0.5) * 32)));
-      BREADTH.nifty50.ema20 = Math.min(94, Math.max(16, Math.round(50 + n50Chg * 4 + (hmGreenRatio - 0.5) * 16)));
-      BREADTH.nifty50.ema50 = Math.min(90, Math.max(20, Math.round(42 + n50Chg * 2.5)));
-      BREADTH.nifty50.ema200 = Math.min(92, Math.max(30, Math.round(71 + n50Chg * 1.2)));
+      // 1. Nifty 50
+      const n50Breadth = (typeof NIFTY_50_SYMBOLS !== "undefined") ? computeIndexBreadth(NIFTY_50_SYMBOLS) : null;
+      if (n50Breadth) BREADTH.nifty50 = n50Breadth;
 
-      BREADTH.banknifty.ema10 = Math.min(98, Math.max(12, Math.round(58 + bankChg * 7.5)));
-      BREADTH.banknifty.ema20 = Math.min(94, Math.max(16, Math.round(54 + bankChg * 4.5)));
-      BREADTH.banknifty.ema50 = Math.min(92, Math.max(20, Math.round(46 + bankChg * 2.8)));
-      BREADTH.banknifty.ema200 = Math.min(95, Math.max(30, Math.round(74 + bankChg * 1.3)));
+      // 2. Bank Nifty
+      const bankDef = (typeof MASTER_44_SECTORS !== "undefined") ? MASTER_44_SECTORS.find(s => s.key === "NIFTY BANK") : null;
+      const bankBreadth = bankDef ? computeIndexBreadth(bankDef.extraSyms) : null;
+      if (bankBreadth) BREADTH.banknifty = bankBreadth;
 
-      BREADTH.sensex.ema10 = Math.min(98, Math.max(12, Math.round(53 + sensexChg * 7 + (hmGreenRatio - 0.5) * 30)));
-      BREADTH.sensex.ema20 = Math.min(94, Math.max(16, Math.round(51 + sensexChg * 4 + (hmGreenRatio - 0.5) * 15)));
-      BREADTH.sensex.ema50 = Math.min(90, Math.max(20, Math.round(43 + sensexChg * 2.5)));
-      BREADTH.sensex.ema200 = Math.min(92, Math.max(30, Math.round(72 + sensexChg * 1.2)));
+      // 3. Sensex (Top 30 bluechips)
+      const sensexSyms = [
+        "RELIANCE", "TCS", "HDFCBANK", "ICICIBANK", "BHARTIARTL", "INFY", "ITC", "SBIN", "LT",
+        "BAJFINANCE", "HCLTECH", "MARUTI", "SUNPHARMA", "M&M", "KOTAKBANK", "AXISBANK", "TITAN",
+        "ULTRACEMCO", "NTPC", "TATASTEEL", "POWERGRID", "ASIANPAINT", "JSWSTEEL", "BAJAJFINSV",
+        "NESTLEIND", "TECHM", "TRENT", "INDUSINDBK", "HINDUNILVR", "BAJAJ-AUTO"
+      ];
+      const sensexBreadth = computeIndexBreadth(sensexSyms);
+      if (sensexBreadth) BREADTH.sensex = sensexBreadth;
 
-      BREADTH.midcap150.ema10 = Math.min(98, Math.max(12, Math.round(62 + midChg * 6)));
-      BREADTH.midcap150.ema20 = Math.min(94, Math.max(18, Math.round(58 + midChg * 4)));
-      BREADTH.midcap150.ema50 = Math.min(90, Math.max(22, Math.round(48 + midChg * 2.5)));
-      BREADTH.midcap150.ema200 = Math.min(90, Math.max(32, Math.round(65 + midChg * 1.5)));
+      // 4. MidCap 150
+      if (typeof ST !== "undefined" && Array.isArray(ST)) {
+        const mcSyms = ST.filter(s => s[1] === "MC").map(s => s[0]);
+        const mcBreadth = computeIndexBreadth(mcSyms);
+        if (mcBreadth) BREADTH.midcap150 = mcBreadth;
 
-      BREADTH.smallcap250.ema10 = Math.min(98, Math.max(12, Math.round(54 + smChg * 7)));
-      BREADTH.smallcap250.ema20 = Math.min(94, Math.max(18, Math.round(46 + smChg * 4.5)));
-      BREADTH.smallcap250.ema50 = Math.min(90, Math.max(20, Math.round(38 + smChg * 3)));
-      BREADTH.smallcap250.ema200 = Math.min(88, Math.max(28, Math.round(52 + smChg * 1.8)));
+        // 5. SmallCap 250
+        const scSyms = ST.filter(s => s[1] === "SC").slice(0, 250).map(s => s[0]);
+        const scBreadth = computeIndexBreadth(scSyms);
+        if (scBreadth) BREADTH.smallcap250 = scBreadth;
+      }
 
       BREADTH_LAST_UPDATED = `Live Market Session · Updated ${new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' })}`;
     } catch (e) {
@@ -13359,6 +13383,7 @@
   }
 
   function renderBreadthView() {
+    calculateLiveMarketBreadth();
     const b = BREADTH.nifty50;
 
     return `
