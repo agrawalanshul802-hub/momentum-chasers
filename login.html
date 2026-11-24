@@ -3954,6 +3954,409 @@
   <!-- GSAP & ScrollTrigger Engine for React Bits Components -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+
+  /* =========================================================
+     MOMENTUM CHASERS - PLATFORM INFO & FEATURE SHOWCASE STYLES
+     ========================================================= */
+  .mc-stats-ribbon {
+    padding: 24px 0 32px;
+    position: relative;
+    z-index: 10;
+  }
+  .mc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+  }
+  .mc-stat-card {
+    background: linear-gradient(135deg, rgba(14, 22, 44, 0.75) 0%, rgba(10, 16, 32, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(12px);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .mc-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px -2px rgba(34, 197, 94, 0.15);
+  }
+  .mc-stat-val {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mc-stat-val .mc-stat-accent {
+    color: var(--cy, #22c55e);
+  }
+  .mc-stat-lbl {
+    font-size: 0.88rem;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+  .mc-stat-badge {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+  }
+
+  /* Section Header Badges & Typography */
+  .mc-sec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(245, 181, 68, 0.12);
+    border: 1px solid rgba(245, 181, 68, 0.28);
+    color: #f5b544;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .mc-sec-title {
+    font-size: clamp(1.85rem, 3.2vw, 2.5rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.24;
+    margin: 0 0 16px 0;
+  }
+  .mc-sec-desc {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    line-height: 1.65;
+    max-width: 740px;
+    margin: 0 0 34px 0;
+  }
+
+  /* About Grid */
+  .mc-about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  .mc-about-card {
+    background: linear-gradient(145deg, rgba(14, 22, 44, 0.75) 0%, rgba(9, 14, 28, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    backdrop-filter: blur(16px);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .mc-about-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(34, 197, 94, 0.35);
+    box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.5);
+  }
+  .mc-about-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .mc-about-h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+  }
+  .mc-about-p {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .mc-about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 10px;
+  }
+  .mc-about-pill {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #cbd5e1;
+    font-weight: 600;
+  }
+
+  /* Mission Banner */
+  .mc-mission-banner {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(14, 22, 44, 0.85) 55%, rgba(59, 130, 246, 0.08) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 18px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .mc-mission-text h4 {
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+  }
+  .mc-mission-text p {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    margin: 0;
+    max-width: 680px;
+    line-height: 1.55;
+  }
+
+  /* Features Deep Dive Cards */
+  .mc-feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 24px;
+  }
+  .mc-feat-card {
+    background: linear-gradient(145deg, rgba(14, 22, 44, 0.7) 0%, rgba(8, 12, 24, 0.88) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .mc-feat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(34, 197, 94, 0.35);
+    box-shadow: 0 14px 30px -8px rgba(0,0,0,0.6);
+  }
+  .mc-feat-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .mc-feat-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px;
+  }
+  .mc-feat-desc {
+    font-size: 0.92rem;
+    color: #94a3b8;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .mc-feat-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mc-feat-bullets li {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mc-feat-bullets li span.chk {
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .mc-feat-action {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #38bdf8;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  /* Workflow Steps */
+  .mc-workflow-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    position: relative;
+    margin: 20px 0;
+  }
+  .mc-wf-card {
+    background: linear-gradient(135deg, rgba(14, 22, 44, 0.72) 0%, rgba(9, 14, 28, 0.88) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .mc-wf-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 181, 68, 0.4);
+  }
+  .mc-wf-step-num {
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(245, 181, 68, 0.15);
+    color: #f5b544;
+    border: 1px solid rgba(245, 181, 68, 0.3);
+    align-self: flex-start;
+    letter-spacing: 0.04em;
+  }
+  .mc-wf-time {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-weight: 700;
+  }
+  .mc-wf-title {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+  }
+  .mc-wf-desc {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* Comparison Matrix */
+  .mc-comp-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(14, 22, 44, 0.6);
+  }
+  .mc-comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 660px;
+    font-size: 0.92rem;
+  }
+  .mc-comp-table th {
+    padding: 16px 20px;
+    text-align: left;
+    background: rgba(10, 16, 32, 0.85);
+    color: #ffffff;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .mc-comp-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+  }
+  .mc-comp-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .mc-comp-feat {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .mc-comp-us {
+    color: #34d399;
+    font-weight: 800;
+    background: rgba(34, 197, 94, 0.06);
+  }
+  .mc-comp-them {
+    color: #94a3b8;
+  }
+
+  /* FAQ Accordion */
+  .mc-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 900px;
+  }
+  .mc-faq-item {
+    background: linear-gradient(135deg, rgba(14, 22, 44, 0.6) 0%, rgba(9, 14, 28, 0.8) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .mc-faq-item.active {
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.4);
+  }
+  .mc-faq-question {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    transition: color 0.2s;
+  }
+  .mc-faq-item.active .mc-faq-question {
+    color: #34d399;
+  }
+  .mc-faq-icon {
+    font-size: 18px;
+    transition: transform 0.25s ease;
+    color: #94a3b8;
+  }
+  .mc-faq-item.active .mc-faq-icon {
+    transform: rotate(45deg);
+    color: #34d399;
+  }
+  .mc-faq-answer {
+    padding: 0 24px 20px;
+    font-size: 0.94rem;
+    color: #cbd5e1;
+    line-height: 1.65;
+    display: none;
+  }
+  .mc-faq-item.active .mc-faq-answer {
+    display: block;
+  }
+
+</style>
 </head>
 
 <body id="top">
@@ -3972,14 +4375,25 @@
         <span style="font-weight:800;letter-spacing:0.04em;font-size:15px;color:#ffffff;display:inline-flex;align-items:center;gap:4px;">MOMENTUM <b style="color:#f5b544;font-weight:800;">CHASERS</b></span>
       </a>
       <nav class="links" aria-label="Main">
+        <a class="lk" href="#about">About</a>
+        <a class="lk" href="#features">Features</a>
+        <a class="lk" href="#pipeline">Data Engine</a>
+        <a class="lk" href="#workflow">Workflow</a>
+        <a class="lk" href="#faq">FAQ</a>
         <div class="has-menu">
           <button class="lk" aria-haspopup="true"
             onclick="if(window.innerWidth<=768){handleCtaClick(event, 'signup');}">Analytics &#9662;</button>
           <div class="menu glass" id="menu"></div>
         </div>
-        <a class="lk" href="javascript:void(0)" onclick="handleCtaClick(event, 'signup')">Market Insights</a>
       </nav>
-      <div class="nr">
+      <div class="nr" style="display:flex;align-items:center;gap:12px;">
+        <button type="button" onclick="enterAsGuest()"
+          style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#34d399;font-weight:700;font-size:12.5px;padding:6px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(34,197,94,0.22)'"
+          onmouseout="this.style.background='rgba(34,197,94,0.12)'"
+          title="Instant access without signing in">
+          ⚡ Guest Demo
+        </button>
         <a class="lg" href="javascript:void(0)" id="nav-login-link" onclick="openNavAuth(event, 'signin')">Login</a>
         <a class="btn sm" href="javascript:void(0)" id="nav-signin-btn" onclick="openNavAuth(event, 'signin')">Sign In</a>
       </div>
@@ -4004,11 +4418,17 @@
         <p class="lead">Explore stock market analytics, advanced screening tools and real-time market insights. Analyse
           stocks, track sector performance, monitor market sentiment and understand market activity before making your
           financial decisions.</p>
-        <div class="cta">
+        <div class="cta" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
           <a class="btn pri" href="javascript:void(0)" id="hero-primary-cta"
             onclick="handleCtaClick(event, 'signup')">Sign In to Dashboard &rarr;</a>
-          <a class="btn ghost" href="javascript:void(0)" id="hero-secondary-cta"
-            onclick="handleCtaClick(event, 'signup')">Explore Analytics</a>
+          <a class="btn ghost" href="#about" id="hero-secondary-cta"
+            style="display:inline-flex;align-items:center;gap:6px;">About Website &darr;</a>
+          <button type="button" onclick="enterAsGuest()"
+            style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:#34d399;font-weight:700;font-size:0.92rem;padding:10px 18px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;"
+            onmouseover="this.style.background='rgba(34,197,94,0.22)';this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='rgba(34,197,94,0.12)';this.style.transform='none'">
+            <span>⚡</span> Explore as Guest &rarr;
+          </button>
         </div>
       </div>
       <div class="vis" aria-hidden="true">
@@ -4043,6 +4463,41 @@
 
 
   
+  
+  <!-- ================= PLATFORM SCALE & STATS RIBBON ================= -->
+  <section class="mc-stats-ribbon" aria-label="Platform Highlights">
+    <div class="wrap">
+      <div class="mc-stats-grid">
+        <div class="mc-stat-card">
+          <div class="mc-stat-val">2,000<span class="mc-stat-accent">+</span></div>
+          <div class="mc-stat-lbl">NSE &amp; BSE Equities</div>
+          <span class="mc-stat-badge">Full Market Universe</span>
+        </div>
+        <div class="mc-stat-card">
+          <div class="mc-stat-val">15<span class="mc-stat-accent">m</span></div>
+          <div class="mc-stat-lbl">F&amp;O Order Flow Cycles</div>
+          <span class="mc-stat-badge">Institutional Delta</span>
+        </div>
+        <div class="mc-stat-card">
+          <div class="mc-stat-val">50<span class="mc-stat-accent">&times;</span>200</div>
+          <div class="mc-stat-lbl">Quant EMA Scanners</div>
+          <span class="mc-stat-badge">Golden &amp; Death Cross</span>
+        </div>
+        <div class="mc-stat-card">
+          <div class="mc-stat-val">80<span class="mc-stat-accent">%+</span></div>
+          <div class="mc-stat-lbl">Authentic Market Breadth</div>
+          <span class="mc-stat-badge">Constituent Math</span>
+        </div>
+        <div class="mc-stat-card">
+          <div class="mc-stat-val">&lt; 200<span class="mc-stat-accent">ms</span></div>
+          <div class="mc-stat-lbl">Sub-Second Filtering</div>
+          <span class="mc-stat-badge">Ultra-Fast Terminal</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <!-- ================= REACT BITS PIPELINE COMPONENT ================= -->
   <style>
     .rb-pipeline-section {
@@ -4567,6 +5022,436 @@
   </script>
 
   
+  
+  <!-- ================= SECTION: ABOUT MOMENTUM CHASERS ================= -->
+  <section class="sec" id="about" style="padding:64px 0 44px;border-top:1px solid rgba(255,255,255,0.06);background:radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.04) 0%, rgba(8,12,22,0) 70%);">
+    <div class="wrap">
+      <div class="mc-sec-badge">
+        <span>⚡</span> ABOUT MOMENTUM CHASERS
+      </div>
+      <h2 class="mc-sec-title">
+        Built for Indian Traders Who Demand <span class="ser" style="color:var(--cy,#22c55e);">Mathematical Rigor</span>
+      </h2>
+      <p class="mc-sec-desc">
+        Momentum Chasers was created to solve a critical challenge faced by retail swing traders and investors in the Indian Stock Markets (NSE &amp; BSE): the clutter of conflicting tips, slow charting platforms, and noisy indicators. We replace subjective guesswork with quantitative algorithms, real-time derivatives order flow, and relative strength metrics.
+      </p>
+
+      <div class="mc-about-grid">
+        <!-- Pillar 1 -->
+        <div class="mc-about-card">
+          <div class="mc-about-icon" style="background:rgba(34,197,94,0.15);color:#22c55e;">📐</div>
+          <h3 class="mc-about-h3">Quantitative Algorithms</h3>
+          <p class="mc-about-p">
+            Zero gut feeling, zero black-box calls. Every screener filter is powered by authentic quantitative mathematics: 10, 20, 50, and 200 Exponential Moving Averages (EMA), Relative Strength Index (RSI 14), and Volume-Weighted Average Price (VWAP).
+          </p>
+          <div class="mc-about-tags">
+            <span class="mc-about-pill">50×200 Golden Cross</span>
+            <span class="mc-about-pill">Pullback to 20 EMA</span>
+            <span class="mc-about-pill">RSI Momentum Zones</span>
+          </div>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="mc-about-card">
+          <div class="mc-about-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">🌊</div>
+          <h3 class="mc-about-h3">Institutional Footprints in F&amp;O</h3>
+          <p class="mc-about-p">
+            Institutional operators leave undeniable tracks in equity derivatives. Our 15-minute order flow engine continuously tracks Open Interest (OI) and volume deltas to identify true Long Build-Up, Short Covering, Short Build-Up, and Long Unwinding cycles.
+          </p>
+          <div class="mc-about-tags">
+            <span class="mc-about-pill">15m OI Shift</span>
+            <span class="mc-about-pill">Long Build-Up Alerts</span>
+            <span class="mc-about-pill">Put-Call Ratio (PCR)</span>
+          </div>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="mc-about-card">
+          <div class="mc-about-icon" style="background:rgba(56,189,248,0.15);color:#38bdf8;">🔥</div>
+          <h3 class="mc-about-h3">Sector Rotation &amp; Velocity</h3>
+          <p class="mc-about-p">
+            The biggest stock market moves do not happen in isolation—they begin with institutional money rotating into hot sectors. Our 44-sector turnover heatmap helps you identify which industries are leading before individual stock breakouts occur.
+          </p>
+          <div class="mc-about-tags">
+            <span class="mc-about-pill">44 Sector Benchmarks</span>
+            <span class="mc-about-pill">Relative Turnover</span>
+            <span class="mc-about-pill">Leader vs Laggard Heatmap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mission Statement Banner -->
+      <div class="mc-mission-banner">
+        <div class="mc-mission-text">
+          <h4>Our Mission: Institutional Clarity for Every Trader</h4>
+          <p>
+            We empower self-directed Indian traders with institutional-grade data engineering, clean terminal UX, and zero advertising distractions. No spam, no paid tips—just pure quantitative edge.
+          </p>
+        </div>
+        <button type="button" onclick="enterAsGuest()" class="btn pri" style="padding:10px 22px;font-size:0.92rem;font-weight:700;border-radius:10px;">
+          ⚡ Try Guest Demo &rarr;
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: COMPREHENSIVE FEATURES DEEP DIVE ================= -->
+  <section class="sec" id="features" style="padding:64px 0 44px;border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="wrap">
+      <div class="mc-sec-badge">
+        <span>🛠️</span> COMPREHENSIVE PLATFORM CAPABILITIES
+      </div>
+      <h2 class="mc-sec-title">
+        Everything You Need to Track the <span class="ser" style="color:#f5b544;">Indian Market</span>
+      </h2>
+      <p class="mc-sec-desc">
+        Momentum Chasers combines technical scans, derivatives flow, market breadth, and portfolio analytics into one lightning-fast terminal.
+      </p>
+
+      <div class="mc-feature-list">
+        <!-- Feature 1: Smart Screener -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'Smart Screener', 'Scan 2,000+ stocks across EMAs, RSI & volume breakouts')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">⚡ Smart Screener &amp; Filters</h3>
+              <p class="mc-feat-desc">Scan 2,000+ NSE/BSE equities with sub-second mathematical filtering.</p>
+            </div>
+            <span style="font-size:26px;">🔍</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> 10, 20, 50, and 200 EMA crossovers &amp; support scans</li>
+            <li><span class="chk">✓</span> 52-Week High &amp; Low proximity breakouts</li>
+            <li><span class="chk">✓</span> RSI 14 momentum zones (Oversold, Bullish, Overbought)</li>
+            <li><span class="chk">✓</span> 3-Year Recent IPO listing universe (2024–2026 track record)</li>
+            <li><span class="chk">✓</span> Volume explosion &amp; Relative Volume (RVol) alerts</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>Explore Smart Screener</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Feature 2: 15m Order Flow -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'F&O Order Flow', 'Live institutional volume, delta & option imbalances')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">🌊 15-Minute F&amp;O Order Flow</h3>
+              <p class="mc-feat-desc">Follow big-money institutional positioning cycle-by-cycle.</p>
+            </div>
+            <span style="font-size:26px;">📈</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> Real-time 15-min Open Interest (OI) &amp; volume delta</li>
+            <li><span class="chk">✓</span> Automatic classification: Long Build-Up &amp; Short Covering</li>
+            <li><span class="chk">✓</span> Bearish signals: Short Build-Up &amp; Long Unwinding</li>
+            <li><span class="chk">✓</span> Comprehensive coverage across 200+ F&amp;O stock futures</li>
+            <li><span class="chk">✓</span> Put-Call Ratio (PCR) sentiment radar</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>View Order Flow Engine</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Feature 3: Market Breadth & MMI -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'Market Breadth & A/D', 'Advance/Decline net momentum and 52W high/low ratio')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">🧭 Market Breadth &amp; Sentiment</h3>
+              <p class="mc-feat-desc">Measure true market participation before committing risk capital.</p>
+            </div>
+            <span style="font-size:26px;">🎯</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> Live % of constituent stocks above 10, 20, 50, and 200 EMA</li>
+            <li><span class="chk">✓</span> Individual health gauges for Nifty 50, Bank Nifty &amp; SmallCap</li>
+            <li><span class="chk">✓</span> Multi-factor Market Mood Index (MMI) from Fear to Greed</li>
+            <li><span class="chk">✓</span> Net Advance/Decline (A/D) real-time momentum flow</li>
+            <li><span class="chk">✓</span> Mathematical regime detection (Thrust, Base, Pullback, Bull)</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>Check Market Breadth</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Feature 4: Sector Heatmap -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'Sector Turnover', 'Money flows & relative volume across 44 sectoral benchmarks')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">🔥 Sector Rotation &amp; Turnover</h3>
+              <p class="mc-feat-desc">Spot which industry sectors are pulling institutional capital.</p>
+            </div>
+            <span style="font-size:26px;">📊</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> 44 Sectoral and Thematic benchmarks tracked in real-time</li>
+            <li><span class="chk">✓</span> Relative turnover ranking (Auto, IT, Energy, Realty, Pharma)</li>
+            <li><span class="chk">✓</span> Color-coded visual heatmap with percent change and volume</li>
+            <li><span class="chk">✓</span> Identifies early rotation days ahead of broad market moves</li>
+            <li><span class="chk">✓</span> 1-Click filter to screener: drill down into sector leaders</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>Inspect Sector Heatmap</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Feature 5: Multi-Demat Portfolio Tracker -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'Multi-Demat Tracker', 'Consolidate multiple broker statements with deep analytics')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">💼 Multi-Demat Portfolio Tracker</h3>
+              <p class="mc-feat-desc">Consolidate Zerodha, Groww, Angel One, and Dhan in one place.</p>
+            </div>
+            <span style="font-size:26px;">📁</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> Direct CSV &amp; statement upload for all major Indian brokers</li>
+            <li><span class="chk">✓</span> Unified net worth, total P&amp;L, and unrealized gains calculation</li>
+            <li><span class="chk">✓</span> Sector exposure analysis &amp; portfolio risk concentration</li>
+            <li><span class="chk">✓</span> Real-time CMP updates against your average purchase price</li>
+            <li><span class="chk">✓</span> Privacy-first local storage encryption—your holdings stay yours</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>Open Portfolio Tracker</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Feature 6: Financials & Results Engine -->
+        <div class="mc-feat-card" onclick="promptToolAuth(event, 'Financial & Results Presets', 'Filter authentic profit growth, margin expansion & earnings surprise')">
+          <div class="mc-feat-head">
+            <div>
+              <h3 class="mc-feat-title">📑 Financial &amp; Results Presets</h3>
+              <p class="mc-feat-desc">Curated corporate fundamentals and authentic earnings growth.</p>
+            </div>
+            <span style="font-size:26px;">🏆</span>
+          </div>
+          <ul class="mc-feat-bullets">
+            <li><span class="chk">✓</span> 8 Authentic Results Presets (Profit Growth, Revenue Growth)</li>
+            <li><span class="chk">✓</span> Margin Expansion &amp; Operational Turnaround screeners</li>
+            <li><span class="chk">✓</span> Authentic Earnings Surprise filter based on quarterly results</li>
+            <li><span class="chk">✓</span> Results + Breakout combination for explosive momentum</li>
+            <li><span class="chk">✓</span> Verified quarterly filings data with exact report dates</li>
+          </ul>
+          <div class="mc-feat-action">
+            <span>View Financial Presets</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: 4-STEP TRADER WORKFLOW ================= -->
+  <section class="sec" id="workflow" style="padding:64px 0 44px;border-top:1px solid rgba(255,255,255,0.06);background:radial-gradient(ellipse at 50% 100%, rgba(245,181,68,0.04) 0%, rgba(8,12,22,0) 70%);">
+    <div class="wrap">
+      <div class="mc-sec-badge">
+        <span>⏱️</span> DAILY TRADING ROUTINE
+      </div>
+      <h2 class="mc-sec-title">
+        The 4-Step Daily Routine for <span class="ser" style="color:#f5b544;">High-Performance Trading</span>
+      </h2>
+      <p class="mc-sec-desc">
+        How profitable traders structure their trading day using Momentum Chasers from pre-market preparation to market close.
+      </p>
+
+      <div class="mc-workflow-timeline">
+        <!-- Step 1 -->
+        <div class="mc-wf-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="mc-wf-step-num">STEP 01</span>
+            <span class="mc-wf-time">08:45 – 09:15 AM</span>
+          </div>
+          <h3 class="mc-wf-title">Gauge Market Temperature</h3>
+          <p class="mc-wf-desc">
+            Check the Market Mood Index (MMI) and Market Breadth across Nifty 50 and MidCap constituents. If breadth is weak (&lt;45%), reduce position sizing; if strong (&gt;70%), look for aggressive breakout plays.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="mc-wf-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="mc-wf-step-num">STEP 02</span>
+            <span class="mc-wf-time">09:15 – 09:30 AM</span>
+          </div>
+          <h3 class="mc-wf-title">Identify Sector Inflows</h3>
+          <p class="mc-wf-desc">
+            Observe the Sector Turnover Heatmap in the first 15 minutes of open. Spot which industries (e.g. IT, Auto, Energy) are absorbing institutional capital and leading relative volume tables.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="mc-wf-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="mc-wf-step-num">STEP 03</span>
+            <span class="mc-wf-time">09:30 – 10:30 AM</span>
+          </div>
+          <h3 class="mc-wf-title">Run Smart Screener Presets</h3>
+          <p class="mc-wf-desc">
+            Click 1-click presets (+ 50×200 Golden Cross, + Pullback to 20 EMA, + Results Breakout, or + IPO Stocks) to isolate candidate stocks within leading sectors showing high relative volume.
+          </p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="mc-wf-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="mc-wf-step-num">STEP 04</span>
+            <span class="mc-wf-time">Throughout Session</span>
+          </div>
+          <h3 class="mc-wf-title">Confirm with F&amp;O Order Flow</h3>
+          <p class="mc-wf-desc">
+            Verify candidate stock futures for 15-minute Long Build-Up confirmation. Ensure open interest is expanding with price before executing your trade with well-defined stop-loss levels.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: COMPARISON TABLE ================= -->
+  <section class="sec" id="comparison" style="padding:64px 0 44px;border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="wrap">
+      <div class="mc-sec-badge">
+        <span>⚖️</span> WHY CHOOSE US
+      </div>
+      <h2 class="mc-sec-title">
+        The Quantitative Edge <span class="ser" style="color:var(--cy,#22c55e);">Compared</span>
+      </h2>
+      <p class="mc-sec-desc">
+        See how Momentum Chasers stands out against traditional charting tools, delayed retail screeners, and noisy social media forums.
+      </p>
+
+      <div class="mc-comp-table-wrap">
+        <table class="mc-comp-table">
+          <thead>
+            <tr>
+              <th style="width:38%;">Capability / Feature</th>
+              <th style="width:34%;" class="mc-comp-us">⚡ Momentum Chasers</th>
+              <th style="width:28%;">Generic Charting &amp; Free Screeners</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mc-comp-feat">15-Minute F&amp;O Order Flow Tracking</td>
+              <td class="mc-comp-us">✓ Included (Long/Short Buildup in 15m)</td>
+              <td class="mc-comp-them">✕ Expensive Add-on or Unavailable</td>
+            </tr>
+            <tr>
+              <td class="mc-comp-feat">Constituent-Level Market Breadth</td>
+              <td class="mc-comp-us">✓ Authentic calculation across 5 indices</td>
+              <td class="mc-comp-them">✕ Delayed index estimates only</td>
+            </tr>
+            <tr>
+              <td class="mc-comp-feat">Recent 3-Year IPO Universe</td>
+              <td class="mc-comp-us">✓ 250+ recent IPOs (2024–2026) tracked</td>
+              <td class="mc-comp-them">✕ Only past 30 days or unorganized</td>
+            </tr>
+            <tr>
+              <td class="mc-comp-feat">Screener Filtering Latency</td>
+              <td class="mc-comp-us">✓ Sub-second instant mathematical filtering</td>
+              <td class="mc-comp-them">✕ Slow multi-second page reloads</td>
+            </tr>
+            <tr>
+              <td class="mc-comp-feat">Multi-Demat Statement Import</td>
+              <td class="mc-comp-us">✓ Zerodha, Groww, Angel One &amp; Dhan</td>
+              <td class="mc-comp-them">✕ Locked behind paid broker APIs</td>
+            </tr>
+            <tr>
+              <td class="mc-comp-feat">Ad-Free, Distraction-Free Terminal</td>
+              <td class="mc-comp-us">✓ 100% Ad-Free, Dark Glassmorphism UI</td>
+              <td class="mc-comp-them">✕ Cluttered with popups, banners &amp; ads</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: FAQ ACCORDION ================= -->
+  <section class="sec" id="faq" style="padding:64px 0 54px;border-top:1px solid rgba(255,255,255,0.06);background:radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.04) 0%, rgba(8,12,22,0) 70%);">
+    <div class="wrap">
+      <div class="mc-sec-badge">
+        <span>❓</span> FREQUENTLY ASKED QUESTIONS
+      </div>
+      <h2 class="mc-sec-title">
+        Answers to Common Questions About <span class="ser" style="color:#38bdf8;">Our Platform</span>
+      </h2>
+      <p class="mc-sec-desc">
+        Have questions before getting started? Here are direct, transparent answers about Momentum Chasers.
+      </p>
+
+      <div class="mc-faq-list">
+        <!-- FAQ 1 -->
+        <div class="mc-faq-item active">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>What is Momentum Chasers and how does it help my trading?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            Momentum Chasers is India's premier quantitative market screener and terminal. It aggregates market quotes across 2,000+ NSE and BSE equities, computes mathematical indicators (10/20/50/200 EMAs, RSI, VWAP), tracks 15-minute derivatives order flow, and monitors sector relative turnover. It helps you identify high-probability swing and momentum setups in seconds without opening 20 different browser tabs.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="mc-faq-item">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>Is Momentum Chasers free to use?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            Yes! Retail traders can explore our full quantitative analytics suite, smart screener, market breadth radar, and sector heatmap. You can either sign in with Google / Email to sync your starred watchlists across devices or click "⚡ Explore as Guest" for instant access without entering any credentials.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="mc-faq-item">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>Do I need to link a live broker account to use the platform?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            No broker login is required to use the screening tools, order flow, or market breadth! If you wish to use our Multi-Demat Portfolio Tracker, you can easily upload standard statement exports (CSV/Excel) from Zerodha Console, Groww, Angel One, or Dhan. Your data is stored safely in your browser local storage.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="mc-faq-item">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>How does the 15-Minute F&amp;O Order Flow work?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            Our engine processes exchange derivatives data every 15 minutes. It evaluates the relationship between price changes and Open Interest (OI) changes: Price Up + OI Up indicates <strong>Long Build-Up</strong> (bullish accumulation); Price Up + OI Down indicates <strong>Short Covering</strong>; Price Down + OI Up indicates <strong>Short Build-Up</strong>; and Price Down + OI Down indicates <strong>Long Unwinding</strong>.
+          </div>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div class="mc-faq-item">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>Which stock exchanges and universes are covered?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            Momentum Chasers covers the entire Indian equity landscape across both the National Stock Exchange (NSE) and Bombay Stock Exchange (BSE). This includes Nifty 50, Nifty Next 50, Nifty Midcap 150, Nifty Smallcap 250, all 200+ F&amp;O traded stock futures, 44 sectoral benchmarks, and a curated universe of 250+ IPOs listed between 2024 and 2026.
+          </div>
+        </div>
+
+        <!-- FAQ 6 -->
+        <div class="mc-faq-item">
+          <div class="mc-faq-question" onclick="toggleFaq(this)">
+            <span>Is Momentum Chasers a SEBI registered investment adviser?</span>
+            <span class="mc-faq-icon">+</span>
+          </div>
+          <div class="mc-faq-answer">
+            <strong>No.</strong> Momentum Chasers is strictly a financial technology, quantitative screening, and mathematical education platform. We do not provide buy/sell tips, portfolio management services, or individual investment advice. All trades you execute are self-directed. Please read our <a href="/terms.html" style="color:#22c55e;text-decoration:underline;">Terms &amp; Conditions</a> and consult a SEBI registered financial adviser before trading in equity derivatives.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <section class="sec" id="hub" style="padding:42px 0 32px;">
     <div class="wrap">
       <div
@@ -4748,9 +5633,15 @@
         <h2
           style="font-size:clamp(1.85rem, 3.2vw, 2.5rem);margin:0 0 24px 0;text-align:left;font-weight:800;color:#ffffff;line-height:1.2;">
           Your Market Journey <span class="ser" style="font-style:italic;color:var(--cy,#22c55e);">Starts Here</span></h2>
-        <div class="cta" style="justify-content:flex-start;">
+        <div class="cta" style="display:flex;align-items:center;flex-wrap:wrap;gap:14px;justify-content:flex-start;">
           <a class="btn wh" href="login.html#signup" onclick="handleCtaClick(event, 'signup')"
-            style="padding:12px 28px;font-size:0.95rem;font-weight:700;border-radius:10px;">Get Started &rarr;</a>
+            style="padding:12px 28px;font-size:0.95rem;font-weight:700;border-radius:10px;">Sign In to Terminal &rarr;</a>
+          <button type="button" onclick="enterAsGuest()"
+            style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.4);color:#ffffff;font-size:0.95rem;font-weight:700;border-radius:10px;padding:12px 24px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;"
+            onmouseover="this.style.background='rgba(34,197,94,0.28)';this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='rgba(34,197,94,0.18)';this.style.transform='none'">
+            <span>⚡</span> Explore as Guest &rarr;
+          </button>
         </div>
       </div>
     </div>
@@ -4770,6 +5661,26 @@
         </a>
         <p style="margin:0;font-size:0.96rem;color:rgba(255,255,255,0.7);max-width:560px;">Make Smarter Financial
           Decisions with Market Intelligence.</p>
+      </div>
+
+      <!-- Platform Navigation Row (Left Aligned) -->
+      <div
+        style="display:flex;align-items:center;flex-wrap:wrap;gap:14px;font-size:0.92rem;color:rgba(255,255,255,0.7);">
+        <a href="#overview" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Overview</a>
+        <span>&bull;</span>
+        <a href="#about" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">About</a>
+        <span>&bull;</span>
+        <a href="#features" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Features</a>
+        <span>&bull;</span>
+        <a href="#pipeline" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Data Engine</a>
+        <span>&bull;</span>
+        <a href="#workflow" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Workflow</a>
+        <span>&bull;</span>
+        <a href="#comparison" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Comparison</a>
+        <span>&bull;</span>
+        <a href="#faq" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">FAQ</a>
+        <span>&bull;</span>
+        <a href="javascript:void(0)" onclick="enterAsGuest()" style="color:#34d399;text-decoration:none;font-weight:700;">⚡ Instant Guest Demo</a>
       </div>
 
       <!-- Legal Links Row (Left Aligned) -->
@@ -7729,6 +8640,41 @@
       initScrollFloat('[data-scroll-float="true"]');
     }
     window.initScrollFloat = initScrollFloat;
+  </script>
+
+
+  <script>
+    // Global Guest Access Controller
+    function enterAsGuest() {
+      try {
+        const guestProfile = {
+          id: "trader_" + Date.now().toString(36),
+          name: "Trader",
+          email: "trader@momentumchasers.in",
+          plan: "Normal User",
+          avatar: "T",
+          broker: "Demat Linked"
+        };
+        localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
+        localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
+        localStorage.removeItem("momentum_signed_out");
+      } catch (err) { }
+      window.location.href = "index.html#screener";
+    }
+    window.enterAsGuest = enterAsGuest;
+
+    // Interactive FAQ Accordion Controller
+    function toggleFaq(questionEl) {
+      if (!questionEl) return;
+      const item = questionEl.closest('.mc-faq-item');
+      if (!item) return;
+      const wasActive = item.classList.contains('active');
+      document.querySelectorAll('.mc-faq-item').forEach(el => el.classList.remove('active'));
+      if (!wasActive) {
+        item.classList.add('active');
+      }
+    }
+    window.toggleFaq = toggleFaq;
   </script>
 
 </body>
