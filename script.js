@@ -12834,27 +12834,31 @@
         const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sSym]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sSym]);
         const tf = State.timeframe || "d";
         const isW = tf === "w";
-        const cross = smRec ? (isW ? smRec.wEmaCross : smRec.emaCross) : null;
+        const e50 = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
+        const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
         const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
-        const candleSuffix = candles != null ? `${candles}${isW ? 'w' : 'd'}` : '';
+        const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
 
-        let label = "";
-        let tagCls = "";
-        if (cross === "bull") {
-          label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bullish (10>20)`;
-          tagCls = "bullish";
-        } else if (cross === "bear") {
-          label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bearish (10<20)`;
-          tagCls = "bearish";
+        let isGolden = false;
+        if (e50 != null && e200 != null) {
+          isGolden = Number(e50) >= Number(e200);
+        } else if (smRec && (isW ? smRec.wEmaCross : smRec.emaCross)) {
+          isGolden = (isW ? smRec.wEmaCross : smRec.emaCross) === "bull";
+        } else if (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].ema50 && CHART_DATA[sSym].ema200 && CHART_DATA[sSym].ema50.length && CHART_DATA[sSym].ema200.length) {
+          const cd = CHART_DATA[sSym];
+          isGolden = Number(cd.ema50[cd.ema50.length - 1]) >= Number(cd.ema200[cd.ema200.length - 1]);
         } else {
-          const isGolden = Array.isArray(s) ? (s[7] <= 5 || (s[5] && s[5].includes("a"))) : true;
-          label = isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)";
-          tagCls = isGolden ? "bullish" : "bearish";
+          isGolden = Array.isArray(s) ? (s[7] >= 3 || (s[5] && (s[5].includes("a") || s[5].includes("b")))) : true;
         }
 
-        const tooltip = smRec ?
-          `Market Engine: 10×20 Cross: ${cross === 'bull' ? 'Bullish' : cross === 'bear' ? 'Bearish' : 'Neutral'} (${candles || 0} candles) · 50 EMA: ₹${formatNumber(smRec.ema50)}, 200 EMA: ₹${formatNumber(smRec.ema200)}` :
-          `EMA Cross: ${label}`;
+        const label = isGolden
+          ? `● ${candleSuffix ? candleSuffix + ' ' : ''}Golden Cross (50>200)`
+          : `● ${candleSuffix ? candleSuffix + ' ' : ''}Death Cross (50<200)`;
+        const tagCls = isGolden ? "bullish" : "bearish";
+
+        const tooltip = (e50 != null && e200 != null)
+          ? `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50 EMA ≥ 200 EMA)' : 'Death Cross (50 EMA < 200 EMA)'} · 50 EMA: ₹${formatNumber(e50)}, 200 EMA: ₹${formatNumber(e200)}${candles ? ` (${candles} candles)` : ''}`
+          : `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50>200)' : 'Death Cross (50<200)'}`;
 
         crossCell.innerHTML = `
           <span class="crossover-status-tag ${tagCls}" title="${escapeHtml(tooltip)}">
@@ -13821,10 +13825,15 @@
       } else if (activeSortCol === "cross") {
         const smA = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[a[0]]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[a[0]]);
         const smB = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[b[0]]) || (window._screeningMantisEmaMap && window._screeningMantisEmaMap[b[0]]);
-        const crossA = smA ? (State.timeframe === "w" ? smA.wEmaCross : smA.emaCross) : null;
-        const crossB = smB ? (State.timeframe === "w" ? smB.wEmaCross : smB.emaCross) : null;
-        const scoreA = crossA === "bull" ? 2 : (crossA === "bear" ? 0 : 1);
-        const scoreB = crossB === "bull" ? 2 : (crossB === "bear" ? 0 : 1);
+        const isW = State.timeframe === "w";
+        const e50A = smA ? (isW ? smA.wEma50 : smA.ema50) : null;
+        const e200A = smA ? (isW ? smA.wEma200 : smA.ema200) : null;
+        const e50B = smB ? (isW ? smB.wEma50 : smB.ema50) : null;
+        const e200B = smB ? (isW ? smB.wEma200 : smB.ema200) : null;
+        const isGoldA = (e50A != null && e200A != null) ? (Number(e50A) >= Number(e200A)) : (smA ? (isW ? smA.wEmaCross : smA.emaCross) === "bull" : (a[7] >= 3));
+        const isGoldB = (e50B != null && e200B != null) ? (Number(e50B) >= Number(e200B)) : (smB ? (isW ? smB.wEmaCross : smB.emaCross) === "bull" : (b[7] >= 3));
+        const scoreA = isGoldA ? 2 : 0;
+        const scoreB = isGoldB ? 2 : 0;
         diff = scoreA - scoreB;
       } else if (activeSortCol === "athDist") {
         const distA = getStockAthDistance(a).dist;
@@ -14007,26 +14016,31 @@
               ${(() => {
             const tf = State.timeframe || "d";
             const isW = tf === "w";
-            const cross = smRec ? (isW ? smRec.wEmaCross : smRec.emaCross) : null;
+            const e50 = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
+            const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
             const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
-            const candleSuffix = candles != null ? `${candles}${isW ? 'w' : 'd'}` : '';
+            const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
 
-            let label = "";
-            let tagCls = "";
-            if (cross === "bull") {
-              label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bullish (10>20)`;
-              tagCls = "bullish";
-            } else if (cross === "bear") {
-              label = `● ${candleSuffix ? candleSuffix + ' ' : ''}Bearish (10<20)`;
-              tagCls = "bearish";
+            let isGolden = false;
+            if (e50 != null && e200 != null) {
+              isGolden = Number(e50) >= Number(e200);
+            } else if (smRec && (isW ? smRec.wEmaCross : smRec.emaCross)) {
+              isGolden = (isW ? smRec.wEmaCross : smRec.emaCross) === "bull";
+            } else if (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].ema50 && CHART_DATA[s[0]].ema200 && CHART_DATA[s[0]].ema50.length && CHART_DATA[s[0]].ema200.length) {
+              const cd = CHART_DATA[s[0]];
+              isGolden = Number(cd.ema50[cd.ema50.length - 1]) >= Number(cd.ema200[cd.ema200.length - 1]);
             } else {
-              label = isGolden ? "Golden Cross (50>200)" : "Death Cross (50<200)";
-              tagCls = isGolden ? "bullish" : "bearish";
+              isGolden = Array.isArray(s) ? (s[7] >= 3 || (s[5] && (s[5].includes("a") || s[5].includes("b")))) : true;
             }
 
-            const tooltip = smRec ?
-              `Market Engine: 10×20 Cross: ${cross === 'bull' ? 'Bullish' : cross === 'bear' ? 'Bearish' : 'Neutral'} (${candles || 0} candles) · 50 EMA: ₹${formatNumber(smRec.ema50)}, 200 EMA: ₹${formatNumber(smRec.ema200)}` :
-              `EMA Cross: ${label}`;
+            const label = isGolden
+              ? `● ${candleSuffix ? candleSuffix + ' ' : ''}Golden Cross (50>200)`
+              : `● ${candleSuffix ? candleSuffix + ' ' : ''}Death Cross (50<200)`;
+            const tagCls = isGolden ? "bullish" : "bearish";
+
+            const tooltip = (e50 != null && e200 != null)
+              ? `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50 EMA ≥ 200 EMA)' : 'Death Cross (50 EMA < 200 EMA)'} · 50 EMA: ₹${formatNumber(e50)}, 200 EMA: ₹${formatNumber(e200)}${candles ? ` (${candles} candles)` : ''}`
+              : `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50>200)' : 'Death Cross (50<200)'}`;
 
             return `
                   <span class="crossover-status-tag ${tagCls}" title="${escapeHtml(tooltip)}">
@@ -14119,7 +14133,7 @@
     State.screenerCols[col] = false;
     try { localStorage.setItem("momentum_screener_cols_v1", JSON.stringify(State.screenerCols)); } catch (err) { }
     renderActiveView();
-    const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "EMA Cross (10×20)", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
+    const colNames = { athDist: "% From ATH", earnings: "Earnings", cross: "EMA Cross (50×200)", ema: "EMA", sector: "Sector", cap: "Cap", price: "Price", chg: "Day Chg" };
     showToast(`Removed "${colNames[col] || col}" column. Click "↺ Reset Columns" to restore anytime.`, "✂️");
   };
 
@@ -14159,7 +14173,7 @@
       athDist: "% From ATH",
       earnings: "Earnings",
       ema: "EMA",
-      cross: "EMA Cross (10×20)"
+      cross: "EMA Cross (50×200)"
     };
     const hiddenColsList = defaultColsList.filter(c => State.screenerCols && State.screenerCols[c] === false);
     const hasHiddenCols = hiddenColsList.length > 0;
@@ -14192,7 +14206,7 @@
     } else if (activeSortCol === "ema") {
       activeSortSummary = `EMA Alignment (${activeSortDir === "desc" ? "Above EMAs First ▼" : "Below EMAs First ▲"})`;
     } else if (activeSortCol === "cross") {
-      activeSortSummary = `EMA Cross (${activeSortDir === "desc" ? "Bullish (10>20) First ▼" : "Bearish (10<20) First ▲"})`;
+      activeSortSummary = `EMA Cross (${activeSortDir === "desc" ? "Golden Cross (50>200) First ▼" : "Death Cross (50<200) First ▲"})`;
     } else if (activeSortCol === "star") {
       activeSortSummary = `Watchlist Star (${activeSortDir === "desc" ? "Starred First ★" : "Unstarred First ☆"})`;
     } else if (activeSortCol === "athDist") {
@@ -14381,7 +14395,7 @@
               <option value="ticker" ${activeSortCol === "ticker" ? "selected" : ""}>Ticker & Name</option>
               <option value="sector" ${activeSortCol === "sector" ? "selected" : ""}>Sector</option>
               <option value="ema" ${activeSortCol === "ema" ? "selected" : ""}>EMA Status (10/20/50/200)</option>
-              <option value="cross" ${activeSortCol === "cross" ? "selected" : ""}>EMA Cross (10×20)</option>
+              <option value="cross" ${activeSortCol === "cross" ? "selected" : ""}>EMA Cross (50×200)</option>
               <option value="athDist" ${activeSortCol === "athDist" ? "selected" : ""}>Distance from ATH (%)</option>
               <option value="earnings" ${activeSortCol === "earnings" ? "selected" : ""}>Earnings Date (📅)</option>
               <option value="star" ${activeSortCol === "star" ? "selected" : ""}>Watchlist Star (★)</option>
@@ -14428,7 +14442,7 @@
                 </label>
                 <label class="screener-col-item">
                   <input type="checkbox" data-action="toggle-screener-col-check" data-col="cross" ${State.screenerCols.cross !== false ? 'checked' : ''} />
-                  <span>EMA Cross (10×20)</span>
+                  <span>EMA Cross (50×200)</span>
                 </label>
               </div>
             </div>
@@ -14515,10 +14529,10 @@
                   <span>EMA</span>
                   <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="hideScreenerCol(event, 'ema')">✕</button>
                 </th>` : ''}
-                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by EMA Crossover (Bullish 10>20 first / Bearish 10<20 first)">
+                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by EMA Crossover (Golden Cross 50>200 first / Death Cross 50<200 first)">
                   <div style="display:inline-flex;align-items:center;gap:6px">
                     <div>
-                      <div>EMA Cross (10×20)</div>
+                      <div>EMA Cross (50×200)</div>
                       <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none !important;letter-spacing:0;margin-top:2px;">in 15min time frame</div>
                     </div>
                     <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
@@ -36900,7 +36914,7 @@
           "price": "Price",
           "chg": "Day % Change",
           "ema": "EMA Alignment",
-          "cross": "EMA Cross (10×20)",
+          "cross": "EMA Cross (50×200)",
           "default": "Momentum Strength"
         };
         const dirLabel = State.screenerSortDir === "asc" ? "Ascending (▲)" : "Descending (▼)";
