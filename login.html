@@ -6204,18 +6204,7 @@
             localStorage.removeItem("momentum_signed_out");
           } catch (e) { }
           showMsg("Entering Terminal as Guest...", true);
-          if (typeof window.triggerPreloader === 'function') {
-            window.triggerPreloader({
-              text: "loading your experience",
-              subText: "Entering guest terminal • Syncing live 15m order flow",
-              targetUrl: "index.html#screener",
-              duration: 1800
-            });
-          } else {
-            setTimeout(() => {
-              window.location.href = "index.html#screener";
-            }, 300);
-          }
+          window.location.href = "index.html#screener";
         });
       }
 
@@ -6298,18 +6287,7 @@
               AuthRateLimiter.reset();
               try { localStorage.removeItem("momentum_signed_out"); } catch (e) { }
               showMsg("Signed in successfully! Loading terminal...", true);
-              if (typeof window.triggerPreloader === 'function') {
-                window.triggerPreloader({
-                  text: "loading your experience",
-                  subText: "Trader authenticated • Synchronizing live watchlists & charts",
-                  targetUrl: "index.html#screener",
-                  duration: 2000
-                });
-              } else {
-                setTimeout(() => {
-                  window.location.href = "index.html#screener";
-                }, 600);
-              }
+              window.location.href = "index.html#screener";
             } else {
               const fail = AuthRateLimiter.recordFailure();
               if (fail.locked) {
@@ -6362,18 +6340,7 @@
                 );
               } else {
                 showMsg("Account created! Loading terminal...", true);
-                if (typeof window.triggerPreloader === 'function') {
-                  window.triggerPreloader({
-                    text: "loading your experience",
-                    subText: "Account created • Setting up your trading environment",
-                    targetUrl: "index.html#screener",
-                    duration: 2000
-                  });
-                } else {
-                  setTimeout(() => {
-                    window.location.href = "index.html#screener";
-                  }, 700);
-                }
+                window.location.href = "index.html#screener";
               }
             } else {
               const err = res.error || "";
@@ -6433,16 +6400,7 @@
                         localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
                         localStorage.removeItem("momentum_signed_out");
                       } catch (_) { }
-                      if (typeof window.triggerPreloader === 'function') {
-                        window.triggerPreloader({
-                          text: "loading your experience",
-                          subText: "Entering guest terminal • Live order flow ready",
-                          targetUrl: "index.html#screener",
-                          duration: 1800
-                        });
-                      } else {
-                        window.location.href = "index.html#screener";
-                      }
+                      window.location.href = "index.html#screener";
                     };
                   }
                 }, 50);
@@ -6476,18 +6434,7 @@
                 localStorage.setItem("momentum_auth_user", JSON.stringify(profile));
               } catch (_) { }
               showMsg(`Welcome back, ${profile.name}! Launching terminal...`, true);
-              if (typeof window.triggerPreloader === 'function') {
-                window.triggerPreloader({
-                  text: "loading your experience",
-                  subText: `Welcome, ${profile.name}! Decrypting terminal access`,
-                  targetUrl: "index.html#screener",
-                  duration: 1800
-                });
-              } else {
-                setTimeout(() => {
-                  window.location.href = "index.html#screener";
-                }, 400);
-              }
+              window.location.href = "index.html#screener";
               return;
             }
           }
@@ -6516,16 +6463,7 @@
                     try { localStorage.removeItem('momentum_signed_out'); } catch (_) { }
                     history.replaceState(null, '', window.location.pathname);
                     showMsg(`Welcome, ${profile.name}! Launching terminal...`, true);
-                    if (typeof window.triggerPreloader === 'function') {
-                      window.triggerPreloader({
-                        text: "loading your experience",
-                        subText: `Welcome, ${profile.name}! Decrypting terminal access`,
-                        targetUrl: "index.html#screener",
-                        duration: 1800
-                      });
-                    } else {
-                      setTimeout(() => { window.location.href = "index.html#screener"; }, 400);
-                    }
+                    window.location.href = "index.html#screener";
                     return;
                   }
                 } catch (_) { }
@@ -6552,16 +6490,7 @@
                 try { localStorage.removeItem('momentum_signed_out'); } catch (_) { }
                 history.replaceState(null, '', window.location.pathname);
                 showMsg(`Welcome, ${profile.name}! Launching terminal...`, true);
-                if (typeof window.triggerPreloader === 'function') {
-                  window.triggerPreloader({
-                    text: "loading your experience",
-                    subText: `Welcome, ${profile.name}! Decrypting terminal access`,
-                    targetUrl: "index.html#screener",
-                    duration: 1800
-                  });
-                } else {
-                  setTimeout(() => { window.location.href = "index.html#screener"; }, 400);
-                }
+                window.location.href = "index.html#screener";
                 return;
               }
             }
@@ -7185,283 +7114,21 @@
   </script>
 
 
-  <!-- ================= REACT BITS PRELOADER COMPONENT (STAIRS WITH ANIMATED LOGO) ================= -->
-  <style>
-    .rb-preloader-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99999999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      pointer-events: all;
-      overflow: hidden;
-      font-family: "Manrope", system-ui, -apple-system, sans-serif;
-    }
-
-    .rb-preloader-stairs {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .rb-stair-col {
-      flex: 1;
-      height: 100%;
-      background: #080d1a;
-      border-right: 1px solid rgba(255, 255, 255, 0.04);
-      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
-      transform: translateY(-100%);
-      transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
-      will-change: transform;
-    }
-
-    .rb-stair-col:nth-child(even) {
-      background: #0c1427;
-    }
-
-    .rb-stair-col.active {
-      transform: translateY(0);
-      transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
-      transition-delay: calc(var(--stair-i) * 0.06s);
-    }
-
-    .rb-stair-col.exit {
-      transform: translateY(-100%);
-      transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
-      transition-delay: calc(var(--stair-i) * 0.07s);
-    }
-
-    .rb-preloader-content {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.9) translateY(12px);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
-    }
-
-    .rb-preloader-content.visible {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-
-    .rb-preloader-content.fade-out {
-      opacity: 0;
-      transform: scale(0.92) translateY(-16px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
-    }
-
-    .rb-logo-card {
-      position: relative;
-      background: rgba(9, 14, 26, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 36px;
-      padding: 44px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.85),
-                  0 0 50px rgba(16, 185, 129, 0.18),
-                  inset 0 1px 1px rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
-
-    .rb-logo-halo {
-      position: absolute;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(245, 181, 68, 0.25) 45%, rgba(34, 211, 238, 0.15) 70%, transparent 100%);
-      filter: blur(35px);
-      animation: rbHaloPulse 2.4s ease-in-out infinite;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .rb-logo-ring {
-      position: absolute;
-      width: 190px;
-      height: 190px;
-      border-radius: 50%;
-      border: 1.5px solid transparent;
-      border-top-color: rgba(16, 185, 129, 0.85);
-      border-right-color: rgba(245, 181, 68, 0.65);
-      border-bottom-color: rgba(34, 211, 238, 0.45);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
-      animation: rbRingSpin 3.2s linear infinite;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .rb-logo-wrap {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .rb-animated-logo {
-      width: clamp(120px, 26vw, 150px);
-      height: clamp(120px, 26vw, 150px);
-      object-fit: contain;
-      display: block;
-      animation: rbLogoFloat 2.4s ease-in-out infinite;
-      will-change: transform, filter;
-    }
-
-    @keyframes rbLogoFloat {
-      0% {
-        transform: translateY(0) scale(1);
-        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6))
-                drop-shadow(0 0 20px rgba(16, 185, 129, 0.35))
-                drop-shadow(0 0 40px rgba(245, 181, 68, 0.2));
-      }
-      50% {
-        transform: translateY(-8px) scale(1.05);
-        filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.7))
-                drop-shadow(0 0 32px rgba(16, 185, 129, 0.65))
-                drop-shadow(0 0 60px rgba(245, 181, 68, 0.45));
-      }
-      100% {
-        transform: translateY(0) scale(1);
-        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6))
-                drop-shadow(0 0 20px rgba(16, 185, 129, 0.35))
-                drop-shadow(0 0 40px rgba(245, 181, 68, 0.2));
-      }
-    }
-
-    @keyframes rbHaloPulse {
-      0%, 100% {
-        opacity: 0.5;
-        transform: scale(0.9);
-      }
-      50% {
-        opacity: 0.95;
-        transform: scale(1.18);
-      }
-    }
-
-    @keyframes rbRingSpin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-
-  <div id="rb-preloader" class="rb-preloader-overlay" aria-hidden="true" style="display:none;">
-    <!-- Staggered Stairs Columns (variant="stairs") -->
-    <div class="rb-preloader-stairs">
-      <div class="rb-stair-col" style="--stair-i:0"></div>
-      <div class="rb-stair-col" style="--stair-i:1"></div>
-      <div class="rb-stair-col" style="--stair-i:2"></div>
-      <div class="rb-stair-col" style="--stair-i:3"></div>
-      <div class="rb-stair-col" style="--stair-i:4"></div>
-      <div class="rb-stair-col" style="--stair-i:5"></div>
-    </div>
-
-    <!-- Center Animated Logo (Only Logo, No Text) -->
-    <div class="rb-preloader-content">
-      <div class="rb-logo-card">
-        <div class="rb-logo-halo"></div>
-        <div class="rb-logo-ring"></div>
-        <div class="rb-logo-wrap">
-          <img src="logo-icon.png?v=2" alt="Momentum Chasers" class="rb-animated-logo">
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // ========================================================
-    // REACT BITS PRELOADER CONTROLLER (STAIRS WITH ANIMATED LOGO)
-    // ========================================================
-    (function() {
-      function triggerPreloader(options) {
-        options = options || {};
-        var duration = typeof options.duration === 'number' ? options.duration : 1600;
-        var targetUrl = options.targetUrl || 'index.html#screener';
-        var onComplete = options.onComplete;
-
-        var el = document.getElementById('rb-preloader');
-        if (!el) {
-          if (targetUrl) window.location.href = targetUrl;
-          return;
-        }
-
-        // Hide any open auth modal backdrop
-        var authModal = document.getElementById('auth-modal');
-        if (authModal) {
-          authModal.style.display = 'none';
-        }
-
-        el.style.display = 'flex';
-        el.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-
-        var stairs = el.querySelectorAll('.rb-stair-col');
-        var content = el.querySelector('.rb-preloader-content');
-        if (content) {
-          content.classList.remove('fade-out');
-          content.classList.remove('visible');
-        }
-
-        // Animate stairs in: cascade from top
-        stairs.forEach(function(col) {
-          col.classList.remove('exit');
-          col.classList.remove('active');
-          void col.offsetHeight; // force reflow
-          col.classList.add('active');
-        });
-
-        // Show animated logo smoothly after stairs begin dropping
-        setTimeout(function() {
-          if (content) content.classList.add('visible');
-        }, 100);
-
-        // Run animation for duration, then exit stairs and navigate
-        setTimeout(function() {
-          // 1. Fade out logo
-          if (content) content.classList.add('fade-out');
-
-          // 2. Lift stair columns away in staggered diagonal wave
-          stairs.forEach(function(col) {
-            col.classList.remove('active');
-            col.classList.add('exit');
-          });
-
-          // 3. Complete navigation as stairs uncover screen
-          setTimeout(function() {
-            if (typeof onComplete === 'function') {
-              onComplete();
-            } else if (targetUrl) {
-              window.location.href = targetUrl;
-            }
-          }, 620);
-        }, duration);
+    // Preloader animation removed per user request: immediate transition
+    function triggerPreloader(options) {
+      options = options || {};
+      var targetUrl = options.targetUrl || 'index.html#screener';
+      if (typeof options.onComplete === 'function') {
+        options.onComplete();
+      } else if (targetUrl) {
+        window.location.href = targetUrl;
       }
-
-      window.triggerPreloader = triggerPreloader;
-      window.Preloader = {
-        start: triggerPreloader
-      };
-    })();
+    }
+    window.triggerPreloader = triggerPreloader;
+    window.Preloader = {
+      start: triggerPreloader
+    };
   </script>
-
 </body>
-
 </html>
