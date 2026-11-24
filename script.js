@@ -10945,7 +10945,7 @@
     }
   };
 
-  const viewHistoryStack = [];
+  let viewHistoryStack = [];
   function recordViewNavigation(fromView) {
     if (fromView && fromView !== "login") {
       if (viewHistoryStack.length === 0 || viewHistoryStack[viewHistoryStack.length - 1] !== fromView) {
@@ -15865,7 +15865,7 @@
         <!-- Header Row Matching Image 1 & 2 -->
         <div class="turnover-header-row">
           <div style="display:flex;align-items:flex-start;gap:12px;">
-            <button class="section-back-btn" data-action="go-back" title="Go back to previous page" style="margin-top:2px;">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page" style="margin-top:2px;">
               <span class="back-arrow">← </span> <span>Back</span>
             </button>
             <div>
@@ -18840,7 +18840,7 @@
         <div class="tv-topbar">
           <div class="tv-topbar-left">
             <!-- Back Button to return to previous section -->
-            <button class="tv-back-btn" data-action="go-back" title="Go back to previous page">
+            <button class="tv-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
               <span class="btn-back-arrow">←</span>
               <span class="btn-back-text">Back</span>
             </button>
@@ -18867,7 +18867,7 @@
             </button>
 
             <!-- Close (X) Button to return to previous section -->
-            <button class="tv-close-btn" data-action="go-back" title="Close and return (Esc)">
+            <button class="tv-close-btn" data-action="go-back" onclick="navigateBack(event)" title="Close and return (Esc)">
               <span>✕</span>
             </button>
           </div>
@@ -30188,7 +30188,7 @@
       <div class="events-calendar-header">
         <div class="events-title-row">
           <div class="view-title-left">
-            <button class="section-back-btn" data-action="go-back" title="Back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <h2 class="events-heading">
@@ -32411,7 +32411,7 @@
         <!-- Order Flow Top Toolbar -->
         <div class="orderflow-nav-toolbar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--sf);border-bottom:1px solid var(--ln);flex-wrap:wrap;gap:10px;">
           <div style="display:flex;align-items:center;gap:12px;">
-            <button class="section-back-btn" data-action="go-back" title="Back to previous page" style="background:var(--sf2);border:1px solid var(--ln);color:var(--ink);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Back to previous page" style="background:var(--sf2);border:1px solid var(--ln);color:var(--ink);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div style="display:flex;align-items:center;gap:8px;">
@@ -32462,7 +32462,7 @@
         <!-- Header Bar -->
         <div class="view-header-bar" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:4px 0 16px 0;border-bottom:1px solid var(--ln);">
           <div class="view-title-left" style="display:flex;align-items:center;gap:12px;">
-            <button class="section-back-btn" data-action="go-back" title="Back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -33302,7 +33302,7 @@
         <!-- Header Bar -->
         <div class="view-header-bar" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:4px 0 16px 0;border-bottom:1px solid var(--ln);">
           <div class="view-title-left" style="display:flex;align-items:center;gap:12px;">
-            <button class="section-back-btn" data-action="go-back" title="Back to previous page">
+            <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Back to previous page">
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -35726,21 +35726,32 @@
       if (typeof e.preventDefault === "function") e.preventDefault();
     }
     const now = Date.now();
-    if (now - _lastNavigateBackTime < 350) {
+    if (now - _lastNavigateBackTime < 250) {
       return; // Debounce rapid / double event firing
     }
     _lastNavigateBackTime = now;
 
-    // Always redirect directly to Dashboard page ("home")
-    viewHistoryStack = [];
-    State.previousView = State.view;
-    State.view = "home";
-    window.location.hash = "home";
+    // Pop the previous view from history stack if available
+    let targetView = "home";
+    while (Array.isArray(viewHistoryStack) && viewHistoryStack.length > 0) {
+      const prev = viewHistoryStack.pop();
+      if (prev && prev !== "stock" && prev !== "login" && prev !== State.view) {
+        targetView = prev;
+        break;
+      }
+    }
+    if (targetView === "home" && State.previousView && State.previousView !== "stock" && State.previousView !== "login" && State.previousView !== State.view) {
+      targetView = State.previousView;
+    }
 
-    // Update active nav link styling in sidebar to Dashboard
+    State.previousView = State.view;
+    State.view = targetView;
+    window.location.hash = targetView;
+
+    // Update active nav link styling in sidebar
     document.querySelectorAll(".nav-link").forEach(el => {
       const v = el.dataset.view;
-      if (v === "home") el.classList.add("active");
+      if (v === targetView) el.classList.add("active");
       else el.classList.remove("active");
     });
 
@@ -37180,11 +37191,20 @@
         const um = document.getElementById("user-profile-modal");
         const up = document.getElementById("upload-modal");
         const hm = document.getElementById("holding-modal");
+        const anyModalOpen = (tm && tm.style.display !== "none") ||
+                             (um && um.style.display !== "none") ||
+                             (up && up.style.display !== "none") ||
+                             (hm && hm.style.display !== "none");
         closeEventsDayModal();
         if (hm && hm.style.display !== "none") hm.style.display = "none";
         if (tm && tm.style.display !== "none") tm.style.display = "none";
         if (um && um.style.display !== "none") um.style.display = "none";
         if (up && up.style.display !== "none") up.style.display = "none";
+
+        // Return to previous view if user pressed Escape while viewing stock chart
+        if (!anyModalOpen && State.view === "stock") {
+          navigateBack(e);
+        }
       }
     });
 
