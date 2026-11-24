@@ -7407,26 +7407,26 @@ const server = http.createServer(async (req, res) => {
       });
       res.end(JSON.stringify({
         success: true,
-        message: 'Feedback received and archived. Sent to chasersmomentum@gmail.com',
+        message: 'Feedback received and archived. Sent to support@momentumchasers.in',
         id: feedbackItem.id
       }));
 
-      // Non-blocking background email dispatch to chasersmomentum@gmail.com
+      // Non-blocking background email dispatch to support@momentumchasers.in
       (async () => {
         try {
-          await fetch('https://formsubmit.co/ajax/chasersmomentum@gmail.com', {
+          await fetch('https://formsubmit.co/ajax/support@momentumchasers.in', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({
               name,
-              email: email || 'no-reply@momentum-chasers.com',
+              email: email || 'no-reply@momentumchasers.in',
               topic,
               sentiment,
               message,
               _subject: `⚡ Momentum Chasers Feedback [${sentiment}]: ${topic} (${name})`,
               _template: 'table',
               _captcha: 'false',
-              _replyto: email || 'chasersmomentum@gmail.com'
+              _replyto: email || 'support@momentumchasers.in'
             })
           });
         } catch (e) {

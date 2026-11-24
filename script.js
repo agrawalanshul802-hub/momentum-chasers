@@ -10589,7 +10589,7 @@
 
   const DEFAULT_USER_PROFILE = {
     name: "Trader",
-    email: "trader@momentumchasers.com",
+    email: "trader@momentumchasers.in",
     plan: "PRO Terminal",
     avatar: "T",
     broker: "Demat Linked",
@@ -34323,7 +34323,7 @@
                   <label for="email" class="ob-field-label">EMAIL ADDRESS</label>
                   <div class="ob-input-row">
                     <svg class="ob-field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <input id="email" type="email" placeholder="trader@momentumchasers.com" autocomplete="email" value="trader@momentumchasers.com" required class="ob-field-input" />
+                    <input id="email" type="email" placeholder="trader@momentumchasers.in" autocomplete="email" value="trader@momentumchasers.in" required class="ob-field-input" />
                   </div>
                 </div>
 
@@ -34484,7 +34484,7 @@
     const loginForm = document.getElementById('login-form');
 
     const doEmailLogin = () => {
-      const emailVal = (emailInput && emailInput.value.trim()) || "trader@momentumchasers.com";
+      const emailVal = (emailInput && emailInput.value.trim()) || "trader@momentumchasers.in";
       const pwVal = (pwInput && pwInput.value) || "momentum2026";
 
       const rawName = emailVal.split("@")[0].replace(/[._-]/g, ' ');
@@ -34517,7 +34517,7 @@
     const doVisitorLogin = () => {
       const vUser = {
         name: "Guest Trader",
-        email: "visitor@momentumchasers.com",
+        email: "visitor@momentumchasers.in",
         plan: "Visitor Preview",
         avatar: "⚡",
         provider: "guest",
@@ -34677,7 +34677,7 @@
     if (!body) return;
     const user = State.user || {
       name: "Trader",
-      email: "trader@momentumchasers.com",
+      email: "trader@momentumchasers.in",
       plan: "Normal User",
       avatar: "T",
       provider: "default",
@@ -34750,7 +34750,7 @@
             <h4 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(rawName)}</h4>
             ${isPro ? `<span style="font-size:10px;font-weight:800;background:rgba(5,150,105,0.18);color:var(--g);border:1px solid rgba(5,150,105,0.3);padding:1px 6px;border-radius:6px">PRO</span>` : `<span style="font-size:10px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);padding:1px 6px;border-radius:6px">NORMAL</span>`}
           </div>
-          <div style="font-size:12px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(user.email || "trader@momentumchasers.com")}</div>
+          <div style="font-size:12px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(user.email || "trader@momentumchasers.in")}</div>
         </div>
       </div>
 
@@ -34859,7 +34859,7 @@
         window.MomentumCloudSync.syncProfile(State.user);
       }
       const rawName = State.user.name || "Trader";
-      const email = State.user.email || "trader@momentumchasers.com";
+      const email = State.user.email || "trader@momentumchasers.in";
       const isPro = State.user && (State.user.isPro === true || (State.user.plan && State.user.plan.toUpperCase().includes("PRO")));
       const plan = isPro ? "PRO" : (State.user.plan || "NORMAL");
       const broker = State.user.broker || "Dhan Connected";
@@ -36365,7 +36365,7 @@
       else if (action === "login-submit") {
         const emailEl = document.getElementById("email");
         const pwEl = document.getElementById("pw");
-        const emailVal = (emailEl && emailEl.value.trim()) || "trader@momentumchasers.com";
+        const emailVal = (emailEl && emailEl.value.trim()) || "trader@momentumchasers.in";
         const rawName = emailVal.split("@")[0].replace(/[._-]/g, ' ');
         const nameVal = rawName ? (rawName.charAt(0).toUpperCase() + rawName.slice(1)) : "Pro Trader";
         loginUser({
@@ -36392,7 +36392,7 @@
       else if (action === "login-visitor" || action === "instant-guest-login") {
         loginUser({
           name: "Guest Trader",
-          email: "guest@momentumchasers.com",
+          email: "guest@momentumchasers.in",
           plan: "Guest Demo",
           avatar: "⚡",
           broker: "Guest Mode"
@@ -36995,7 +36995,7 @@
       else if (action === "autofill-demo") {
         const emailInput = document.getElementById("auth-email");
         const nameInput = document.getElementById("auth-name");
-        if (emailInput) emailInput.value = "demo.trader@momentumchasers.com";
+        if (emailInput) emailInput.value = "demo.trader@momentumchasers.in";
         if (nameInput) nameInput.value = "Demo Trader";
         showToast("Demo credentials filled!", "⚡");
       }
@@ -38633,7 +38633,7 @@
       guestBtn.onclick = function (e) {
         e.stopPropagation();
         dropdown.classList.remove("show");
-        const guestUser = { name: "Guest Trader", email: "guest@momentumchasers.com", role: "guest", plan: "TRIAL" };
+        const guestUser = { name: "Guest Trader", email: "guest@momentumchasers.in", role: "guest", plan: "TRIAL" };
         State.user = guestUser;
         try { localStorage.setItem("momentum_auth_user", JSON.stringify(guestUser)); } catch (_) { }
         renderUserAuthUI();
@@ -38827,7 +38827,7 @@
         const guestProfile = {
           id: "trader_" + Date.now().toString(36),
           name: "Trader",
-          email: "trader@momentumchasers.com",
+          email: "trader@momentumchasers.in",
           plan: "PRO Terminal",
           avatar: "T"
         };
