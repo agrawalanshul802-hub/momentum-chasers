@@ -1449,7 +1449,7 @@
     ["JLHL", "MC", "Pharmaceuticals & Healthcare", 289.6, -0.05, "r", "r", 6, { "pe": 52.8, "pb": 5.8, "rev": 3.2, "profit": 28.8, "name": "JUPITER LIFE LINE HOSP L", "high52": 340, "low52": 233.4, "results": "2026-10-23", "resultsStatus": "Confirmed", "mcapCr": 9494, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": 0.4 }],
     ["JMA", "SC", "Automobiles & Auto", 101.31, -5.52, "a", "a", 8, { "pe": 7.2, "pb": 0.8, "rev": 3.2, "profit": 13.4, "name": "JULLUNDUR MOT AGENCY LTD", "high52": 107.5, "low52": 70.25, "results": "2026-11-10", "resultsStatus": "Confirmed", "mcapCr": 231, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["JNKINDIA", "SC", "Capital Goods & Engineering", 347.9, -2.45, "r", "r", 7, { "pe": 25.8, "pb": 3.3, "rev": 3.2, "profit": -1.4, "name": "JNK INDIA LIMITED", "high52": 558, "low52": 200.92, "results": "2026-11-05", "resultsStatus": "Confirmed", "mcapCr": 1947, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": -4.3 }],
-    ["JNPR", "MC", "Oil & Gas & Energy", 241.86, -1.3, "r", "r", 6, { "pe": 128, "pb": 2.5, "rev": 3.2, "profit": -1.4, "name": "JUNIPER GREEN ENERGY LTD", "high52": 284.5, "low52": 223.2, "results": "2026-10-30", "resultsStatus": "Confirmed", "mcapCr": 13762, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": -1.1 }],
+    ["JNPR", "MC", "Oil & Gas & Energy", 248.57, 2.45, "a", "r", 6, { "pe": 128, "pb": 2.5, "rev": 3.2, "profit": -1.4, "name": "JUNIPER GREEN ENERGY LTD", "high52": 284.7, "low52": 223.05, "results": "2026-10-30", "resultsStatus": "Confirmed", "mcapCr": 13966, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": -1.1 }],
     ["JOCIL", "SC", "Capital Goods & Engineering", 131.97, 1.48, "r", "r", 4, { "pe": 14.2, "pb": 0.6, "rev": 3.2, "profit": -2.1, "name": "JOCIL LIMITED", "high52": 175.12, "low52": 91.25, "results": "2026-10-28", "resultsStatus": "Confirmed", "mcapCr": 117, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["JPL", "LC", "Capital Goods & Engineering", 1388.5, -0.53, "v", "r", 6, { "pe": 40.3, "pb": 3.5, "rev": 3.2, "profit": 12, "name": "JIO PLATFORMS LIMITED", "high52": 1489.7, "low52": 1357, "results": "2026-10-30", "resultsStatus": "Confirmed", "mcapCr": 1278674, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": 0.7 }],
     ["JPOLYINVST", "SC", "Banking & Finance", 900.4, -1.8, "r", "r", 7, { "pe": 1.2, "pb": 0.6, "rev": 3.2, "profit": 12, "name": "JIND POL INV & FIN CO LTD", "high52": 1487.7, "low52": 842.7, "results": "2026-11-12", "resultsStatus": "Confirmed", "mcapCr": 946, "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": 0 }],
@@ -4899,6 +4899,7 @@
     "JINDALSAW": { price: 246.42, chg: -1.4, high52: 320, low52: 153 },
     "JINDALSTEL": { price: 1131.9, chg: 1.56, high52: 1306.2, low52: 977.1 },
     "JIOFIN": { price: 224.97, chg: -0.81, high52: 309.8, low52: 202.51 },
+    "JNPR": { price: 248.57, chg: 2.45, high52: 284.7, low52: 223.05 },
     "JKCEMENT": { price: 5438.7, chg: 2.22, high52: 6105, low52: 4671.5 },
     "JKTYRE": { price: 368.45, chg: 0.57, high52: 611.9, low52: 296.75 },
     "JMFINANCIL": { price: 110.93, chg: 0.11, high52: 159.73, low52: 103 },
@@ -5159,6 +5160,12 @@
       const c = AUTHENTIC_CANONICAL_PRICES[s[0]];
       s[3] = c.price;
       if (typeof c.chg === "number") s[4] = c.chg;
+    } else if (typeof window !== "undefined" && window._screeningMantisEmaMap && window._screeningMantisEmaMap[s[0]]) {
+      const sm = window._screeningMantisEmaMap[s[0]];
+      if (typeof sm.currentClose === "number" && sm.currentClose > 0) {
+        s[3] = sm.currentClose;
+        if (typeof sm.chg1d === "number") s[4] = sm.chg1d;
+      }
     }
     ST_MAP[s[0]] = {
       symbol: s[0],
@@ -12410,11 +12417,15 @@
     const rec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[sym]) ||
       (window._screeningMantisEmaMap && window._screeningMantisEmaMap[sym]);
     if (rec) {
+      const e10 = isW ? rec.wEma10 : rec.ema10;
+      const e20 = isW ? rec.wEma20 : rec.ema20;
+      const e50 = isW ? rec.wEma50 : rec.ema50;
+      const e200 = isW ? rec.wEma200 : rec.ema200;
       return [
-        Boolean(isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10),
-        Boolean(isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20),
-        Boolean(isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50),
-        Boolean(isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200)
+        Boolean(e10 != null && typeof price === "number" && price > 0 ? price >= e10 : (isW ? (rec.wAboveEma10 !== undefined ? rec.wAboveEma10 : rec.aboveEma10) : rec.aboveEma10)),
+        Boolean(e20 != null && typeof price === "number" && price > 0 ? price >= e20 : (isW ? (rec.wAboveEma20 !== undefined ? rec.wAboveEma20 : rec.aboveEma20) : rec.aboveEma20)),
+        Boolean(e50 != null && typeof price === "number" && price > 0 ? price >= e50 : (isW ? (rec.wAboveEma50 !== undefined ? rec.wAboveEma50 : rec.aboveEma50) : rec.aboveEma50)),
+        Boolean(e200 != null && typeof price === "number" && price > 0 ? price >= e200 : (isW ? (rec.wAboveEma200 !== undefined ? rec.wAboveEma200 : rec.aboveEma200) : rec.aboveEma200))
       ];
     }
 
@@ -13991,15 +14002,15 @@
             const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
             const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
 
-            const above10 = smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0];
-            const above20 = smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1];
-            const above50 = smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2];
-            const above200 = smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3];
+            const above10 = (e10Val != null && typeof price === "number" && price > 0) ? (price >= e10Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0]);
+            const above20 = (e20Val != null && typeof price === "number" && price > 0) ? (price >= e20Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1]);
+            const above50 = (e50Val != null && typeof price === "number" && price > 0) ? (price >= e50Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2]);
+            const above200 = (e200Val != null && typeof price === "number" && price > 0) ? (price >= e200Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3]);
 
             const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (Live Market Engine)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
             const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (Live Market Engine)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
             const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (Live Market Engine)` : `50 EMA: ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
-            const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (Live Market Engine)` : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
+            const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (Live Market Engine)` : (smRec && smRec.ema200 === null ? '200 EMA: Not Available (<200 trading sessions)' : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`);
 
             return `
                   <span class="ema-status-pill ${above10 ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
