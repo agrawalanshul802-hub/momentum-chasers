@@ -15319,6 +15319,28 @@
     if (phonepeBtn) phonepeBtn.href = upiUrl;
     if (paytmBtn) paytmBtn.href = upiUrl;
 
+
+    // Initialize React Bits SlideCommit Component for Paid Items
+    const slideWrap = document.getElementById('idea-slide-commit-container');
+    if (slideWrap && typeof createSlideCommit === 'function') {
+      _ideaSlideCommitInstance = createSlideCommit(slideWrap, {
+        label: 'Slide to pay ₹' + formatNumber(price) + ' & Unlock VIP',
+        doneLabel: 'VIP Unlocked ✓',
+        errorLabel: 'Payment Failed',
+        handleColor: '#22c55e',
+        trackColor: 'rgba(255, 255, 255, 0.08)',
+        successColor: '#22c55e',
+        onConfirm: function () {
+          return new Promise(function (resolve) {
+            setTimeout(function () {
+              window.showIdeaPaymentView();
+              resolve();
+            }, 300);
+          });
+        }
+      });
+    }
+
     // Show Details View by default
     window.showIdeaDetailView();
 
@@ -38089,6 +38111,318 @@
     });
   }
 
+
+  // ==========================================================================
+  // REACT BITS SLIDE COMMIT CONTROLLER (@react-bits/SlideCommit-JS-CSS)
+  // ==========================================================================
+  function createSlideCommit(containerOrSelector, options) {
+    options = options || {};
+    const container = typeof containerOrSelector === 'string'
+      ? document.querySelector(containerOrSelector)
+      : containerOrSelector;
+    if (!container) return null;
+
+    const width = options.width || '100%';
+    const height = options.height || 52;
+    const radius = options.radius || 26;
+    const pad = 4;
+    const grip = height - pad * 2;
+    const trackColor = options.trackColor || 'rgba(255, 255, 255, 0.08)';
+    const handleColor = options.handleColor || '#22c55e';
+    const successColor = options.successColor || '#22c55e';
+    const dangerColor = options.dangerColor || '#e5484d';
+    let label = options.label || 'Slide to pay';
+    const doneLabel = options.doneLabel || 'Paid';
+    const errorLabel = options.errorLabel || 'Payment failed';
+    const onConfirm = options.onConfirm || null;
+    const onDone = options.onDone || null;
+    const holdMs = options.holdMs !== undefined ? options.holdMs : 1800;
+
+    const id = 'sc-' + Math.random().toString(36).substring(2, 9);
+    container.innerHTML = `
+      <div id="${id}" class="slide-commit ${options.className || ''}" data-phase="idle" role="group" aria-label="${escapeHtml(label)}"
+           style="width:${typeof width === 'number' ? width + 'px' : width};height:${height}px;--sc-h:${height}px;--sc-track:${trackColor};--sc-ink:${handleColor};--sc-ok:${successColor};--sc-no:${dangerColor};--sc-radius:${radius}px;--sc-grip-r:${radius - 4}px;--sc-pad:${pad}px;">
+        <div class="slide-commit__track" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="${escapeHtml(label)}">
+          <span class="slide-commit__label" aria-hidden="true">
+            <span class="slide-commit__text slide-commit__text--plain">${escapeHtml(label)}</span>
+            <span class="slide-commit__text slide-commit__text--error">${escapeHtml(errorLabel)}</span>
+          </span>
+          <div class="slide-commit__capsule" style="clip-path: inset(0 calc(100% - ${grip}px) 0 0 round ${radius - 4}px);">
+            <div class="slide-commit__content">
+              <span class="slide-commit__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+              <span class="slide-commit__spin" aria-hidden="true">
+                <svg class="slide-commit__spinner" width="20" height="20" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-opacity="0.25"></circle>
+                  <path d="M12 3a9 9 0 0 1 9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
+                </svg>
+              </span>
+              <span class="slide-commit__done" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>${escapeHtml(doneLabel)}</span>
+              </span>
+            </div>
+          </div>
+          <span class="slide-commit__sr" aria-live="polite"></span>
+        </div>
+      </div>
+    `;
+
+    const root = container.querySelector('#' + id);
+    const track = root.querySelector('.slide-commit__track');
+    const capsule = root.querySelector('.slide-commit__capsule');
+    const arrow = root.querySelector('.slide-commit__arrow');
+    const labelPlain = root.querySelector('.slide-commit__text--plain');
+    const sr = root.querySelector('.slide-commit__sr');
+
+    let currentX = 0;
+    let isDragging = false;
+    let startPointerX = 0;
+    let startOffsetX = 0;
+    let currentPhase = 'idle';
+
+    function getMetrics() {
+      const rect = track.getBoundingClientRect();
+      const inner = Math.max(1, rect.width - pad * 2);
+      const travel = Math.max(1, inner - grip);
+      return { width: rect.width, inner, travel };
+    }
+
+    function setX(x, animateSpring) {
+      const { inner, travel } = getMetrics();
+      currentX = Math.max(0, Math.min(travel, x));
+      const rightEdge = currentX + grip;
+      const clipInset = Math.max(0, inner - rightEdge);
+
+      if (animateSpring) {
+        capsule.style.transition = 'clip-path 260ms cubic-bezier(0.23, 1, 0.32, 1)';
+        arrow.style.transition = 'transform 260ms cubic-bezier(0.23, 1, 0.32, 1)';
+        labelPlain.style.transition = 'opacity 200ms ease';
+      } else {
+        capsule.style.transition = 'none';
+        arrow.style.transition = 'none';
+        labelPlain.style.transition = 'none';
+      }
+
+      capsule.style.clipPath = 'inset(0 ' + clipInset + 'px 0 0 round ' + (radius - 4) + 'px)';
+      arrow.style.transform = 'translateX(' + currentX + 'px)';
+
+      const percent = Math.round((currentX / travel) * 100);
+      track.setAttribute('aria-valuenow', String(percent));
+
+      const say = Math.max(0, 1 - (currentX / (travel * 0.55)));
+      labelPlain.style.opacity = say;
+    }
+
+    function settle() {
+      currentPhase = 'idle';
+      root.setAttribute('data-phase', 'idle');
+      setX(0, true);
+    }
+
+    async function commit() {
+      currentPhase = 'pending';
+      root.setAttribute('data-phase', 'pending');
+      const { travel } = getMetrics();
+      setX(travel, true);
+      if (sr) sr.textContent = 'Processing';
+
+      let out;
+      try {
+        if (typeof onConfirm === 'function') {
+          out = onConfirm();
+        }
+      } catch (err) {
+        reject(err);
+        return;
+      }
+
+      const isPromise = out && typeof out.then === 'function';
+      if (isPromise) {
+        try {
+          await out;
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      } else if (out !== false) {
+        resolve();
+      } else {
+        reject('Action cancelled');
+      }
+    }
+
+    function resolve() {
+      currentPhase = 'done';
+      root.setAttribute('data-phase', 'done');
+      if (sr) sr.textContent = doneLabel;
+      if (typeof onDone === 'function') onDone();
+      if (holdMs > 0) {
+        setTimeout(settle, holdMs);
+      }
+    }
+
+    function reject(reason) {
+      currentPhase = 'error';
+      root.setAttribute('data-phase', 'error');
+      if (sr) sr.textContent = errorLabel;
+      setTimeout(() => {
+        settle();
+      }, 1600);
+    }
+
+    function onPointerDown(e) {
+      if (currentPhase !== 'idle' || e.button !== 0) return;
+      isDragging = true;
+      startPointerX = e.clientX;
+      startOffsetX = currentX;
+      root.setAttribute('data-held', 'true');
+      try { track.setPointerCapture(e.pointerId); } catch (_) { }
+
+      function onPointerMove(ev) {
+        if (!isDragging) return;
+        const delta = ev.clientX - startPointerX;
+        setX(startOffsetX + delta, false);
+      }
+
+      function onPointerUp(ev) {
+        if (!isDragging) return;
+        isDragging = false;
+        root.removeAttribute('data-held');
+        try { track.releasePointerCapture(ev.pointerId); } catch (_) { }
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+
+        const { travel } = getMetrics();
+        if (currentX >= travel * 0.88) {
+          commit();
+        } else {
+          setX(0, true);
+        }
+      }
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    track.addEventListener('pointerdown', onPointerDown);
+
+    // Keyboard support
+    track.addEventListener('keydown', function (e) {
+      if (currentPhase !== 'idle') return;
+      const { travel } = getMetrics();
+      const step = travel * 0.12;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const next = currentX + step;
+        setX(next, true);
+        if (next >= travel * 0.9) commit();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setX(currentX - step, true);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        commit();
+      } else if (e.key === 'Home' || e.key === 'Escape') {
+        e.preventDefault();
+        setX(0, true);
+      }
+    });
+
+    return {
+      setLabel: function (newLabel) {
+        label = newLabel;
+        if (labelPlain) labelPlain.textContent = newLabel;
+        track.setAttribute('aria-label', newLabel);
+      },
+      commit: commit,
+      resolve: resolve,
+      reject: reject,
+      reset: settle,
+      getPhase: function () { return currentPhase; }
+    };
+  }
+
+
+  // ==========================================================================
+  // VIP PLAN PICKER & PRICING CONTROLLER (Monthly, Quarterly, Yearly)
+  // ==========================================================================
+  let _activeVipPlan = 'quarterly';
+  let _ideaSlideCommitInstance = null;
+
+  window.setVipPayPlan = function (tier) {
+    _activeVipPlan = tier || 'quarterly';
+    const gw = State.gatewaySettings || {};
+    let price = 2499;
+    let label = 'Quarterly VIP Access (90 Days)';
+
+    if (tier === 'monthly') {
+      price = parseInt(gw.monthlyPrice, 10) || 999;
+      label = 'Monthly VIP Access (30 Days)';
+    } else if (tier === 'yearly') {
+      price = parseInt(gw.yearlyPrice, 10) || 7999;
+      label = 'Yearly VIP Access (365 Days)';
+    } else {
+      price = parseInt(gw.quarterlyPrice, 10) || 2499;
+      label = 'Quarterly VIP Access (90 Days)';
+    }
+
+    // 1. Update Plan Selection Visual Cards in View 1
+    const mCard = document.getElementById('plan-tier-card-monthly');
+    const qCard = document.getElementById('plan-tier-card-quarterly');
+    const yCard = document.getElementById('plan-tier-card-yearly');
+    if (mCard) mCard.classList.toggle('is-active', tier === 'monthly');
+    if (qCard) qCard.classList.toggle('is-active', tier === 'quarterly');
+    if (yCard) yCard.classList.toggle('is-active', tier === 'yearly');
+
+    // 2. Update Plan Pills in View 2
+    const p1 = document.getElementById('view2-plan-monthly');
+    const p2 = document.getElementById('view2-plan-quarterly');
+    const p3 = document.getElementById('view2-plan-yearly');
+    if (p1) p1.classList.toggle('is-active', tier === 'monthly');
+    if (p2) p2.classList.toggle('is-active', tier === 'quarterly');
+    if (p3) p3.classList.toggle('is-active', tier === 'yearly');
+
+    // 3. Update Amount readouts
+    const amtEl = document.getElementById('idea-modal-amount');
+    const planLbl = document.getElementById('idea-modal-plan-label');
+    const payCtaText = document.getElementById('idea-detail-pay-cta-text');
+    if (amtEl) amtEl.textContent = '₹' + formatNumber(price);
+    if (planLbl) planLbl.textContent = label;
+    if (payCtaText) payCtaText.textContent = '⚡ Instant Pay ₹' + formatNumber(price) + ' & Unlock VIP';
+
+    // 4. Update Dynamic UPI QR Code & Links
+    const vpa = (gw && gw.directVpa) || '8767823878@slc';
+    const isMasked = !!(gw && gw.maskBrand);
+    const brandName = isMasked ? 'Candlewick Gateway' : 'Momentum Chasers';
+    const note = 'VIP Setup: ' + label;
+    const upiUrl = 'upi://pay?pa=' + encodeURIComponent(vpa) + '&pn=' + encodeURIComponent(brandName) + '&am=' + price + '&cu=INR&tn=' + encodeURIComponent(note);
+    const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=2&data=' + encodeURIComponent(upiUrl);
+
+    const qrImg = document.getElementById('idea-modal-qr-img');
+    if (qrImg) qrImg.src = qrUrl;
+
+    const gpayBtn = document.getElementById('idea-intent-gpay');
+    const phonepeBtn = document.getElementById('idea-intent-phonepe');
+    const paytmBtn = document.getElementById('idea-intent-paytm');
+    if (gpayBtn) gpayBtn.href = upiUrl;
+    if (phonepeBtn) phonepeBtn.href = upiUrl;
+    if (paytmBtn) paytmBtn.href = upiUrl;
+
+    // 5. Update React Bits SlideCommit Component Label
+    if (_ideaSlideCommitInstance && typeof _ideaSlideCommitInstance.setLabel === 'function') {
+      _ideaSlideCommitInstance.setLabel('Slide to pay ₹' + formatNumber(price) + ' & Unlock VIP');
+    }
+  };
+
   function init() {
     // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
     function syncLiveAuthState() {
@@ -38485,6 +38819,8 @@
     window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
     window.refreshAllAlertsContainers = refreshAllAlertsContainers;
     window.renderBellToggleHTML = renderBellToggleHTML;
+    window.createSlideCommit = createSlideCommit;
+    window.setVipPayPlan = setVipPayPlan;
     window.ringBellToggle = ringBellToggle;
     window.updateStockBellToggles = updateStockBellToggles;
     window.renderAlertsGridHTML = renderAlertsGridHTML;
