@@ -13863,8 +13863,6 @@
 
   function getStockThematicTag(symbol) {
     if (typeof MASTER_44_SECTORS === "undefined") return null;
-    const ipo = MASTER_44_SECTORS.find(s => s.key === "NIFTY IPO");
-    if (ipo && ipo.extraSyms && ipo.extraSyms.includes(symbol)) return "🚀 Recent IPO";
     const def = MASTER_44_SECTORS.find(s => s.key === "NIFTY IND DEFENCE");
     if (def && def.extraSyms && def.extraSyms.includes(symbol)) return "🛡️ Defence";
     const rly = MASTER_44_SECTORS.find(s => s.key === "NIFTY RAILWAYS PSU");
