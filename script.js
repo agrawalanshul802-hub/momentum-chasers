@@ -33605,11 +33605,9 @@
               </div>
               <!-- Status & Alert Pills Centered Directly Underneath -->
               <div class="home-hero-badges-subrow" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-                <div class="dashboard-market-status-pill" title="Indian Market Feeds: Real-time NSE/BSE delayed by 15 mins for standard terminal feeds">
+                <div class="dashboard-market-status-pill" title="Indian Market Feeds: Real-time NSE / BSE live terminal feeds">
                   <span class="dms-live-dot"></span>
                   <span class="dms-title">NSE / BSE LIVE</span>
-                  <span class="dms-sep">•</span>
-                  <span class="dms-delay">15m Delay</span>
                 </div>
                 <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track live price triggers">
                   <span class="hero-alert-icon">🔔</span>
@@ -34230,7 +34228,7 @@
               <!-- Feature Points with Lock icons (OrderBlock style) -->
               <ul class="ob-auth-points">
                 <li><svg class="ob-point-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span><b>User Login:</b> Saves watchlists, custom alerts &amp; demat broker sync</span></li>
-                <li><svg class="ob-point-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span><b>Live Market Feeds:</b> 15m delay NSE / BSE momentum data &amp; MMI sentiment</span></li>
+                <li><svg class="ob-point-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span><b>Live Market Feeds:</b> Real-time NSE / BSE momentum data &amp; MMI sentiment</span></li>
               </ul>
 
               <p class="ob-auth-fine">By continuing you agree to the <a href="javascript:void(0)">Terms &amp; Conditions</a> and <a href="javascript:void(0)">Privacy Policy</a>.</p>

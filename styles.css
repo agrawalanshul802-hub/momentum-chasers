@@ -13523,21 +13523,9 @@ body.theme-white .cal-more-chip {
     font-size: 10.5px;
 }
 
-.dms-sep {
-    color: rgba(34, 197, 94, 0.5);
-    font-size: 10px;
-}
-
+.dms-sep,
 .dms-delay {
-    font-family: var(--font-mono, monospace);
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: rgba(34, 197, 94, 0.16);
-    border: 1px solid rgba(34, 197, 94, 0.32);
-    color: #4ade80;
-    font-size: 10.5px;
-    letter-spacing: 0.04em;
+    display: none !important;
 }
 
 /* White Theme Support */
