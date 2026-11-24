@@ -16070,3 +16070,270 @@ body.theme-white .home-hero-title-main {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+
+/* ==========================================================================
+   KOKONUTUI ACCOUNT MENU (@kokonutui/ProfileDropdown)
+   ========================================================================== */
+.header-user-dropdown-menu.kokonut-menu-panel {
+  min-width: 310px;
+  width: 310px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b111e;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.kokonut-pages-wrapper {
+  display: flex;
+  width: 620px;
+  transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.kokonut-page {
+  width: 310px;
+  padding: 10px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.kokonut-header-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.kokonut-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 6px 4px;
+}
+
+.kokonut-row-label {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.kokonut-status-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.kokonut-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.kokonut-status-pill:hover,
+.kokonut-status-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.kokonut-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.kokonut-dot--online { background: #10b981; box-shadow: 0 0 5px #10b981; }
+.kokonut-dot--away { background: #f59e0b; box-shadow: 0 0 5px #f59e0b; }
+.kokonut-dot--busy { background: #ef4444; box-shadow: 0 0 5px #ef4444; }
+
+.kokonut-theme-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.kokonut-theme-btn {
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 24px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.kokonut-theme-btn:hover,
+.kokonut-theme-btn.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.kokonut-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 6px 0;
+}
+
+.kokonut-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kokonut-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.kokonut-menu-item:hover,
+.kokonut-menu-item.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.kokonut-item-icon {
+  color: #94a3b8;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.kokonut-item-val {
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.kokonut-back-btn {
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.kokonut-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.kokonut-avatar-mini {
+  width: 20px;
+  height: 20px;
+  font-size: 9px;
+  border: 2px solid #0b111e;
+}
+
+/* KokonutUI Hold to Sign Out Button */
+.kokonut-hold-wrap {
+  padding-top: 2px;
+}
+
+.kokonut-hold-signout {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  height: 38px;
+  width: 100%;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+
+.kokonut-hold-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 10px;
+  height: 100%;
+  color: #f87171;
+  font-size: 12.5px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.kokonut-hold-badge {
+  font-size: 10px;
+  opacity: 0.9;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #fca5a5;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  margin-left: auto;
+  transition: transform 0.15s ease;
+}
+
+.kokonut-hold-fill {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  pointer-events: none;
+  box-sizing: border-box;
+  clip-path: inset(0 100% 0 0 round 8px);
+}
+
+.kokonut-hold-fill .kokonut-hold-badge {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}

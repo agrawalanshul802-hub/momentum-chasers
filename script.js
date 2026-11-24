@@ -34753,45 +34753,30 @@
     }
 
     const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
-    const vipPillHTML = "";
+    const userStatus = localStorage.getItem("mc_user_status") || "online";
+    const statusDotColor = userStatus === "online" ? "#10b981" : (userStatus === "away" ? "#f59e0b" : "#ef4444");
+    const themePref = localStorage.getItem("momentum_theme_pref") || (State.theme === "white" ? "white" : "midnight");
 
     const vipHudCardHTML = (sub && sub.active && sub.daysRemaining > 0) ? `
-      <div class="hud-vip-status-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(16,185,129,0.08)); border: 1px solid rgba(245,158,11,0.35); border-radius: 8px; padding: 10px 12px; margin-bottom: 2px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span style="font-size:14px;">👑</span>
-            <span style="font-size:12px; font-weight:800; color:#fcd34d; letter-spacing:0.3px;">VIP RESEARCH PASS</span>
+      <div class="hud-vip-status-card" style="background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(16,185,129,0.08)); border: 1px solid rgba(245,158,11,0.35); border-radius: 8px; padding: 8px 10px; margin: 8px 0 6px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            <span style="font-size:13px;">👑</span>
+            <span style="font-size:11px; font-weight:800; color:#fcd34d; letter-spacing:0.3px;">VIP RESEARCH PASS</span>
           </div>
-          <span style="font-size:11px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); padding:2px 8px; border-radius:12px;">
-            ● ${sub.daysRemaining} Days Left
+          <span style="font-size:10px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); padding:1px 6px; border-radius:10px;">
+            ● ${sub.daysRemaining}d Left
           </span>
         </div>
-        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--mu); margin-bottom: 6px;">
+        <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--mu); margin-bottom: 4px;">
           <span style="color:var(--ink); font-weight:600;">${escapeHtml(sub.planTier)}</span>
-          <span>Valid till ${new Date(sub.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+          <span>Valid till ${new Date(sub.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
         </div>
-        <div style="height:4px; width:100%; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; margin-bottom:6px;">
+        <div style="height:3px; width:100%; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; margin-bottom:4px;">
           <div style="height:100%; width:${sub.percentRemaining}%; background:linear-gradient(90deg, #22c55e, #f59e0b); border-radius:2px;"></div>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:10.5px; color:#94a3b8;">
-          <span>✓ All Research Setups &amp; Targets Unlocked</span>
-          <a href="javascript:void(0)" onclick="window.openOwnerIdeaPaymentModal && window.openOwnerIdeaPaymentModal()" style="color:#fcd34d; text-decoration:none; font-weight:700;">Extend Pass ↗</a>
-        </div>
       </div>
-    ` : (sub && sub.expired ? `
-      <div class="hud-vip-status-card is-expired" style="grid-column: 1 / -1; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 2px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
-          <span style="font-size:12px; font-weight:800; color:#f87171;">⚠️ VIP Pass Expired</span>
-          <span style="font-size:10.5px; color:#ef4444; font-weight:700;">0 Days Remaining</span>
-        </div>
-        <div style="font-size:11px; color:var(--mu); margin-bottom: 6px;">
-          Expired on ${new Date(sub.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-        </div>
-        <button type="button" onclick="window.openOwnerIdeaPaymentModal && window.openOwnerIdeaPaymentModal()" style="width:100%; padding:5px 0; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:11px; border:none; border-radius:5px; cursor:pointer;">
-          ⚡ Renew VIP Pass
-        </button>
-      </div>
-    ` : "");
+    ` : "";
 
     if (State.user) {
       if (typeof window !== "undefined" && window.MomentumCloudSync && window.MomentumCloudSync.syncProfile) {
@@ -34800,113 +34785,222 @@
       const rawName = State.user.name || "Trader";
       const email = State.user.email || "trader@momentumchasers.com";
       const isPro = State.user && (State.user.isPro === true || (State.user.plan && State.user.plan.toUpperCase().includes("PRO")));
-      const plan = State.user.plan || "Normal User";
+      const plan = isPro ? "PRO" : (State.user.plan || "NORMAL");
       const broker = State.user.broker || "Dhan Connected";
-      const initial = rawName.trim().charAt(0).toUpperCase() || "A";
+      const initial = rawName.trim().charAt(0).toUpperCase() || "T";
       const avatar = State.user.avatar && State.user.avatar.length <= 3 ? State.user.avatar : initial;
+      const activeAlertsCount = (State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length;
 
       headerAuth.innerHTML = `
         <div class="header-user-wrapper" id="header-user-wrapper">
-          <button class="header-user-pill-btn" id="header-user-dropdown-btn" data-action="toggle-user-dropdown" title="Account: ${escapeHtml(rawName)} (${escapeHtml(email)})" aria-expanded="false" aria-haspopup="true">
-            <div class="header-avatar-circle">
+          <!-- KokonutUI Trigger Pill -->
+          <button class="header-user-pill-btn kokonut-trigger-btn" id="header-user-dropdown-btn" data-action="toggle-user-dropdown" title="Account: ${escapeHtml(rawName)} (${escapeHtml(email)})" aria-expanded="false" aria-haspopup="true">
+            <div class="header-avatar-circle" style="background: linear-gradient(135deg, #10b981, #059669);">
               ${escapeHtml(avatar)}
-              <span class="header-avatar-online-dot"></span>
+              <span class="header-avatar-online-dot" id="header-avatar-status-dot" style="background:${statusDotColor};box-shadow:0 0 6px ${statusDotColor};"></span>
             </div>
             <div class="header-user-details">
               <span class="header-user-name">${escapeHtml(rawName)}</span>
-              ${isPro ? `<span class="header-pro-badge">PRO</span>` : `<span class="header-normal-badge" style="font-size:10px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);padding:1px 6px;border-radius:4px;margin-left:4px;">NORMAL</span>`}
+              ${isPro ? `<span class="header-pro-badge">PRO</span>` : `<span class="header-normal-badge" style="font-size:9.5px;font-weight:800;letter-spacing:0.5px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);margin-left:4px;">${escapeHtml(plan)}</span>`}
             </div>
-            <svg class="header-user-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="header-user-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
 
-          <!-- Floating User Details Dropdown with Sign Out Inside -->
-          <div class="header-user-dropdown-menu" id="header-user-dropdown-menu" role="menu">
-            <div class="hud-header">
-              <div class="hud-avatar-wrap">
-                <div class="hud-avatar">${escapeHtml(avatar)}</div>
-                <span class="hud-status-dot"></span>
-              </div>
-              <div class="hud-user-info">
-                <div class="hud-user-name-row">
-                  <span class="hud-name">${escapeHtml(rawName)}</span>
-                  ${isPro ? `<span class="hud-badge">PRO</span>` : `<span class="hud-badge" style="background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);">NORMAL</span>`}
+          <!-- KokonutUI Floating Dropdown Menu -->
+          <div class="header-user-dropdown-menu kokonut-menu-panel" id="header-user-dropdown-menu" role="menu">
+            <div class="kokonut-pages-wrapper" id="kokonut-pages-wrapper">
+              
+              <!-- PAGE 1: MAIN KOKONUT MENU -->
+              <div class="kokonut-page" id="kokonut-page-main">
+                <div class="kokonut-header-card">
+                  <div class="hud-avatar-wrap">
+                    <div class="hud-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">${escapeHtml(avatar)}</div>
+                    <span class="hud-status-dot" id="hud-status-dot" style="background:${statusDotColor};box-shadow:0 0 6px ${statusDotColor};"></span>
+                  </div>
+                  <div class="hud-user-info">
+                    <div class="hud-user-name-row">
+                      <span class="hud-name">${escapeHtml(rawName)}</span>
+                      ${isPro ? `<span class="hud-badge">PRO</span>` : `<span class="hud-badge" style="background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);">${escapeHtml(plan)}</span>`}
+                    </div>
+                    <div class="hud-email">${escapeHtml(email)}</div>
+                  </div>
                 </div>
-                <div class="hud-email">${escapeHtml(email)}</div>
-              </div>
-            </div>
 
-            <div class="hud-details-grid">
-              ${vipHudCardHTML}
-              <div class="hud-detail-card">
-                <span class="hud-detail-label">Subscription</span>
-                <span class="hud-detail-val hud-plan" style="${isPro ? "" : "color:var(--ink);font-weight:600;"}">${isPro ? "⭐ " + escapeHtml(plan) : "👤 " + escapeHtml(plan)}</span>
-              </div>
-              <div class="hud-detail-card">
-                <span class="hud-detail-label">Broker Link</span>
-                <span class="hud-detail-val hud-broker">⚡ ${escapeHtml(broker)}</span>
-              </div>
-              <div class="hud-detail-card">
-                <span class="hud-detail-label">Market Feed</span>
-                <span class="hud-detail-val hud-live">● Live Stream (NSE/BSE)</span>
-              </div>
-              <div class="hud-detail-card hud-clickable-card" data-action="open-stock-alerts-manager" style="cursor:pointer;" title="Click to view & manage Stock Alerts">
-                <span class="hud-detail-label">Stock Alerts</span>
-                <span class="hud-detail-val hud-stock-alerts-val" style="color:var(--g);font-weight:700;">🔔 ${(State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length} Active</span>
-              </div>
-            </div>
+                ${vipHudCardHTML}
 
-            <div class="hud-actions-list">
-              <button type="button" class="hud-action-item" data-action="open-stock-alerts-manager">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                </svg>
-                <span>Stock Alerts &amp; Price Tracker</span>
-                <span class="hud-stock-alerts-badge" style="margin-left:auto;font-size:11px;background:rgba(34,197,94,0.15);color:#22c55e;padding:1px 6px;border-radius:10px;font-weight:700;">${(State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length} Active</span>
-              </button>
-              <button type="button" class="hud-action-item" data-action="open-user-profile-modal">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>Profile &amp; Broker Settings</span>
-              </button>
-              <button type="button" class="hud-action-item" data-action="toggle-theme-hud">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="5"></circle>
-                  <line x1="12" y1="1" x2="12" y2="3"></line>
-                  <line x1="12" y1="21" x2="12" y2="23"></line>
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                  <line x1="1" y1="12" x2="3" y2="12"></line>
-                  <line x1="21" y1="12" x2="23" y2="12"></line>
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <span>Toggle Theme (White / Midnight)</span>
-              </button>
-            </div>
+                <!-- Status Row -->
+                <div class="kokonut-control-row">
+                  <span class="kokonut-row-label">Status</span>
+                  <div class="kokonut-status-group">
+                    <button type="button" class="kokonut-status-pill ${userStatus === 'online' ? 'active' : ''}" data-action="set-user-status" data-status="online" title="Online">
+                      <span class="kokonut-dot kokonut-dot--online"></span> Online
+                    </button>
+                    <button type="button" class="kokonut-status-pill ${userStatus === 'away' ? 'active' : ''}" data-action="set-user-status" data-status="away" title="Away">
+                      <span class="kokonut-dot kokonut-dot--away"></span> Away
+                    </button>
+                    <button type="button" class="kokonut-status-pill ${userStatus === 'busy' ? 'active' : ''}" data-action="set-user-status" data-status="busy" title="Do Not Disturb">
+                      <span class="kokonut-dot kokonut-dot--busy"></span> DND
+                    </button>
+                  </div>
+                </div>
 
-            <div class="hud-footer">
-              <button type="button" class="hud-signout-btn" data-action="header-signout" title="Sign out of Momentum Chasers">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                <span>Sign Out</span>
-              </button>
+                <!-- Theme Row -->
+                <div class="kokonut-control-row">
+                  <span class="kokonut-row-label">Theme</span>
+                  <div class="kokonut-theme-group">
+                    <button type="button" class="kokonut-theme-btn ${themePref === 'white' ? 'active' : ''}" data-action="set-app-theme" data-theme="white" title="Light Theme">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                      </svg>
+                    </button>
+                    <button type="button" class="kokonut-theme-btn ${themePref === 'midnight' ? 'active' : ''}" data-action="set-app-theme" data-theme="midnight" title="Dark Theme">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                      </svg>
+                    </button>
+                    <button type="button" class="kokonut-theme-btn ${themePref === 'system' ? 'active' : ''}" data-action="set-app-theme" data-theme="system" title="System Theme">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="kokonut-divider"></div>
+
+                <!-- Navigation Items -->
+                <div class="kokonut-items-list">
+                  <button type="button" class="kokonut-menu-item" data-action="open-user-profile-modal">
+                    <span class="kokonut-item-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </span>
+                    <span class="flex-1 text-left">Trading Profile</span>
+                    <span class="kokonut-item-val" style="color:#38bdf8;">${escapeHtml(broker)}</span>
+                  </button>
+
+                  <button type="button" class="kokonut-menu-item" data-action="open-stock-alerts-manager">
+                    <span class="kokonut-item-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                      </svg>
+                    </span>
+                    <span class="flex-1 text-left">Stock Alerts Tracker</span>
+                    <span class="kokonut-item-val" style="color:#22c55e;">${activeAlertsCount} Active</span>
+                  </button>
+
+                  <button type="button" class="kokonut-menu-item" onclick="window.openOwnerIdeaPaymentModal && window.openOwnerIdeaPaymentModal()">
+                    <span class="kokonut-item-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line>
+                      </svg>
+                    </span>
+                    <span class="flex-1 text-left">VIP Pass &amp; Billing</span>
+                    <span class="kokonut-item-val" style="color:#f59e0b;">${sub && sub.active ? sub.daysRemaining + 'd Left' : 'Upgrade'}</span>
+                  </button>
+
+                  <!-- Switch Account Submenu Trigger -->
+                  <button type="button" class="kokonut-menu-item kokonut-switch-trigger" data-action="kokonut-goto-accounts">
+                    <span class="flex -space-x-1.5">
+                      <span class="kokonut-avatar kokonut-avatar-mini" style="background:#10b981;color:#fff;">${escapeHtml(avatar)}</span>
+                      <span class="kokonut-avatar kokonut-avatar-mini" style="background:#3b82f6;color:#fff;">G</span>
+                    </span>
+                    <span class="flex-1 text-left">Switch account</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#94a3b8;">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="kokonut-divider"></div>
+
+                <!-- KokonutUI Press-and-Hold Sign Out -->
+                <div class="kokonut-hold-wrap">
+                  <button type="button" class="kokonut-hold-signout" id="kokonut-hold-signout-btn" aria-label="Sign out, press and hold to confirm">
+                    <div class="kokonut-hold-inner">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
+                      </svg>
+                      <span class="flex-1 text-left">Sign out</span>
+                      <span class="kokonut-hold-badge" id="kokonut-hold-badge">Hold to Sign out</span>
+                    </div>
+                    <span aria-hidden="true" class="kokonut-hold-fill" id="kokonut-hold-fill">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
+                      </svg>
+                      <span class="flex-1 text-left">Sign out</span>
+                      <span class="kokonut-hold-badge">Signing out...</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- PAGE 2: SWITCH ACCOUNT SUB-MENU -->
+              <div class="kokonut-page" id="kokonut-page-accounts">
+                <button type="button" class="kokonut-menu-item kokonut-back-btn" data-action="kokonut-goto-main">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span>Back to Menu</span>
+                </button>
+
+                <div class="kokonut-divider"></div>
+
+                <div class="kokonut-items-list">
+                  <!-- Active Trader Account -->
+                  <button type="button" class="kokonut-menu-item active" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);">
+                    <span class="kokonut-avatar" style="background:#10b981;color:#fff;width:28px;height:28px;font-size:12px;">${escapeHtml(avatar)}</span>
+                    <div class="flex-1 text-left min-w-0">
+                      <div class="truncate text-sm font-semibold" style="color:#ffffff;">${escapeHtml(rawName)}</div>
+                      <div class="truncate text-xs opacity-60">${escapeHtml(email)}</div>
+                    </div>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+
+                  <!-- Guest Mode -->
+                  <button type="button" class="kokonut-menu-item" data-action="switch-to-guest">
+                    <span class="kokonut-avatar" style="background:#3b82f6;color:#fff;width:28px;height:28px;font-size:12px;">G</span>
+                    <div class="flex-1 text-left min-w-0">
+                      <div class="truncate text-sm font-semibold">Guest Mode Trader</div>
+                      <div class="truncate text-xs opacity-60">Trial Workspace Session</div>
+                    </div>
+                  </button>
+
+                  <!-- Owner Studio -->
+                  <button type="button" class="kokonut-menu-item" data-action="switch-to-owner">
+                    <span class="kokonut-avatar" style="background:#f59e0b;color:#000;width:28px;height:28px;font-size:12px;">👑</span>
+                    <div class="flex-1 text-left min-w-0">
+                      <div class="truncate text-sm font-semibold">Owner Publishing Studio</div>
+                      <div class="truncate text-xs opacity-60">Publish Setups &amp; Pricing</div>
+                    </div>
+                  </button>
+
+                  <div class="kokonut-divider"></div>
+
+                  <!-- Add / Switch Account Link -->
+                  <button type="button" class="kokonut-menu-item" onclick="window.location.href='login.html'">
+                    <span style="display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px dashed rgba(255,255,255,0.3);color:#94a3b8;font-size:16px;">+</span>
+                    <span class="flex-1 text-left font-semibold">Switch Account / Sign In</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       `;
+
+      // Initialize KokonutUI interactive behavior
+      setTimeout(initKokonutAccountMenu, 50);
     } else {
       headerAuth.innerHTML = `
         <div class="header-user-wrapper" id="header-user-wrapper">
           <a href="login.html" class="header-login-btn" id="header-login-btn" title="Sign In to Momentum Chasers">
-            <span class="header-login-icon">🔐</span>
+            <span class="header-login-icon">🔑</span>
             <span class="header-login-text">Sign In</span>
           </a>
         </div>
@@ -38422,6 +38516,171 @@
       _ideaSlideCommitInstance.setLabel('Slide to pay ₹' + formatNumber(price) + ' & Unlock VIP');
     }
   };
+
+
+  // ==========================================================================
+  // KOKONUTUI ACCOUNT MENU CONTROLLER ENGINE (@kokonutui/ProfileDropdown)
+  // ==========================================================================
+  function initKokonutAccountMenu() {
+    const dropdown = document.getElementById("header-user-dropdown-menu");
+    if (!dropdown) return;
+
+    const wrapper = document.getElementById("kokonut-pages-wrapper");
+    const holdBtn = document.getElementById("kokonut-hold-signout-btn");
+    const holdFill = document.getElementById("kokonut-hold-fill");
+    const holdBadge = document.getElementById("kokonut-hold-badge");
+
+    // 1. Page navigation (Main <-> Accounts)
+    document.querySelectorAll("[data-action='kokonut-goto-accounts']").forEach(btn => {
+      btn.onclick = function (e) {
+        e.stopPropagation();
+        if (wrapper) wrapper.style.transform = "translateX(-310px)";
+      };
+    });
+
+    document.querySelectorAll("[data-action='kokonut-goto-main']").forEach(btn => {
+      btn.onclick = function (e) {
+        e.stopPropagation();
+        if (wrapper) wrapper.style.transform = "translateX(0)";
+      };
+    });
+
+    // 2. Status switcher
+    document.querySelectorAll("[data-action='set-user-status']").forEach(btn => {
+      btn.onclick = function (e) {
+        e.stopPropagation();
+        const status = btn.dataset.status || "online";
+        localStorage.setItem("mc_user_status", status);
+        const color = status === "online" ? "#10b981" : (status === "away" ? "#f59e0b" : "#ef4444");
+
+        document.querySelectorAll("[data-action='set-user-status']").forEach(b => {
+          b.classList.toggle("active", b.dataset.status === status);
+        });
+
+        const trigDot = document.getElementById("header-avatar-status-dot");
+        const hudDot = document.getElementById("hud-status-dot");
+        if (trigDot) { trigDot.style.background = color; trigDot.style.boxShadow = "0 0 6px " + color; }
+        if (hudDot) { hudDot.style.background = color; hudDot.style.boxShadow = "0 0 6px " + color; }
+
+        if (typeof showToast === "function") {
+          showToast("Status set to " + status.toUpperCase(), status === "online" ? "🟢" : (status === "away" ? "🟡" : "🔴"));
+        }
+      };
+    });
+
+    // 3. Theme switcher
+    document.querySelectorAll("[data-action='set-app-theme']").forEach(btn => {
+      btn.onclick = function (e) {
+        e.stopPropagation();
+        const theme = btn.dataset.theme;
+        let effectiveTheme = theme;
+        if (theme === "system") {
+          effectiveTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "white" : "midnight";
+        }
+        localStorage.setItem("momentum_theme_pref", theme);
+        applyTheme(effectiveTheme);
+
+        document.querySelectorAll("[data-action='set-app-theme']").forEach(b => {
+          b.classList.toggle("active", b.dataset.theme === theme);
+        });
+
+        if (typeof showToast === "function") {
+          showToast("Theme switched to " + theme.toUpperCase(), theme === "white" ? "☀️" : "🌙");
+        }
+      };
+    });
+
+    // 4. Switch to Guest Mode
+    const guestBtn = dropdown.querySelector("[data-action='switch-to-guest']");
+    if (guestBtn) {
+      guestBtn.onclick = function (e) {
+        e.stopPropagation();
+        dropdown.classList.remove("show");
+        const guestUser = { name: "Guest Trader", email: "guest@momentumchasers.com", role: "guest", plan: "TRIAL" };
+        State.user = guestUser;
+        try { localStorage.setItem("momentum_auth_user", JSON.stringify(guestUser)); } catch (_) { }
+        renderUserAuthUI();
+        if (typeof showToast === "function") showToast("Switched to Guest Trader Mode", "👤");
+      };
+    }
+
+    // 5. Switch to Owner Studio
+    const ownerBtn = dropdown.querySelector("[data-action='switch-to-owner']");
+    if (ownerBtn) {
+      ownerBtn.onclick = function (e) {
+        e.stopPropagation();
+        window.location.href = "owner.html";
+      };
+    }
+
+    // 6. KokonutUI Press-and-Hold Sign Out Physics
+    if (holdBtn && holdFill) {
+      let holdTimer = null;
+      let nudgeTimer = null;
+      let isHolding = false;
+      const duration = 1200;
+
+      function startHold(e) {
+        if (isHolding) return;
+        isHolding = true;
+        clearTimeout(nudgeTimer);
+        if (holdBadge) holdBadge.textContent = "Hold...";
+        holdFill.style.transition = "clip-path " + duration + "ms linear";
+        holdFill.style.clipPath = "inset(0 0 0 0 round 8px)";
+
+        holdTimer = setTimeout(function () {
+          isHolding = false;
+          if (holdBadge) holdBadge.textContent = "Signing out...";
+          dropdown.classList.remove("show");
+          if (typeof showToast === "function") showToast("👋 Signed out successfully", "🔒");
+          setTimeout(function () {
+            logoutUser();
+          }, 350);
+        }, duration);
+      }
+
+      function cancelHold(e) {
+        if (!isHolding) return;
+        isHolding = false;
+        clearTimeout(holdTimer);
+        holdFill.style.transition = "clip-path 240ms cubic-bezier(0.23, 1, 0.32, 1)";
+        holdFill.style.clipPath = "inset(0 100% 0 0 round 8px)";
+        if (holdBadge) {
+          holdBadge.textContent = "Keep holding";
+          clearTimeout(nudgeTimer);
+          nudgeTimer = setTimeout(function () {
+            if (holdBadge) holdBadge.textContent = "Hold to Sign out";
+          }, 1400);
+        }
+      }
+
+      holdBtn.onpointerdown = function (e) {
+        if (e.button !== 0) return;
+        try { holdBtn.setPointerCapture(e.pointerId); } catch (_) { }
+        startHold(e);
+      };
+      holdBtn.onpointerup = function (e) {
+        try { holdBtn.releasePointerCapture(e.pointerId); } catch (_) { }
+        cancelHold(e);
+      };
+      holdBtn.onpointercancel = cancelHold;
+      holdBtn.oncontextmenu = function (e) { e.preventDefault(); };
+
+      holdBtn.onkeydown = function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (!e.repeat) startHold(e);
+        }
+      };
+      holdBtn.onkeyup = function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          cancelHold(e);
+        }
+      };
+    }
+  }
+  window.initKokonutAccountMenu = initKokonutAccountMenu;
 
   function init() {
     // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
