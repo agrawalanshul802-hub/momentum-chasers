@@ -18855,11 +18855,15 @@
           </div>
 
           <div class="tv-topbar-right">
-            <!-- Stock Alert Trigger Button -->
-            <button class="tv-alert-btn" data-action="open-stock-alert" data-symbol="${s[0]}" title="Set price or breakout alert for ${s[0]}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:var(--g);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">
-              <span>🔔</span>
-              <span>Set Alert</span>
-            </button>
+            <!-- Stock Alert Trigger Button (React Bits BellToggle) -->
+            ${renderBellToggleHTML({
+              symbol: s[0],
+              offLabel: "Set Alert",
+              onLabel: "Tracking Alert",
+              isPressed: (State.stockAlerts || []).some(a => a.symbol === s[0] && a.isActive),
+              count: (State.stockAlerts || []).filter(a => a.symbol === s[0] && a.isActive).length,
+              size: "sm"
+            })}
 
             <!-- Full Width / Split View Toggle -->
             <button class="tv-view-toggle-btn" data-action="toggle-chart-width" title="${State.chartFullWidth ? 'Restore Watchlist & Stats Panel' : 'Expand to Full Width'}">
@@ -33534,6 +33538,7 @@
     }
     updateDashboardAlertBadge();
     updateHudAlertBadge();
+    if (typeof State !== "undefined" && State.activeStock && typeof updateStockBellToggles === "function") updateStockBellToggles(State.activeStock);
   }
 
   function updateDashboardAlertBadge() {
@@ -36393,6 +36398,7 @@
       }
       else if (action === "open-stock-alert") {
         const btn = target.closest("[data-action='open-stock-alert']") || target;
+        if (typeof ringBellToggle === "function") ringBellToggle(btn);
         const sym = (btn && btn.dataset.symbol) || State.activeStock;
         openStockAlertModal(sym);
       }
@@ -37961,6 +37967,128 @@
     }
   }
 
+
+  // ==========================================================================
+  // REACT BITS BELL TOGGLE COMPONENT & RING PHYSICS (@react-bits/BellToggle-JS-CSS)
+  // ==========================================================================
+  function renderBellToggleHTML(options) {
+    options = options || {};
+    const symbol = escapeHtml(options.symbol || "");
+    const hasAlert = Boolean(options.isPressed);
+    const offLabel = options.offLabel || "Set Alert";
+    const onLabel = options.onLabel || "Tracking Alert";
+    const count = options.count || 0;
+    const action = options.action || "open-stock-alert";
+    const size = options.size || "sm";
+
+    return `
+      <span class="bell-toggle ${size === 'md' ? 'bell-toggle--md' : ''}" data-on="${hasAlert ? 'true' : 'false'}" data-symbol="${symbol}">
+        <button type="button" class="bell-toggle__button" data-action="${action}" data-symbol="${symbol}" aria-pressed="${hasAlert}" aria-label="${hasAlert ? onLabel : offLabel}">
+          <span class="bell-toggle__bell" aria-hidden="true">
+            <span class="bell-toggle__glyph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 16.5V10a6 6 0 0 1 12 0v6.5l1.6 2.3H4.4L6 16.5z" />
+                <path d="M12 2.5V4" />
+              </svg>
+            </span>
+            <span class="bell-toggle__clapper">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="20.4" r="1.7" fill="currentColor" />
+              </svg>
+            </span>
+            <svg class="bell-toggle__wave bell-toggle__wave--left" viewBox="0 0 14 14">
+              <path d="M14 8a6 6 0 0 0-6 6" />
+              <path d="M14 4A10 10 0 0 0 4 14" />
+            </svg>
+            <svg class="bell-toggle__wave bell-toggle__wave--right" viewBox="0 0 14 14">
+              <path d="M0 8a6 6 0 0 1 6 6" />
+              <path d="M0 4a10 10 0 0 1 10 10" />
+            </svg>
+            <span class="bell-toggle__badge" ${hasAlert && count > 0 ? 'data-show=""' : ''}>
+              <span class="bell-toggle__digit">${count > 9 ? '9+' : (count || 1)}</span>
+            </span>
+          </span>
+          <span class="bell-toggle__say" aria-hidden="true">
+            <span class="bell-toggle__face bell-toggle__face--off">${offLabel}</span>
+            <span class="bell-toggle__face bell-toggle__face--on">${onLabel}</span>
+          </span>
+        </button>
+      </span>
+    `;
+  }
+
+  function ringBellToggle(bellEl) {
+    if (!bellEl) return;
+    const root = bellEl.closest ? (bellEl.closest('.bell-toggle') || bellEl) : bellEl;
+    const glyph = root.querySelector('.bell-toggle__glyph');
+    const clapper = root.querySelector('.bell-toggle__clapper');
+    const waveLeft = root.querySelector('.bell-toggle__wave--left');
+    const waveRight = root.querySelector('.bell-toggle__wave--right');
+
+    const passes = 5;
+    const amplitude = 17;
+    const duration = 820;
+    const decay = 1;
+    const SEG_EASE = 'cubic-bezier(0.77, 0, 0.175, 1)';
+    const WARP = 0.6;
+    const passOffset = (k, p) => 1 - Math.pow(1 - (k + 2 / 3) / (p + 1), WARP);
+    const ringKeyframes = (from, amp, p, dec) => {
+      const frames = [{ transform: `rotate(${from}deg)`, offset: 0, easing: SEG_EASE }];
+      for (let k = 0; k < p; k++) {
+        const angle = amp * Math.pow(1 - k / p, dec) * (k % 2 ? 1 : -1);
+        frames.push({ transform: `rotate(${angle.toFixed(2)}deg)`, offset: passOffset(k, p), easing: SEG_EASE });
+      }
+      frames.push({ transform: 'rotate(0deg)', offset: 1 });
+      return frames;
+    };
+
+    if (glyph && typeof glyph.animate === 'function') {
+      glyph.getAnimations().forEach(a => a.cancel());
+      glyph.animate(ringKeyframes(0, amplitude, passes, decay), { duration, easing: 'linear' });
+    }
+    if (clapper && typeof clapper.animate === 'function') {
+      clapper.getAnimations().forEach(a => a.cancel());
+      clapper.animate(ringKeyframes(0, amplitude * 1.6, passes, decay), { duration, delay: 70, easing: 'linear' });
+    }
+    if (waveLeft && waveRight && typeof waveLeft.animate === 'function') {
+      for (let k = 0; k < passes; k++) {
+        const side = k % 2 ? waveRight : waveLeft;
+        const strength = Math.pow(1 - k / passes, decay);
+        side.animate(
+          [
+            { opacity: 0, transform: 'scale(0.55)' },
+            { opacity: 0.9 * strength, offset: 0.3 },
+            { opacity: 0, transform: 'scale(1.25)' }
+          ],
+          { duration: 380, delay: passOffset(k, passes) * duration, easing: 'ease-out' }
+        );
+      }
+    }
+  }
+
+  function updateStockBellToggles(sym) {
+    if (!sym) return;
+    const alerts = (State.stockAlerts || []).filter(a => a.symbol === sym && a.isActive);
+    const hasAlert = alerts.length > 0;
+    const count = alerts.length;
+    document.querySelectorAll('.bell-toggle[data-symbol="' + sym + '"]').forEach(bt => {
+      bt.setAttribute('data-on', hasAlert ? 'true' : 'false');
+      const btn = bt.querySelector('.bell-toggle__button');
+      if (btn) {
+        btn.setAttribute('aria-pressed', hasAlert ? 'true' : 'false');
+        btn.setAttribute('aria-label', hasAlert ? 'Tracking Alert' : 'Set Alert');
+      }
+      const badge = bt.querySelector('.bell-toggle__badge');
+      const digit = bt.querySelector('.bell-toggle__digit');
+      if (badge) {
+        if (hasAlert && count > 0) badge.setAttribute('data-show', '');
+        else badge.removeAttribute('data-show');
+      }
+      if (digit) digit.textContent = count > 9 ? '9+' : (count || 1);
+      if (hasAlert) ringBellToggle(bt);
+    });
+  }
+
   function init() {
     // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
     function syncLiveAuthState() {
@@ -38356,6 +38484,9 @@
     window.openStockAlertsManagerModal = openStockAlertsManagerModal;
     window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
     window.refreshAllAlertsContainers = refreshAllAlertsContainers;
+    window.renderBellToggleHTML = renderBellToggleHTML;
+    window.ringBellToggle = ringBellToggle;
+    window.updateStockBellToggles = updateStockBellToggles;
     window.renderAlertsGridHTML = renderAlertsGridHTML;
     window.removeWatchlistItem = removeWatchlistItem;
     console.log("Momentum Chasers v2.5 initialized with Yahoo Finance Live Data Engine & BananaPatterns architecture.");
