@@ -13637,11 +13637,14 @@
         return high52 > 0 && price >= high52 * 0.95;
       }
 
-      case "v": { // Volume Breakout: Authentic 1.5x+ Volume expansion vs recent average
+      case "v": { // Volume Breakout: Authentic volume expansion vs recent average or breakout pattern
         if (sm) {
           const vRatio = isW ? (sm.wVolRatio || sm.volRatio) : (sm.volRatio || sm.volRatio1d9d);
-          if (vRatio !== undefined && vRatio >= 1.5) return true;
+          if (vRatio !== undefined && vRatio >= 1.2) return true;
         }
+        if (stock[5] && stock[5].includes("v")) return true;
+        const meta = stock[8] || {};
+        if (meta.volRatio && Number(meta.volRatio) >= 1.2) return true;
         return false;
       }
 
