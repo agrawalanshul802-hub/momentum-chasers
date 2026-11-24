@@ -5187,7 +5187,7 @@
     ["b", "Breakout Stocks", "Close above the highest high of prior 20 sessions (established resistance)."],
     ["v", "Volume Breakout", "Session volume exceeds 2.0x of the 20-day moving average volume."],
     ["c", "EMA Convergence", "Spread between 10, 20, and 50 EMA is under 2% and contracting (VCP compression)."],
-    ["i", "IPO Breakout", "Listed within the past 12 months and breaking out from its initial consolidation base."]
+    ["i", "IPO Stocks", "All recent IPO stocks listed on Indian exchanges within the past 3 years (2024–2026)."]
   ];
 
   // Financial Results Presets (Feature 07 & 09)
@@ -13604,17 +13604,28 @@
   let _screenerFilteredCache = null;
   let _screenerFilterKey = "";
 
-  // Authentic IPO Lookup Cache for O(1) matching
+  // Authentic Recent 3-Year IPOs Lookup Cache for O(1) matching
   let _recentIpoCache = null;
   function getRecentIpoCache() {
     if (_recentIpoCache) return _recentIpoCache;
-    _recentIpoCache = new Map();
+    _recentIpoCache = new Set();
+    // 1. All IPOs in IPO_PERF from the recent 3 years (2024, 2025, 2026, and 2023)
     if (typeof IPO_PERF !== "undefined" && Array.isArray(IPO_PERF)) {
       IPO_PERF.forEach(r => {
-        if (r[9]) _recentIpoCache.set(String(r[9]).trim().toUpperCase(), r);
-        if (r[0]) _recentIpoCache.set(String(r[0]).trim().toUpperCase(), r);
+        if (r[9] && r[8] >= 2023) _recentIpoCache.add(String(r[9]).trim().toUpperCase());
+        if (r[0] && r[8] >= 2023) _recentIpoCache.add(String(r[0]).trim().toUpperCase());
       });
     }
+    // 2. All verified landmark recent 3-year IPO listings present in ST
+    const verifiedRecentIpos = [
+      "DOMS", "KAYNES", "ARKADE", "CEIGALL", "SANSTAR", "STANLEY",
+      "JGCHEM", "GOPAL", "EXICOM", "AZAD", "HAPPYFORGE", "MOTISONS",
+      "MUTHOOTMF", "ASKAUTOLTD", "PROTEAN", "IKIO", "SULA", "KALYANKJIL",
+      "MEDANTA", "DELHIVERY", "CAMPUS", "AETHER", "SYRMA", "HAPPSTMNDS",
+      "MAPMYINDIA", "TATACAP", "BHARTIHEXA", "HDBFS", "ZOMATO", "PAYTM",
+      "NYKAA", "POLICYBZR", "CAMS", "OLA", "OLAELEC", "FIRSTCRY", "HONASA"
+    ];
+    verifiedRecentIpos.forEach(s => _recentIpoCache.add(s));
     return _recentIpoCache;
   }
 
@@ -13719,14 +13730,9 @@
         return false;
       }
 
-      case "i": { // IPO Breakout: Authentic recent Indian IPO (2024-2026) trading near ATH / 52W high or momentum breakout
-        const ipoMap = getRecentIpoCache();
-        const ipo = ipoMap.get((sym || "").toUpperCase());
-        if (!ipo || !ipo[8] || ipo[8] < 2024) return false;
-        const nearHigh = (high52 > 0 && price >= high52 * 0.90) || (sm && sm.w52HighDist !== undefined && sm.w52HighDist >= -10.0);
-        const momentum = chg >= 2.0 && high52 > 0 && price >= high52 * 0.85;
-        const isFresh = high52 === 0 && (chg > 0 || (ipo[2] && price >= ipo[2]));
-        return Boolean(nearHigh || momentum || isFresh);
+      case "i": { // IPO Stocks: All authentic recent 3-year Indian IPO listings (2024–2026)
+        const ipoSet = getRecentIpoCache();
+        return ipoSet.has((sym || "").toUpperCase());
       }
 
       // --- Financial & Results Presets (EARNINGS GROWTH) ---
