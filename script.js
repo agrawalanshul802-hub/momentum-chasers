@@ -34884,7 +34884,7 @@
                       <span class="kokonut-avatar kokonut-avatar-mini" style="background:#3b82f6;color:#fff;">G</span>
                     </span>
                     <span class="flex-1 text-left">Switch account</span>
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#94a3b8;">
+                    <svg class="kokonut-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                   </button>
@@ -34929,7 +34929,7 @@
                   <button type="button" class="kokonut-menu-item active" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);">
                     <span class="kokonut-avatar" style="background:#10b981;color:#fff;width:28px;height:28px;font-size:12px;">${escapeHtml(avatar)}</span>
                     <div class="flex-1 text-left min-w-0">
-                      <div class="truncate text-sm font-semibold" style="color:#ffffff;">${escapeHtml(rawName)}</div>
+                      <div class="truncate text-sm font-semibold kokonut-acc-name">${escapeHtml(rawName)}</div>
                       <div class="truncate text-xs opacity-60">${escapeHtml(email)}</div>
                     </div>
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -34959,7 +34959,7 @@
 
                   <!-- Add / Switch Account Link -->
                   <button type="button" class="kokonut-menu-item" onclick="window.location.href='login.html'">
-                    <span style="display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px dashed rgba(255,255,255,0.3);color:#94a3b8;font-size:16px;">+</span>
+                    <span class="kokonut-add-circle">+</span>
                     <span class="flex-1 text-left font-semibold">Switch Account / Sign In</span>
                   </button>
                 </div>
