@@ -3903,12 +3903,57 @@
       }
     }
 
+
+    /* ==========================================================================
+       REACT BITS SCROLL FLOAT (@react-bits/ScrollFloat-JS-CSS)
+       ========================================================================== */
+    .scroll-float {
+      margin: 10px 0 20px 0;
+      overflow: hidden;
+    }
+
+    .scroll-float--open {
+      overflow: visible;
+      overflow-x: clip;
+    }
+
+    .scroll-float-text {
+      display: inline-block;
+      line-height: 1.25;
+      text-align: inherit;
+    }
+
+    .scroll-float-word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .scroll-float-char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .scroll-float-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
   </style>
 
   <!-- Supabase Auth Client Library & Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=4.7.3"></script>
 
+  <!-- GSAP & ScrollTrigger Engine for React Bits Components -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 
 <body id="top">
@@ -4260,7 +4305,7 @@
           <span class="pulse-dot"></span>
           <span>HOW MOMENTUM CHASERS WORKS &bull; LIVE PIPELINE</span>
         </div>
-        <h2 class="rb-pipeline-title">
+        <h2 class="rb-pipeline-title scroll-float" data-scroll-float="true" data-scroll-start="top bottom-=10%" data-scroll-end="center center">
           From Raw Exchange Ticks to <span class="ser" style="font-style:italic;color:var(--cy,#10b981);">Actionable Trade Setups.</span>
         </h2>
         <p class="rb-pipeline-desc">
@@ -4498,8 +4543,8 @@
         <span class="rv"
           style="display:inline-block;color:var(--cy,#22c55e);letter-spacing:0.14em;font-size:0.82rem;font-weight:700;text-transform:uppercase;margin-bottom:10px;text-align:left;">&mdash;
           OUR ANALYTICS SUITE &mdash;</span>
-        <h2 class="rv"
-          style="font-size:clamp(1.75rem, 2.7vw, 2.4rem);line-height:1.2;margin:0 0 12px 0;max-width:100%;text-align:left;white-space:nowrap;">
+        <h2 class="rv scroll-float" data-scroll-float="true" data-scroll-start="top bottom-=10%" data-scroll-end="center center"
+          style="font-size:clamp(1.75rem, 2.7vw, 2.4rem);line-height:1.2;margin:0 0 12px 0;max-width:100%;text-align:left;">
           Everything You Need to <span class="ser" style="font-style:italic;color:var(--cy,#22c55e);">Analyse the
             Market.</span>
         </h2>
@@ -7413,6 +7458,183 @@
       initRotatingText('.text-rotate');
     }
     window.initRotatingText = initRotatingText;
+  </script>
+
+
+  <script>
+    // ==========================================================================
+    // REACT BITS SCROLL FLOAT CONTROLLER (@react-bits/ScrollFloat-JS-CSS)
+    // ==========================================================================
+    function initScrollFloat(selectorOrEl, options) {
+      if (typeof gsap === 'undefined') return;
+      if (typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+      }
+
+      options = options || {};
+      var elements = typeof selectorOrEl === 'string'
+        ? Array.prototype.slice.call(document.querySelectorAll(selectorOrEl))
+        : [selectorOrEl].filter(Boolean);
+
+      var random = function(index, salt) {
+        var value = Math.sin((index + 1) * 12.9898 + salt * 78.233) * 43758.5453;
+        return value - Math.floor(value);
+      };
+
+      var getDelays = function(count, order, stagger) {
+        var middle = (count - 1) / 2;
+        var ranks = Array.from({ length: count }, function(_, index) {
+          if (order === 'end') return count - 1 - index;
+          if (order === 'center') return Math.abs(index - middle);
+          if (order === 'edges') return middle - Math.abs(index - middle);
+          return index;
+        });
+        if (order === 'random') {
+          var shuffled = ranks.map(function(_, index) { return index; }).sort(function(a, b) {
+            return random(a, 9) - random(b, 9);
+          });
+          shuffled.forEach(function(target, rank) {
+            ranks[target] = rank;
+          });
+        }
+        var first = Math.min.apply(Math, ranks);
+        return ranks.map(function(rank) {
+          return (rank - first) * Math.max(0, stagger);
+        });
+      };
+
+      var clamp01 = function(value) { return Math.min(Math.max(value, 0), 1); };
+      var clampToScroll = function(position) {
+        return typeof position === 'string' && !position.startsWith('clamp(') ? 'clamp(' + position + ')' : position;
+      };
+
+      elements.forEach(function(el) {
+        if (!el || el.getAttribute('data-scroll-float-active') === 'true') return;
+        el.setAttribute('data-scroll-float-active', 'true');
+
+        var effect = el.getAttribute('data-effect') || options.effect || 'float';
+        var splitBy = el.getAttribute('data-split-by') || options.splitBy || 'chars';
+        var direction = el.getAttribute('data-direction') || options.direction || 'up';
+        var order = el.getAttribute('data-order') || options.order || 'start';
+        var animationDuration = Number(el.getAttribute('data-duration')) || options.animationDuration || 1;
+        var ease = el.getAttribute('data-ease') || options.ease || 'back.inOut(2)';
+        var scrollStart = el.getAttribute('data-scroll-start') || options.scrollStart || 'top bottom-=5%';
+        var scrollEnd = el.getAttribute('data-scroll-end') || options.scrollEnd || 'bottom center+=10%';
+        var stagger = Number(el.getAttribute('data-stagger')) || options.stagger || 0.03;
+        var distance = Number(el.getAttribute('data-distance')) || options.distance || 120;
+        var stretch = Number(el.getAttribute('data-stretch')) || options.stretch || 2.3;
+        var smoothing = Number(el.getAttribute('data-smoothing')) || options.smoothing || 0;
+
+        // Extract raw plain text for screen readers
+        var rawText = (el.textContent || '').trim();
+
+        // Recursively walk and split child text nodes while preserving inline wrappers
+        function processNode(node) {
+          if (node.nodeType === 3) {
+            var text = node.textContent;
+            if (!text) return null;
+            var words = text.split(/(\s+)/);
+            var frag = document.createDocumentFragment();
+
+            words.forEach(function(w) {
+              if (w.trim() === '') {
+                frag.appendChild(document.createTextNode(w));
+              } else {
+                var wordSpan = document.createElement('span');
+                wordSpan.className = 'scroll-float-word';
+                Array.from(w).forEach(function(ch) {
+                  var charSpan = document.createElement('span');
+                  charSpan.className = 'scroll-float-char';
+                  charSpan.textContent = ch;
+                  wordSpan.appendChild(charSpan);
+                });
+                frag.appendChild(wordSpan);
+              }
+            });
+            return frag;
+          } else if (node.nodeType === 1) {
+            var clone = node.cloneNode(false);
+            Array.from(node.childNodes).forEach(function(child) {
+              var res = processNode(child);
+              if (res) clone.appendChild(res);
+            });
+            return clone;
+          }
+          return node.cloneNode(true);
+        }
+
+        var frag = document.createDocumentFragment();
+        Array.from(el.childNodes).forEach(function(child) {
+          var res = processNode(child);
+          if (res) frag.appendChild(res);
+        });
+
+        el.innerHTML = '';
+        var sr = document.createElement('span');
+        sr.className = 'scroll-float-sr';
+        sr.textContent = rawText;
+        el.appendChild(sr);
+
+        var textWrap = document.createElement('span');
+        textWrap.className = 'scroll-float-text';
+        textWrap.appendChild(frag);
+        el.appendChild(textWrap);
+
+        el.classList.add(effect === 'float' ? 'scroll-float' : 'scroll-float--open');
+
+        var pieces = el.querySelectorAll(splitBy === 'words' ? '.scroll-float-word' : '.scroll-float-char');
+        var targets = pieces.length ? Array.from(pieces) : [textWrap];
+        var delays = getDelays(targets.length, order, stagger);
+        var sign = direction === 'down' ? -1 : 1;
+        var reach = Math.max(0, Number(distance) || 0) / 120;
+        var squeeze = stretch > 0 ? Math.pow(stretch, -0.43) : 1;
+
+        var mm = gsap.matchMedia();
+        mm.add('(prefers-reduced-motion: no-preference)', function() {
+          var timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: el,
+              scroller: window,
+              start: scrollStart,
+              end: clampToScroll(scrollEnd),
+              scrub: smoothing > 0 ? smoothing : true,
+              invalidateOnRefresh: true
+            }
+          });
+
+          var add = function(fromVars, toVars) {
+            gsap.set(targets, Object.assign({ willChange: 'opacity, transform' }, fromVars));
+            return timeline.fromTo(
+              targets,
+              Object.assign({ willChange: 'opacity, transform' }, fromVars),
+              Object.assign({ duration: animationDuration, stagger: function(index) { return delays[index] || 0; } }, toVars),
+              0
+            );
+          };
+
+          add(
+            {
+              opacity: 0,
+              yPercent: 120 * reach * sign,
+              scaleY: stretch,
+              scaleX: squeeze,
+              transformOrigin: sign > 0 ? '50% 0%' : '50% 100%'
+            },
+            { ease: ease, opacity: 1, yPercent: 0, scaleY: 1, scaleX: 1 }
+          );
+        });
+      });
+    }
+
+    // Auto-initialize ScrollFloat on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        initScrollFloat('[data-scroll-float="true"]');
+      });
+    } else {
+      initScrollFloat('[data-scroll-float="true"]');
+    }
+    window.initScrollFloat = initScrollFloat;
   </script>
 
 </body>
