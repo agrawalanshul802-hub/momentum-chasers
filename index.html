@@ -19,7 +19,7 @@
     <!-- Main Stylesheet & Favicon -->
     <link rel="icon" type="image/png" href="logo-icon.png">
     <link rel="apple-touch-icon" href="logo-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7.1.0">
+    <link rel="stylesheet" href="styles.css?v=7.2.0">
 
     <!-- TradingView Lightweight Charts Engine (Official Open-Source Engine for Indian Equities) -->
     <script src="lightweight-charts.js"></script>
@@ -770,7 +770,7 @@
                         VIP Curated Setup: Automobile &amp; EV Ancillary Leaders
                     </h3>
                     <p style="font-size:12.5px;color:#94a3b8;max-width:440px;margin:0 auto 16px auto;line-height:1.5;">
-                        Constituent stocks, verified entry trigger ranges, target prices, stop losses, and multi-timeframe chart breakdowns are reserved for VIP access.
+                        Constituent stocks, verified entry ranges, target prices, stop losses, chart breakdowns &amp; VIP IPO PDFs unlock together with any VIP plan.
                     </p>
 
                     <!-- Structured Setup Intel Grid -->
@@ -815,7 +815,7 @@
                     <!-- VIP Subscription Plans Selector (Monthly / Quarterly / Yearly) -->
                     <div class="vip-plan-picker" style="margin:16px 0 14px 0;">
                         <div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
-                            👑 Select VIP Subscription Plan (Unlocks All Setups)
+                            👑 Select VIP Subscription Plan (Unlocks All Paid Setups &amp; IPO PDFs)
                         </div>
                         <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;text-align:center;">
                             <!-- Monthly -->
@@ -894,15 +894,15 @@
                 <div class="vip-plan-segmented-bar">
                     <button type="button" class="vip-plan-pill" id="view2-plan-monthly" onclick="window.setVipPayPlan('monthly')">
                         <span class="vip-pill-icon-row">🗓️ Monthly</span>
-                        <span class="vip-pill-price-row">₹999</span>
+                        <span class="vip-pill-price-row" id="view2-price-monthly">₹999</span>
                     </button>
                     <button type="button" class="vip-plan-pill is-active" id="view2-plan-quarterly" onclick="window.setVipPayPlan('quarterly')">
                         <span class="vip-pill-icon-row">⚡ Quarterly</span>
-                        <span class="vip-pill-price-row">₹2,499</span>
+                        <span class="vip-pill-price-row" id="view2-price-quarterly">₹2,499</span>
                     </button>
                     <button type="button" class="vip-plan-pill" id="view2-plan-yearly" onclick="window.setVipPayPlan('yearly')">
                         <span class="vip-pill-icon-row">👑 Yearly</span>
-                        <span class="vip-pill-price-row">₹7,999</span>
+                        <span class="vip-pill-price-row" id="view2-price-yearly">₹7,999</span>
                     </button>
                 </div>
 
@@ -1028,7 +1028,7 @@
     <script src="data/screeningmantis-emas.js?v=6.4.7"></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=7.1.0"></script>
+    <script src="script.js?v=7.2.0"></script>
 </body>
 
 </html>

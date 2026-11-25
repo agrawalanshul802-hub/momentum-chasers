@@ -6469,13 +6469,11 @@ const server = http.createServer(async (req, res) => {
   // 6g-2. Gateway & Privacy Settings Store
   const gatewaySettingsPath = path.join(__dirname, 'data', 'gateway-settings.json');
   const DEFAULT_GATEWAY_SETTINGS = {
-    tipPrice: 199,
     monthlyPrice: 999,
     quarterlyPrice: 2499,
     yearlyPrice: 7999,
     tipPrice: 999,
-    weeklyPrice: 999,
-    monthlyPrice: 2499,
+    weeklyPrice: 2499,
     telegramBot: 'MomentumChasers_bot',
     upiVpa: '8767823878@slc',
     customPaymentLink: '',
@@ -6990,15 +6988,15 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       const prev = getStoredGatewaySettings();
+      const mPrice = parseFloat(body.monthlyPrice) || parseFloat(prev.monthlyPrice) || 999;
+      const qPrice = parseFloat(body.quarterlyPrice) || parseFloat(prev.quarterlyPrice) || 2499;
+      const yPrice = parseFloat(body.yearlyPrice) || parseFloat(prev.yearlyPrice) || 7999;
       const updated = {
-        tipPrice: parseFloat(body.tipPrice) || prev.tipPrice || 199,
-        weeklyPrice: parseFloat(body.weeklyPrice) || prev.weeklyPrice || 999,
-        monthlyPrice: parseFloat(body.monthlyPrice) || prev.monthlyPrice || 2499,
-        monthlyPrice: parseFloat(body.monthlyPrice) || prev.monthlyPrice || 999,
-        quarterlyPrice: parseFloat(body.quarterlyPrice) || prev.quarterlyPrice || 2499,
-        yearlyPrice: parseFloat(body.yearlyPrice) || prev.yearlyPrice || 7999,
-        tipPrice: parseFloat(body.tipPrice) || prev.tipPrice || 999,
-        weeklyPrice: parseFloat(body.weeklyPrice) || prev.weeklyPrice || 2499,
+        monthlyPrice: mPrice,
+        quarterlyPrice: qPrice,
+        yearlyPrice: yPrice,
+        tipPrice: mPrice,
+        weeklyPrice: qPrice,
         telegramBot: (body.telegramBot || '').toString().trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//, ''),
         upiVpa: (body.upiVpa || '').toString().trim(),
         customPaymentLink: (body.customPaymentLink || '').toString().trim(),
@@ -7119,28 +7117,38 @@ const server = http.createServer(async (req, res) => {
     const txRef = (body.txRef || ('TX-' + Date.now().toString().slice(-8))).toString().trim();
     const utr = (body.utr || '').toString().trim();
     const mobile = (body.mobile || 'UPI Customer (' + (utr ? 'UTR:' + utr.slice(-6) : (txRef.slice(-6))) + ')').toString().trim();
-    const amount = parseFloat(body.amount) || 2499;
-    const tierRaw = (body.planTier || 'quarterly').toString().toLowerCase();
+    const gw = getStoredGatewaySettings();
+    const tierRaw = (body.planTier || body.plan || body.tier || 'quarterly').toString().toLowerCase();
 
+    let tierKey = 'quarterly';
     let durationDays = 90;
     let planTitle = 'Quarterly VIP Pass (90 Days)';
+    let defaultAmt = parseFloat(gw.quarterlyPrice) || 2499;
+
     if (tierRaw.includes('month') || tierRaw.includes('30')) {
+      tierKey = 'monthly';
       durationDays = 30;
       planTitle = 'Monthly VIP Pass (30 Days)';
+      defaultAmt = parseFloat(gw.monthlyPrice) || 999;
     } else if (tierRaw.includes('year') || tierRaw.includes('365')) {
+      tierKey = 'yearly';
       durationDays = 365;
       planTitle = 'Yearly VIP Pass (365 Days)';
+      defaultAmt = parseFloat(gw.yearlyPrice) || 7999;
     }
 
-    const expDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
+    const amount = parseFloat(body.amount) || defaultAmt;
+    const nowDate = new Date();
+    const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
     const purchases = getStoredPurchases();
     const newPurchase = {
       id: 'PUR-' + Date.now().toString().slice(-6),
       mobile: mobile,
       secretPin: 'VIP-' + Math.floor(1000 + Math.random() * 9000),
+      tierKey: tierKey,
       planTier: planTitle,
       amount: amount,
-      purchasedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      purchasedAt: nowDate.toISOString().replace('T', ' ').slice(0, 19),
       expiresAt: expDate.toISOString().slice(0, 10),
       deviceLock: '1 Active Device',
       status: 'Active (Auto-Verified)',
@@ -7157,7 +7165,9 @@ const server = http.createServer(async (req, res) => {
       success: true,
       unlocked: true,
       ideaId: 'all',
+      tierKey: tierKey,
       planTier: planTitle,
+      activatedAt: nowDate.toISOString(),
       expiresAt: expDate.toISOString(),
       daysTotal: durationDays,
       daysRemaining: durationDays,
@@ -7170,6 +7180,7 @@ const server = http.createServer(async (req, res) => {
     const body = await parseRequestBody(req);
     const code = (body.code || '').toString().trim().toUpperCase();
     const ideaId = (body.ideaId || '').toString().trim();
+    const requestedTierRaw = (body.planTier || body.plan || body.tier || '').toString().toLowerCase();
 
     const masterObj = getStoredMasterCode();
     const isMaster = (code && masterObj && masterObj.code && code === masterObj.code.toUpperCase());
@@ -7178,18 +7189,42 @@ const server = http.createServer(async (req, res) => {
     const couponMatch = coupons.find(c => c.active !== false && c.code && c.code.toUpperCase() === code);
 
     if (isMaster || couponMatch) {
-      // Record access in purchases log with validity metadata
-      const durationDays = isMaster ? 365 : 90;
-      const expDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
-      const planTitle = isMaster ? 'Master VIP Pass (365 Days)' : 'VIP Promo Pass (90 Days)';
+      // Resolve plan tier & validity days from Master Code, coupon appliesTo, or user's selected plan
+      const applies = couponMatch && couponMatch.appliesTo ? couponMatch.appliesTo.toString().toLowerCase() : 'all';
+      const targetTierRaw = isMaster ? 'yearly' : ((applies && applies !== 'all') ? applies : (requestedTierRaw || 'quarterly'));
+
+      let tierKey = 'quarterly';
+      let durationDays = 90;
+      let planTitle = 'Quarterly VIP Pass (90 Days)';
+      if (isMaster) {
+        tierKey = 'yearly';
+        durationDays = 365;
+        planTitle = 'Master VIP Pass (365 Days)';
+      } else if (targetTierRaw.includes('month') || targetTierRaw.includes('30')) {
+        tierKey = 'monthly';
+        durationDays = 30;
+        planTitle = 'Monthly VIP Pass (30 Days)';
+      } else if (targetTierRaw.includes('year') || targetTierRaw.includes('365')) {
+        tierKey = 'yearly';
+        durationDays = 365;
+        planTitle = 'Yearly VIP Pass (365 Days)';
+      } else {
+        tierKey = 'quarterly';
+        durationDays = 90;
+        planTitle = 'Quarterly VIP Pass (90 Days)';
+      }
+
+      const nowDate = new Date();
+      const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
       const purchases = getStoredPurchases();
       const newPurchase = {
         id: 'PUR-' + Date.now().toString().slice(-6),
         mobile: isMaster ? 'Master Code User' : ('Coupon User (' + code + ')'),
         secretPin: 'PASS-' + Math.floor(1000 + Math.random() * 9000),
+        tierKey: tierKey,
         planTier: planTitle,
         amount: 0,
-        purchasedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        purchasedAt: nowDate.toISOString().replace('T', ' ').slice(0, 19),
         expiresAt: expDate.toISOString().slice(0, 10),
         deviceLock: '1 Active Device',
         status: 'Active (Auto-Verified)',
@@ -7205,7 +7240,9 @@ const server = http.createServer(async (req, res) => {
         unlocked: true,
         ideaId: 'all',
         unlockedAll: true,
+        tierKey: tierKey,
         planTier: planTitle,
+        activatedAt: nowDate.toISOString(),
         expiresAt: expDate.toISOString(),
         daysTotal: durationDays,
         daysRemaining: durationDays,
@@ -7508,7 +7545,6 @@ const server = http.createServer(async (req, res) => {
         sizeLabel: sizeLabel || 'PDF',
         pdfUrl: finalPdfUrl,
         isPaid: body.isPaid === true,
-        price: parseFloat(body.price) || 199,
         uploadedAt: new Date().toISOString().slice(0, 10)
       };
 

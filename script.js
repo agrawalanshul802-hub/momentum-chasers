@@ -14736,6 +14736,75 @@
   ];
 
   // VIP Subscription & Validity Countdown Engine (Monthly, Quarterly, Yearly)
+  function getVipPlanConfig(tier) {
+    const gw = State.gatewaySettings || {};
+    const raw = (tier || _activeVipPlan || 'quarterly').toString().toLowerCase();
+    if (raw.includes('month') || raw.includes('30')) {
+      const price = parseInt(gw.monthlyPrice, 10) || 999;
+      return {
+        tierKey: 'monthly',
+        days: 30,
+        price: price,
+        label: 'Monthly VIP Access (30 Days)',
+        title: 'Monthly VIP Pass (30 Days)'
+      };
+    }
+    if (raw.includes('year') || raw.includes('365')) {
+      const price = parseInt(gw.yearlyPrice, 10) || 7999;
+      return {
+        tierKey: 'yearly',
+        days: 365,
+        price: price,
+        label: 'Yearly VIP Access (365 Days)',
+        title: 'Yearly VIP Pass (365 Days)'
+      };
+    }
+    const price = parseInt(gw.quarterlyPrice, 10) || 2499;
+    return {
+      tierKey: 'quarterly',
+      days: 90,
+      price: price,
+      label: 'Quarterly VIP Access (90 Days)',
+      title: 'Quarterly VIP Pass (90 Days)'
+    };
+  }
+
+  function formatVipCountdown(msRemaining) {
+    if (!(msRemaining > 0)) return 'Expired';
+    const totalSec = Math.floor(msRemaining / 1000);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    if (d > 0) return `${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
+    const s = totalSec % 60;
+    return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+  }
+
+  let _vipCountdownTimerId = null;
+  function startVipCountdownTicker() {
+    if (_vipCountdownTimerId) return;
+    _vipCountdownTimerId = setInterval(() => {
+      const nodes = document.querySelectorAll('[data-vip-countdown]');
+      if (!nodes.length) return;
+      const now = Date.now();
+      let anyExpiredJustNow = false;
+      nodes.forEach((el) => {
+        const expIso = el.getAttribute('data-vip-countdown');
+        if (!expIso) return;
+        const msRem = new Date(expIso).getTime() - now;
+        if (msRem <= 0) {
+          el.textContent = 'Expired';
+          anyExpiredJustNow = true;
+        } else {
+          el.textContent = formatVipCountdown(msRem);
+        }
+      });
+      if (anyExpiredJustNow && typeof renderUserAuthUI === 'function') {
+        renderUserAuthUI();
+      }
+    }, 1000);
+  }
+
   function getVipSubscription() {
     let sub = null;
     try {
@@ -14748,7 +14817,8 @@
       const hasUnlocked = unlockedList.includes("all") || unlockedList.includes("*") || unlockedList.length > 0;
       const hasPromo = (localStorage.getItem("mc_promo_applied") === "true");
       if (hasUnlocked || hasPromo) {
-        sub = activateVipSubscription("quarterly", 90, "Quarterly VIP Pass (90 Days)");
+        const cfg = getVipPlanConfig(_activeVipPlan || "quarterly");
+        sub = activateVipSubscription(cfg.tierKey, cfg.days, cfg.title);
         return sub;
       }
       return null;
@@ -14756,41 +14826,40 @@
 
     const now = Date.now();
     const expiresMs = new Date(sub.expiresAt).getTime();
-    const msRemaining = expiresMs - now;
+    const msRemaining = Math.max(0, expiresMs - now);
     const daysRemaining = Math.max(0, Math.ceil(msRemaining / (1000 * 60 * 60 * 24)));
-    const daysTotal = parseInt(sub.daysTotal, 10) || 90;
-    const percentRemaining = Math.max(0, Math.min(100, Math.round((daysRemaining / daysTotal) * 100)));
+    let daysTotal = parseInt(sub.daysTotal, 10);
+    if (!daysTotal || isNaN(daysTotal)) {
+      const tk = ((sub.tierKey || sub.planTier || '') + '').toLowerCase();
+      daysTotal = tk.includes('month') || tk.includes('30') ? 30 : (tk.includes('year') || tk.includes('365') ? 365 : 90);
+    }
+    const percentRemaining = Math.max(0, Math.min(100, Math.round((msRemaining / (daysTotal * 24 * 60 * 60 * 1000)) * 100)));
 
+    sub.daysTotal = daysTotal;
     sub.daysRemaining = daysRemaining;
+    sub.msRemaining = msRemaining;
+    sub.countdownText = formatVipCountdown(msRemaining);
     sub.percentRemaining = percentRemaining;
-    sub.active = (daysRemaining > 0);
-    sub.expired = (daysRemaining <= 0);
+    sub.active = (msRemaining > 0 && daysRemaining > 0);
+    sub.expired = (msRemaining <= 0);
 
+    if (sub.active) startVipCountdownTicker();
     return sub;
   }
   window.getVipSubscription = getVipSubscription;
 
-  function activateVipSubscription(tier, customDays, customTitle) {
-    let days = 90;
-    let title = "Quarterly VIP Pass (90 Days)";
-    const t = (tier || "quarterly").toLowerCase();
-
-    if (customDays && customDays > 0) {
-      days = customDays;
-      title = customTitle || `${days}-Day VIP Pass`;
-    } else if (t.includes("month") || t.includes("30")) {
-      days = 30;
-      title = "Monthly VIP Pass (30 Days)";
-    } else if (t.includes("year") || t.includes("365")) {
-      days = 365;
-      title = "Yearly VIP Pass (365 Days)";
-    } else {
-      days = 90;
-      title = "Quarterly VIP Pass (90 Days)";
-    }
+  function activateVipSubscription(tier, customDays, customTitle, customExpiresAt) {
+    const cfg = getVipPlanConfig(tier);
+    const days = (customDays && parseInt(customDays, 10) > 0) ? parseInt(customDays, 10) : cfg.days;
+    const title = customTitle || (days === 30 ? "Monthly VIP Pass (30 Days)" : (days === 365 ? "Yearly VIP Pass (365 Days)" : (days === 90 ? "Quarterly VIP Pass (90 Days)" : `${days}-Day VIP Pass`)));
+    const t = days === 30 ? "monthly" : (days === 365 ? "yearly" : cfg.tierKey);
 
     const now = new Date();
-    const expires = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const parsedExp = customExpiresAt ? new Date(customExpiresAt) : null;
+    const expires = (parsedExp && !isNaN(parsedExp.getTime()) && parsedExp.getTime() > now.getTime())
+      ? parsedExp
+      : new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const msRemaining = Math.max(0, expires.getTime() - now.getTime());
 
     const sub = {
       active: true,
@@ -14799,7 +14868,9 @@
       activatedAt: now.toISOString(),
       expiresAt: expires.toISOString(),
       daysTotal: days,
-      daysRemaining: days,
+      daysRemaining: Math.max(1, Math.ceil(msRemaining / (1000 * 60 * 60 * 24))),
+      msRemaining: msRemaining,
+      countdownText: formatVipCountdown(msRemaining),
       percentRemaining: 100,
       expired: false
     };
@@ -14810,11 +14881,12 @@
       localStorage.setItem("mc_promo_applied", "true");
     } catch (_) { }
 
+    startVipCountdownTicker();
     unlockOwnerIdea("all");
     if (typeof renderUserAuthUI === "function") renderUserAuthUI();
     const wrap = document.getElementById("owner-ideas-chips-container");
     if (wrap && typeof renderOwnerIdeaChipsHTML === "function") wrap.innerHTML = renderOwnerIdeaChipsHTML();
-    if (State.view === "screener" && typeof renderActiveView === "function") renderActiveView();
+    if ((State.view === "screener" || State.view === "ipo") && typeof renderActiveView === "function") renderActiveView();
 
     return sub;
   }
@@ -14863,10 +14935,8 @@
 
     return false;
   }
-  function getIdeaPrice(idea) {
-    if (!idea) return 199;
-    const p = parseFloat(idea.price);
-    return (!isNaN(p) && p > 0) ? p : 199;
+  function getIdeaPrice() {
+    return getVipPlanConfig(_activeVipPlan || 'quarterly').price;
   }
 
   function unlockOwnerIdea(ideaId) {
@@ -14961,7 +15031,7 @@
 
       let badgeHTML = '';
       if (isLocked) {
-        badgeHTML = `<span class="idea-chip-price-badge">₹${price}</span>`;
+        badgeHTML = `<span class="idea-chip-price-badge">VIP</span>`;
       } else if (isUnlocked && idea.isLocked !== false) {
         badgeHTML = `<span style="font-size:10px;color:#22c55e;font-weight:700;margin-left:4px;">✓</span>`;
       }
@@ -14970,7 +15040,7 @@
         <button class="preset-chip-btn owner-idea-chip ${isLocked ? 'is-locked-chip' : ''} ${isActive ? 'active' : ''}" 
                 data-action="toggle-owner-idea" 
                 data-idea-id="${escapeHtml(idea.id)}" 
-                title="${isLocked ? ('VIP Locked Idea — ₹' + price) : ('Click to filter screener to ' + count + ' stocks in ' + escapeHtml(idea.title))}">
+                title="${isLocked ? 'VIP Only — Unlock with Monthly, Quarterly or Yearly Plan' : ('Click to filter screener to ' + count + ' stocks in ' + escapeHtml(idea.title))}">
           <span>${isLocked ? '🔒' : (isActive ? '✓' : '💡')}</span>
           <span>${escapeHtml(idea.title)}</span>
           <span style="font-size:10px;opacity:0.85;background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:10px;margin-left:2px;">${count}</span>
@@ -15198,12 +15268,13 @@
     const ideasList = (State.isOwnerIdeasLoaded || (State.ownerIdeas && State.ownerIdeas.length > 0))
       ? (State.ownerIdeas || [])
       : OWNER_IDEAS_SEED;
-    const idea = ideasList.find(i => i.id === ideaId) || { title: 'Trading Idea', price: 199 };
-    const price = getIdeaPrice(idea);
-    const title = idea.title || 'VIP Setup';
+    const idea = ideasList.find(i => i.id === ideaId) || { title: 'VIP Research Access' };
+    const planCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
+    const price = planCfg.price;
+    const title = idea.title || 'VIP Research Access';
     const count = (idea.symbols || []).length;
 
-    _currentPaymentIdeaId = ideaId;
+    _currentPaymentIdeaId = ideaId || 'all';
     _currentTxRef = 'TX-MC-' + Date.now().toString().slice(-6);
 
     // 1. Populate Setup Details Screen ("rest info")
@@ -15217,7 +15288,6 @@
     const detailThesis = document.getElementById('idea-detail-thesis-text');
     const detailThesisBox = document.getElementById('idea-detail-thesis-box');
     const detailPrice = document.getElementById('idea-detail-price');
-    const detailPayCtaText = document.getElementById('idea-detail-pay-cta-text');
 
     if (detailTitle) detailTitle.textContent = `VIP Curated Setup: ${title}`;
     if (detailCat) detailCat.textContent = idea.category || 'High Conviction Swing';
@@ -15234,43 +15304,43 @@
       detailThesisBox.style.display = 'none';
     }
 
-    if (detailPrice) detailPrice.textContent = `₹${price}`;
-    if (detailPayCtaText) detailPayCtaText.textContent = `⚡ Instant Pay ₹${price} & Unlock Setup`;
+    if (detailPrice) detailPrice.textContent = `₹${formatNumber(price)}`;
+
+    // Sync live gateway prices to both View 1 plan cards & View 2 segmented pills
+    const mCfg = getVipPlanConfig('monthly');
+    const qCfg = getVipPlanConfig('quarterly');
+    const yCfg = getVipPlanConfig('yearly');
+    const priceEls = {
+      'plan-tier-price-monthly': mCfg.price,
+      'plan-tier-price-quarterly': qCfg.price,
+      'plan-tier-price-yearly': yCfg.price,
+      'view2-price-monthly': mCfg.price,
+      'view2-price-quarterly': qCfg.price,
+      'view2-price-yearly': yCfg.price
+    };
+    Object.keys(priceEls).forEach((elId) => {
+      const el = document.getElementById(elId);
+      if (el) el.textContent = '₹' + formatNumber(priceEls[elId]);
+    });
 
     // 2. Prepare UPI Payment parameters
     const vpa = (State.gatewaySettings && State.gatewaySettings.directVpa) || '8767823878@slc';
     const isMasked = !!(State.gatewaySettings && State.gatewaySettings.maskBrand);
     const brandName = isMasked ? 'Candlewick Gateway' : 'Momentum Chasers';
-    const note = `VIP Setup: ${title}`;
-    const upiUrl = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(brandName)}&am=${price}&cu=INR&tn=${encodeURIComponent(note)}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=2&data=${encodeURIComponent(upiUrl)}`;
 
     const titleEl = document.getElementById('idea-modal-title');
     const subEl = document.getElementById('idea-modal-subtitle');
-    const amtEl = document.getElementById('idea-modal-amount');
     const brandEl = document.getElementById('idea-modal-brand');
-    const qrImg = document.getElementById('idea-modal-qr-img');
     const vpaCode = document.getElementById('idea-modal-vpa');
     const utrInput = document.getElementById('idea-utr-input');
     const radarStatus = document.getElementById('idea-radar-status');
 
     if (titleEl) titleEl.textContent = `Unlock ${title}`;
-    if (subEl) subEl.textContent = `Pay ₹${price} once via UPI for instant lifetime access`;
-    if (amtEl) amtEl.textContent = `₹${price}`;
+    if (subEl) subEl.textContent = `Same VIP Pass unlocks all setups & paid IPO PDFs`;
     if (brandEl) brandEl.textContent = brandName;
-    if (qrImg) qrImg.src = qrUrl;
     if (vpaCode) vpaCode.textContent = vpa;
     if (utrInput) utrInput.value = '';
     if (radarStatus) radarStatus.textContent = 'Listening for bank confirmation... Checking automatically.';
-
-    // Set 1-click app links
-    const gpayBtn = document.getElementById('idea-intent-gpay');
-    const phonepeBtn = document.getElementById('idea-intent-phonepe');
-    const paytmBtn = document.getElementById('idea-intent-paytm');
-    if (gpayBtn) gpayBtn.href = upiUrl;
-    if (phonepeBtn) phonepeBtn.href = upiUrl;
-    if (paytmBtn) paytmBtn.href = upiUrl;
-
 
     // Initialize React Bits SlideCommit Component for Paid Items
     const slideWrap = document.getElementById('idea-slide-commit-container');
@@ -15291,6 +15361,11 @@
           });
         }
       });
+    }
+
+    // Apply currently selected VIP Plan across View 1, View 2, QR & SlideCommit
+    if (typeof window.setVipPayPlan === 'function') {
+      window.setVipPayPlan(planCfg.tierKey);
     }
 
     // Show Details View by default
@@ -15391,7 +15466,12 @@
           const data = await res.json();
           if (data && data.paid) {
             stopAutopayDetection();
-            handlePaymentSuccess(ideaId, 'Autopayment Detected!');
+            const planCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
+            handlePaymentSuccess(ideaId, 'Autopayment Detected!', {
+              tier: planCfg.tierKey,
+              days: planCfg.days,
+              planTier: planCfg.title
+            });
           }
         }
       } catch (_) { }
@@ -15408,6 +15488,7 @@
   window.triggerAutoVerifyUnlock = async function () {
     const btn = document.getElementById('btn-autopay-confirm');
     const origText = btn ? btn.innerHTML : '';
+    const planCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = '<span>⏳ Detecting UPI Payment...</span>';
@@ -15424,18 +15505,28 @@
           ideaId: _currentPaymentIdeaId,
           txRef: _currentTxRef,
           utr: utr,
-          amount: 199
+          planTier: planCfg.tierKey,
+          amount: planCfg.price
         })
       });
       const data = await res.json();
       if (data && data.success && data.unlocked) {
-        handlePaymentSuccess(_currentPaymentIdeaId, 'Payment Verified Successfully!');
+        handlePaymentSuccess(_currentPaymentIdeaId, 'Payment Verified Successfully!', {
+          tier: data.tierKey || planCfg.tierKey,
+          days: data.daysTotal || planCfg.days,
+          planTier: data.planTier || planCfg.title,
+          expiresAt: data.expiresAt
+        });
       } else {
         alert(data.error || 'Verification pending. Please ensure payment is completed.');
       }
     } catch (e) {
-      // Offline fallback: auto-unlock directly
-      handlePaymentSuccess(_currentPaymentIdeaId, 'Payment Approved!');
+      // Offline fallback: auto-unlock directly with selected plan's exact timer
+      handlePaymentSuccess(_currentPaymentIdeaId, 'Payment Approved!', {
+        tier: planCfg.tierKey,
+        days: planCfg.days,
+        planTier: planCfg.title
+      });
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -15458,6 +15549,7 @@
     const inp = document.getElementById('idea-code-input');
     const code = inp ? inp.value.trim().toUpperCase() : '';
     const errEl = document.getElementById('idea-code-error');
+    const planCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
 
     if (!code) {
       if (errEl) { errEl.textContent = 'Please enter a passcode or coupon.'; errEl.style.display = 'block'; }
@@ -15469,12 +15561,17 @@
       const res = await fetch(`${base}/api/payment/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code, ideaId: _currentPaymentIdeaId })
+        body: JSON.stringify({ code: code, ideaId: _currentPaymentIdeaId, planTier: planCfg.tierKey })
       });
       const data = await res.json();
       if (data && data.success && data.unlocked) {
         window.closeIdeaCodeModal();
-        handlePaymentSuccess(_currentPaymentIdeaId, 'Passcode / Coupon Applied!');
+        handlePaymentSuccess(_currentPaymentIdeaId, 'Passcode / Coupon Applied!', {
+          tier: data.tierKey || planCfg.tierKey,
+          days: data.daysTotal || planCfg.days,
+          planTier: data.planTier || planCfg.title,
+          expiresAt: data.expiresAt
+        });
       } else {
         if (errEl) {
           errEl.textContent = data.error || 'Invalid or expired passcode / coupon code.';
@@ -15483,8 +15580,13 @@
       }
     } catch (e) {
       if (code.startsWith('MC-') || code.includes('PASS') || code.includes('DIWALI') || code.includes('VIP')) {
+        const isMasterFallback = code.startsWith('MC-') || code.includes('PASS');
         window.closeIdeaCodeModal();
-        handlePaymentSuccess(_currentPaymentIdeaId, 'Access Granted!');
+        handlePaymentSuccess(_currentPaymentIdeaId, 'Access Granted!', {
+          tier: isMasterFallback ? 'yearly' : planCfg.tierKey,
+          days: isMasterFallback ? 365 : planCfg.days,
+          planTier: isMasterFallback ? 'Master VIP Pass (365 Days)' : planCfg.title
+        });
       } else {
         if (errEl) {
           errEl.textContent = 'Invalid passcode or coupon code.';
@@ -15494,13 +15596,23 @@
     }
   };
 
-  function handlePaymentSuccess(ideaId, msg) {
+  function handlePaymentSuccess(ideaId, msg, planInfo) {
     stopAutopayDetection();
     window.closeIdeaUnlockModal();
     window.closeIdeaCodeModal();
-    unlockOwnerIdea(ideaId);
+    const fallbackCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
+    const info = planInfo || {};
+    const activatedSub = activateVipSubscription(
+      info.tier || fallbackCfg.tierKey,
+      info.days || fallbackCfg.days,
+      info.planTier || fallbackCfg.title,
+      info.expiresAt
+    );
+    if (ideaId && ideaId !== 'all') {
+      unlockOwnerIdea(ideaId);
+    }
     fireConfettiEffect();
-    showToast(`🎉 ${msg || 'Setup Unlocked!'} All constituent stocks and target price levels revealed.`);
+    showToast(`🎉 ${msg || 'VIP Unlocked!'} ${activatedSub ? activatedSub.planTier : fallbackCfg.title} active (${activatedSub ? activatedSub.daysRemaining : fallbackCfg.days} Days).`);
   }
 
   function fireConfettiEffect() {
@@ -29600,7 +29712,7 @@
     }
     const locked = isIPOPdfLockedForUser(pdf);
     const titleAttr = locked
-      ? `VIP Paid PDF (₹${pdf.price || 199}) — Click to unlock ${pdf.company}`
+      ? `VIP Only PDF — Click to unlock Monthly / Quarterly / Yearly VIP Pass for ${pdf.company}`
       : `Open ${pdf.company} IPO PDF (${pdf.fileName || "PDF"})`;
     return `
       <button type="button"
@@ -29636,8 +29748,7 @@
           entry: "IPO Issue Brief",
           target: "Full Valuation & GMP Note PDF",
           stopLoss: "Risk & Peer Valuation Inside",
-          thesis: `Unlock full research PDF (${pdf.fileName || "IPO Note.pdf"}) for ${pdf.company} along with VIP access.`,
-          price: pdf.price || 199,
+          thesis: `Unlock full research PDF (${pdf.fileName || "IPO Note.pdf"}) for ${pdf.company} and all VIP setups with any Monthly, Quarterly or Yearly VIP Plan.`,
           isLocked: true,
           active: true
         };
@@ -34804,7 +34915,7 @@
             <span style="font-weight:800;color:#fcd34d;font-size:13px;">${escapeHtml(vipSub.planTier)}</span>
           </div>
           <span style="font-size:11px;font-weight:800;color:#22c55e;background:rgba(34,197,94,0.15);padding:2px 8px;border-radius:12px;border:1px solid rgba(34,197,94,0.3);">
-            ● ${vipSub.daysRemaining} Days Left
+            ● <span data-vip-countdown="${escapeHtml(vipSub.expiresAt)}">${escapeHtml(vipSub.countdownText || (vipSub.daysRemaining + 'd Left'))}</span> (${vipSub.daysRemaining}/${vipSub.daysTotal}d)
           </span>
         </div>
         <div style="font-size:11.5px;color:var(--mu);margin-top:6px;display:flex;justify-content:space-between;">
@@ -34945,7 +35056,7 @@
             <span style="font-size:11px; font-weight:800; color:#fcd34d; letter-spacing:0.3px;">VIP RESEARCH PASS</span>
           </div>
           <span style="font-size:10px; font-weight:800; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); padding:1px 6px; border-radius:10px;">
-            ● ${sub.daysRemaining}d Left
+            ● <span data-vip-countdown="${escapeHtml(sub.expiresAt)}">${escapeHtml(sub.countdownText || (sub.daysRemaining + 'd Left'))}</span>
           </span>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--mu); margin-bottom: 4px;">
@@ -38545,45 +38656,38 @@
   let _ideaSlideCommitInstance = null;
 
   window.setVipPayPlan = function (tier) {
-    _activeVipPlan = tier || 'quarterly';
     const gw = State.gatewaySettings || {};
-    let price = 2499;
-    let label = 'Quarterly VIP Access (90 Days)';
-
-    if (tier === 'monthly') {
-      price = parseInt(gw.monthlyPrice, 10) || 999;
-      label = 'Monthly VIP Access (30 Days)';
-    } else if (tier === 'yearly') {
-      price = parseInt(gw.yearlyPrice, 10) || 7999;
-      label = 'Yearly VIP Access (365 Days)';
-    } else {
-      price = parseInt(gw.quarterlyPrice, 10) || 2499;
-      label = 'Quarterly VIP Access (90 Days)';
-    }
+    const cfg = getVipPlanConfig(tier || 'quarterly');
+    const activeTier = cfg.tierKey;
+    _activeVipPlan = activeTier;
+    const price = cfg.price;
+    const label = cfg.label;
 
     // 1. Update Plan Selection Visual Cards in View 1
     const mCard = document.getElementById('plan-tier-card-monthly');
     const qCard = document.getElementById('plan-tier-card-quarterly');
     const yCard = document.getElementById('plan-tier-card-yearly');
-    if (mCard) mCard.classList.toggle('is-active', tier === 'monthly');
-    if (qCard) qCard.classList.toggle('is-active', tier === 'quarterly');
-    if (yCard) yCard.classList.toggle('is-active', tier === 'yearly');
+    if (mCard) mCard.classList.toggle('is-active', activeTier === 'monthly');
+    if (qCard) qCard.classList.toggle('is-active', activeTier === 'quarterly');
+    if (yCard) yCard.classList.toggle('is-active', activeTier === 'yearly');
 
     // 2. Update Plan Pills in View 2
     const p1 = document.getElementById('view2-plan-monthly');
     const p2 = document.getElementById('view2-plan-quarterly');
     const p3 = document.getElementById('view2-plan-yearly');
-    if (p1) p1.classList.toggle('is-active', tier === 'monthly');
-    if (p2) p2.classList.toggle('is-active', tier === 'quarterly');
-    if (p3) p3.classList.toggle('is-active', tier === 'yearly');
+    if (p1) p1.classList.toggle('is-active', activeTier === 'monthly');
+    if (p2) p2.classList.toggle('is-active', activeTier === 'quarterly');
+    if (p3) p3.classList.toggle('is-active', activeTier === 'yearly');
 
-    // 3. Update Amount readouts
+    // 3. Update Amount & Plan Readouts across View 1 & View 2
+    const detailPrice = document.getElementById('idea-detail-price');
     const amtEl = document.getElementById('idea-modal-amount');
     const planLbl = document.getElementById('idea-modal-plan-label');
     const payCtaText = document.getElementById('idea-detail-pay-cta-text');
+    if (detailPrice) detailPrice.textContent = '₹' + formatNumber(price);
     if (amtEl) amtEl.textContent = '₹' + formatNumber(price);
     if (planLbl) planLbl.textContent = label;
-    if (payCtaText) payCtaText.textContent = '⚡ Instant Pay ₹' + formatNumber(price) + ' & Unlock VIP';
+    if (payCtaText) payCtaText.textContent = '⚡ Instant Pay ₹' + formatNumber(price) + ' (' + cfg.days + 'd) & Unlock VIP';
 
     // 4. Update Dynamic UPI QR Code & Links
     const vpa = (gw && gw.directVpa) || '8767823878@slc';
