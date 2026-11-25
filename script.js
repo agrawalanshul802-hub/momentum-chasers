@@ -17162,7 +17162,7 @@
           <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${data.color};"></span>
           <span style="font-size:12.5px;font-weight:800;color:${data.color};letter-spacing:0.02em;">${data.title}</span>
         </div>
-        <div style="font-size:11.5px;line-height:1.5;color:var(--ink-secondary, #94a3b8);">${data.action}</div>
+        <div class="mmi-zone-tooltip-body">${data.action}</div>
       `;
     }
 
