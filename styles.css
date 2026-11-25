@@ -12412,11 +12412,11 @@ body.theme-white .legend-item {
 }
 
 .legend-color-box.legend-box-high {
-    background: #10b981;
+    background: #2dd4bf;
 }
 
 .legend-color-box.legend-box-surge {
-    background: #2dd4bf;
+    background: #10b981;
 }
 
 body.theme-white .legend-color-box {
@@ -12440,22 +12440,22 @@ body.theme-white .legend-color-box.legend-box-above-avg {
 }
 
 body.theme-white .legend-color-box.legend-box-high {
-    background: #10b981;
+    background: #14b8a6;
 }
 
 body.theme-white .legend-color-box.legend-box-surge {
-    background: #14b8a6;
+    background: #16a34a;
 }
 
 /* Turnover Cell Color Scale (High-Contrast Dual Theme & Clear Distinction) */
 .turnover-cell.cell-surge {
-    background: #2dd4bf !important;
-    color: #042f2e !important;
+    background: #10b981 !important;
+    color: #022c22 !important;
 }
 
 .turnover-cell.cell-high {
-    background: #10b981 !important;
-    color: #022c22 !important;
+    background: #2dd4bf !important;
+    color: #042f2e !important;
 }
 
 .turnover-cell.cell-above-avg {
@@ -12481,12 +12481,12 @@ body.theme-white .legend-color-box.legend-box-surge {
 }
 
 body.theme-white .turnover-cell.cell-surge {
-    background: #14b8a6 !important;
+    background: #16a34a !important;
     color: #ffffff !important;
 }
 
 body.theme-white .turnover-cell.cell-high {
-    background: #16a34a !important;
+    background: #14b8a6 !important;
     color: #ffffff !important;
 }
 
