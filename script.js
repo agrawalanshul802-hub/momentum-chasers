@@ -33660,44 +33660,57 @@
   function renderHomeView() {
     // Quick chip stocks
     const quickChips = ["BAJAJ-AUTO", "RELIANCE", "HDFCBANK", "TCS", "SUNPHARMA", "BSE", "INFY"].map(sym => `
-          <button class="home-quick-chip" data-action="home-chip-search" data-symbol="${sym}">${sym}</button>
+          <button class="home-quick-chip" data-action="home-chip-search" data-symbol="${sym}">
+            <span class="home-chip-dot" aria-hidden="true"></span>
+            <span>${sym}</span>
+          </button>
         `).join("");
 
     const activeCount = (State.stockAlerts || []).filter(a => a.isActive && !a.isTriggered).length;
 
     return `
       <!-- Home View: Dashboard -->
-      <div style="min-height:100%;padding-bottom:48px;">
+      <div class="home-dashboard-root">
         <!-- Hero Section -->
         <div class="home-hero-wrap">
+          <div class="home-hero-grid-bg" aria-hidden="true"></div>
           <!-- Hero Center -->
           <div class="home-hero-center">
-            <div class="home-hero-badges-container" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;">
-              <!-- Momentum Chasers Logo Centered on Top -->
-              <div class="home-hero-eyebrow" style="margin-bottom:0;">
+            <div class="home-hero-badges-container">
+              <!-- Momentum Chasers Brand Pill -->
+              <div class="home-hero-eyebrow">
                 <img src="${(State && State.theme === 'white') ? 'logo-icon-dark.png?v=2' : 'logo-icon.png?v=2'}" alt="Momentum Chasers" class="home-hero-logo-img" />
                 <span>MOMENTUM CHASERS</span>
               </div>
-              <!-- Alert Pill Centered Directly Underneath -->
-              <div class="home-hero-badges-subrow" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-                <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track price triggers">
-                  <span class="hero-alert-icon">🔔</span>
-                  <span class="hero-alert-label">Stock Alerts</span>
-                  <span class="hero-alert-badge ${activeCount > 0 ? 'has-active' : ''}">${activeCount > 0 ? activeCount + ' Active' : '+ Add'}</span>
-                </button>
-              </div>
+              <!-- Stock Alerts Pill -->
+              <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track price triggers">
+                <svg class="hero-alert-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="hero-alert-label">Stock Alerts</span>
+                <span class="hero-alert-badge ${activeCount > 0 ? 'has-active' : ''}">
+                  ${activeCount > 0 ? '<span class="hero-alert-pulse" aria-hidden="true"></span>' + activeCount + ' Active' : '+ Add'}
+                </span>
+              </button>
             </div>
+
             <h1 class="home-hero-title">
               <span class="home-hero-title-main">Stock Screener</span>
             </h1>
-            <p class="home-hero-subtitle" style="font-size:16px;color:var(--mu,#94a3b8);margin:0 auto 28px;max-width:620px;line-height:1.5;">
+            <p class="home-hero-subtitle">
               Identify market trends. Track momentum. Discover opportunities.
             </p>
 
             <!-- Hero Search Bar -->
-            <div class="home-hero-search-container" style="position:relative;width:100%;max-width:540px;margin:0 auto 16px;">
-              <div class="home-hero-search-wrap" style="margin-bottom:0">
-                <span class="home-hero-search-icon">🔍</span>
+            <div class="home-hero-search-container">
+              <div class="home-hero-search-wrap">
+                <span class="home-hero-search-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
                 <input
                   type="text"
                   id="home-hero-search"
@@ -33705,19 +33718,78 @@
                   placeholder="Search stocks to analyse (e.g. BAJAJ-AUTO, ZOMATO, INFY)"
                   autocomplete="off"
                 />
-                <button class="home-hero-search-btn" id="home-hero-search-btn">Go →</button>
+                <button class="home-hero-search-btn" id="home-hero-search-btn" type="button">
+                  <span>Go</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
               </div>
               <div class="search-autocomplete-list" id="home-search-autocomplete" style="text-align:left"></div>
             </div>
 
             <!-- Quick Chips -->
             <div class="home-quick-chips-row">
+              <span class="home-quick-chips-label">Popular</span>
               ${quickChips}
+            </div>
+
+            <!-- Compact Quick-Launch Workstation Strip -->
+            <div class="home-hero-dock">
+              <button type="button" class="home-dock-card" data-view="screener">
+                <span class="home-dock-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </span>
+                <span class="home-dock-meta">
+                  <span class="home-dock-title">Smart Screener</span>
+                  <span class="home-dock-sub">EMA Crossovers &amp; RSI</span>
+                </span>
+              </button>
+              <button type="button" class="home-dock-card" data-view="sectors">
+                <span class="home-dock-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                </span>
+                <span class="home-dock-meta">
+                  <span class="home-dock-title">Sector Indices</span>
+                  <span class="home-dock-sub">44 NSE Benchmarks</span>
+                </span>
+              </button>
+              <button type="button" class="home-dock-card" data-view="sector-turnover">
+                <span class="home-dock-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </span>
+                <span class="home-dock-meta">
+                  <span class="home-dock-title">Sector Turnover</span>
+                  <span class="home-dock-sub">Institutional Flow</span>
+                </span>
+              </button>
+              <button type="button" class="home-dock-card" data-view="heatmap">
+                <span class="home-dock-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                  </svg>
+                </span>
+                <span class="home-dock-meta">
+                  <span class="home-dock-title">Market Heatmap</span>
+                  <span class="home-dock-sub">Broad Market Map</span>
+                </span>
+              </button>
             </div>
           </div>
         </div>
-
-
       </div>
     `;
   }
