@@ -6489,23 +6489,35 @@ const server = http.createServer(async (req, res) => {
     { id: 'cp_vip20', code: 'VIP20', type: 'percent', amount: 20, appliesTo: 'weekly', active: true, createdAt: '2026-11-18' }
   ];
   let _couponsMemory = null;
+  let _couponsModified = false;
   function getStoredCoupons() {
     if (_couponsMemory !== null) return _couponsMemory;
     try {
       if (fs.existsSync(couponsPath)) {
         const raw = fs.readFileSync(couponsPath, 'utf8');
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) { _couponsMemory = parsed; return _couponsMemory; }
+        if (Array.isArray(parsed)) {
+          _couponsMemory = parsed;
+          _couponsModified = true;
+          return _couponsMemory;
+        }
+        if (parsed && Array.isArray(parsed.coupons)) {
+          _couponsMemory = parsed.coupons;
+          _couponsModified = !!parsed.modifiedAt;
+          return _couponsMemory;
+        }
       }
     } catch (_) { }
     _couponsMemory = JSON.parse(JSON.stringify(SEED_COUPONS));
+    _couponsModified = false;
     return _couponsMemory;
   }
   function saveStoredCoupons(list) {
     _couponsMemory = list;
+    _couponsModified = true;
     try {
       fs.mkdirSync(path.dirname(couponsPath), { recursive: true });
-      fs.writeFileSync(couponsPath, JSON.stringify(list, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(couponsPath, JSON.stringify({ modifiedAt: Date.now(), coupons: list }, null, 2) + '\n', 'utf8');
     } catch (_) { }
     return true;
   }
@@ -6931,8 +6943,12 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/owner/coupons') {
     if (req.method === 'GET') {
       const coupons = getStoredCoupons();
-      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
-      res.end(JSON.stringify({ success: true, count: coupons.length, coupons }));
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache'
+      });
+      res.end(JSON.stringify({ success: true, count: coupons.length, isFreshDefaultSeed: !_couponsModified, coupons }));
       return;
     }
     if (req.method === 'POST') {
@@ -6945,7 +6961,17 @@ const server = http.createServer(async (req, res) => {
       }
       const code = (body.code || '').toString().trim().toUpperCase();
       let coupons = getStoredCoupons();
-      if (body.action === 'toggle') {
+      if (body.action === 'restore' && Array.isArray(body.coupons)) {
+        coupons = body.coupons.filter(c => c && c.code).map(c => ({
+          id: c.id || ('cp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)),
+          code: String(c.code).trim().toUpperCase(),
+          type: c.type === 'percent' ? 'percent' : 'flat',
+          amount: parseFloat(c.amount) || 0,
+          appliesTo: c.appliesTo || 'all',
+          active: c.active !== false,
+          createdAt: c.createdAt || new Date().toISOString().slice(0, 10)
+        }));
+      } else if (body.action === 'toggle') {
         const target = coupons.find(c => c.id === body.id || c.code === code);
         if (target) target.active = !target.active;
       } else if (body.action === 'delete') {
@@ -6970,8 +6996,11 @@ const server = http.createServer(async (req, res) => {
         coupons.unshift(newCoupon);
       }
       saveStoredCoupons(coupons);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: true, coupons }));
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate'
+      });
+      res.end(JSON.stringify({ success: true, isFreshDefaultSeed: false, coupons }));
       return;
     }
   }

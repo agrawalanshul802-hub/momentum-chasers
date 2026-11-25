@@ -2250,6 +2250,9 @@
       if (typeof switchOwnerTab === 'function') {
         switchOwnerTab(activeTab);
       }
+      if (activeTab !== 'coupons' && typeof fetchCoupons === 'function') {
+        fetchCoupons();
+      }
     }
 
     var pinLockoutTimer = null;
@@ -2994,12 +2997,49 @@
     }
 
     // --- TAB 2: COUPONS MANAGER ---
+    function saveCouponsLocalBackup(list) {
+      try {
+        localStorage.setItem('mc_owner_coupons_backup', JSON.stringify(Array.isArray(list) ? list : []));
+      } catch (_) { }
+    }
+
+    function getCouponsLocalBackup() {
+      try {
+        var raw = localStorage.getItem('mc_owner_coupons_backup');
+        var parsed = raw ? JSON.parse(raw) : null;
+        return Array.isArray(parsed) ? parsed : null;
+      } catch (_) { return null; }
+    }
+
     function fetchCoupons() {
-      fetch('/api/owner/coupons?_t=' + Date.now())
+      fetch('/api/owner/coupons?_t=' + Date.now(), { cache: 'no-store' })
         .then(function (res) { return res.json(); })
         .then(function (data) {
           if (data && data.success && Array.isArray(data.coupons)) {
+            var backup = getCouponsLocalBackup();
+            // If Render restarted/redeployed to fresh seed and Owner browser has saved promo codes, auto-restore them to server
+            if (data.isFreshDefaultSeed && Array.isArray(backup)) {
+              var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '1234';
+              allCoupons = backup;
+              renderCouponsTable();
+              fetch('/api/owner/coupons', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+                body: JSON.stringify({ pin: activePin, action: 'restore', coupons: backup })
+              })
+                .then(function (r) { return r.json(); })
+                .then(function (restored) {
+                  if (restored && restored.success && Array.isArray(restored.coupons)) {
+                    allCoupons = restored.coupons;
+                    saveCouponsLocalBackup(allCoupons);
+                    renderCouponsTable();
+                  }
+                })
+                .catch(function () { });
+              return;
+            }
             allCoupons = data.coupons;
+            if (!data.isFreshDefaultSeed) saveCouponsLocalBackup(allCoupons);
             renderCouponsTable();
           }
         })
@@ -3062,6 +3102,7 @@
         .then(function (data) {
           if (data && data.success) {
             allCoupons = data.coupons || [];
+            saveCouponsLocalBackup(allCoupons);
             renderCouponsTable();
             document.getElementById('coupon-form').reset();
             showToast('Coupon ' + code + ' Added Successfully!');
@@ -3085,6 +3126,7 @@
         .then(function (data) {
           if (data && data.success) {
             allCoupons = data.coupons || [];
+            saveCouponsLocalBackup(allCoupons);
             renderCouponsTable();
             showToast('Coupon status updated');
           }
@@ -3103,6 +3145,7 @@
         .then(function (data) {
           if (data && data.success) {
             allCoupons = data.coupons || [];
+            saveCouponsLocalBackup(allCoupons);
             renderCouponsTable();
             showToast('Coupon deleted');
           }
