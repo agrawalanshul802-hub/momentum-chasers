@@ -17707,7 +17707,6 @@
                        data-total="${cTotal}"
                        data-label="${cellDate.shortLabel}"
                        title="${cellTitle}">
-                    <span class="netflow-val font-mono">${cNet > 0 ? "+" + cNet : cNet}</span>
                     <span class="netflow-ratio font-mono">${cAdvPct}%</span>
                   </div>
                 `;

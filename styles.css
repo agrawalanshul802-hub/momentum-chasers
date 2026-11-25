@@ -4583,10 +4583,10 @@ body.theme-white .ema-status-pill.amber {
 }
 
 .netflow-ratio {
-    font-size: 8.5px;
-    font-weight: 700;
-    opacity: 0.92;
-    letter-spacing: -0.2px;
+    font-size: 12.5px;
+    font-weight: 800;
+    opacity: 1;
+    letter-spacing: -0.02em;
 }
 
 .netflow-cell:hover {
@@ -5074,8 +5074,8 @@ body.theme-white .netflow-val {
 }
 
 body.theme-white .netflow-ratio {
-    font-weight: 700 !important;
-    opacity: 0.95 !important;
+    font-weight: 800 !important;
+    opacity: 1 !important;
     color: inherit !important;
 }
 
