@@ -1735,10 +1735,14 @@
           <span>⚡</span> <span>QUICK ISSUE VIP PASS (MANUAL SUBSCRIBER ENTRY)</span>
         </div>
         <form id="issue-pass-form" onsubmit="handleIssuePass(event)"
-          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) 220px;gap:12px;align-items:end;">
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));gap:12px;align-items:end;">
           <div>
             <label class="form-label">10-Digit Mobile Number *</label>
             <input type="tel" id="pass-mobile" class="form-input" placeholder="e.g. 9588470423" maxlength="10" required>
+          </div>
+          <div>
+            <label class="form-label">Subscriber Email (Optional — Auto-Syncs)</label>
+            <input type="email" id="pass-email" class="form-input" placeholder="user@gmail.com">
           </div>
           <div>
             <label class="form-label">4-Digit Secret PIN (Optional)</label>
@@ -3353,12 +3357,13 @@
         }
 
         html += '<tr>' +
-          '<td><strong>+91 ' + escapeHtml(p.mobile) + '</strong><br><span style="font-size:10.5px;color:#94a3b8;">' + escapeHtml(p.issuedAt || '') + '</span></td>' +
+          '<td><strong>+91 ' + escapeHtml(p.mobile) + '</strong>' + (p.email ? '<br><span style="font-size:10.5px;color:#38bdf8;">' + escapeHtml(p.email) + '</span>' : '') + '<br><span style="font-size:10.5px;color:#94a3b8;">Issued: ' + escapeHtml(p.issuedAt || '') + ' • Exp: ' + escapeHtml(p.expiresAt || '-') + '</span></td>' +
           '<td><span style="background:rgba(56,189,248,0.12);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">' + escapeHtml(p.planTier) + '</span></td>' +
           '<td><code style="color:#f59e0b;font-weight:700;font-size:12px;background:#090d14;padding:2px 6px;border-radius:3px;">' + escapeHtml(p.secretPin || '----') + '</code></td>' +
           '<td><span style="font-size:11px;color:' + (p.deviceLock && p.deviceLock.includes('Locked') ? '#22c55e' : '#94a3b8') + ';">' + escapeHtml(p.deviceLock || 'Unbound') + '</span></td>' +
           '<td><span class="badge-status ' + timeLeftClass + '">' + escapeHtml(timeLeftText) + '</span></td>' +
           '<td style="text-align:right;white-space:nowrap;">' +
+          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:#38bdf8;border-color:rgba(56,189,248,0.35);" title="Edit or Renew VIP Pass" onclick="openEditPassModal(\'' + escapeHtml(p.id) + '\')">✏️ Edit / Renew</button>' +
           '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
           '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
           (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
@@ -3373,6 +3378,7 @@
     function handleIssuePass(e) {
       if (e && e.preventDefault) e.preventDefault();
       var mobile = (document.getElementById('pass-mobile').value || '').trim();
+      var email = (document.getElementById('pass-email') ? document.getElementById('pass-email').value : '').trim();
       var secretPin = (document.getElementById('pass-pin').value || '').trim();
       var planTier = document.getElementById('pass-tier').value;
       if (!mobile || mobile.length < 10) {
@@ -3383,7 +3389,7 @@
       fetch('/api/owner/purchases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
-        body: JSON.stringify({ pin: activePin, action: 'issue', mobile: mobile, secretPin: secretPin, planTier: planTier })
+        body: JSON.stringify({ pin: activePin, action: 'issue', mobile: mobile, email: email, secretPin: secretPin, planTier: planTier })
       })
         .then(function (res) { return res.json(); })
         .then(function (data) {
@@ -3394,6 +3400,65 @@
             showToast('VIP Pass Issued for +91 ' + mobile);
           } else {
             alert('Error: ' + (data.error || 'Failed to issue pass'));
+          }
+        });
+    }
+
+    function openEditPassModal(id) {
+      var p = (allPurchases || []).find(function (x) { return x.id === id; });
+      if (!p) return;
+      document.getElementById('edit-pass-id').value = p.id || '';
+      document.getElementById('edit-pass-mobile').value = p.mobile || '';
+      document.getElementById('edit-pass-email').value = p.email || '';
+      document.getElementById('edit-pass-pin').value = p.secretPin || '';
+      document.getElementById('edit-pass-tier').value = p.planTier || 'Quarterly VIP Pass (90 Days)';
+      document.getElementById('edit-pass-expires').value = (p.expiresAt || '').slice(0, 10);
+      document.getElementById('edit-pass-status').value = p.status === 'Revoked' ? 'Revoked' : 'Active';
+      document.getElementById('edit-pass-modal').style.display = 'flex';
+    }
+
+    function closeEditPassModal() {
+      var m = document.getElementById('edit-pass-modal');
+      if (m) m.style.display = 'none';
+    }
+
+    function quickExtendEditPass(days) {
+      var expInput = document.getElementById('edit-pass-expires');
+      var cur = expInput && expInput.value ? new Date(expInput.value).getTime() : 0;
+      var base = Math.max(Date.now(), isNaN(cur) ? 0 : cur);
+      var next = new Date(base + days * 24 * 60 * 60 * 1000);
+      if (expInput) expInput.value = next.toISOString().slice(0, 10);
+      document.getElementById('edit-pass-status').value = 'Active';
+    }
+
+    function handleEditPassSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var id = document.getElementById('edit-pass-id').value;
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({
+          pin: activePin,
+          action: 'edit',
+          id: id,
+          mobile: document.getElementById('edit-pass-mobile').value.trim(),
+          email: document.getElementById('edit-pass-email').value.trim(),
+          secretPin: document.getElementById('edit-pass-pin').value.trim(),
+          planTier: document.getElementById('edit-pass-tier').value,
+          expiresAt: document.getElementById('edit-pass-expires').value,
+          status: document.getElementById('edit-pass-status').value
+        })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            renderPurchasesTable(allPurchases);
+            closeEditPassModal();
+            showToast('VIP Pass updated / renewed successfully!');
+          } else {
+            alert('Error: ' + (data.error || 'Failed to update pass'));
           }
         });
     }
@@ -4230,6 +4295,67 @@
     }
 
   </script>
+  <!-- Edit / Renew VIP Pass Modal -->
+  <div id="edit-pass-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,8,18,0.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#0f172a;border:1px solid rgba(245,158,11,0.35);border-radius:14px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 style="margin:0;font-size:16px;font-weight:800;color:#fcd34d;">✏️ Edit / Renew VIP Pass</h3>
+        <button type="button" onclick="closeEditPassModal()" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">&times;</button>
+      </div>
+      <form onsubmit="handleEditPassSubmit(event)" style="display:flex;flex-direction:column;gap:12px;">
+        <input type="hidden" id="edit-pass-id">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label class="form-label">Mobile Number</label>
+            <input type="text" id="edit-pass-mobile" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label">Secret PIN</label>
+            <input type="text" id="edit-pass-pin" class="form-input">
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Subscriber Email (for Auto-Sync)</label>
+          <input type="email" id="edit-pass-email" class="form-input" placeholder="user@gmail.com">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label class="form-label">Plan Tier</label>
+            <select id="edit-pass-tier" class="form-select">
+              <option value="Weekly VIP Pass (7 Days)">Weekly VIP Pass (7 Days)</option>
+              <option value="Monthly VIP Pass (30 Days)">Monthly VIP Pass (30 Days)</option>
+              <option value="Quarterly VIP Pass (90 Days)">Quarterly VIP Pass (90 Days)</option>
+              <option value="Yearly VIP Pass (365 Days)">Yearly VIP Pass (365 Days)</option>
+              <option value="Lifetime Access">Lifetime Access</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Status</label>
+            <select id="edit-pass-status" class="form-select">
+              <option value="Active">Active</option>
+              <option value="Revoked">Revoked</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Valid Till / Expiry Date</label>
+          <input type="date" id="edit-pass-expires" class="form-input" required>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+            <span style="font-size:11px;color:#94a3b8;align-self:center;">Quick Renew:</span>
+            <button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;" onclick="quickExtendEditPass(7)">+7d</button>
+            <button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;" onclick="quickExtendEditPass(30)">+30d</button>
+            <button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;" onclick="quickExtendEditPass(90)">+90d</button>
+            <button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;" onclick="quickExtendEditPass(365)">+365d</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px;">
+          <button type="button" class="btn-outline" onclick="closeEditPassModal()">Cancel</button>
+          <button type="submit" class="btn-gold">💾 Save &amp; Update Pass</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <footer style="margin:32px auto 20px;max-width:1280px;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;line-height:1.6;color:#94a3b8;text-align:center;">
     We are not SEBI registered. The information shared on this platform is for educational and informational purposes only and does not constitute investment advice or a buy/sell recommendation. All investment decisions are made at the user's own risk.
   </footer>

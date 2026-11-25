@@ -14818,6 +14818,24 @@
     }, 1000);
   }
 
+  // One-time cleanup: remove any unverified/auto-fabricated VIP pass from earlier versions
+  (function cleanupUnverifiedVipPass() {
+    try {
+      if (localStorage.getItem("mc_vip_clean_v2") === "1") return;
+      const raw = localStorage.getItem("mc_vip_subscription");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.verifiedSource) {
+          localStorage.removeItem("mc_vip_subscription");
+          localStorage.removeItem("mc_promo_applied");
+          localStorage.removeItem("mc_unlocked_ideas");
+          if (typeof State !== "undefined") State.unlockedIdeas = [];
+        }
+      }
+      localStorage.setItem("mc_vip_clean_v2", "1");
+    } catch (_) { }
+  })();
+
   function getVipSubscription() {
     let sub = null;
     try {
@@ -14825,15 +14843,7 @@
       if (raw) sub = JSON.parse(raw);
     } catch (_) { }
 
-    if (!sub) {
-      const unlockedList = State.unlockedIdeas || [];
-      const hasUnlocked = unlockedList.includes("all") || unlockedList.includes("*") || unlockedList.length > 0;
-      const hasPromo = (localStorage.getItem("mc_promo_applied") === "true");
-      if (hasUnlocked || hasPromo) {
-        const cfg = getVipPlanConfig(_activeVipPlan || "quarterly");
-        sub = activateVipSubscription(cfg.tierKey, cfg.days, cfg.title);
-        return sub;
-      }
+    if (!sub || !sub.verifiedSource || sub.revoked) {
       return null;
     }
 
@@ -14861,11 +14871,12 @@
   }
   window.getVipSubscription = getVipSubscription;
 
-  function activateVipSubscription(tier, customDays, customTitle, customExpiresAt) {
+  function activateVipSubscription(tier, customDays, customTitle, customExpiresAt, meta) {
     const cfg = getVipPlanConfig(tier);
     const days = (customDays && parseInt(customDays, 10) > 0) ? parseInt(customDays, 10) : cfg.days;
     const title = customTitle || (days === 30 ? "Monthly VIP Pass (30 Days)" : (days === 365 ? "Yearly VIP Pass (365 Days)" : (days === 90 ? "Quarterly VIP Pass (90 Days)" : `${days}-Day VIP Pass`)));
     const t = days === 30 ? "monthly" : (days === 365 ? "yearly" : cfg.tierKey);
+    const extra = meta || {};
 
     const now = new Date();
     const parsedExp = customExpiresAt ? new Date(customExpiresAt) : null;
@@ -14878,14 +14889,16 @@
       active: true,
       tierKey: t,
       planTier: title,
-      activatedAt: now.toISOString(),
+      activatedAt: extra.activatedAt || now.toISOString(),
       expiresAt: expires.toISOString(),
       daysTotal: days,
       daysRemaining: Math.max(1, Math.ceil(msRemaining / (1000 * 60 * 60 * 24))),
       msRemaining: msRemaining,
       countdownText: formatVipCountdown(msRemaining),
       percentRemaining: 100,
-      expired: false
+      expired: false,
+      purchaseId: extra.purchaseId || '',
+      verifiedSource: extra.verifiedSource || 'verified_payment'
     };
     sub.active = true;
 
@@ -14904,6 +14917,47 @@
     return sub;
   }
   window.activateVipSubscription = activateVipSubscription;
+
+  async function syncVipSubscriptionFromServer() {
+    try {
+      const raw = localStorage.getItem("mc_vip_subscription");
+      const sub = raw ? JSON.parse(raw) : null;
+      const email = (State.user && State.user.email) ? State.user.email.trim() : '';
+      const purchaseId = (sub && sub.purchaseId) ? sub.purchaseId : '';
+      if (!email && !purchaseId) return;
+
+      const base = (typeof getApiBase === 'function') ? getApiBase() : '';
+      const res = await fetch(`${base}/api/vip/status?email=${encodeURIComponent(email)}&purchaseId=${encodeURIComponent(purchaseId)}&_t=${Date.now()}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.success) return;
+
+      if (data.revoked || (purchaseId && !data.found)) {
+        localStorage.removeItem("mc_vip_subscription");
+        localStorage.removeItem("mc_promo_applied");
+        localStorage.removeItem("mc_unlocked_ideas");
+        State.unlockedIdeas = [];
+        if (typeof renderUserAuthUI === "function") renderUserAuthUI();
+        return;
+      }
+
+      if (data.active && data.pass) {
+        const p = data.pass;
+        const expIso = p.expiresAt && p.expiresAt.length === 10 ? (p.expiresAt + 'T23:59:59Z') : p.expiresAt;
+        const tk = (p.planTier || '').toLowerCase();
+        const days = tk.includes('year') || tk.includes('365') ? 365 : (tk.includes('month') || tk.includes('30') ? 30 : (tk.includes('week') || tk.includes('7') ? 7 : 90));
+        activateVipSubscription(
+          days === 30 ? 'monthly' : (days === 365 ? 'yearly' : 'quarterly'),
+          days,
+          p.planTier,
+          expIso,
+          { purchaseId: p.id, verifiedSource: 'owner_synced', activatedAt: p.issuedAt ? new Date(p.issuedAt).toISOString() : undefined }
+        );
+      }
+    } catch (_) { }
+  }
+  window.syncVipSubscriptionFromServer = syncVipSubscriptionFromServer;
+  setTimeout(syncVipSubscriptionFromServer, 1200);
 
   function isOwnerIdeaUnlocked(ideaId) {
     if (!ideaId) return true;
@@ -14931,18 +14985,6 @@
 
     const unlockedList = State.unlockedIdeas || [];
     if (unlockedList.includes(ideaId) || unlockedList.includes("all") || unlockedList.includes("*")) {
-      return true;
-    }
-
-    if (unlockedList.length > 0 || localStorage.getItem("mc_promo_applied") === "true") {
-      if (!unlockedList.includes("all")) {
-        unlockedList.push("all");
-        const allIdeas = (State.ownerIdeas && State.ownerIdeas.length > 0) ? State.ownerIdeas : OWNER_IDEAS_SEED;
-        allIdeas.forEach(i => {
-          if (!unlockedList.includes(i.id)) unlockedList.push(i.id);
-        });
-        try { localStorage.setItem("mc_unlocked_ideas", JSON.stringify(unlockedList)); } catch (_) { }
-      }
       return true;
     }
 
@@ -15528,7 +15570,9 @@
           tier: data.tierKey || planCfg.tierKey,
           days: data.daysTotal || planCfg.days,
           planTier: data.planTier || planCfg.title,
-          expiresAt: data.expiresAt
+          expiresAt: data.expiresAt,
+          purchaseId: data.purchase ? data.purchase.id : '',
+          verifiedSource: 'verified_payment'
         });
       } else {
         alert(data.error || 'Verification pending. Please ensure payment is completed.');
@@ -15583,7 +15627,9 @@
           tier: data.tierKey || planCfg.tierKey,
           days: data.daysTotal || planCfg.days,
           planTier: data.planTier || planCfg.title,
-          expiresAt: data.expiresAt
+          expiresAt: data.expiresAt,
+          purchaseId: data.purchase ? data.purchase.id : '',
+          verifiedSource: 'verified_code'
         });
       } else {
         if (errEl) {
@@ -15619,7 +15665,11 @@
       info.tier || fallbackCfg.tierKey,
       info.days || fallbackCfg.days,
       info.planTier || fallbackCfg.title,
-      info.expiresAt
+      info.expiresAt,
+      {
+        purchaseId: info.purchaseId || '',
+        verifiedSource: info.verifiedSource || 'verified_payment'
+      }
     );
     if (ideaId && ideaId !== 'all') {
       unlockOwnerIdea(ideaId);

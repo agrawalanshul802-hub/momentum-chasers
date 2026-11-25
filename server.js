@@ -7054,25 +7054,33 @@ const server = http.createServer(async (req, res) => {
       let purchases = getStoredPurchases();
       if (body.action === 'issue') {
         const mobile = (body.mobile || '').toString().trim();
-        if (!mobile || mobile.length < 10) {
+        const email = (body.email || '').toString().trim().toLowerCase();
+        if ((!mobile || mobile.length < 10) && !email) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, error: 'Valid 10-digit mobile number required' }));
+          res.end(JSON.stringify({ success: false, error: 'Valid 10-digit mobile number or email required' }));
           return;
         }
         const secretPin = (body.secretPin || Math.floor(1000 + Math.random() * 9000).toString()).trim();
         const planTier = (body.planTier || 'Quarterly VIP Pass (90 Days)').trim();
-        let days = 90;
-        if (planTier.includes('Quarterly') || planTier.includes('90')) days = 90;
-        else if (planTier.includes('Yearly') || planTier.includes('365')) days = 365;
-        else if (planTier.includes('Monthly') || planTier.includes('30')) days = 30;
-        else if (planTier.includes('Lifetime')) days = 3650;
-        else if (planTier.includes('Day') || planTier.includes('Tip')) days = 1;
+        let days = parseInt(body.days, 10) || 0;
+        if (!days || days <= 0) {
+          days = 90;
+          if (planTier.includes('Quarterly') || planTier.includes('90')) days = 90;
+          else if (planTier.includes('Yearly') || planTier.includes('365')) days = 365;
+          else if (planTier.includes('Monthly') || planTier.includes('30')) days = 30;
+          else if (planTier.includes('Weekly') || planTier.includes('7')) days = 7;
+          else if (planTier.includes('Lifetime')) days = 3650;
+          else if (planTier.includes('Day') || planTier.includes('Tip')) days = 1;
+        }
         const now = new Date();
-        const exp = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+        const exp = body.expiresAt && !isNaN(new Date(body.expiresAt).getTime())
+          ? new Date(body.expiresAt)
+          : new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
 
         const newPass = {
           id: 'pass_' + Date.now(),
-          mobile,
+          mobile: mobile || '-',
+          email: email || '',
           planTier,
           secretPin,
           deviceLock: 'Unbound (Ready for first login)',
@@ -7081,6 +7089,28 @@ const server = http.createServer(async (req, res) => {
           status: 'Active'
         };
         purchases.unshift(newPass);
+      } else if (body.action === 'edit' || body.action === 'renew') {
+        const target = purchases.find(p => p.id === body.id || (body.mobile && p.mobile === body.mobile));
+        if (!target) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Pass record not found' }));
+          return;
+        }
+        if (body.mobile !== undefined && body.mobile.toString().trim()) target.mobile = body.mobile.toString().trim();
+        if (body.email !== undefined) target.email = body.email.toString().trim().toLowerCase();
+        if (body.secretPin !== undefined && body.secretPin.toString().trim()) target.secretPin = body.secretPin.toString().trim();
+        if (body.planTier !== undefined && body.planTier.toString().trim()) target.planTier = body.planTier.toString().trim();
+        if (body.status === 'Active' || body.status === 'Revoked') target.status = body.status;
+
+        const extendDays = parseInt(body.extendDays, 10) || 0;
+        if (extendDays > 0) {
+          const curExpMs = target.expiresAt ? new Date(target.expiresAt).getTime() : 0;
+          const baseMs = Math.max(Date.now(), isNaN(curExpMs) ? 0 : curExpMs);
+          target.expiresAt = new Date(baseMs + extendDays * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+          target.status = 'Active';
+        } else if (body.expiresAt && !isNaN(new Date(body.expiresAt).getTime())) {
+          target.expiresAt = new Date(body.expiresAt).toISOString().slice(0, 10);
+        }
       } else if (body.action === 'reset_device') {
         const target = purchases.find(p => p.id === body.id || p.mobile === body.mobile);
         if (target) target.deviceLock = 'Unbound (Device lock reset)';
@@ -7095,6 +7125,37 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ success: true, purchases }));
       return;
     }
+  }
+
+  // Live VIP Pass Status Sync Endpoint (reflects Owner Panel edits/renewals/revokes)
+  if (pathname === '/api/vip/status' && req.method === 'GET') {
+    const purchaseId = (parsedUrl.query.purchaseId || '').toString().trim();
+    const email = (parsedUrl.query.email || '').toString().trim().toLowerCase();
+    const purchases = getStoredPurchases();
+    let matched = null;
+    if (purchaseId) {
+      matched = purchases.find(p => p.id === purchaseId) || null;
+    }
+    if (!matched && email) {
+      matched = purchases.find(p => p.email && p.email.toLowerCase() === email && p.status !== 'Revoked') || null;
+    }
+    if (!matched) {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, found: false, active: false, revoked: false }));
+      return;
+    }
+    const isRevoked = (matched.status === 'Revoked');
+    const expTime = matched.expiresAt ? new Date(matched.expiresAt + 'T23:59:59Z').getTime() : 0;
+    const isActive = !isRevoked && expTime > Date.now();
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+    res.end(JSON.stringify({
+      success: true,
+      found: true,
+      active: isActive,
+      revoked: isRevoked,
+      pass: matched
+    }));
+    return;
   }
 
   // 6g-5. Instant Payment Auto-Detection & Verification Endpoints
