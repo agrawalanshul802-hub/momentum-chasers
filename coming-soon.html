@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Momentum Chasers — Launching 1st January</title>
+  <link rel="icon" type="image/png" href="logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.14), transparent 42%),
+        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12), transparent 45%),
+        #070b14;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+      color: #ffffff;
+    }
+    .brand img {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #94a3b8;
+      max-width: 500px;
+      margin: 0 auto 28px;
+    }
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 440px;
+      margin: 0 auto 28px;
+    }
+    .cd-box {
+      background: rgba(30, 41, 59, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 12px;
+      padding: 14px 8px;
+    }
+    .cd-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      color: #4ade80;
+      line-height: 1.1;
+    }
+    .cd-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 5px;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .feat-chip {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .footer-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+      font-size: 12px;
+      color: #64748b;
+    }
+    .owner-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      color: #94a3b8;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .owner-btn:hover {
+      color: #f8fafc;
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal-box {
+      width: 100%;
+      max-width: 340px;
+      background: #0f172a;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 22px;
+      text-align: center;
+    }
+    .modal-box h3 { font-size: 16px; margin-bottom: 6px; }
+    .modal-box p { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+    .pin-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: #070b14;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: 0.2em;
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .pin-input:focus { border-color: #f59e0b; }
+    .btn-go {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b101b;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .err { color: #f87171; font-size: 11.5px; margin-top: 8px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <img src="logo-icon.png" alt="Momentum Chasers" onerror="this.style.display='none'">
+      <span>Momentum Chasers</span>
+    </div>
+
+    <div class="pill">
+      <span class="dot"></span>
+      <span>Coming Soon · Official Public Launch</span>
+    </div>
+
+    <h1>Launching on 1st January</h1>
+    <p class="sub">
+      India’s institutional momentum screener, sector net-flow matrix, FII/DII money flow tracker, and high-conviction trade setups go live on <strong>1st January</strong>.
+    </p>
+
+    <div class="countdown" aria-label="Launch Countdown">
+      <div class="cd-box"><div class="cd-val" id="cd-days">--</div><div class="cd-lbl">Days</div></div>
+      <div class="cd-box"><div class="cd-val" id="cd-hours">--</div><div class="cd-lbl">Hours</div></div>
+      <div class="cd-box"><div class="cd-val" id="cd-mins">--</div><div class="cd-lbl">Mins</div></div>
+      <div class="cd-box"><div class="cd-val" id="cd-secs">--</div><div class="cd-lbl">Secs</div></div>
+    </div>
+
+    <div class="features">
+      <span class="feat-chip">📊 Smart Technical Screener</span>
+      <span class="feat-chip">🌊 44-Sector Net Flow</span>
+      <span class="feat-chip">🏦 FII / DII Cash Flow</span>
+      <span class="feat-chip">🚀 IPO Tracker &amp; Notes</span>
+    </div>
+
+    <div class="footer-row">
+      <span>momentumchasers.in</span>
+      <button type="button" class="owner-btn" id="open-owner-preview">🔐 Owner Preview</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="owner-modal">
+    <div class="modal-box">
+      <h3>🔐 Owner Preview Access</h3>
+      <p>Enter Owner PIN to preview and test the live website before 1st January.</p>
+      <form id="preview-form">
+        <input type="password" id="owner-pin-inp" class="pin-input" placeholder="••••••" autocomplete="off" required>
+        <button type="submit" class="btn-go">Unlock Preview</button>
+      </form>
+      <div class="err" id="preview-err">Incorrect Owner PIN.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var targetMs = new Date('2027-01-01T09:15:00+05:30').getTime();
+      fetch('/api/owner/launch-settings').then(function (r) { return r.json(); }).then(function (d) {
+        if (d && d.launchIso) {
+          var parsed = new Date(d.launchIso).getTime();
+          if (!isNaN(parsed)) targetMs = parsed;
+        }
+      }).catch(function () { });
+
+      function tick() {
+        var diff = Math.max(0, targetMs - Date.now());
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('cd-days').textContent = String(d).padStart(2, '0');
+        document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+        document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+        document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      var modal = document.getElementById('owner-modal');
+      var openBtn = document.getElementById('open-owner-preview');
+      var pinInp = document.getElementById('owner-pin-inp');
+      var errEl = document.getElementById('preview-err');
+
+      openBtn.addEventListener('click', function () {
+        modal.style.display = 'flex';
+        errEl.style.display = 'none';
+        pinInp.value = '';
+        setTimeout(function () { pinInp.focus(); }, 50);
+      });
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      document.getElementById('preview-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var pin = pinInp.value.trim();
+        errEl.style.display = 'none';
+        fetch('/api/owner/preview-unlock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res && res.success) {
+              window.location.href = '/index.html';
+            } else {
+              errEl.style.display = 'block';
+            }
+          })
+          .catch(function () {
+            errEl.style.display = 'block';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

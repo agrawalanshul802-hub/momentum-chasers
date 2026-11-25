@@ -7580,8 +7580,95 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // 6i. Pre-Launch Gate / Coming Soon Settings (Owner Panel Controlled)
+  const launchSettingsPath = path.join(__dirname, 'data', 'launch-settings.json');
+  const DEFAULT_LAUNCH_SETTINGS = {
+    locked: true,
+    launchDateLabel: '1st January 2027',
+    launchIso: '2027-01-01T09:15:00+05:30'
+  };
+  let _launchMemory = null;
+  function getStoredLaunchSettings() {
+    if (_launchMemory !== null) return _launchMemory;
+    try {
+      if (fs.existsSync(launchSettingsPath)) {
+        const parsed = JSON.parse(fs.readFileSync(launchSettingsPath, 'utf8'));
+        if (parsed && typeof parsed === 'object') {
+          _launchMemory = { ...DEFAULT_LAUNCH_SETTINGS, ...parsed };
+          return _launchMemory;
+        }
+      }
+    } catch (_) { }
+    _launchMemory = { ...DEFAULT_LAUNCH_SETTINGS };
+    return _launchMemory;
+  }
+  function saveStoredLaunchSettings(obj) {
+    _launchMemory = obj;
+    try {
+      fs.writeFileSync(launchSettingsPath, JSON.stringify(obj, null, 2), 'utf8');
+    } catch (_) { }
+  }
+
+  if (pathname === '/api/owner/launch-settings') {
+    if (req.method === 'GET') {
+      const s = getStoredLaunchSettings();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, ...s }));
+      return;
+    }
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
+      const prev = getStoredLaunchSettings();
+      const updated = {
+        locked: typeof body.locked === 'boolean' ? body.locked : !prev.locked,
+        launchDateLabel: (body.launchDateLabel || prev.launchDateLabel || '1st January 2027').toString().trim(),
+        launchIso: (body.launchIso || prev.launchIso || '2027-01-01T09:15:00+05:30').toString().trim()
+      };
+      saveStoredLaunchSettings(updated);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, ...updated }));
+      return;
+    }
+  }
+
+  if (pathname === '/api/owner/preview-unlock' && req.method === 'POST') {
+    const body = await parseRequestBody(req);
+    const pin = (body.pin || req.headers['x-owner-pin'] || '').toString().trim();
+    if (!isAuthorizedOwnerPin(pin)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Invalid Owner PIN' }));
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Set-Cookie': 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; SameSite=Lax'
+    });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
   // 7. Static File Serving
-  const reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
+  const launchCfg = getStoredLaunchSettings();
+  const isPublicSitePage = pathname === '/' || pathname === '/index.html' || pathname === '/landing.html' || pathname === '/login' || pathname === '/login.html';
+  let reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
+
+  if (launchCfg.locked && isPublicSitePage) {
+    const cookiesStr = (req.headers.cookie || '').toString();
+    const hasPreviewCookie = /(?:^|;\s*)mc_owner_preview=mc_owner_ok(?:;|$)/.test(cookiesStr);
+    const qPrev = (parsedUrl.query.preview || '').toString().trim();
+    const hasValidQueryPreview = (qPrev === 'mc264500' || isAuthorizedOwnerPin(qPrev));
+    if (hasValidQueryPreview && !hasPreviewCookie) {
+      res.setHeader('Set-Cookie', 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; SameSite=Lax');
+    } else if (!hasPreviewCookie && !hasValidQueryPreview) {
+      reqPath = 'coming-soon.html';
+    }
+  }
   let decodedPath;
   try {
     decodedPath = decodeURIComponent(reqPath);

@@ -1181,7 +1181,10 @@
       </div>
     </div>
     <div class="studio-header-actions">
-      <a href="/" class="btn-outline" target="_blank" title="Open Live Screener in new tab">
+      <button type="button" id="btn-launch-gate-toggle" class="btn-outline" onclick="toggleSiteLaunchLock()" title="Toggle Coming Soon Lock (1st Jan Launch)" style="border-color:rgba(245,158,11,0.45);color:#fbbf24;">
+        <span>🔒 Launch Gate: Locked (1st Jan)</span>
+      </button>
+      <a href="/?preview=mc264500" class="btn-outline" target="_blank" title="Open Live Screener in new tab (Owner Preview)">
         <span>📊 Live Screener ↗</span>
       </a>
       <button class="btn-outline btn-danger" onclick="lockStudio()" title="Lock studio session">
@@ -2286,6 +2289,9 @@
       }
       if (activeTab !== 'coupons' && typeof fetchCoupons === 'function') {
         fetchCoupons();
+      }
+      if (typeof syncOwnerPreviewAndLaunchState === 'function') {
+        syncOwnerPreviewAndLaunchState();
       }
     }
 
@@ -4161,6 +4167,64 @@
           if (data && data.success) {
             showToast('IPO PDF deleted', '🗑️');
             loadOwnerIpoPdfsTab();
+          }
+        });
+    }
+
+    var _currentLaunchLocked = true;
+    function renderLaunchGateButton(isLocked) {
+      _currentLaunchLocked = !!isLocked;
+      var btn = document.getElementById('btn-launch-gate-toggle');
+      if (!btn) return;
+      if (_currentLaunchLocked) {
+        btn.style.borderColor = 'rgba(245,158,11,0.5)';
+        btn.style.color = '#fbbf24';
+        btn.style.background = 'rgba(245,158,11,0.08)';
+        btn.innerHTML = '<span>🔒 Launch Lock ON (1st Jan)</span>';
+      } else {
+        btn.style.borderColor = 'rgba(34,197,94,0.5)';
+        btn.style.color = '#4ade80';
+        btn.style.background = 'rgba(34,197,94,0.08)';
+        btn.innerHTML = '<span>🚀 Site LIVE (Lock Again)</span>';
+      }
+    }
+
+    function syncOwnerPreviewAndLaunchState() {
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '';
+      if (pin) {
+        fetch('/api/owner/preview-unlock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        }).catch(function () { });
+      }
+      fetch('/api/owner/launch-settings')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.success) renderLaunchGateButton(data.locked);
+        })
+        .catch(function () { });
+    }
+
+    function toggleSiteLaunchLock() {
+      var nextLocked = !_currentLaunchLocked;
+      var msg = nextLocked
+        ? 'Lock public website back to "Launching 1st January" Coming Soon page?'
+        : '🚀 Go LIVE publicly for all visitors on momentumchasers.in right now?';
+      if (!confirm(msg)) return;
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '';
+      fetch('/api/owner/launch-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': pin },
+        body: JSON.stringify({ pin: pin, locked: nextLocked })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            renderLaunchGateButton(data.locked);
+            showToast(data.locked ? '🔒 Coming Soon Lock enabled (1st Jan)' : '🚀 Website is now LIVE for everyone!', data.locked ? '🔒' : '🚀');
+          } else {
+            showToast((data && data.error) || 'Failed to update launch lock', '❌');
           }
         });
     }
