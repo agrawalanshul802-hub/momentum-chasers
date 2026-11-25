@@ -37063,6 +37063,24 @@
         State.stockTab = target.dataset.tab;
         renderActiveView();
       }
+      else if (action === "toggle-chart-width") {
+        State.chartFullWidth = !State.chartFullWidth;
+        const splitEl = document.querySelector(".tv-workspace-split");
+        if (splitEl) {
+          splitEl.classList.toggle("full-width", State.chartFullWidth);
+        } else {
+          renderActiveView();
+        }
+        const btn = document.querySelector("[data-action='toggle-chart-width']");
+        if (btn) {
+          btn.title = State.chartFullWidth ? "Restore Watchlist & Stats Panel" : "Expand to Full Width";
+          btn.innerHTML = `<span>${State.chartFullWidth ? "◫ Split View" : "⛶ Full Width"}</span>`;
+        }
+        try {
+          window.dispatchEvent(new Event("resize"));
+        } catch (_) { }
+        return;
+      }
       else if (action === "ipo-year") {
         State.ipoYear = target.dataset.year === "all" ? "all" : Number(target.dataset.year);
         renderActiveView();
