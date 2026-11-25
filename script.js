@@ -10937,6 +10937,8 @@
     activeNetflowSector: "NIFTY AUTO", // Currently inspected sector in Net Flow
     activeNetflowSessionIdx: 0, // Currently inspected session (0 = Today, 1 = T-1, etc.)
     netflowStockFilter: "all",  // "all", "advancing", "declining"
+    netflowSortCol: null,       // null (default), "sector", or session idx (0..N)
+    netflowSortDir: "desc",     // "desc" or "asc"
     heatmapIndex: "Nifty 50",   // "Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty Pharma", "All Stocks"
     heatmapAsOfDate: "24 Nov 2026 (3:30 pm Closing)",
     heatmapIsLive: false,
@@ -17776,7 +17778,7 @@
       }).join("");
     };
 
-    const tableRowsHtml = visibleFL.map(row => {
+    const computedRows = visibleFL.map(row => {
       const secName = row[0];
       const scores = row[1].slice(0, visibleCount);
       const isActive = secName === resolvedActiveSec;
@@ -17786,6 +17788,52 @@
       const rowData = getSectorConstituentsForSession(secName, rowScore, rowSessionIdx);
       const advCount = rowData.advancing.length;
       const decCount = rowData.declining.length;
+
+      const cells = scores.map((score, sIdx) => {
+        const isCellActive = isActive && (sIdx === activeSessionIdx);
+        const cellDate = tradingDates[sIdx] || { shortLabel: `Session ${sIdx}` };
+        const cellData = (sIdx === rowSessionIdx) ? rowData : getSectorConstituentsForSession(secName, score, sIdx);
+        const cAdv = cellData.advancing.length;
+        const cDec = cellData.declining.length;
+        const cTotal = cAdv + cDec || 1;
+        const cNet = cAdv - cDec;
+        // Advance Breadth % = (Advancing / Total) * 100 (e.g. 6 / (6+9) = 6/15 = 40%)
+        const cAdvPct = Math.round((cAdv / cTotal) * 100);
+        return { isCellActive, cellDate, cAdv, cDec, cTotal, cNet, cAdvPct, sIdx };
+      });
+
+      return { row, secName, isActive, rowData, advCount, decCount, cells };
+    });
+
+    // Apply Ascending / Descending sorting if active
+    let sortCol = State.netflowSortCol;
+    const sortDir = State.netflowSortDir === "asc" ? "asc" : "desc";
+    if (typeof sortCol === "number" && sortCol >= visibleCount) {
+      sortCol = 0;
+      State.netflowSortCol = 0;
+    }
+
+    if (sortCol === "sector") {
+      computedRows.sort((a, b) => {
+        const cmp = a.secName.localeCompare(b.secName);
+        return sortDir === "asc" ? cmp : -cmp;
+      });
+    } else if (typeof sortCol === "number") {
+      computedRows.sort((a, b) => {
+        const ca = a.cells[sortCol] || { cAdvPct: 0, cNet: 0 };
+        const cb = b.cells[sortCol] || { cAdvPct: 0, cNet: 0 };
+        if (cb.cAdvPct !== ca.cAdvPct) {
+          return sortDir === "asc" ? (ca.cAdvPct - cb.cAdvPct) : (cb.cAdvPct - ca.cAdvPct);
+        }
+        if (cb.cNet !== ca.cNet) {
+          return sortDir === "asc" ? (ca.cNet - cb.cNet) : (cb.cNet - ca.cNet);
+        }
+        return a.secName.localeCompare(b.secName);
+      });
+    }
+
+    const tableRowsHtml = computedRows.map(item => {
+      const { secName, isActive, rowData, advCount, decCount, cells } = item;
 
       return `
               <div class="netflow-row ${isActive ? 'active-sector-row' : ''}" style="${gridColsCss}" data-action="select-netflow-sector" data-sector="${secName}" title="Click row to view ${secName} constituent + and - stocks">
@@ -17801,16 +17849,8 @@
                   </div>
                 </div>
 
-                ${scores.map((score, sIdx) => {
-        const isCellActive = isActive && (sIdx === activeSessionIdx);
-        const cellDate = tradingDates[sIdx] || { shortLabel: `Session ${sIdx}` };
-        const cellData = (sIdx === rowSessionIdx) ? rowData : getSectorConstituentsForSession(secName, score, sIdx);
-        const cAdv = cellData.advancing.length;
-        const cDec = cellData.declining.length;
-        const cTotal = cAdv + cDec || 1;
-        const cNet = cAdv - cDec;
-        // Advance Breadth % = (Advancing / Total) * 100 (e.g. 6 / (6+9) = 6/15 = 40%)
-        const cAdvPct = Math.round((cAdv / cTotal) * 100);
+                ${cells.map(cell => {
+        const { isCellActive, cellDate, cAdv, cDec, cTotal, cNet, cAdvPct, sIdx } = cell;
         const flowClass = getFlowClass(cAdvPct);
         const cellTitle = `${secName} (${cellDate.shortLabel}): Net Advances: ${cNet > 0 ? '+' + cNet : cNet} | Breadth: ${cAdv}/${cTotal} Advancing (${cAdvPct}%) [${cAdv} Adv, ${cDec} Dec] — Click to inspect constituent stocks`;
         return `
@@ -17852,15 +17892,22 @@
         </div>
       </div>
 
-      <!-- Controls Toolbar with Sector Search -->
+      <!-- Controls Toolbar with Sector Search & Sort -->
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:8px;position:relative;flex:1;max-width:380px;">
+        <div style="display:flex;align-items:center;gap:8px;position:relative;flex:1;min-width:220px;max-width:380px;">
           <input type="text" id="netflow-sector-search" placeholder="🔍 Search 44 sectors (Auto, Bank, IT, Defence...)" value="${escapeHtml(State.netflowSearch || '')}" style="width:100%;padding:8px 12px 8px 32px;background:var(--sf);border:1px solid var(--ln);border-radius:6px;color:var(--ink);font-size:12px;">
           <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;">🔍</span>
           ${State.netflowSearch ? `<button id="netflow-search-clear" data-action="clear-netflow-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;" title="Clear search">✕</button>` : ''}
         </div>
-        <div style="font-size:12px;color:var(--mu);font-family:var(--font-mono);">
-          Showing <strong>${visibleFL.length}</strong> of <strong>${FL.length}</strong> Sectors
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="pill-segmented-control" role="group" aria-label="Sort Sectors" style="padding:2px;">
+            <button type="button" class="pill-segment-btn ${sortCol === null ? 'active' : ''}" data-action="set-netflow-sort" data-dir="default" style="padding:4px 10px;font-size:11px;">Default</button>
+            <button type="button" class="pill-segment-btn ${sortCol !== null && sortDir === 'desc' ? 'active' : ''}" data-action="set-netflow-sort" data-dir="desc" style="padding:4px 10px;font-size:11px;" title="Sort Highest to Lowest (Descending)">▼ Descending</button>
+            <button type="button" class="pill-segment-btn ${sortCol !== null && sortDir === 'asc' ? 'active' : ''}" data-action="set-netflow-sort" data-dir="asc" style="padding:4px 10px;font-size:11px;" title="Sort Lowest to Highest (Ascending)">▲ Ascending</button>
+          </div>
+          <div style="font-size:12px;color:var(--mu);font-family:var(--font-mono);">
+            Showing <strong>${visibleFL.length}</strong> of <strong>${FL.length}</strong> Sectors
+          </div>
         </div>
       </div>
 
@@ -17868,13 +17915,20 @@
       <div class="netflow-table-card">
         <div class="netflow-interactive-hint">
           <span>💡</span>
-          <span>Click any cell to inspect its <strong>Advancing (+)</strong> and <strong>Declining (-)</strong> constituent stocks. Currently inspecting: <strong>${resolvedActiveSec} (${activeDateInfo.shortLabel})</strong></span>
+          <span>Click any column header (e.g. <strong>${dateLabels[0]}</strong>) to sort <strong>Descending / Ascending</strong>, or click any cell to inspect constituent stocks. Currently inspecting: <strong>${resolvedActiveSec} (${activeDateInfo.shortLabel})</strong></span>
         </div>
 
         <div class="netflow-table">
           <div class="netflow-row header-row" style="${gridColsCss}">
-            <div class="netflow-header-cell" style="text-align:left">Sector Cluster (44)</div>
-            ${dateLabels.map((d, dIdx) => `<div class="netflow-header-cell ${dIdx === activeSessionIdx ? 'font-bold' : ''}" title="${tradingDates[dIdx]?.iso || ''}">${d}</div>`).join("")}
+            <div class="netflow-header-cell is-sortable ${sortCol === 'sector' ? 'is-sort-active' : ''}" data-sort-col="sector" style="justify-content:flex-start;text-align:left;" title="Click to sort Sectors A–Z / Z–A">
+              <span>Sector Cluster (${visibleFL.length})</span>
+              <span class="netflow-sort-indicator">${sortCol === 'sector' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅'}</span>
+            </div>
+            ${dateLabels.map((d, dIdx) => {
+              const isColSorted = sortCol === dIdx;
+              const ind = isColSorted ? (sortDir === 'asc' ? '▲' : '▼') : '⇅';
+              return `<div class="netflow-header-cell is-sortable ${dIdx === activeSessionIdx ? 'font-bold' : ''} ${isColSorted ? 'is-sort-active' : ''}" data-sort-col="${dIdx}" title="${tradingDates[dIdx]?.iso || ''} — Click to sort Descending / Ascending"><span>${d}</span><span class="netflow-sort-indicator">${ind}</span></div>`;
+            }).join("")}
           </div>
 
           ${tableRowsHtml}
@@ -17972,6 +18026,38 @@
         renderActiveView();
       });
     }
+
+    // Toolbar Ascending / Descending / Default sort buttons
+    container.querySelectorAll("[data-action='set-netflow-sort']").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const dir = btn.dataset.dir;
+        if (dir === "default") {
+          State.netflowSortCol = null;
+          State.netflowSortDir = "desc";
+        } else {
+          if (State.netflowSortCol === null) {
+            State.netflowSortCol = typeof State.activeNetflowSessionIdx === "number" ? State.activeNetflowSessionIdx : 0;
+          }
+          State.netflowSortDir = dir === "asc" ? "asc" : "desc";
+        }
+        renderActiveView();
+      });
+    });
+
+    // Clickable column headers (Sector Cluster or any Date column)
+    container.querySelectorAll(".netflow-header-cell[data-sort-col]").forEach(hdr => {
+      hdr.addEventListener("click", () => {
+        const rawCol = hdr.dataset.sortCol;
+        const col = rawCol === "sector" ? "sector" : parseInt(rawCol, 10);
+        if (State.netflowSortCol === col) {
+          State.netflowSortDir = State.netflowSortDir === "desc" ? "asc" : "desc";
+        } else {
+          State.netflowSortCol = col;
+          State.netflowSortDir = col === "sector" ? "asc" : "desc";
+        }
+        renderActiveView();
+      });
+    });
 
     // Direct click listeners on all sector rows in Net Flow table
     const rows = container.querySelectorAll(".netflow-row[data-sector]");

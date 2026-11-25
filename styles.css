@@ -4492,6 +4492,52 @@ body.theme-white .ema-status-pill.amber {
     text-align: center;
 }
 
+.netflow-header-cell.is-sortable,
+.netflow-header-cell.is-sortable * {
+    cursor: pointer !important;
+    user-select: none;
+}
+
+.netflow-header-cell.is-sortable {
+    padding: 4px 4px;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.netflow-header-cell.is-sortable:hover {
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--ink);
+}
+
+.netflow-header-cell.is-sort-active {
+    color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.14);
+}
+
+.netflow-sort-indicator {
+    font-size: 9px;
+    opacity: 0.55;
+    line-height: 1;
+}
+
+.netflow-header-cell.is-sort-active .netflow-sort-indicator {
+    opacity: 1;
+    color: #38bdf8;
+}
+
+body.theme-white .netflow-header-cell.is-sort-active {
+    color: #0284c7 !important;
+    background: rgba(2, 132, 199, 0.12);
+}
+
+body.theme-white .netflow-header-cell.is-sort-active .netflow-sort-indicator {
+    color: #0284c7;
+}
+
 .netflow-sector-cell {
     display: flex;
     align-items: center;
