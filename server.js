@@ -7759,4 +7759,50 @@ server.listen(PORT, async () => {
   ScreeningMantisService.getSectorIndices().catch(() => { });
   ScreeningMantisService.getScannerSnapshot().catch(() => { });
   ScreeningMantisService.getBreadthHistory().catch(() => { });
+
+  // Built-in Self-Healing Auto-Pipeline Catchup (runs 12s after boot + every 15m)
+  // Guarantees 3:45 PM EOD & 7:00 PM FII/DII/Turnover update even if GitHub Actions cron is delayed/skipped
+  let _autoPipelineRunning = false;
+  async function checkAndAutoUpdateMarketData() {
+    if (_autoPipelineRunning) return;
+    _autoPipelineRunning = true;
+    try {
+      const pipeline = require('./scripts/daily_market_pipeline');
+      const istNow = pipeline.getISTParts();
+      const session = await pipeline.resolveTargetCompletedSession();
+      const targetDate = session.effectiveDateStr;
+
+      let status = {};
+      const statusPath = path.join(__dirname, 'data', 'pipeline-status.json');
+      try {
+        if (fs.existsSync(statusPath)) status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+      } catch (_) { }
+
+      let updatedAny = false;
+      if (targetDate && (!status.eodMarket || status.eodMarket.date < targetDate)) {
+        console.log(`⏰ Auto-Catchup: Running Stage 1 EOD Market Update for ${targetDate}...`);
+        await pipeline.runEodMarketUpdate();
+        updatedAny = true;
+      }
+
+      const isAfterFiiTime = (istNow.hour > 19 || (istNow.hour === 19 && istNow.minute >= 10));
+      if (targetDate && (targetDate < istNow.dateStr || isAfterFiiTime) && (!status.fiiDii || status.fiiDii.date < targetDate)) {
+        console.log(`⏰ Auto-Catchup: Running Stage 2 FII/DII & Sector Turnover for ${targetDate}...`);
+        await pipeline.runFiiDiiUpdate();
+        updatedAny = true;
+      }
+
+      if (updatedAny) {
+        CACHE.clear();
+        console.log('✓ Auto-Catchup pipeline sync completed & server cache cleared.');
+      }
+    } catch (e) {
+      console.warn('Auto-Catchup pipeline warning:', e.message);
+    } finally {
+      _autoPipelineRunning = false;
+    }
+  }
+
+  setTimeout(() => { checkAndAutoUpdateMarketData().catch(() => { }); }, 12 * 1000);
+  setInterval(() => { checkAndAutoUpdateMarketData().catch(() => { }); }, 15 * 60 * 1000);
 });

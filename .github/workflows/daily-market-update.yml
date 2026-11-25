@@ -2,10 +2,12 @@ name: Automated Daily Market Data Pipeline
 
 on:
   schedule:
-    # 10:15 UTC = 3:45 PM IST (Mon - Fri) -> Stage 1: Market EOD Closes, 44 Sectors, EMAs & Heatmap Constituents
+    # 10:15 UTC & backup 10:30 UTC = 3:45 PM / 4:00 PM IST (Mon - Fri) -> Stage 1: Market EOD Closes
     - cron: '15 10 * * 1-5'
-    # 13:30 UTC = 7:00 PM IST (Mon - Fri) -> Stage 2: Real FII / DII (Groww) & Official Sector Turnover
+    - cron: '30 10 * * 1-5'
+    # 13:30 UTC & backup 13:50 UTC = 7:00 PM / 7:20 PM IST (Mon - Fri) -> Stage 2: FII / DII & Sector Turnover
     - cron: '30 13 * * 1-5'
+    - cron: '50 13 * * 1-5'
     # 15:00 UTC = 8:30 PM IST (Mon - Fri) -> Stage 2 Verification Pass: Finalized Exchange Settlements
     - cron: '0 15 * * 1-5'
   workflow_dispatch:
@@ -42,7 +44,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "MODE=${{ github.event.inputs.mode }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.schedule }}" = "15 10 * * 1-5" ]; then
+          elif [ "${{ github.event.schedule }}" = "15 10 * * 1-5" ] || [ "${{ github.event.schedule }}" = "30 10 * * 1-5" ]; then
             echo "MODE=eod" >> $GITHUB_ENV
           else
             echo "MODE=fii" >> $GITHUB_ENV
