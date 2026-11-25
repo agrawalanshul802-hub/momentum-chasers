@@ -11561,15 +11561,15 @@
 
       State.liveSync.status = "syncing";
 
-      // On static hosts during auto-refresh, keep the catalog active without UI lag or network lockup
-      if (isStaticHost() && !interactive) {
+      // Keep verified EOD daily closing catalog rock-solid without background tick fluctuation
+      if (!interactive) {
         State.liveSync.status = "connected";
         State.liveSync.lastSyncTime = new Date();
         State.liveSync.countdown = 60;
         if (beacon) beacon.className = "live-feed-beacon active";
         if (statusText) {
-          statusText.textContent = "NSE/BSE Daily Feed";
-          statusText.title = "Viewing daily market close catalog. For real-time 15m live streaming, launch node server.js on localhost:3000.";
+          statusText.textContent = "EOD Verified";
+          statusText.title = "Official daily market closing data updated at 3:45 PM IST (FII/DII at 7:00 PM IST).";
         }
         this._isSyncing = false;
         if (syncBtn) syncBtn.classList.remove("spinning");
@@ -12162,99 +12162,14 @@
     socket: null,
     reconnectAttempts: 0,
     connect() {
-      // Do not attempt WebSocket on static hosting (GitHub Pages, etc.) or standalone file
-      if (window.location.protocol === "file:" || isStaticHost()) {
-        const beacon = $("#live-feed-beacon");
-        const statusText = $("#live-feed-status");
-        if (beacon) beacon.className = "live-feed-beacon active";
-        if (statusText) statusText.textContent = "Stream: Live";
-        return;
-      }
-      if (this.reconnectAttempts >= 3) return;
-
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/live`;
-
-      try {
-        this.socket = new WebSocket(wsUrl);
-
-        this.socket.onopen = () => {
-          this.reconnectAttempts = 0;
-          console.log("[WebSocket] Connected to Multi-Key Live Stream at", wsUrl);
-          const beacon = $("#live-feed-beacon");
-          const statusText = $("#live-feed-status");
-          if (beacon) beacon.className = "live-feed-beacon active";
-          if (statusText) statusText.textContent = "Stream: Live";
-        };
-
-        this.socket.onmessage = (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            if (msg.type === "TICK") {
-              const sym = msg.symbol;
-              const data = msg.data;
-              const stock = ST.find(s => s[0] === sym);
-              if (stock) {
-                stock[3] = data.price;
-                stock[4] = data.chg;
-                if (data.fiftyTwoWeekHigh && stock[8]) {
-                  stock[8].high52 = data.fiftyTwoWeekHigh;
-                }
-                if (stock[8] && stock[8].high52 && stock[3] > stock[8].high52) {
-                  stock[8].high52 = stock[3];
-                }
-                if (ST_MAP[stock[0]]) {
-                  ST_MAP[stock[0]].price = data.price;
-                  ST_MAP[stock[0]].chg = data.chg;
-                  if (stock[8]) {
-                    ST_MAP[stock[0]].high52 = stock[8].high52;
-                  }
-                }
-              }
-              const idxItem = IDX.find(i => i[0].toUpperCase() === sym.toUpperCase());
-              if (idxItem) {
-                idxItem[1] = data.price;
-                idxItem[2] = data.chg;
-              }
-              // Fast in-place DOM updates without marquee rebuild / DOM reflow
-              updateTickerLive(sym, data.price, data.chg);
-              if (State.view === "stock" && State.activeStock === sym) {
-                const ltpEl = document.querySelector(".tv-quote-ltp");
-                const chgEl = document.querySelector(".tv-quote-chg");
-                if (ltpEl) ltpEl.textContent = `₹${formatNumber(data.price)}`;
-                if (chgEl) {
-                  const chgVal = (data.price * (data.chg / 100)).toFixed(2);
-                  const chgSign = data.chg >= 0 ? "+" : "";
-                  chgEl.className = `tv-quote-chg font-mono ${getColorClass(data.chg)}`;
-                  chgEl.textContent = `${chgSign}${chgVal} (${formatPercent(data.chg)})`;
-                }
-              }
-              if (State.view === "screener") {
-                updateScreenerLiveQuotes(sym);
-              } else if (State.view === "breadth") {
-                updateLiveMarketBreadth();
-              }
-            } else if (msg.type === "CROSSOVER_ALERT") {
-              showToast(`⚡ 50×200 Golden Cross detected in ${msg.symbol} at ₹${msg.price}!`, "🚀");
-            }
-          } catch (e) { }
-        };
-
-        this.socket.onclose = () => {
-          this.reconnectAttempts++;
-          if (this.reconnectAttempts > 3) return;
-          const delay = Math.min(10000, 1000 * Math.pow(1.5, this.reconnectAttempts));
-          setTimeout(() => this.connect(), delay);
-        };
-
-        this.socket.onerror = () => {
-          if (this.socket) {
-            try { this.socket.close(); } catch (e) { }
-          }
-        };
-      } catch (e) {
-        console.warn("[WebSocket] Live streaming not supported in this environment", e);
-      }
+      // Stable EOD Daily Close Mode: Do not overwrite verified 3:45 PM EOD prices with intraday fluctuating ticks
+      const beacon = $("#live-feed-beacon");
+      const statusText = $("#live-feed-status");
+      const timerEl = $("#live-feed-timer");
+      if (beacon) beacon.className = "live-feed-beacon active";
+      if (statusText) statusText.textContent = "EOD Verified";
+      if (timerEl) timerEl.textContent = "3:45 PM";
+      return;
     }
   };
 
@@ -37828,13 +37743,10 @@
 
     async syncSectorIndices() {
       try {
-        const localBase = getApiBase();
         const urls = [
-          localBase ? (localBase + "/api/market/sectors") : null,
-          localBase ? (localBase + "/api/screeningmantis/sectors") : null,
-          "./data/market-sectors.json?v=6.2.8",
-          "./data/screeningmantis-sectors.json?v=6.2.8"
-        ].filter(Boolean);
+          "./data/market-sectors.json?v=6.5.0",
+          "./data/screeningmantis-sectors.json?v=6.5.0"
+        ];
 
         let data = null;
         for (const url of urls) {
@@ -37894,15 +37806,10 @@
 
     async syncScannerSnapshot() {
       try {
-        const localBase = getApiBase();
         const urls = [
-          localBase ? (localBase + "/api/market/emas") : null,
-          localBase ? (localBase + "/api/market/snapshot") : null,
-          localBase ? (localBase + "/api/screeningmantis/emas") : null,
-          localBase ? (localBase + "/api/screeningmantis/snapshot") : null,
-          "./data/market-emas.json?v=6.2.8",
-          "./data/screeningmantis-emas.json?v=6.2.8"
-        ].filter(Boolean);
+          "./data/market-emas.json?v=6.5.0",
+          "./data/screeningmantis-emas.json?v=6.5.0"
+        ];
 
         let snapshotResults = null;
         for (const url of urls) {
@@ -38957,62 +38864,26 @@
       if (!document.hidden) evaluateStockAlerts();
     }, 8000);
 
-    // Connect to real-time multi-key WebSocket stream
+    // Verified EOD Market Status Mode (3:45 PM EOD & 7:00 PM FII/DII)
     LiveWebSocketService.connect();
 
     // Fetch initial Market Mood Index (MMI)
     MarketMoodService.fetchMMI();
 
-    // Fetch repository-synced daily Nifty 500 universe
+    // Fetch repository-synced daily EOD universe & verified indicators
     syncNifty500Catalog();
-
-    // Sync live ScreeningMantis verified market feeds (Sector Indices & Screener Earnings)
     ScreeningMantisClient.syncAll();
-    setInterval(() => {
-      if (!document.hidden) ScreeningMantisClient.syncSectorIndices();
-    }, 60 * 1000);
 
-    // Groww publishes FII/DII flows after the cash-market close; keep the
-    // section refreshed without implying that it is an intraday feed.
+    // Groww publishes FII/DII flows after the cash-market close
     FiiDiiService.fetch();
-    setInterval(() => {
-      if (!document.hidden) FiiDiiService.fetch();
-    }, 5 * 60 * 1000);
 
-    // Fetch initial live IPO feed from backend
+    // Fetch IPO feed from backend
     IPOLiveService.fetchIPOData(false);
-    // Refresh issue statuses and subscription/GMP snapshots every five minutes.
-    setInterval(() => {
-      if (!document.hidden) IPOLiveService.fetchIPOData(false);
-    }, 5 * 60 * 1000);
 
-    // Start 30-second live auto-sync countdown timer (smartly paused when tab is inactive)
-    setInterval(() => {
-      if (document.hidden) return; // Do not consume CPU or battery in hidden tabs
-      if (State.liveSync.countdown > 0) {
-        State.liveSync.countdown--;
-      }
-      const timerEl = $("#live-feed-timer");
-      if (timerEl) {
-        const _tv = `${State.liveSync.countdown}s`;
-        if (timerEl.textContent !== _tv) timerEl.textContent = _tv;
-      }
-      if (State.liveSync.countdown <= 0) {
-        State.liveSync.countdown = 60;
-        YahooFinanceLiveService.syncAll(false);
-        MarketMoodService.fetchMMI(false);
-      }
-    }, 1000);
-
-    // Sync immediately when switching back to tab
+    // Refresh owner ideas cleanly when returning to Screener tab
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        if (State.liveSync.countdown <= 5) {
-          YahooFinanceLiveService.syncAll(false);
-        }
-        if (State.view === 'screener') {
-          fetchOwnerIdeas(false);
-        }
+      if (!document.hidden && State.view === 'screener') {
+        fetchOwnerIdeas(false);
       }
     });
 
@@ -39023,9 +38894,8 @@
       }
     });
 
-    // Initial Live Sync from Yahoo Finance on startup
+    // Load upcoming concall schedule
     setTimeout(() => {
-      YahooFinanceLiveService.syncAll(false);
       if (typeof ConcallLiveService !== "undefined") {
         ConcallLiveService.fetchUpcoming(false);
         ConcallLiveService.fetchResults(false);
