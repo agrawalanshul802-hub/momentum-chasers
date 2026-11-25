@@ -4407,10 +4407,8 @@
           <img src="logo-icon.png?v=2" alt="Momentum Chasers Logo" class="auth-badge-logo">
           <span>MOMENTUM CHASERS</span>
         </div>
-        <h1>Make Smarter Financial Decisions with <br class="rotating-break"><span class="text-rotate text-rotate-highlight" id="hero-rotating-text" data-rotating-texts='["Market Intelligence", "15m Order Flow", "50×200 EMA Scans", "Breakout Signals", "Sector Heatmaps"]'><span class="text-rotate-sr-only">Market Intelligence</span><span class="text-rotate-highlight-content">Market Intelligence</span></span></h1>
-        <p class="lead">Explore stock market analytics, advanced screening tools and real-time market insights. Analyse
-          stocks, track sector performance, monitor market sentiment and understand market activity before making your
-          financial decisions.</p>
+        <h1>Chase Every Breakout with <br class="rotating-break"><span class="text-rotate text-rotate-highlight" id="hero-rotating-text" data-rotating-texts='["Institutional Edge", "15m EMA Crossovers", "Sector Money Flow", "Live Deal Signals", "Market Breadth"]'><span class="text-rotate-sr-only">Institutional Edge</span><span class="text-rotate-highlight-content">Institutional Edge</span></span></h1>
+        <p class="lead">Decode NSE &amp; BSE momentum in real time. Screen 50&times;200 EMA crossovers, track institutional sector turnover, spot bulk &amp; insider accumulation, and time high-conviction moves with clarity.</p>
         <div class="cta" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
           <a class="btn pri" href="javascript:void(0)" id="hero-primary-cta"
             onclick="handleCtaClick(event, 'signup')">Sign In to Dashboard &rarr;</a>
@@ -5640,8 +5638,7 @@
           <span class="wm" style="font-size:1.25rem;font-weight:800;letter-spacing:0.04em;color:#ffffff;">MOMENTUM <b
               style="color:var(--cy,#22c55e);font-weight:800;">CHASERS</b></span>
         </a>
-        <p style="margin:0;font-size:0.96rem;color:rgba(255,255,255,0.7);max-width:560px;">Make Smarter Financial
-          Decisions with Market Intelligence.</p>
+        <p style="margin:0;font-size:0.96rem;color:rgba(255,255,255,0.7);max-width:560px;">Built for disciplined momentum traders tracking NSE &amp; BSE institutional flows.</p>
       </div>
 
       <!-- Platform Navigation Row (Left Aligned) -->
@@ -6141,8 +6138,29 @@
       }, { passive: true });
       var h1 = document.querySelector('h1');
       if (h1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        var w = h1.textContent.trim().split(/\s+/); h1.setAttribute('aria-label', w.join(' '));
-        h1.innerHTML = w.map(function (x, i) { return '<span class="wd" aria-hidden="true" style="--i:' + i + '">' + x + '</span>' }).join(' ');
+        var rot = h1.querySelector('.text-rotate');
+        if (rot) {
+          var nodes = Array.prototype.slice.call(h1.childNodes);
+          var wordIdx = 0;
+          nodes.forEach(function (n) {
+            if (n.nodeType === 3 && n.textContent.trim()) {
+              var frag = document.createDocumentFragment();
+              n.textContent.trim().split(/\s+/).forEach(function (x, i, arr) {
+                var sp = document.createElement('span');
+                sp.className = 'wd';
+                sp.setAttribute('aria-hidden', 'true');
+                sp.style.setProperty('--i', wordIdx++);
+                sp.textContent = x;
+                frag.appendChild(sp);
+                frag.appendChild(document.createTextNode(' '));
+              });
+              h1.replaceChild(frag, n);
+            }
+          });
+        } else {
+          var w = h1.textContent.trim().split(/\s+/); h1.setAttribute('aria-label', w.join(' '));
+          h1.innerHTML = w.map(function (x, i) { return '<span class="wd" aria-hidden="true" style="--i:' + i + '">' + x + '</span>' }).join(' ');
+        }
       }
     })();
 
