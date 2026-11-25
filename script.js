@@ -37739,6 +37739,21 @@
           }
         }
       } catch (_) { }
+
+      // 3. Display exact active completed EOD trading session date in header status badge
+      try {
+        const resSt = await fetch("./data/pipeline-status.json?v=6.5.0", { cache: "no-store" });
+        if (resSt.ok) {
+          const ps = await resSt.json();
+          const eod = ps && ps.eodMarket;
+          if (eod && (eod.shortEodLabel || eod.date)) {
+            const timerEl = document.getElementById("live-feed-timer");
+            const srcEl = document.getElementById("source-label");
+            if (timerEl) timerEl.textContent = eod.shortEodLabel || eod.date;
+            if (srcEl && eod.dateLabel) srcEl.textContent = `EOD · ${eod.dateLabel}`;
+          }
+        }
+      } catch (_) { }
     },
 
     async syncSectorIndices() {
