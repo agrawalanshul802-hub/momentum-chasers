@@ -33678,13 +33678,9 @@
                 <img src="${(State && State.theme === 'white') ? 'logo-icon-dark.png?v=2' : 'logo-icon.png?v=2'}" alt="Momentum Chasers" class="home-hero-logo-img" />
                 <span>MOMENTUM CHASERS</span>
               </div>
-              <!-- Status & Alert Pills Centered Directly Underneath -->
+              <!-- Alert Pill Centered Directly Underneath -->
               <div class="home-hero-badges-subrow" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-                <div class="dashboard-market-status-pill" title="Indian Market Feeds: Real-time NSE / BSE live terminal feeds">
-                  <span class="dms-live-dot"></span>
-                  <span class="dms-title">NSE / BSE LIVE</span>
-                </div>
-                <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track live price triggers">
+                <button class="dashboard-hero-alert-btn" data-action="open-stock-alerts-manager" title="Manage your stock alerts and track price triggers">
                   <span class="hero-alert-icon">🔔</span>
                   <span class="hero-alert-label">Stock Alerts</span>
                   <span class="hero-alert-badge ${activeCount > 0 ? 'has-active' : ''}">${activeCount > 0 ? activeCount + ' Active' : '+ Add'}</span>
@@ -34231,7 +34227,6 @@
             <span class="ob-pro-badge">PRO TERMINAL</span>
           </div>
           <div class="ob-header-right">
-            <span class="ob-status-indicator"><i class="ob-live-dot"></i>NSE &bull; BSE LIVE</span>
           </div>
         </header>
 
