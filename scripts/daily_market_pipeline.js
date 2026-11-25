@@ -542,6 +542,10 @@ async function runEodMarketUpdate() {
             if (q.fiftyTwoWeekHigh && (!s[8].high52 || q.fiftyTwoWeekHigh > s[8].high52)) {
               s[8].high52 = q.fiftyTwoWeekHigh;
             }
+            const curMaxHigh = Math.max(Number(s[8].ath) || 0, Number(s[8].high52) || 0, q.fiftyTwoWeekHigh || 0, q.regularMarketPrice || 0);
+            if (curMaxHigh > 0) {
+              s[8].ath = Number(curMaxHigh.toFixed(2));
+            }
             if (q.fiftyTwoWeekLow && (!s[8].low52 || q.fiftyTwoWeekLow < s[8].low52)) {
               s[8].low52 = q.fiftyTwoWeekLow;
             }

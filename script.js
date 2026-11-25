@@ -2837,29 +2837,33 @@
 
   // Helper to compute Distance from All-Time High / 52W High (Memoized for high-speed table rendering & sorting)
   function getStockAthDistance(stock) {
-    if (!stock) return { ath: 0, dist: 0, isNearAth: false };
+    if (!stock) return { ath: 0, high52: 0, dist: 0, isNearAth: false };
     const curPrice = Number(Array.isArray(stock) ? stock[3] : stock.price) || 0;
-    if (stock._cachedAth && stock._cachedAthPrice === curPrice) {
+    const dayChg = Number(Array.isArray(stock) ? stock[4] : stock.chg) || 0;
+    const meta = Array.isArray(stock) ? (stock[8] || {}) : (stock.meta || stock);
+    const metaAth = Number(meta.ath || stock.ath) || 0;
+    const metaHigh52 = Number(meta.high52 || stock.high52) || 0;
+    if (stock._cachedAth && stock._cachedAthPrice === curPrice && stock._cachedAthRef === metaAth) {
       return stock._cachedAth;
     }
-    const meta = Array.isArray(stock) ? (stock[8] || {}) : (stock.meta || stock);
-    let ath = Number(meta.ath || meta.high52 || stock.high52) || curPrice;
-    // A stock price can never logically exceed its All-Time / 52W High.
-    // If CMP exceeds recorded historical high, CMP is the new high.
-    if (curPrice > ath) {
-      ath = curPrice;
-      if (meta && typeof meta === "object") meta.high52 = curPrice;
+    let ath = Math.max(metaAth, metaHigh52, curPrice);
+    // If historical high was stale below today's down price, use previous close as minimum high bound
+    if (dayChg < 0 && dayChg > -95 && curPrice > 0) {
+      const approxPrevClose = curPrice / (1 + dayChg / 100);
+      if (approxPrevClose > ath) ath = Math.round(approxPrevClose * 100) / 100;
     }
     const dist = ath > 0 ? ((curPrice - ath) / ath) * 100 : 0;
     // Distance from ATH is strictly non-positive (<= 0.00%)
     const clampedDist = Math.min(0, dist);
     const res = {
       ath,
+      high52: Math.max(metaHigh52, curPrice),
       dist: Math.round(clampedDist * 100) / 100,
       isNearAth: clampedDist >= -3.0
     };
     stock._cachedAth = res;
     stock._cachedAthPrice = curPrice;
+    stock._cachedAthRef = metaAth;
     return res;
   }
 
@@ -11361,6 +11365,8 @@
           if (stock[8]) {
             stock[8].high52 = live.high52;
             stock[8].low52 = live.low52;
+            const maxKnown = Math.max(Number(stock[8].ath) || 0, Number(live.high52) || 0, Number(live.currentPrice) || 0);
+            if (maxKnown > 0) stock[8].ath = maxKnown;
           }
         }
 
@@ -11681,6 +11687,10 @@
               if (stItem[8] && stItem[8].high52 && stItem[3] > stItem[8].high52) {
                 stItem[8].high52 = stItem[3];
               }
+              if (stItem[8]) {
+                const maxAth = Math.max(Number(stItem[8].ath) || 0, Number(stItem[8].high52) || 0, stItem[3] || 0);
+                if (maxAth > 0) stItem[8].ath = maxAth;
+              }
               if (typeof q.fiftyTwoWeekLow === "number" && q.fiftyTwoWeekLow > 0 && stItem[8]) {
                 stItem[8].low52 = q.fiftyTwoWeekLow;
               }
@@ -11690,6 +11700,7 @@
                 if (stItem[8]) {
                   ST_MAP[stItem[0]].high52 = stItem[8].high52;
                   ST_MAP[stItem[0]].low52 = stItem[8].low52;
+                  ST_MAP[stItem[0]].ath = stItem[8].ath;
                 }
               }
             }
@@ -12748,7 +12759,7 @@
         const cls = ath.dist >= 0 ? 'val-green' : 'val-red';
         athCell.className = `font-mono ${cls} stock-ath-cell`;
         athCell.style.color = ath.dist >= 0 ? "var(--g)" : "var(--r)";
-        athCell.title = `All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}`;
+        athCell.title = `All-Time High: ₹${formatNumber(ath.ath, 2)} · 52W High: ₹${formatNumber(ath.high52 || ath.ath, 2)}`;
         athCell.textContent = `${ath.dist.toFixed(2)}%`;
       }
       const emaCell = row.querySelector(".stock-ema-cell");
@@ -13965,7 +13976,7 @@
             ${formatPercent(Math.max(-20, Math.min(20, s[4])))}
           </td>` : ''}
           ${State.screenerCols.athDist !== false ? `
-            <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700;color:${ath.dist >= 0 ? 'var(--g)' : 'var(--r)'}" title="All-Time High / 52W High: ₹${formatNumber(ath.ath, 0)}">
+            <td class="font-mono ${cls} stock-ath-cell" style="text-align:right;font-weight:700;color:${ath.dist >= 0 ? 'var(--g)' : 'var(--r)'}" title="All-Time High: ₹${formatNumber(ath.ath, 2)} · 52W High: ₹${formatNumber(ath.high52 || ath.ath, 2)}">
               ${ath.dist.toFixed(2)}%
             </td>` : ''}
           ${State.screenerCols.earnings !== false ? `
@@ -38346,7 +38357,7 @@
   // Dynamic fetch of repository-synced 2,000+ stock universe
   async function syncNifty500Catalog() {
     try {
-      const jsonResp = await fetch('./data/stocks-universe.json?v=6.2.8', { cache: 'no-store' });
+      const jsonResp = await fetch('./data/stocks-universe.json?v=7.2.6', { cache: 'no-store' });
       if (jsonResp.ok) {
         const catalog = await jsonResp.json();
         if (Array.isArray(catalog) && catalog.length >= 1000) {
