@@ -34865,18 +34865,6 @@
                     <span class="flex-1 text-left">VIP Pass &amp; Billing</span>
                     <span class="kokonut-item-val" style="color:#f59e0b;">${sub && sub.active ? sub.daysRemaining + 'd Left' : 'Upgrade'}</span>
                   </button>
-
-                  <!-- Switch Account Submenu Trigger -->
-                  <button type="button" class="kokonut-menu-item kokonut-switch-trigger" data-action="kokonut-goto-accounts">
-                    <span class="flex -space-x-1.5">
-                      <span class="kokonut-avatar kokonut-avatar-mini" style="background:#10b981;color:#fff;">${escapeHtml(avatar)}</span>
-                      <span class="kokonut-avatar kokonut-avatar-mini" style="background:#3b82f6;color:#fff;">G</span>
-                    </span>
-                    <span class="flex-1 text-left">Switch account</span>
-                    <svg class="kokonut-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </button>
                 </div>
 
                 <div class="kokonut-divider"></div>
@@ -34898,49 +34886,6 @@
                       <span class="flex-1 text-left">Sign out</span>
                       <span class="kokonut-hold-badge">Signing out...</span>
                     </span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- PAGE 2: SWITCH ACCOUNT SUB-MENU -->
-              <div class="kokonut-page" id="kokonut-page-accounts">
-                <button type="button" class="kokonut-menu-item kokonut-back-btn" data-action="kokonut-goto-main">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                  <span>Back to Menu</span>
-                </button>
-
-                <div class="kokonut-divider"></div>
-
-                <div class="kokonut-items-list">
-                  <!-- Active Trader Account -->
-                  <button type="button" class="kokonut-menu-item active" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);">
-                    <span class="kokonut-avatar" style="background:#10b981;color:#fff;width:28px;height:28px;font-size:12px;">${escapeHtml(avatar)}</span>
-                    <div class="flex-1 text-left min-w-0">
-                      <div class="truncate text-sm font-semibold kokonut-acc-name">${escapeHtml(rawName)}</div>
-                      <div class="truncate text-xs opacity-60">${escapeHtml(email)}</div>
-                    </div>
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </button>
-
-                  <!-- Owner Studio -->
-                  <button type="button" class="kokonut-menu-item" data-action="switch-to-owner">
-                    <span class="kokonut-avatar" style="background:#f59e0b;color:#000;width:28px;height:28px;font-size:12px;">👑</span>
-                    <div class="flex-1 text-left min-w-0">
-                      <div class="truncate text-sm font-semibold">Owner Publishing Studio</div>
-                      <div class="truncate text-xs opacity-60">Publish Setups &amp; Pricing</div>
-                    </div>
-                  </button>
-
-                  <div class="kokonut-divider"></div>
-
-                  <!-- Add / Switch Account Link -->
-                  <button type="button" class="kokonut-menu-item" onclick="window.location.href='login.html'">
-                    <span class="kokonut-add-circle">+</span>
-                    <span class="flex-1 text-left font-semibold">Switch Account / Sign In</span>
                   </button>
                 </div>
               </div>
@@ -38474,27 +38419,11 @@
     const dropdown = document.getElementById("header-user-dropdown-menu");
     if (!dropdown) return;
 
-    const wrapper = document.getElementById("kokonut-pages-wrapper");
     const holdBtn = document.getElementById("kokonut-hold-signout-btn");
     const holdFill = document.getElementById("kokonut-hold-fill");
     const holdBadge = document.getElementById("kokonut-hold-badge");
 
-    // 1. Page navigation (Main <-> Accounts)
-    document.querySelectorAll("[data-action='kokonut-goto-accounts']").forEach(btn => {
-      btn.onclick = function (e) {
-        e.stopPropagation();
-        if (wrapper) wrapper.style.transform = "translateX(-310px)";
-      };
-    });
-
-    document.querySelectorAll("[data-action='kokonut-goto-main']").forEach(btn => {
-      btn.onclick = function (e) {
-        e.stopPropagation();
-        if (wrapper) wrapper.style.transform = "translateX(0)";
-      };
-    });
-
-    // 2. Theme switcher
+    // 1. Theme switcher
     document.querySelectorAll("[data-action='set-app-theme']").forEach(btn => {
       btn.onclick = function (e) {
         e.stopPropagation();
@@ -38516,16 +38445,7 @@
       };
     });
 
-    // 5. Switch to Owner Studio
-    const ownerBtn = dropdown.querySelector("[data-action='switch-to-owner']");
-    if (ownerBtn) {
-      ownerBtn.onclick = function (e) {
-        e.stopPropagation();
-        window.location.href = "owner.html";
-      };
-    }
-
-    // 6. KokonutUI Press-and-Hold Sign Out Physics
+    // 2. KokonutUI Press-and-Hold Sign Out Physics
     if (holdBtn && holdFill) {
       let holdTimer = null;
       let nudgeTimer = null;
