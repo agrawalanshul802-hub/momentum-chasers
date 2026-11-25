@@ -10857,7 +10857,7 @@
     sectorSortDir: "desc",      // "desc" (High to Low / closest to ATH) or "asc"
     sectorSearchQuery: "",      // Filter string in 44 Sector Indices table
     sectorSubTab: "turnover",   // "turnover" (Money Flow heatmap), "indices", "ranking", "turnover_ad", "cmf", "rs"
-    sectorTurnoverSortCol: "23-11", // default sorted by latest date (matching screenshot)
+    sectorTurnoverSortCol: null, // defaults dynamically to latest date column (dates[0])
     sectorTurnoverSortDir: "desc",
     sectorTurnoverSearch: "",
     sectorTurnoverBaseline: 8,
@@ -15646,13 +15646,13 @@
   }
 
 
-  async function fetchSectorTurnoverData() {
+  async function fetchSectorTurnoverData(force = false) {
     let fetched = false;
     const base = getApiBase();
     if (base) {
       try {
         const b = State.sectorTurnoverBaseline || 8;
-        const res = await fetch(`${base}/api/sector-turnover?baseline=${b}`);
+        const res = await fetch(`${base}/api/sector-turnover?baseline=${b}${force ? '&force=true' : ''}`, { cache: "no-store" });
         const cType = res.headers.get("content-type") || "";
         if (res.ok && cType.includes("json")) {
           const json = await res.json();
@@ -15670,7 +15670,7 @@
 
     if (!fetched) {
       try {
-        const localRes = await fetch("./data/authentic-sector-turnover.json?v=6.2.8");
+        const localRes = await fetch("./data/authentic-sector-turnover.json?v=7.1.0");
         if (localRes.ok) {
           const json = await localRes.json();
           if (json && json.sectors && json.sectors.length > 0) {
@@ -15745,7 +15745,7 @@
     }
 
     // Sort
-    const sortCol = State.sectorTurnoverSortCol || '23-11';
+    const sortCol = State.sectorTurnoverSortCol || dates[0] || '25-11';
     const sortDir = State.sectorTurnoverSortDir || 'desc';
 
     sectors.sort((a, b) => {
@@ -37045,7 +37045,7 @@
       }
       else if (action === "refresh-sector-turnover") {
         showToast("Fetching fresh EOD Bhavcopy turnover data...", "⚡");
-        fetchSectorTurnoverData();
+        fetchSectorTurnoverData(true);
       }
       else if (action === "set-valuation-category") {
         State.valuationCategory = target.dataset.cat || "all";
@@ -38097,7 +38097,7 @@
         const urls = [
           localBase ? (localBase + "/api/sector-turnover") : null,
           localBase ? (localBase + "/api/screeningmantis/sector-share") : null,
-          "./data/authentic-sector-turnover.json?v=6.2.8"
+          "./data/authentic-sector-turnover.json?v=7.1.0"
         ].filter(Boolean);
 
         for (const url of urls) {

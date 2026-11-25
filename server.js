@@ -4843,69 +4843,8 @@ async function fetchLiveIPOsData() {
 }
 
 async function fetchLiveFiiDiiData() {
-  const page = await new Promise((resolve, reject) => {
-    const req = https.get('https://groww.in/fii-dii-data', {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MomentumChasers/1.0)', 'Accept': 'text/html' },
-      timeout: 12000
-    }, res => {
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        res.resume();
-        reject(new Error('Groww FII/DII page redirected unexpectedly'));
-        return;
-      }
-      let body = '';
-      res.setEncoding('utf8');
-      res.on('data', chunk => { body += chunk; });
-      res.on('end', () => res.statusCode === 200 ? resolve(body) : reject(new Error(`Groww FII/DII page returned HTTP ${res.statusCode}`)));
-    });
-    req.on('error', reject);
-    req.on('timeout', () => req.destroy(new Error('Groww FII/DII page request timed out')));
-  });
-
-  const decode = value => String(value || '').replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;|&#160;/gi, ' ').replace(/&amp;/gi, '&')
-    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
-    .replace(/\s+/g, ' ').trim();
-  const amount = value => {
-    const normalized = decode(value).replace(/[\u20b9,\s]/g, '');
-    const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : null;
-  };
-  const rows = [...page.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(match =>
-    [...match[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell => decode(cell[1]))
-  ).filter(cells => cells.length >= 7);
-  const records = rows.map(cells => {
-    const [dateText, fiiBuyText, fiiSellText, fiiNetText, diiBuyText, diiSellText, diiNetText] = cells;
-    const dateParts = dateText.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
-    const month = dateParts && ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(dateParts[2].toLowerCase());
-    const date = dateParts && month >= 0
-      ? new Date(Date.UTC(Number(dateParts[3]), month, Number(dateParts[1])))
-      : new Date(dateText);
-    const values = [fiiBuyText, fiiSellText, fiiNetText, diiBuyText, diiSellText, diiNetText].map(amount);
-    if (!Number.isFinite(date.getTime()) || values.some(value => value === null)) return null;
-    const [fiiBuy, fiiSell, fiiNet, diiBuy, diiSell, diiNet] = values;
-    if (Math.abs(fiiBuy - fiiSell - fiiNet) > 2 || Math.abs(diiBuy - diiSell - diiNet) > 2) return null;
-    return { date: date.toISOString().slice(0, 10), fiiBuy, fiiSell, fiiNet, diiBuy, diiSell, diiNet };
-  }).filter(Boolean);
-  if (!records.length) throw new Error('Groww FII/DII table could not be parsed');
-
-  // Keep daily snapshots between restarts so the rolling month view fills out
-  // even when Groww's public page only renders a short recent-history table.
-  const historyPath = path.join(__dirname, 'data', 'fii-dii-history.json');
-  let history = [];
-  try { history = JSON.parse(fs.readFileSync(historyPath, 'utf8')); } catch (_) { }
-  if (!Array.isArray(history)) history = [];
-  const byDate = new Map(history.filter(row => row && row.date).map(row => [row.date, row]));
-  for (const row of records) byDate.set(row.date, row);
-  const cutoff = Date.now() - 45 * 24 * 60 * 60 * 1000;
-  history = [...byDate.values()].filter(row => Date.parse(`${row.date}T00:00:00Z`) >= cutoff).sort((a, b) => b.date.localeCompare(a.date));
-  try {
-    fs.mkdirSync(path.dirname(historyPath), { recursive: true });
-    fs.writeFileSync(historyPath, JSON.stringify(history));
-  } catch (err) {
-    console.warn('Could not persist FII/DII session history:', err.message);
-  }
-  return { records: history, source: 'Groww', latestDate: history[0]?.date || records[0]?.date };
+  const { runFiiScraper } = require('./scripts/fetch-fii-dii');
+  return runFiiScraper();
 }
 
 function summarizeFiiDii(rows) {
@@ -4913,7 +4852,7 @@ function summarizeFiiDii(rows) {
   return Object.fromEntries(fields.map(field => [field, Number(rows.reduce((sum, row) => sum + row[field], 0).toFixed(2))]));
 }
 
-function buildFiiDiiPayload(records, stale = false, error = '') {
+function buildFiiDiiPayload(records, stale = false, error = '', source = 'NSE Official & Groww') {
   const sorted = [...records].sort((a, b) => b.date.localeCompare(a.date));
   const latest = sorted[0];
   const weekRows = sorted.slice(0, 5);
@@ -4923,7 +4862,7 @@ function buildFiiDiiPayload(records, stale = false, error = '') {
     success: true,
     stale,
     error,
-    source: 'Groww',
+    source: source || 'NSE Official & Groww',
     sourceUrl: 'https://groww.in/fii-dii-data',
     updatedAt: new Date().toISOString(),
     latestDate: latest.date,
@@ -5709,7 +5648,7 @@ const server = http.createServer(async (req, res) => {
     }
     try {
       const live = await fetchLiveFiiDiiData();
-      const payload = buildFiiDiiPayload(live.records);
+      const payload = buildFiiDiiPayload(live.records, false, '', live.source);
       const out = JSON.stringify(payload);
       CACHE.set(cacheKey, { time: Date.now(), data: out });
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Cache': 'MISS' });
@@ -6323,21 +6262,26 @@ const server = http.createServer(async (req, res) => {
   // 6e. Live Sector Turnover vs Own History Endpoint: /api/sector-turnover
   if (pathname === '/api/sector-turnover') {
     const baseline = parseInt(parsedUrl.query.baseline, 10) || 8;
+    const isForce = parsedUrl.query.force === 'true';
     const cacheKey = `sector_turnover_v3_${baseline}`;
     const cached = CACHE.get(cacheKey);
-    if (cached && (Date.now() - cached.time < 15 * 60 * 1000)) { // 15-minute cache
-      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'HIT' });
+    if (!isForce && cached && (Date.now() - cached.time < 5 * 60 * 1000)) { // 5-minute cache
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Cache': 'HIT' });
       res.end(cached.data);
       return;
     }
 
     try {
+      if (isForce) {
+        const { runSectorTurnoverUpdate } = require('./scripts/update-sector-turnover');
+        await runSectorTurnoverUpdate().catch(() => { });
+      }
       const payload = getSectorTurnoverPayload(baseline);
       const outStr = JSON.stringify(payload);
       CACHE.set(cacheKey, { time: Date.now(), data: outStr });
       res.writeHead(200, {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=60',
+        'Cache-Control': 'no-store',
         'X-Cache': 'MISS'
       });
       res.end(outStr);

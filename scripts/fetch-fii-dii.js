@@ -88,15 +88,73 @@ function parseGrowwRows(html) {
   return parsed;
 }
 
-async function main() {
-  console.log('Fetching live FII/DII data from Groww...');
-  const html = await fetchGrowwPage();
-  const newRecords = parseGrowwRows(html);
-  if (!newRecords.length) {
-    throw new Error('No valid FII/DII records extracted from Groww page');
-  }
+async function fetchNseOfficialFiiDii() {
+  const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  try {
+    const homeRes = await fetch('https://www.nseindia.in/', {
+      signal: AbortSignal.timeout(7000),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+      }
+    });
+    const cookies = (homeRes.headers.getSetCookie ? homeRes.headers.getSetCookie() : [])
+      .map(c => c.split(';')[0])
+      .join('; ');
+    const apiRes = await fetch('https://www.nseindia.in/api/fiidiiTradeReact', {
+      signal: AbortSignal.timeout(8000),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.nseindia.in/reports/fii-dii',
+        'Cookie': cookies
+      }
+    });
+    if (!apiRes.ok) return null;
+    const rows = await apiRes.json();
+    if (!Array.isArray(rows) || rows.length === 0) return null;
 
-  console.log(`Successfully parsed ${newRecords.length} sessions from Groww. Latest date: ${newRecords[0].date}`);
+    const fiiRow = rows.find(r => /fii|fpi/i.test(r.category || ''));
+    const diiRow = rows.find(r => /dii/i.test(r.category || ''));
+    if (!fiiRow || !diiRow) return null;
+
+    const rawDate = (fiiRow.date || diiRow.date || '').trim();
+    const dm = rawDate.match(/^(\d{1,2})[-\s]([A-Za-z]{3})[-\s](\d{4})$/);
+    if (!dm) return null;
+    const mIdx = months.indexOf(dm[2].toLowerCase());
+    if (mIdx < 0) return null;
+    const isoDate = `${dm[3]}-${String(mIdx + 1).padStart(2, '0')}-${dm[1].padStart(2, '0')}`;
+
+    const toNum = v => {
+      const n = Number(String(v || '').replace(/,/g, '').trim());
+      return Number.isFinite(n) ? Number(n.toFixed(2)) : null;
+    };
+    const fiiBuy = toNum(fiiRow.buyValue);
+    const fiiSell = toNum(fiiRow.sellValue);
+    const fiiNet = toNum(fiiRow.netValue);
+    const diiBuy = toNum(diiRow.buyValue);
+    const diiSell = toNum(diiRow.sellValue);
+    const diiNet = toNum(diiRow.netValue);
+
+    if ([fiiBuy, fiiSell, fiiNet, diiBuy, diiSell, diiNet].some(v => v === null)) return null;
+    return { date: isoDate, fiiBuy, fiiSell, fiiNet, diiBuy, diiSell, diiNet };
+  } catch (err) {
+    console.warn('NSE FII/DII live check notice:', err.message);
+    return null;
+  }
+}
+
+async function main() {
+  console.log('Fetching live FII/DII data from NSE Official + Groww...');
+  const [nseLatest, growwHtml] = await Promise.all([
+    fetchNseOfficialFiiDii().catch(() => null),
+    fetchGrowwPage().catch(() => '')
+  ]);
+
+  const growwRecords = growwHtml ? parseGrowwRows(growwHtml) : [];
+  if (!nseLatest && !growwRecords.length) {
+    throw new Error('No valid FII/DII records extracted from NSE Official or Groww');
+  }
 
   const historyPath = path.join(__dirname, '..', 'data', 'fii-dii-history.json');
   let existing = [];
@@ -111,18 +169,26 @@ async function main() {
     }
   }
 
-  // Merge new records
-  for (const r of newRecords) {
+  // Merge Groww historical rows first, then overlay NSE Official latest session
+  for (const r of growwRecords) {
     byDate.set(r.date, r);
   }
+  if (nseLatest) {
+    byDate.set(nseLatest.date, nseLatest);
+    console.log(`✓ NSE Official FII/DII synced for ${nseLatest.date}: FII Net ₹${nseLatest.fiiNet} Cr, DII Net ₹${nseLatest.diiNet} Cr`);
+  }
 
-  // Keep sorted descending by date
-  const merged = [...byDate.values()].sort((a, b) => b.date.localeCompare(a.date));
+  // Keep sorted descending by date (last 60 days)
+  const cutoff = Date.now() - 60 * 24 * 60 * 60 * 1000;
+  const merged = [...byDate.values()]
+    .filter(r => Date.parse(`${r.date}T00:00:00Z`) >= cutoff)
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   fs.mkdirSync(path.dirname(historyPath), { recursive: true });
   fs.writeFileSync(historyPath, JSON.stringify(merged, null, 2) + '\n', 'utf8');
   console.log(`Updated ${historyPath} with ${merged.length} historical sessions. Latest: ${merged[0].date}`);
-  return { latest: merged[0], totalSessions: merged.length, parsedCount: newRecords.length };
+  const sourceLabel = nseLatest ? 'NSE Official + Groww' : 'Groww';
+  return { latest: merged[0], records: merged, source: sourceLabel, latestDate: merged[0].date, totalSessions: merged.length, parsedCount: growwRecords.length + (nseLatest ? 1 : 0) };
 }
 
 if (require.main === module) {
@@ -132,4 +198,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { fetchGrowwPage, parseGrowwRows, runFiiScraper: main };
+module.exports = { fetchGrowwPage, parseGrowwRows, fetchNseOfficialFiiDii, runFiiScraper: main };
