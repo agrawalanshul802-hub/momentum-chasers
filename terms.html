@@ -383,9 +383,11 @@
       <div class="legal-badge">Official Terms of Service</div>
       <h1 class="legal-title">Terms &amp; Conditions <span class="ser">(T&amp;C)</span></h1>
       <div class="legal-meta">
-        <span><strong>Effective Date:</strong> January 1, 2026</span>
+        <span><strong>Effective Date:</strong> January 1, 2027</span>
         <span>&bull;</span>
         <span><strong>Last Updated:</strong> November 2026</span>
+        <span>&bull;</span>
+        <span><strong>Operator:</strong> Momentum Chasers (Individual Proprietorship)</span>
         <span>&bull;</span>
         <span><strong>Region:</strong> Republic of India</span>
       </div>
@@ -395,11 +397,12 @@
     <div class="alert-box">
       <h3>⚠️ Mandatory Regulatory &amp; Risk Warning</h3>
       <p>
-        <strong>NOT A SEBI REGISTERED RESEARCH ANALYST OR ADVISER:</strong> Momentum Chasers (and its creators, owners, and operators) is strictly a technology, financial analytics, algorithmic screening, and quantitative educational platform. We are <strong>not</strong> registered with the Securities and Exchange Board of India (SEBI) as a Research Analyst (RA) under the SEBI (Research Analysts) Regulations, 2014, nor as an Investment Adviser (IA) under the SEBI (Investment Advisers) Regulations, 2013.
+        <strong>NOT A SEBI REGISTERED RESEARCH ANALYST OR ADVISER:</strong> Momentum Chasers (and its creators, owners, and operators) is strictly a technology, financial analytics, algorithmic screening, and quantitative educational platform. We are <strong>not</strong> registered with the Securities and Exchange Board of India (SEBI) as a Research Analyst (RA) under the SEBI (Research Analysts) Regulations, 2014, nor as an Investment Adviser (IA) under the SEBI (Investment Advisers) Regulations, 2013. All content on this Platform is for <strong>educational and informational purposes only</strong>.
       </p>
     </div>
 
     <div class="legal-content">
+
       <!-- Section 1 -->
       <section class="legal-section">
         <h2><span class="num">01</span> Acceptance of Terms</h2>
@@ -407,109 +410,188 @@
           By accessing, browsing, registering an account on, or otherwise using the website, applications, APIs, or analytical tools hosted at <strong>momentum-chasers.onrender.com</strong>, <strong>momentumchasers.in</strong>, or any associated domain (collectively, the "Platform"), you ("User", "you", or "your") acknowledge that you have read, understood, and unequivocally agree to be bound by these Terms and Conditions ("Terms" or "T&amp;C").
         </p>
         <p>
-          If you do not agree to every provision of these Terms, you must immediately cease accessing and using the Platform.
+          If you do not agree to every provision of these Terms, you must immediately cease accessing and using the Platform. We strongly recommend you first explore the free-to-use features and demos before purchasing any VIP subscription.
         </p>
       </section>
 
       <!-- Section 2 -->
       <section class="legal-section">
-        <h2><span class="num">02</span> Educational &amp; Quantitative Analytics Nature Only</h2>
-        <p>
-          The Platform provides mathematical screeners (EMAs, RSI, VWAP), F&amp;O institutional order-flow trackers, market breadth monitors, sector turnover relative rankings, and sentiment indexes for Indian capital markets (NSE &amp; BSE).
-        </p>
+        <h2><span class="num">02</span> Platform Description &amp; Features</h2>
+        <p>Momentum Chasers is a quantitative analytics and market intelligence platform for Indian equity markets. The Platform currently offers the following features and tools:</p>
         <ul>
-          <li><strong>No Buy/Sell Recommendations:</strong> No information, chart, technical indicator, breakout score, or AI stock analysis on this Platform constitutes a personal recommendation, tip, solicitation, or endorsement to buy, sell, or hold any stock, futures contract, or option derivative.</li>
-          <li><strong>Self-Directed Decision Making:</strong> All trades, investments, and capital commitments executed by you on any broker or exchange are solely your own self-directed decisions. You assume 100% financial responsibility for your profits, losses, and brokerage expenses.</li>
-          <li><strong>Consult a Registered Professional:</strong> You are strongly advised to consult a qualified, SEBI-registered Investment Adviser (RIA) or Financial Planner before executing trades in the stock market.</li>
+          <li><strong>Smart Technical Stock Screener:</strong> Screens 2,700+ NSE &amp; BSE listed stocks using EMA crossovers, RSI, VWAP breakouts, volume surge, ATH proximity, and momentum scoring.</li>
+          <li><strong>Sector Advance/Decline Net Flow:</strong> Live sector-wise breadth tracker across 44 Nifty sector indices showing relative money flow rotation.</li>
+          <li><strong>FII/DII Money Flow Tracker:</strong> Historical and real-time institutional buying/selling activity sourced from NSE official disclosures.</li>
+          <li><strong>Market Mood Index (MMI):</strong> Sentiment speedometer aggregating multiple market breadth indicators to gauge fear/greed cycles.</li>
+          <li><strong>IPO Tracker &amp; PDF Notes:</strong> Upcoming and recent IPO calendar with curated analytical PDF notes published by the platform operator.</li>
+          <li><strong>Stock Deep Dive:</strong> Per-stock analysis page with TradingView embedded live charts and proprietary AI-generated trading signals.</li>
+          <li><strong>Portfolio Tracker:</strong> Cloud-synced personal portfolio holdings tracker powered by Supabase with real-time P&amp;L calculations.</li>
+          <li><strong>Watchlist Manager:</strong> Star and track custom stock watchlists synced across devices via Supabase.</li>
+          <li><strong>Trading Ideas:</strong> Curated swing/positional trade ideas published exclusively by the platform operator — not financial advice.</li>
+          <li><strong>VIP Subscription Access:</strong> Unlocks premium screener filters, advanced sector data, priority feature access, and future premium tools.</li>
+          <li><strong>User Authentication:</strong> Secure login via Email/Password or Google OAuth powered by Supabase Auth.</li>
         </ul>
       </section>
 
       <!-- Section 3 -->
       <section class="legal-section">
-        <h2><span class="num">03</span> Financial Market Risk Disclosure</h2>
-        <p>
-          Trading in equity shares, derivative contracts (NSE Futures &amp; Options), and leveraged instruments entails substantial risk of capital loss:
-        </p>
+        <h2><span class="num">03</span> Data Sources &amp; Third-Party Providers</h2>
+        <p>The Platform aggregates market data from the following publicly available and third-party data sources. We make no representations as to the accuracy, completeness, or timeliness of data obtained from these sources:</p>
         <ul>
-          <li><strong>Derivative Risk Notice (SEBI Study):</strong> According to official SEBI research, approximately 9 out of 10 individual traders in the equity F&amp;O segment incur net financial losses.</li>
-          <li><strong>Past Performance:</strong> Past quantitative performance, backtest calculations, historical sector turnover, or previous swing win-rates shown on sample charts do not guarantee future market returns.</li>
-          <li><strong>Capital at Risk:</strong> You should never risk money that you cannot afford to lose completely.</li>
+          <li><strong>Yahoo Finance API</strong> (<code>query1.finance.yahoo.com</code>) — Live stock prices, 52-Week High/Low, Day Change%, Volume, All-Time High data, and historical OHLC data for NSE (<code>.NS</code>) and BSE (<code>.BO</code>) listed equities.</li>
+          <li><strong>NSE India (National Stock Exchange)</strong> — Stock universe, FII/DII institutional activity data, sector indices, and market breadth statistics sourced via NSE's official public disclosures.</li>
+          <li><strong>BSE India (Bombay Stock Exchange)</strong> — Supplementary equity data for BSE-listed stocks accessed via Yahoo Finance's <code>.BO</code> symbol suffix.</li>
+          <li><strong>TradingView (Embedded Widget)</strong> — Interactive live charts embedded on the Stock Deep Dive pages via TradingView's publicly available charting widget.</li>
+          <li><strong>Supabase</strong> (<code>jxrvdlduhhcfbwjfqvog.supabase.co</code>) — Secure cloud database and authentication infrastructure for user accounts, portfolio data, watchlists, and feedback storage.</li>
+          <li><strong>Google Identity Services (OAuth 2.0)</strong> — Facilitates "Sign in with Google" authentication; Google profile name and email are accessed with your explicit consent.</li>
+          <li><strong>Formspree</strong> (<code>formspree.io</code>) — Processes email notification/waitlist signup forms on the platform's Coming Soon page.</li>
+          <li><strong>Google Fonts</strong> — Typography resources (Inter, JetBrains Mono, Manrope) loaded from Google's CDN for UI rendering.</li>
+          <li><strong>Market Mood Index (MMI) Provider</strong> — Sentiment data sourced from public market analytics providers; this is a derived/computed indicator and not a guaranteed real-time feed.</li>
+          <li><strong>Internal Curated Data Files</strong> — The platform maintains proprietary JSON datasets including: stock universe (~2,709 symbols), Nifty 500 screener data, FII/DII historical records, sector EMA data, market valuation metrics, heatmap cache, and IPO PDF registry. These are updated via automated server-side data pipelines.</li>
         </ul>
+        <p>Momentum Chasers operates independently of NSE, BSE, SEBI, Yahoo Finance, TradingView, or any other data provider. We are not affiliated with or endorsed by any exchange or regulator.</p>
       </section>
 
       <!-- Section 4 -->
       <section class="legal-section">
-        <h2><span class="num">04</span> Market Data, Delays &amp; Third-Party Services</h2>
-        <p>
-          Market quotes, corporate actions, FII/DII activities, IPO calendars, and financial news displayed on the Platform are aggregated from public sources, broker APIs, and delayed exchange feeds.
-        </p>
+        <h2><span class="num">04</span> Educational &amp; Non-Advisory Nature</h2>
+        <p>All content, indicators, screener results, sector flows, trading ideas, IPO notes, and AI signals displayed on this Platform are provided strictly for <strong>educational and informational purposes only</strong>.</p>
         <ul>
-          <li>While we strive to maintain high system uptime, we do not warrant that market data feeds will be 100% error-free, uninterrupted, or instantaneous.</li>
-          <li>We disclaim all liability for trading losses, missed order executions, slippage, or erroneous entries resulting from exchange feed outages, upstream API downtime, or internet connectivity issues.</li>
+          <li><strong>No Buy/Sell Recommendations:</strong> No screener alert, momentum score, AI signal, sector flow chart, or trading idea constitutes a personal recommendation, tip, solicitation, or endorsement to buy, sell, or hold any financial instrument.</li>
+          <li><strong>Self-Directed Decisions:</strong> All trades and capital commitments are solely your self-directed decisions. You bear 100% financial responsibility for all profits, losses, and brokerage expenses.</li>
+          <li><strong>Consult a SEBI-Registered Professional:</strong> Before investing, consult a SEBI-registered Investment Adviser (RIA), Registered Research Analyst (RA), or certified Financial Planner.</li>
+          <li><strong>Past Performance:</strong> Historical screener performance, backtests, sector rotation data, or prior trading ideas do not guarantee future returns.</li>
         </ul>
       </section>
 
       <!-- Section 5 -->
       <section class="legal-section">
-        <h2><span class="num">05</span> User Accounts, Supabase &amp; Security</h2>
-        <p>
-          When you register on Momentum Chasers (via Email or Google OAuth), user authentication and database persistence are securely powered by Supabase with 256-bit SSL encryption.
-        </p>
+        <h2><span class="num">05</span> Financial Market Risk Disclosure</h2>
+        <p>Trading in Indian equity shares, derivative contracts (NSE/BSE Futures &amp; Options), and leveraged instruments carries substantial risk of capital loss:</p>
         <ul>
-          <li>You are responsible for maintaining the confidentiality of your credentials and access tokens.</li>
-          <li>You agree to notify us immediately at <strong>support@momentumchasers.in</strong> if you suspect any unauthorized access or breach of security.</li>
-          <li>We reserve the right to suspend or terminate accounts that violate our security policies or attempt malicious automated probing.</li>
+          <li><strong>SEBI F&amp;O Study:</strong> Per official SEBI research, approximately 9 out of 10 individual retail traders in the equity F&amp;O segment incur net financial losses. Options trading involves complex risk including total loss of premium paid.</li>
+          <li><strong>Market Volatility:</strong> Indian equity markets are subject to significant price volatility, circuit breakers, exchange halts, and global macro shocks outside of our control or prediction.</li>
+          <li><strong>Capital at Risk:</strong> Never invest money you cannot afford to lose completely. This is a fundamental principle of responsible investing.</li>
         </ul>
       </section>
 
       <!-- Section 6 -->
       <section class="legal-section">
-        <h2><span class="num">06</span> Intellectual Property &amp; Acceptable Use</h2>
-        <p>
-          All proprietary algorithms, order-flow math engines, visual designs, branding, logos, and user interface elements are the intellectual property of Momentum Chasers.
-        </p>
+        <h2><span class="num">06</span> VIP Subscription — Pricing, Payment &amp; Access</h2>
+        <p>Momentum Chasers offers a VIP Membership that unlocks access to premium screener filters, advanced analytics, and priority features. Subscription plans and pricing are displayed at the time of purchase on the Platform.</p>
         <ul>
-          <li><strong>Prohibited:</strong> You agree not to scrape, reverse engineer, decompile, redistribute, resell, or frame any proprietary features or market screener models without express written consent.</li>
-          <li><strong>Personal License:</strong> Registered users are granted a non-exclusive, revocable, non-transferable license to access the analytics terminal for personal research and trading analysis.</li>
+          <li><strong>Payment Method:</strong> VIP subscriptions are processed via UPI (Unified Payments Interface) through QR code-based manual payment. We do not currently operate an automated payment gateway.</li>
+          <li><strong>Activation:</strong> VIP access is activated manually by the Platform operator upon confirmation of successful UPI payment. Activation typically occurs within 24 business hours of verified payment receipt.</li>
+          <li><strong>Subscription Period:</strong> VIP access is valid for the purchased period (Monthly / Quarterly / Yearly) from the date of activation.</li>
+          <li><strong>Price Changes:</strong> We reserve the right to revise subscription pricing at any time. Existing subscribers are not affected during their active subscription period.</li>
+          <li><strong>Service Availability:</strong> VIP features are provided "as-is" and may be subject to maintenance downtime, feature changes, or additions over the subscription period.</li>
         </ul>
       </section>
 
       <!-- Section 7 -->
       <section class="legal-section">
-        <h2><span class="num">07</span> Limitation of Liability</h2>
+        <h2><span class="num">07</span> Cancellation &amp; Refund Policy</h2>
         <p>
-          To the maximum extent permitted by Indian law, Momentum Chasers, its founders, contributors, and service providers shall not be liable for any direct, indirect, incidental, consequential, or punitive damages resulting from:
+          <strong>As of now, Momentum Chasers does not provide any option for cancellation of products and/or services that you have purchased.</strong> Once a product or service has been purchased by you, we cannot provide any refund, either totally or partially, except in the following circumstances:
         </p>
         <ul>
-          <li>Financial or trading losses incurred by following any indicator, watchlist, idea, or screener alert.</li>
-          <li>Platform downtime, server maintenance, or third-party cloud outages.</li>
-          <li>Any unauthorized alteration or interception of data transmissions.</li>
+          <li><strong>Duplicate Payment:</strong> If you have been charged more than once for the same subscription due to a technical error, you are entitled to a full refund of the duplicate charge upon verification.</li>
+          <li><strong>Failed Payment:</strong> If a payment was deducted from your UPI account but the subscription was not activated and the amount was not credited to us, you are entitled to a full refund upon verification with transaction proof.</li>
         </ul>
+        <p>To raise a refund claim for the above cases, please email <strong>support@momentumchasers.in</strong> with your registered email address, UPI transaction ID, screenshot of payment confirmation, and date of transaction. We will process verified refund requests within 7–10 business days.</p>
+        <p>We strongly suggest that you first explore free-to-use features, demos, and publicly available content before purchasing a VIP subscription.</p>
       </section>
 
       <!-- Section 8 -->
       <section class="legal-section">
-        <h2><span class="num">08</span> Governing Law &amp; Jurisdiction</h2>
+        <h2><span class="num">08</span> User Accounts &amp; Security</h2>
+        <p>When you register on the Platform (via Email or Google OAuth), your authentication and data are securely managed by Supabase with 256-bit SSL/TLS encryption.</p>
+        <ul>
+          <li>You are solely responsible for maintaining the confidentiality of your login credentials and session tokens.</li>
+          <li>You agree to notify us immediately at <strong>support@momentumchasers.in</strong> if you detect any unauthorized access to your account.</li>
+          <li>We reserve the right to suspend or permanently terminate accounts that violate these Terms, engage in unauthorized scraping, exploit the Platform, or attempt to circumvent access controls.</li>
+          <li>Upon account deletion, your personal data (email, watchlists, portfolio holdings) stored in Supabase will be permanently erased within 48 business hours of your verified written request.</li>
+        </ul>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="legal-section">
+        <h2><span class="num">09</span> Intellectual Property &amp; Acceptable Use</h2>
+        <p>All proprietary algorithms, screener logic, order-flow math engines, visual designs, branding, logos, IPO PDF notes, trading ideas, and UI elements are the exclusive intellectual property of Momentum Chasers (Individual Proprietorship).</p>
+        <ul>
+          <li><strong>Strictly Prohibited:</strong> You may not scrape, reverse-engineer, decompile, copy, redistribute, resell, sublicense, or create derivative works from any Platform feature, screener output, or analytical model without express written consent from the operator.</li>
+          <li><strong>Personal Use License:</strong> Registered users are granted a non-exclusive, revocable, non-transferable, non-commercial license to access the Platform solely for personal trading research and market analysis.</li>
+          <li><strong>Trading Ideas:</strong> All trading ideas, IPO notes, and analysis published on the Platform are the proprietary content of the operator and must not be reproduced or shared commercially.</li>
+        </ul>
+      </section>
+
+      <!-- Section 10 -->
+      <section class="legal-section">
+        <h2><span class="num">10</span> Data Accuracy &amp; Platform Uptime Disclaimer</h2>
+        <p>Market data, prices, FII/DII figures, and sentiment indicators are sourced from third-party providers and public feeds. We provide these on a "best-effort" basis and do not warrant:</p>
+        <ul>
+          <li>That any price, screener output, ATH figure, or sector breadth metric is 100% accurate or real-time.</li>
+          <li>That the Platform will be available 24×7 without interruptions, maintenance windows, or force majeure events.</li>
+          <li>That any third-party embedded service (TradingView charts, Yahoo Finance feeds, Supabase) will remain continuously available.</li>
+        </ul>
+      </section>
+
+      <!-- Section 11 -->
+      <section class="legal-section">
+        <h2><span class="num">11</span> Limitation of Liability</h2>
+        <p>To the maximum extent permitted under applicable Indian law, Momentum Chasers, its founders, operators, contributors, and technology service providers shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to:</p>
+        <ul>
+          <li>Financial or trading losses resulting from reliance on any screener result, sector signal, trading idea, or AI output displayed on the Platform.</li>
+          <li>Platform downtime, server outages, Supabase unavailability, or third-party API failures.</li>
+          <li>Data loss, corruption, or unauthorized alteration of transmissions due to forces beyond our reasonable control.</li>
+          <li>Decisions made based on Market Mood Index, FII/DII data, or any other indicator on the Platform.</li>
+        </ul>
+        <p>Your sole and exclusive remedy for dissatisfaction with the Platform is to discontinue use of the Platform.</p>
+      </section>
+
+      <!-- Section 12 -->
+      <section class="legal-section">
+        <h2><span class="num">12</span> Cookies &amp; Browser Storage</h2>
+        <p>Momentum Chasers uses the following cookies and browser storage mechanisms:</p>
+        <ul>
+          <li><strong>Supabase Auth Token:</strong> Stored in browser localStorage to keep you authenticated across sessions.</li>
+          <li><strong>Screener Preferences:</strong> Your column configurations, sort orders, and filter settings stored in localStorage for a personalized experience.</li>
+          <li><strong>Coming Soon Bypass Cookie</strong> (<code>mc_owner_preview</code>): A session cookie used exclusively by the platform operator to preview the full site on the <code>momentumchasers.in</code> domain before public launch.</li>
+          <li><strong>No Advertising Cookies:</strong> We do not deploy any third-party advertising, retargeting, or behavioral tracking cookies.</li>
+        </ul>
+      </section>
+
+      <!-- Section 13 -->
+      <section class="legal-section">
+        <h2><span class="num">13</span> Governing Law &amp; Jurisdiction</h2>
         <p>
-          These Terms and any dispute, claim, or controversy arising out of or relating to them or the Platform shall be governed by and construed in accordance with the laws of the Republic of India.
+          These Terms and any dispute, claim, or controversy arising out of or relating to the Platform, its services, or your use thereof shall be governed by and construed in accordance with the laws of the <strong>Republic of India</strong>, without regard to conflict-of-law principles.
         </p>
         <p>
-          The courts of competent jurisdiction located in <strong>New Delhi, India</strong> shall have exclusive jurisdiction over all legal proceedings.
+          Subject to applicable law, the courts of competent jurisdiction in <strong>India</strong> shall have exclusive jurisdiction over all legal proceedings relating to these Terms or the Platform.
         </p>
       </section>
 
-      <!-- Section 9: Contact & Feedback Card -->
-      <div class="contact-card">
-        <h3>Have Questions or Feedback regarding our T&amp;C?</h3>
+      <!-- Section 14 -->
+      <section class="legal-section">
+        <h2><span class="num">14</span> Amendments to These Terms</h2>
         <p>
-          We are committed to full transparency and trader satisfaction. You can reach out directly with questions, feedback, or legal inquiries.
+          Momentum Chasers reserves the right to modify, update, or replace any part of these Terms at any time. Changes will be effective immediately upon posting the updated Terms on the Platform with a revised "Last Updated" date. Your continued use of the Platform after any amendment constitutes your acceptance of the revised Terms.
+        </p>
+      </section>
+
+      <!-- Section 15: Contact & Feedback Card -->
+      <div class="contact-card">
+        <h3>Questions or Legal Inquiries about our T&amp;C?</h3>
+        <p>
+          We are committed to full transparency and trader satisfaction. For refund requests, legal queries, or Terms clarification, reach out to us directly.
         </p>
         <div class="contact-actions">
           <a class="contact-btn" href="login.html#feedback">
             <span>💬</span> Submit Direct Feedback
           </a>
           <a class="contact-btn alt" href="mailto:support@momentumchasers.in">
-            <span>✉️</span> Email support@momentumchasers.in
+            <span>✉️</span> support@momentumchasers.in
           </a>
         </div>
       </div>

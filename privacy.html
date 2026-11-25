@@ -353,110 +353,168 @@
       <div class="legal-badge">User Data Protection Standards</div>
       <h1 class="legal-title">Privacy Policy <span class="ser">&amp; Data Protection</span></h1>
       <div class="legal-meta">
-        <span><strong>Effective Date:</strong> January 1, 2026</span>
+        <span><strong>Effective Date:</strong> January 1, 2027</span>
         <span>&bull;</span>
         <span><strong>Last Updated:</strong> November 2026</span>
         <span>&bull;</span>
-        <span><strong>Compliance:</strong> Digital Personal Data Protection Act (DPDP), 2023</span>
+        <span><strong>Operator:</strong> Momentum Chasers (Individual Proprietorship)</span>
+        <span>&bull;</span>
+        <span><strong>Compliance:</strong> DPDP Act, 2023 (India)</span>
       </div>
     </div>
 
     <div class="legal-content">
+
       <!-- Section 1 -->
       <section class="legal-section">
         <h2><span class="num">01</span> Our Commitment to Your Privacy</h2>
         <p>
-          At <strong>Momentum Chasers</strong>, we believe trader privacy is paramount. We do not sell your personal data, we do not monetize your browsing habits with third-party tracking brokers, and we collect only the minimal data strictly required to authenticate you and preserve your personalized market terminal settings.
+          At <strong>Momentum Chasers</strong>, we believe that trader privacy is paramount. This Privacy Policy explains what personal data we collect when you use our Platform at <strong>momentumchasers.in</strong> and <strong>momentum-chasers.onrender.com</strong>, how we use it, and your rights over it.
+        </p>
+        <p>
+          We do <strong>not</strong> sell, rent, or trade your personal information to any third party. We collect only the minimum data strictly required to authenticate you, provide the Platform's services, and improve your experience.
         </p>
       </section>
 
       <!-- Section 2 -->
       <section class="legal-section">
         <h2><span class="num">02</span> Information We Collect</h2>
-        <p>When you interact with our platform, we may collect the following categories of information:</p>
+        <p>When you interact with our Platform, we may collect the following categories of information:</p>
         <ul>
-          <li><strong>Authentication Information:</strong> Your email address and optional full name provided during email signup or Google OAuth sign-in.</li>
-          <li><strong>Terminal Preferences:</strong> Your starred stock watchlists, customized screener filters, dark mode layout options, and notification settings (saved in local storage and Supabase).</li>
-          <li><strong>Feedback &amp; Correspondence:</strong> When you submit direct feedback, message inquiries, or contact us at <strong>support@momentumchasers.in</strong>, we collect your provided name, email, rating, and message content to respond to you.</li>
-          <li><strong>Technical Diagnostics:</strong> Standard web server logs including IP addresses, browser types, referring pages, and access timestamps for DDoS mitigation and server health monitoring.</li>
+          <li><strong>Authentication Data:</strong> Your email address and optional display name provided during Email/Password registration or Google OAuth sign-in. For Google sign-in, we receive only your name, email address, and profile picture URL — no access to your Google Drive, Gmail, or other Google services.</li>
+          <li><strong>Portfolio &amp; Watchlist Data:</strong> Stock holdings, purchase prices, quantities, and watchlisted symbols that you voluntarily enter into the Portfolio Tracker and Watchlist Manager. This data is stored in Supabase and is accessible only by you.</li>
+          <li><strong>Screener Preferences:</strong> Your customized screener column configurations, sort orders, filters, and UI layout preferences (stored in browser localStorage).</li>
+          <li><strong>VIP Subscription Records:</strong> When you purchase a VIP subscription, we maintain a record of your registered email, UPI transaction ID provided by you, subscription plan, and activation date. We do <strong>not</strong> store your UPI ID or bank account details.</li>
+          <li><strong>Feedback &amp; Correspondence:</strong> If you submit the in-app feedback form or email <strong>support@momentumchasers.in</strong>, we collect your name, email, star rating, and message content to respond to you.</li>
+          <li><strong>Waitlist / Notify Me:</strong> If you submit your email through the Coming Soon page (Formspree-powered form), your email is processed by Formspree and stored for pre-launch notification purposes only.</li>
+          <li><strong>Technical Server Logs:</strong> Standard web server logs including IP addresses, browser user-agent, referring pages, accessed URLs, and timestamps — used for DDoS mitigation, server health monitoring, and debugging.</li>
         </ul>
       </section>
 
       <!-- Section 3 -->
       <section class="legal-section">
         <h2><span class="num">03</span> How We Use Your Information</h2>
-        <p>We process your data exclusively for legitimate operational purposes:</p>
+        <p>We process your personal data only for the following legitimate operational purposes:</p>
         <ul>
-          <li>Authenticating your account via Supabase Auth and maintaining session security.</li>
-          <li>Syncing watchlists and screening presets across your devices (desktop and mobile).</li>
-          <li>Delivering prompt email responses to user bug reports, feedback, and technical inquiries sent to <strong>support@momentumchasers.in</strong>.</li>
-          <li>Optimizing high-throughput market data caching and quant engine stability.</li>
+          <li>Authenticating your account via Supabase Auth (Email/Password or Google OAuth) and maintaining secure session tokens.</li>
+          <li>Syncing your stock watchlists, portfolio holdings, and screener preferences across your devices in real-time via Supabase.</li>
+          <li>Activating and verifying your VIP subscription access after confirmed UPI payment.</li>
+          <li>Responding to your feedback, bug reports, refund requests, and support queries via <strong>support@momentumchasers.in</strong>.</li>
+          <li>Sending pre-launch notifications to users who signed up on the Coming Soon waitlist (opt-out available on request).</li>
+          <li>Optimizing server-side market data caching pipelines and diagnosing technical issues via anonymized server logs.</li>
         </ul>
       </section>
 
       <!-- Section 4 -->
       <section class="legal-section">
-        <h2><span class="num">04</span> Zero Data Selling &amp; Third-Party Services</h2>
-        <p>
-          <strong>We never sell, rent, or trade your personal information.</strong> We only share data with trusted infrastructure providers under strict confidentiality agreements:
-        </p>
+        <h2><span class="num">04</span> Third-Party Services &amp; Data Processors</h2>
+        <p>To deliver the Platform, we rely on the following trusted third-party service providers. Each is subject to their own privacy policy:</p>
         <ul>
-          <li><strong>Supabase:</strong> For cloud database persistence and encrypted user authentication (Row-Level Security enabled).</li>
-          <li><strong>Google Identity Services:</strong> Facilitating secure 1-click Sign in with Google (OAuth 2.0).</li>
-          <li><strong>Render Cloud:</strong> Hosting the Node.js backend infrastructure and WebSockets live proxy.</li>
+          <li><strong>Supabase</strong> (supabase.co) — Cloud PostgreSQL database, Row-Level Security (RLS) enforced user auth, encrypted storage of portfolio/watchlist data. <a href="https://supabase.com/privacy" target="_blank" style="color:#93c5fd;">Supabase Privacy Policy ↗</a></li>
+          <li><strong>Google Identity Services</strong> (OAuth 2.0) — Secure "Sign in with Google" authentication. Only your name, email, and profile photo are shared with our Platform. <a href="https://policies.google.com/privacy" target="_blank" style="color:#93c5fd;">Google Privacy Policy ↗</a></li>
+          <li><strong>Render.com</strong> — Cloud hosting of the Node.js backend server and WebSocket live data proxy. Server logs may be retained by Render per their policy. <a href="https://render.com/privacy" target="_blank" style="color:#93c5fd;">Render Privacy Policy ↗</a></li>
+          <li><strong>TradingView</strong> — Embedded charting widgets on Stock Deep Dive pages. TradingView may set their own cookies per their privacy policy. <a href="https://www.tradingview.com/privacy-policy/" target="_blank" style="color:#93c5fd;">TradingView Privacy Policy ↗</a></li>
+          <li><strong>Yahoo Finance API</strong> — Market data (stock prices, historical OHLC, 52W High/Low). No personal user data is shared with Yahoo Finance.</li>
+          <li><strong>Formspree.io</strong> — Processes Coming Soon page email collection forms. <a href="https://formspree.io/legal/privacy-policy" target="_blank" style="color:#93c5fd;">Formspree Privacy Policy ↗</a></li>
+          <li><strong>Google Fonts</strong> (CDN) — Typography fonts loaded from Google's CDN. Google may log your IP for font delivery. <a href="https://fonts.google.com/about" target="_blank" style="color:#93c5fd;">Google Fonts Info ↗</a></li>
         </ul>
+        <p>We do not engage any advertising networks, data brokers, or behavioral tracking services. No personal data is shared with any party outside the above listed processors.</p>
       </section>
 
       <!-- Section 5 -->
       <section class="legal-section">
-        <h2><span class="num">05</span> Data Security &amp; Encryption</h2>
-        <p>
-          We employ defense-in-depth security measures to protect your information:
-        </p>
+        <h2><span class="num">05</span> Market Data We Process (Non-Personal)</h2>
+        <p>The following market data is processed server-side to power the Platform's features. This is public financial data, not personal data:</p>
         <ul>
-          <li>All transmissions between your web browser and our servers are encrypted via 256-bit Transport Layer Security (TLS / SSL HTTPS).</li>
-          <li>User passwords are never stored in plaintext — they are cryptographically salted and hashed using industry-standard bcrypt algorithms managed by Supabase Auth.</li>
-          <li>Access to backend servers and databases is restricted by multi-factor authentication and strict IP whitelisting.</li>
+          <li><strong>NSE/BSE Stock Universe</strong> (~2,709 symbols) — ticker symbols, company names, sector classifications.</li>
+          <li><strong>Live Prices &amp; OHLCV</strong> — Fetched from Yahoo Finance API for real-time screener updates.</li>
+          <li><strong>FII/DII Historical Data</strong> — Sourced from NSE's official public disclosures, cached in our server.</li>
+          <li><strong>Sector EMA &amp; Breadth Data</strong> — Computed internally via our daily market pipeline scripts.</li>
+          <li><strong>Market Valuation Metrics</strong> — Nifty P/E, P/B, Dividend Yield sourced from public NSE data.</li>
+          <li><strong>Market Mood Index (MMI)</strong> — Derived sentiment indicator computed from multiple breadth inputs.</li>
+          <li><strong>IPO PDF Notes</strong> — Curated analytical documents authored and hosted by the Platform operator.</li>
+          <li><strong>Trading Ideas</strong> — Proprietary swing/positional ideas published by the operator (not personal data).</li>
         </ul>
       </section>
 
       <!-- Section 6 -->
       <section class="legal-section">
-        <h2><span class="num">06</span> Cookies &amp; Local Storage</h2>
-        <p>
-          Momentum Chasers does <strong>not</strong> use intrusive third-party cross-site advertising cookies. We use standard HTTP session tokens and HTML5 browser Local Storage strictly for:
-        </p>
+        <h2><span class="num">06</span> Cookies &amp; Browser Storage</h2>
+        <p>Momentum Chasers uses only functional cookies and browser storage — <strong>zero advertising or tracking cookies</strong>:</p>
         <ul>
-          <li>Preserving your active login session token so you stay logged in.</li>
-          <li>Remembering your screener columns, chart layout, and favorite stocks offline.</li>
+          <li><strong>Supabase Auth Token</strong> (localStorage) — Keeps you logged in across browser sessions. Cleared on logout.</li>
+          <li><strong>Screener Layout Preferences</strong> (localStorage) — Saves your column visibility, sort preferences, and filter states offline.</li>
+          <li><strong>Watchlist &amp; Portfolio Cache</strong> (localStorage) — Temporarily caches your data for faster offline loading.</li>
+          <li><strong>Owner Preview Cookie</strong> (<code>mc_owner_preview</code>) — A short-lived session cookie enabling the Platform operator to bypass the Coming Soon page on <code>momentumchasers.in</code> for internal testing. This cookie is not set for general users.</li>
+          <li><strong>TradingView Cookies</strong> — TradingView's embedded chart widget may set its own functional cookies as per TradingView's cookie policy.</li>
         </ul>
       </section>
 
       <!-- Section 7 -->
       <section class="legal-section">
-        <h2><span class="num">07</span> Your Data Rights &amp; Deletion Requests</h2>
-        <p>
-          In full accordance with India's Digital Personal Data Protection Act (DPDP Act, 2023) and global standards, you have the right to:
-        </p>
+        <h2><span class="num">07</span> Data Retention</h2>
         <ul>
-          <li>Access and review all personal data stored in your account profile.</li>
-          <li>Request immediate and irreversible deletion of your account and all associated watchlists.</li>
-          <li>To request complete data deletion, simply send an email from your registered address to <strong>support@momentumchasers.in</strong> with the subject line <em>"Data Deletion Request"</em>. Your request will be fulfilled within 48 business hours.</li>
+          <li><strong>Account Data</strong> (Supabase): Retained for the lifetime of your active account. Permanently deleted within 48 business hours upon verified deletion request.</li>
+          <li><strong>Server Logs</strong>: Retained for up to 30 days for security and debugging purposes, then automatically purged.</li>
+          <li><strong>Feedback Messages</strong>: Retained as long as necessary to respond and improve the Platform. Can be deleted on request.</li>
+          <li><strong>VIP Subscription Records</strong>: Retained for accounting and dispute resolution purposes for a minimum of 2 years as required by Indian law.</li>
+          <li><strong>Waitlist Emails</strong> (Formspree): Retained until the Platform launches publicly or you request removal.</li>
         </ul>
       </section>
 
-      <!-- Section 8: Contact Card -->
-      <div class="contact-card">
-        <h3>Privacy Inquiries &amp; Feedback</h3>
+      <!-- Section 8 -->
+      <section class="legal-section">
+        <h2><span class="num">08</span> Data Security &amp; Encryption</h2>
+        <p>We employ defense-in-depth security measures to protect your personal information:</p>
+        <ul>
+          <li>All data transmissions between your browser and our servers use <strong>256-bit TLS/SSL HTTPS encryption</strong>.</li>
+          <li>Passwords are never stored in plaintext — they are cryptographically hashed using industry-standard bcrypt algorithms managed by Supabase Auth.</li>
+          <li>Supabase database enforces <strong>Row-Level Security (RLS)</strong> — your data rows are readable and writable only by your authenticated session, not by other users or public requests.</li>
+          <li>Backend server access is protected by API key authentication and environment variable secrets stored securely on Render.</li>
+        </ul>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="legal-section">
+        <h2><span class="num">09</span> Your Rights Under DPDP Act, 2023</h2>
+        <p>In accordance with India's <strong>Digital Personal Data Protection (DPDP) Act, 2023</strong>, you have the following rights as a data principal:</p>
+        <ul>
+          <li><strong>Right to Access:</strong> Request a summary of personal data we hold about you.</li>
+          <li><strong>Right to Correction:</strong> Request correction of inaccurate or incomplete personal data.</li>
+          <li><strong>Right to Erasure:</strong> Request permanent deletion of your account and all associated personal data. Send a deletion request email to <strong>support@momentumchasers.in</strong> with subject <em>"Data Deletion Request"</em>. We will fulfill your request within 48 business hours.</li>
+          <li><strong>Right to Withdraw Consent:</strong> You may withdraw consent for data processing at any time by deleting your account. Note that withdrawal of consent may result in inability to use authenticated features of the Platform.</li>
+          <li><strong>Right to Grievance Redressal:</strong> You may contact our Data Grievance Officer at <strong>support@momentumchasers.in</strong> for any privacy-related concerns. We endeavour to respond within 7 working days.</li>
+        </ul>
+      </section>
+
+      <!-- Section 10 -->
+      <section class="legal-section">
+        <h2><span class="num">10</span> Children's Privacy</h2>
         <p>
-          Questions about how your data is handled? Reach out directly to our team.
+          Momentum Chasers is not intended for use by individuals under the age of 18 years. We do not knowingly collect personal data from minors. If you believe that a minor has registered on our Platform, please contact us at <strong>support@momentumchasers.in</strong> and we will promptly delete the account and associated data.
+        </p>
+      </section>
+
+      <!-- Section 11 -->
+      <section class="legal-section">
+        <h2><span class="num">11</span> Changes to This Privacy Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes in our services, applicable law, or data practices. The updated policy will be posted on this page with a revised "Last Updated" date. We encourage you to review this page periodically. Continued use of the Platform after any changes constitutes your acceptance of the revised policy.
+        </p>
+      </section>
+
+      <!-- Section 12: Contact Card -->
+      <div class="contact-card">
+        <h3>Privacy Inquiries &amp; Data Requests</h3>
+        <p>
+          For data deletion requests, privacy concerns, or any DPDP Act-related inquiries, contact our Data Grievance Officer directly. We respond within 7 working days.
         </p>
         <div class="contact-actions">
           <a class="contact-btn" href="login.html#feedback">
-            <span>💬</span> Send Feedback
+            <span>💬</span> Submit Feedback
           </a>
-          <a class="contact-btn alt" href="mailto:support@momentumchasers.in">
-            <span>✉️</span> Email support@momentumchasers.in
+          <a class="contact-btn alt" href="mailto:support@momentumchasers.in?subject=Privacy%20Inquiry">
+            <span>✉️</span> support@momentumchasers.in
           </a>
         </div>
       </div>
