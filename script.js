@@ -2751,7 +2751,6 @@
     ["LAXMIDNTL", "SC", "Capital Goods & Engineering", 520.0, 21.5, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 241.5, "profit": 27.6, "name": "Laxmi Dental Ltd.", "high52": 676.0, "low52": 342.4, "mcapCr": 690.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["NEPHROCARE", "SC", "Pharmaceuticals & Healthcare", 132.0, 46.67, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 147.0, "profit": 16.8, "name": "Nephrocare Health Services Ltd.", "high52": 171.6, "low52": 72.0, "mcapCr": 420.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["STNDRDGLAS", "SC", "Information Technology", 210.0, 50.0, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 143.5, "profit": 16.4, "name": "Standard Glass Lining Technology Ltd.", "high52": 273.0, "low52": 112.0, "mcapCr": 410.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
-    ["QUADRANT", "SC", "Capital Goods & Engineering", 422.0, 45.52, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 101.5, "profit": 11.6, "name": "Quadrant Future Tek Ltd.", "high52": 548.6, "low52": 232.0, "mcapCr": 290.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["DENTAWATR", "SC", "Realty & Infrastructure", 198.0, 32.0, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 77.0, "profit": 8.8, "name": "Denta Water & Infra Solutions Ltd.", "high52": 257.4, "low52": 120.0, "mcapCr": 220.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["DIFFUSION", "SC", "Capital Goods & Engineering", 214.0, 27.38, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 55.3, "profit": 6.3, "name": "Diffusion Engineers Ltd.", "high52": 278.2, "low52": 134.4, "mcapCr": 158.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
     ["HIGHWAYINF", "SC", "Realty & Infrastructure", 86.0, 32.31, "r", "r", 7, { "pe": 22.4, "pb": 2.1, "rev": 45.5, "profit": 5.2, "name": "Highway Infrastructure Ltd.", "high52": 111.8, "low52": 52.0, "mcapCr": 130.0, "results": "2026-11-14", "resultsStatus": "Confirmed", "nextResults": "Jan-Feb 2027 (Est)", "earningsReaction": null }],
@@ -9417,7 +9416,7 @@
       422,
       45.52,
       2025,
-      "QUADRANT"
+      "QUADFUTURE"
     ],
     [
       "Denta Water & Infra Solutions Ltd.",
