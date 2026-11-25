@@ -13414,18 +13414,18 @@
                 <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.nifty50.ema200)}">${BREADTH.nifty50.ema200}%</span></td>
               </tr>
               <tr>
-                <td><strong>Bank Nifty</strong></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema10)}">${BREADTH.banknifty.ema10}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema20)}">${BREADTH.banknifty.ema20}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema50)}">${BREADTH.banknifty.ema50}%</span></td>
-                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema200)}">${BREADTH.banknifty.ema200}%</span></td>
-              </tr>
-              <tr>
                 <td><strong>Sensex</strong></td>
                 <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema10)}">${BREADTH.sensex.ema10}%</span></td>
                 <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema20)}">${BREADTH.sensex.ema20}%</span></td>
                 <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema50)}">${BREADTH.sensex.ema50}%</span></td>
                 <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.sensex.ema200)}">${BREADTH.sensex.ema200}%</span></td>
+              </tr>
+              <tr>
+                <td><strong>Bank Nifty</strong></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema10)}">${BREADTH.banknifty.ema10}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema20)}">${BREADTH.banknifty.ema20}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema50)}">${BREADTH.banknifty.ema50}%</span></td>
+                <td class="font-mono" style="text-align:right"><span class="ema-status-pill ${getEmaPillClass(BREADTH.banknifty.ema200)}">${BREADTH.banknifty.ema200}%</span></td>
               </tr>
               <tr>
                 <td><strong>Nifty MidCap 150</strong></td>
