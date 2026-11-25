@@ -16123,10 +16123,10 @@
       let diff = 0;
       if (activeCol === "ath" || activeCol === "atl" || activeCol === "dist") {
         if (isLowMode) {
-          // Low: lowest sectors (deepest pullback/drawdown) first (-24.69% before -0.96%)
-          return a.athDist - b.athDist;
+          // Low: lowest sectors (closest to All-Time Low) first
+          return (a.atlDist ?? a.athDist) - (b.atlDist ?? b.athDist);
         } else {
-          // High: closest to All-Time High first (-0.96% before -24.69%)
+          // High: closest to All-Time High first (-0.78% before -24.69%)
           return b.athDist - a.athDist;
         }
       }
@@ -37017,16 +37017,6 @@
           showToast(`Sorted by ${colNames[normalizedCol] || normalizedCol} · ${dirLabel}`, "↕");
           renderActiveView();
         }
-      }
-      else if (action === "select-sector-sort-col") {
-        const colKey = target.dataset.col;
-        if (State.sectorSortCol === colKey) {
-          State.sectorSortDir = State.sectorSortDir === "desc" ? "asc" : "desc";
-        } else {
-          State.sectorSortCol = colKey;
-          State.sectorSortDir = (colKey === "name" || colKey === "default") ? "asc" : "desc";
-        }
-        renderActiveView();
       }
       else if (action === "set-all-time") {
         const mode = target.dataset.mode;
