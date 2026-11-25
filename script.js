@@ -13880,8 +13880,17 @@
       return true;
     });
 
-    // Sorting logic (Ascending / Descending) with memoized values
-    filteredStocks.sort((a, b) => {
+    const sortedStocks = sortScreenerStockArray(filteredStocks, activeSortCol, activeSortDir);
+
+    _screenerFilteredCache = sortedStocks;
+    _screenerFilterKey = key;
+    return sortedStocks;
+  }
+
+  /** Sort a screener-format stock tuple array using active column and direction. */
+  function sortScreenerStockArray(arr, activeSortCol, activeSortDir) {
+    if (!Array.isArray(arr)) return [];
+    return arr.sort((a, b) => {
       let diff = 0;
       if (activeSortCol === "star") {
         const starA = State.watchlist.includes(a[0]) ? 1 : 0;
@@ -13891,9 +13900,9 @@
         const capWeight = { "LC": 3, "MC": 2, "SC": 1 };
         diff = (capWeight[a[1]] || 0) - (capWeight[b[1]] || 0);
       } else if (activeSortCol === "ticker") {
-        diff = a[0].localeCompare(b[0]);
+        diff = String(a[0] || "").localeCompare(String(b[0] || ""));
       } else if (activeSortCol === "sector") {
-        diff = a[2].localeCompare(b[2]);
+        diff = String(a[2] || "").localeCompare(String(b[2] || ""));
       } else if (activeSortCol === "price") {
         diff = Number(a[3]) - Number(b[3]);
       } else if (activeSortCol === "chg") {
@@ -13912,13 +13921,9 @@
         const e200B = smB ? (isW ? smB.wEma200 : smB.ema200) : null;
         const isGoldA = (e50A != null && e200A != null) ? (Number(e50A) >= Number(e200A)) : (smA ? (isW ? smA.wEmaCross : smA.emaCross) === "bull" : (a[7] >= 3));
         const isGoldB = (e50B != null && e200B != null) ? (Number(e50B) >= Number(e200B)) : (smB ? (isW ? smB.wEmaCross : smB.emaCross) === "bull" : (b[7] >= 3));
-        const scoreA = isGoldA ? 2 : 0;
-        const scoreB = isGoldB ? 2 : 0;
-        diff = scoreA - scoreB;
+        diff = (isGoldA ? 2 : 0) - (isGoldB ? 2 : 0);
       } else if (activeSortCol === "athDist") {
-        const distA = getStockAthDistance(a).dist;
-        const distB = getStockAthDistance(b).dist;
-        diff = distA - distB;
+        diff = getStockAthDistance(a).dist - getStockAthDistance(b).dist;
       } else if (activeSortCol === "earnings") {
         const earnA = getStockEarningsDates(a);
         const earnB = getStockEarningsDates(b);
@@ -13935,10 +13940,6 @@
       }
       return activeSortDir === "desc" ? -diff : diff;
     });
-
-    _screenerFilteredCache = filteredStocks;
-    _screenerFilterKey = key;
-    return filteredStocks;
   }
 
   function getStockThematicTag(symbol) {
@@ -13982,15 +13983,15 @@
       const earn = getStockEarningsDates(s);
       return `
         <tr class="screener-row" data-action="open-stock" data-symbol="${s[0]}" style="cursor:pointer" title="Click to open ${s[0]} (${escapeHtml(s[8]?.name || s[0])}) chart and details">
-          <td>
+          <td style="text-align:center;width:34px">
             <button class="ticker-star ${isStarred ? "active" : ""}" data-action="toggle-star" data-symbol="${s[0]}" title="Toggle Watchlist">
               ${isStarred ? "★" : "☆"}
             </button>
           </td>
-          ${State.screenerCols.cap !== false ? `<td>
+          ${State.screenerCols.cap !== false ? `<td style="text-align:center;width:54px">
             <span class="market-cap-pill ${s[1]}" data-cap-full="${capFull}" title="${capFull}">${s[1]}</span>
           </td>` : ''}
-          <td>
+          <td class="screener-col-ticker">
             <div style="display:flex;align-items:center;gap:6px">
               <span style="font-weight:700;color:var(--ink);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}" title="View ${s[0]} details">
                 ${s[0]}
@@ -13999,11 +14000,11 @@
                 <span>📈</span>
               </a>
             </div>
-            <div style="font-size:11px;color:var(--mu);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}">${s[8].name}</div>
+            <div class="screener-stock-subname" style="font-size:11px;color:var(--mu);cursor:pointer" data-action="open-stock" data-symbol="${s[0]}" title="${escapeHtml(s[8].name)}">${s[8].name}</div>
           </td>
-          ${State.screenerCols.sector !== false ? `<td>
+          ${State.screenerCols.sector !== false ? `<td class="screener-col-sector">
             ${(() => {
-            const activeSec = State.sector;
+            const activeSec = State.view === "screener" ? State.sector : "all";
             if (activeSec && activeSec !== "all") {
               const secDef = (typeof MASTER_44_SECTORS !== "undefined") ? MASTER_44_SECTORS.find(sec => sec.key === activeSec || sec.broad === activeSec || sec.key.replace(/^NIFTY\s+/, "") === activeSec.replace(/^NIFTY\s+/, "")) : null;
               const tagLabel = secDef ? secDef.label.replace(/\s*\(NIFTY[^)]*\)/i, "").trim() : activeSec;
@@ -14574,50 +14575,8 @@
           </div>
         ` : ''}
         <div class="table-scroll-wrapper">
-          <table class="data-table-main">
-            <thead>
-              <tr>
-                <th class="${getThClass('star')}" style="width:36px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
-                ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
-                  <span>Cap</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="hideScreenerCol(event, 'cap')">✕</button>
-                </th>` : ''}
-                <th class="${getThClass('ticker')}" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
-                ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
-                  <span>Sector</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="hideScreenerCol(event, 'sector')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
-                  <span>Price (₹)</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="hideScreenerCol(event, 'price')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
-                  <span>Day Chg</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="hideScreenerCol(event, 'chg')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
-                  <span>% From ATH 📈</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="hideScreenerCol(event, 'athDist')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
-                  <span>Earnings 📅</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="hideScreenerCol(event, 'earnings')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center;min-width:145px" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
-                  <span>EMA</span>
-                  <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="hideScreenerCol(event, 'ema')">✕</button>
-                </th>` : ''}
-                ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by EMA Crossover (Golden Cross 50>200 first / Death Cross 50<200 first)">
-                  <div style="display:inline-flex;align-items:center;gap:6px">
-                    <div>
-                      <div>EMA Cross (50×200)</div>
-                      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:none !important;letter-spacing:0;margin-top:2px;">in 15min time frame</div>
-                    </div>
-                    <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
-                  </div>
-                </th>` : ''}
-              </tr>
-            </thead>
+          <table class="data-table-main screener-table">
+            ${renderScreenerTableHeaderHTML(activeSortCol, activeSortDir)}
             <tbody>
               ${renderScreenerRows(visibleStocks)}
             </tbody>
@@ -16346,46 +16305,118 @@
     `;
   }
 
+  /** Render shared Smart Screener table header row used by both Screener and Sector Constituents views. */
+  function renderScreenerTableHeaderHTML(activeSortCol, activeSortDir) {
+    const isCol = (c) => activeSortCol === c;
+    const getThClass = (c) => {
+      if (isCol(c)) {
+        return activeSortDir === "desc" ? "sortable-col sort-desc" : "sortable-col sort-asc";
+      }
+      return "sortable-col";
+    };
+    return `
+      <thead>
+        <tr>
+          <th class="${getThClass('star')}" style="width:34px;text-align:center" data-action="sort-screener" data-col="star" title="Sort by Watchlist Star (Starred first / Unstarred first)">★</th>
+          ${State.screenerCols.cap !== false ? `<th class="${getThClass('cap')}" style="width:52px;text-align:center" data-action="sort-screener" data-col="cap" title="Sort by Market Cap (Large Cap / Mid Cap / Small Cap)">
+            <span>Cap</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="cap" title="Remove Cap column" onclick="hideScreenerCol(event, 'cap')">✕</button>
+          </th>` : ''}
+          <th class="${getThClass('ticker')}" style="text-align:left" data-action="sort-screener" data-col="ticker" title="Sort Alphabetically by Ticker (A-Z / Z-A)">Ticker & Name</th>
+          ${State.screenerCols.sector !== false ? `<th class="${getThClass('sector')}" style="text-align:left" data-action="sort-screener" data-col="sector" title="Sort Alphabetically by Sector (A-Z / Z-A)">
+            <span>Sector</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="sector" title="Remove Sector column" onclick="hideScreenerCol(event, 'sector')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.price !== false ? `<th class="${getThClass('price')}" style="text-align:right" data-action="sort-screener" data-col="price" title="Sort by Price (High to Low / Low to High)">
+            <span>Price (₹)</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="price" title="Remove Price column" onclick="hideScreenerCol(event, 'price')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.chg !== false ? `<th class="${getThClass('chg')}" style="text-align:right" data-action="sort-screener" data-col="chg" title="Sort by Day % Change (Top Gainers / Top Losers)">
+            <span>Day Chg</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="chg" title="Remove Day Chg column" onclick="hideScreenerCol(event, 'chg')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.athDist !== false ? `<th class="${getThClass('athDist')}" style="text-align:right" data-action="sort-screener" data-col="athDist" title="Sort by Distance from ATH (% from 52W High)">
+            <span>% From ATH 📈</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="athDist" title="Remove % From ATH column" onclick="hideScreenerCol(event, 'athDist')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.earnings !== false ? `<th class="${getThClass('earnings')}" style="text-align:center" data-action="sort-screener" data-col="earnings" title="Sort by Upcoming Earnings Date">
+            <span>Earnings 📅</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="earnings" title="Remove Earnings column" onclick="hideScreenerCol(event, 'earnings')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.ema !== false ? `<th class="${getThClass('ema')}" style="text-align:center" data-action="sort-screener" data-col="ema" title="Sort by EMA Alignment (Above EMAs first / Below EMAs first)">
+            <span>EMA</span>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="ema" title="Remove EMA column" onclick="hideScreenerCol(event, 'ema')">✕</button>
+          </th>` : ''}
+          ${State.screenerCols.cross !== false ? `<th class="${getThClass('cross')}" style="text-align:center" data-action="sort-screener" data-col="cross" title="Sort by EMA Crossover (Golden Cross 50>200 first / Death Cross 50<200 first)">
+            <div style="display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;">
+              <span>EMA Cross (50×200)</span>
+              <span style="font-size:9.5px;font-weight:600;color:var(--mu);text-transform:none !important;letter-spacing:0;margin-top:2px;">in 15min time frame</span>
+            </div>
+            <button class="col-close-btn" data-action="hide-screener-col" data-col="cross" title="Remove EMA Cross column" onclick="hideScreenerCol(event, 'cross')">✕</button>
+          </th>` : ''}
+        </tr>
+      </thead>
+    `;
+  }
+
   function renderSectorStocksView() {
     const sectorIndex = State.activeSectorIndex || "NIFTY 50";
     const stocks = getHeatmapStocksForIndex(sectorIndex);
-    const rows = stocks.map(stock => {
-      let industry = stock.sector || "—";
-      const sLower = sectorIndex.toLowerCase();
-      if (sLower.includes("hotel") || sLower.includes("tourism")) {
-        industry = "Hotels & Hospitality";
-      } else if (sLower.includes("paint")) {
-        industry = "Paints & Coatings";
-      } else if (sLower.includes("rail")) {
-        industry = "Railways & Logistics";
-      } else if (sLower.includes("gas")) {
-        industry = "Gas Distribution";
-      } else if (sLower.includes("cement")) {
-        industry = "Cement & Building Materials";
-      } else if (sLower.includes("paper")) {
-        industry = "Paper Products";
-      } else if (sLower.includes("packag")) {
-        industry = "Packaging";
-      } else if (sLower.includes("restaurant")) {
-        industry = "Restaurants & QSR";
-      } else if (sLower.includes("beverage")) {
-        industry = "Alcoholic Beverages";
-      } else if (sLower.includes("refiner")) {
-        industry = "Refineries & Petrochemicals";
-      } else if (sLower.includes("fertilizer")) {
-        industry = "Fertilizers & Agro";
+    const sLower = sectorIndex.toLowerCase();
+    const fallbackCap = (sLower.includes("smlcap") || sLower.includes("small")) ? "SC"
+      : (sLower.includes("midcap") ? "MC" : (sLower.includes("nifty 50") || sLower.includes("nifty 100") || sLower.includes("bank") ? "LC" : "MC"));
+
+    const mappedStocks = stocks.map((stock, idx) => {
+      const existingTuple = (typeof ST !== "undefined") ? ST.find(x => x[0] === stock.symbol) : null;
+      if (existingTuple) {
+        const cloned = [...existingTuple];
+        if (typeof stock.price === "number" && stock.price > 0) cloned[3] = stock.price;
+        if (typeof stock.chg === "number" && Number.isFinite(stock.chg)) cloned[4] = stock.chg;
+        cloned._origIdx = existingTuple._origIdx != null ? existingTuple._origIdx : idx;
+        return cloned;
       }
 
-      return `
-      <tr data-action="open-stock" data-symbol="${escapeHtml(stock.symbol)}" title="Open ${escapeHtml(stock.name)} quote and chart" style="cursor:pointer">
-        <td><strong>${escapeHtml(stock.symbol)}</strong></td>
-        <td>${escapeHtml(stock.name)}</td>
-        <td>${escapeHtml(industry)}</td>
-        <td class="font-mono" style="text-align:right">₹${formatNumber(stock.price, 2)}</td>
-        <td class="font-mono ${getColorClass(stock.chg)}" style="text-align:right;font-weight:700;color:${(typeof stock.chg === 'number' ? stock.chg : parseFloat(stock.chg)) >= 0 ? 'var(--g)' : 'var(--r)'}">${formatPercent(stock.chg)}</td>
-        <td class="font-mono" style="text-align:right">${escapeHtml(stock.volume || "—")}</td>
-      </tr>`;
-    }).join("");
+      let industry = stock.sector || "—";
+      if (sLower.includes("hotel") || sLower.includes("tourism")) industry = "Hotels & Hospitality";
+      else if (sLower.includes("paint")) industry = "Paints & Coatings";
+      else if (sLower.includes("rail")) industry = "Railways & Logistics";
+      else if (sLower.includes("gas")) industry = "Gas Distribution";
+      else if (sLower.includes("cement")) industry = "Cement & Building Materials";
+      else if (sLower.includes("paper")) industry = "Paper Products";
+      else if (sLower.includes("packag")) industry = "Packaging";
+      else if (sLower.includes("restaurant")) industry = "Restaurants & QSR";
+      else if (sLower.includes("beverage")) industry = "Alcoholic Beverages";
+      else if (sLower.includes("refiner")) industry = "Refineries & Petrochemicals";
+      else if (sLower.includes("fertilizer")) industry = "Fertilizers & Agro";
+
+      const p = Number(stock.price) || 0;
+      const c = Number(stock.chg) || 0;
+      const synth = [
+        stock.symbol,
+        fallbackCap,
+        industry,
+        p,
+        c,
+        c >= 0 ? "r" : "",
+        c >= 0 ? "r" : "",
+        5,
+        {
+          name: stock.name || stock.symbol,
+          high52: p > 0 ? Math.round(p * 1.15 * 100) / 100 : 0,
+          low52: p > 0 ? Math.round(p * 0.78 * 100) / 100 : 0
+        }
+      ];
+      synth._origIdx = idx;
+      return synth;
+    });
+
+    const activeSortCol = State.screenerSortCol || "ticker";
+    const activeSortDir = State.screenerSortDir || (activeSortCol === "ticker" || activeSortCol === "sector" ? "asc" : "desc");
+    sortScreenerStockArray(mappedStocks, activeSortCol, activeSortDir);
+
+    const rowsHtml = mappedStocks.length > 0
+      ? renderScreenerRows(mappedStocks)
+      : `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">No constituent stocks found for this sector.</td></tr>`;
 
     return `
       <div class="sector-turnover-view">
@@ -16395,13 +16426,13 @@
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div>
-              <div class="turnover-badge" style="color:#38bdf8">SECTOR STOCKS • ${stocks.length} CONSTITUENTS</div>
+              <div class="turnover-badge" style="color:#38bdf8">SECTOR STOCKS • ${mappedStocks.length} CONSTITUENTS</div>
               <h2 class="turnover-title" style="margin:0;">${escapeHtml(sectorIndex)} Constituents</h2>
-              <p class="turnover-subtitle" style="margin:4px 0 0 0;">Live prices and daily changes for all ${stocks.length} stocks in this sector.</p>
+              <p class="turnover-subtitle" style="margin:4px 0 0 0;">Live closing prices, % from ATH, Earnings, EMAs &amp; 50×200 cross for all ${mappedStocks.length} stocks in this sector.</p>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <input type="text" id="sector-stocks-search" placeholder="Search ${stocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:200px;outline:none;" />
+            <input type="text" id="sector-stocks-search" placeholder="Search ${mappedStocks.length} stocks..." style="background:var(--sf2);border:1px solid var(--ln);border-radius:6px;padding:8px 14px;color:var(--ink);font-size:13px;min-width:200px;outline:none;" />
             <button class="row-action-btn" data-action="open-stock" data-symbol="${escapeHtml(sectorIndex)}" title="Open ${escapeHtml(sectorIndex)} interactive candlestick chart workstation" style="padding:7px 14px;background:#38bdf8;color:#0f172a;font-weight:700;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
               <span>📈</span>
               <span>View Sector Chart</span>
@@ -16410,9 +16441,9 @@
         </div>
         <div class="table-card-container">
           <div class="table-scroll-wrapper">
-            <table class="data-table-main" id="sector-constituents-table">
-              <thead><tr><th>Symbol</th><th>Company</th><th>Industry</th><th style="text-align:right">Price (₹)</th><th style="text-align:right">Change (%)</th><th style="text-align:right">Volume</th></tr></thead>
-              <tbody>${rows || `<tr><td colspan="6" style="text-align:center;color:var(--mu);padding:32px">No constituent stocks found for this sector.</td></tr>`}</tbody>
+            <table class="data-table-main screener-table" id="sector-constituents-table">
+              ${renderScreenerTableHeaderHTML(activeSortCol, activeSortDir)}
+              <tbody>${rowsHtml}</tbody>
             </table>
           </div>
         </div>
@@ -34286,7 +34317,6 @@
           </div>
           <div class="ob-header-right">
             <span class="ob-status-indicator"><i class="ob-live-dot"></i>NSE &bull; BSE LIVE</span>
-            <button type="button" class="ob-guest-header-btn" id="login-guest-top-btn" data-action="login-visitor">Browse as Guest &rarr;</button>
           </div>
         </header>
 
@@ -34348,11 +34378,6 @@
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
               </form>
-
-              <button class="ob-btn-guest" id="login-visitor-btn" data-action="login-visitor" type="button">
-                <span class="ob-guest-icon">⚡</span>
-                <span>Instant Guest Access (No password needed)</span>
-              </button>
 
               <!-- Feature Points with Lock icons (OrderBlock style) -->
               <ul class="ob-auth-points">
@@ -34479,8 +34504,6 @@
     const emailInput = document.getElementById('email');
     const pwInput = document.getElementById('pw');
     const forgotPwBtn = document.getElementById('forgot-pw');
-    const visitorBtn = document.getElementById('login-visitor-btn');
-    const topGuestBtn = document.getElementById('login-guest-top-btn');
     const loginForm = document.getElementById('login-form');
 
     const doEmailLogin = () => {
@@ -34514,19 +34537,6 @@
       loginUser(gUser);
     };
 
-    const doVisitorLogin = () => {
-      const vUser = {
-        name: "Guest Trader",
-        email: "visitor@momentumchasers.in",
-        plan: "Visitor Preview",
-        avatar: "⚡",
-        provider: "guest",
-        broker: "Preview Mode"
-      };
-      showToast("Browsing terminal as Guest Trader", "👁️");
-      loginUser(vUser);
-    };
-
     if (goBtn) {
       goBtn.onclick = function (e) {
         if (e) e.preventDefault();
@@ -34546,20 +34556,6 @@
       googleBtn.onclick = function (e) {
         if (e) e.preventDefault();
         doGoogleLogin();
-      };
-    }
-
-    if (visitorBtn) {
-      visitorBtn.onclick = function (e) {
-        if (e) e.preventDefault();
-        doVisitorLogin();
-      };
-    }
-
-    if (topGuestBtn) {
-      topGuestBtn.onclick = function (e) {
-        if (e) e.preventDefault();
-        doVisitorLogin();
       };
     }
 
@@ -35013,15 +35009,6 @@
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-                  </button>
-
-                  <!-- Guest Mode -->
-                  <button type="button" class="kokonut-menu-item" data-action="switch-to-guest">
-                    <span class="kokonut-avatar" style="background:#3b82f6;color:#fff;width:28px;height:28px;font-size:12px;">G</span>
-                    <div class="flex-1 text-left min-w-0">
-                      <div class="truncate text-sm font-semibold">Guest Mode Trader</div>
-                      <div class="truncate text-xs opacity-60">Trial Workspace Session</div>
-                    </div>
                   </button>
 
                   <!-- Owner Studio -->
@@ -36386,26 +36373,6 @@
           avatar: "G",
           provider: "google",
           broker: "Kite / Demat Linked"
-        });
-        return;
-      }
-      else if (action === "login-visitor" || action === "instant-guest-login") {
-        loginUser({
-          name: "Guest Trader",
-          email: "guest@momentumchasers.in",
-          plan: "Guest Demo",
-          avatar: "⚡",
-          broker: "Guest Mode"
-        });
-        return;
-      }
-      else if (action === "oauth-broker") {
-        loginUser({
-          name: "Zerodha Trader",
-          email: "kite.trader@zerodha.in",
-          plan: "Broker Connected",
-          avatar: "📈",
-          broker: "Zerodha Kite"
         });
         return;
       }
@@ -38627,20 +38594,6 @@
       };
     });
 
-    // 4. Switch to Guest Mode
-    const guestBtn = dropdown.querySelector("[data-action='switch-to-guest']");
-    if (guestBtn) {
-      guestBtn.onclick = function (e) {
-        e.stopPropagation();
-        dropdown.classList.remove("show");
-        const guestUser = { name: "Guest Trader", email: "guest@momentumchasers.in", role: "guest", plan: "TRIAL" };
-        State.user = guestUser;
-        try { localStorage.setItem("momentum_auth_user", JSON.stringify(guestUser)); } catch (_) { }
-        renderUserAuthUI();
-        if (typeof showToast === "function") showToast("Switched to Guest Trader Mode", "👤");
-      };
-    }
-
     // 5. Switch to Owner Studio
     const ownerBtn = dropdown.querySelector("[data-action='switch-to-owner']");
     if (ownerBtn) {
@@ -38792,14 +38745,11 @@
 
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
             <div style="font-size:11.5px;color:#94a3b8;">
-              Want to use the app right now?
+              You can also sign in using Email &amp; Password.
             </div>
             <div style="display:flex;gap:8px;">
-              <button id="oauth-diag-guest-btn" style="background:#10b981;border:none;color:#fff;padding:8px 14px;border-radius:6px;font-weight:600;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 8px rgba(16,185,129,0.3);">
-                🚀 Continue as Guest Trader &rarr;
-              </button>
-              <a href="login.html" style="background:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:8px 12px;border-radius:6px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;">
-                Email Login
+              <a href="login.html" style="background:#10b981;border:none;color:#fff;padding:8px 14px;border-radius:6px;font-weight:600;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;">
+                Use Email Login &rarr;
               </a>
             </div>
           </div>
@@ -38822,25 +38772,6 @@
           }, 2000);
         });
       };
-
-      modal.querySelector("#oauth-diag-guest-btn").onclick = () => {
-        const guestProfile = {
-          id: "trader_" + Date.now().toString(36),
-          name: "Trader",
-          email: "trader@momentumchasers.in",
-          plan: "PRO Terminal",
-          avatar: "T"
-        };
-        State.user = guestProfile;
-        try {
-          localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
-          localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
-          localStorage.removeItem("momentum_signed_out");
-        } catch (_) { }
-        renderUserAuthUI();
-        modal.remove();
-        showToast("Signed in as Guest Trader with full PRO Terminal access!", "🎉");
-      };
     }
 
     // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
@@ -38849,7 +38780,7 @@
         if (!result) return;
         if (result.error) {
           if (result.isOAuthExchangeError || (result.error && (result.error.includes("external code") || result.error.includes("exchange")))) {
-            showToast("Google OAuth check needed. Tap for details or continue as Guest.", "⚠️", 7000);
+            showToast("Google OAuth check needed. Tap for details or use Email login.", "⚠️", 7000);
             showOAuthDiagnosticModal(result.error);
           } else {
             showToast(`Google Sign-In notice: ${result.error}`, "⚠️");

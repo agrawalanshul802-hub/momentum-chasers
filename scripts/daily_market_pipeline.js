@@ -1,9 +1,15 @@
 /**
  * MOMENTUM CHASERS - AUTOMATED DAILY MARKET DATA PIPELINE
  *
- * Scheduled Batches (Zero Placeholder Values — 100% Real Exchange Sources):
- *  - Stage 1 (3:45 PM - 3:50 PM IST): Official Closing Quotes, 44 Sector Benchmarks, EMAs, Market Breadth & Heatmap Constituents
- *  - Stage 2 (7:00 PM - 7:15 PM IST): Real FII / DII Cash Activity (Groww) & Official Sector Turnover (ScreeningMantis)
+ * Scheduled Batches (100% Real Exchange & Official Feeds — Zero Placeholders):
+ *  - Stage 1 (3:45 PM - 3:50 PM IST):
+ *      • 44 Sector Indices & EMA flags (market-sectors.json & screeningmantis-sectors.json)
+ *      • 950 Heatmap Stock Tiles & Index Stats (heatmap-cache.json)
+ *      • 2,700+ Smart Screener Universe Quotes & A/D Net Flow (stocks-universe.json)
+ *      • 1,600+ Stock EMA Statuses & Distances (market-emas.json & screeningmantis-emas.json)
+ *  - Stage 2 (7:00 PM - 7:15 PM IST):
+ *      • Official FII / DII Cash Flow (Groww -> fii-dii-history.json)
+ *      • 44-Sector Turnover Ratios (ScreeningMantis -> authentic-sector-turnover.json)
  */
 
 const fs = require('fs');
@@ -77,6 +83,67 @@ function getTodayFormattedLabel() {
   return `${day} ${month} ${year} (3:30 pm Closing)`;
 }
 
+function fetchYahooCookie() {
+  return new Promise((resolve) => {
+    const req = https.get('https://fc.yahoo.com', {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      timeout: 5000
+    }, res => {
+      res.resume();
+      const setCookie = res.headers['set-cookie'];
+      resolve(setCookie ? setCookie.map(c => c.split(';')[0]).join('; ') : '');
+    });
+    req.on('error', () => resolve(''));
+    req.on('timeout', function () { this.destroy(); resolve(''); });
+  });
+}
+
+function fetchYahooCrumb(cookie) {
+  return new Promise((resolve) => {
+    if (!cookie) return resolve('');
+    const req = https.get('https://query1.finance.yahoo.com/v1/test/getcrumb', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Cookie': cookie
+      },
+      timeout: 5000
+    }, res => {
+      let d = '';
+      res.on('data', c => d += c);
+      res.on('end', () => resolve(d.trim()));
+    });
+    req.on('error', () => resolve(''));
+    req.on('timeout', function () { this.destroy(); resolve(''); });
+  });
+}
+
+function fetchBulkV7Quotes(symbols, session) {
+  return new Promise((resolve) => {
+    if (!session || !session.cookie || !session.crumb) return resolve([]);
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(','))}&crumb=${encodeURIComponent(session.crumb)}`;
+    const req = https.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Cookie': session.cookie
+      },
+      timeout: 8000
+    }, (res) => {
+      let body = '';
+      res.on('data', c => body += c);
+      res.on('end', () => {
+        try {
+          const j = JSON.parse(body);
+          resolve(j?.quoteResponse?.result || []);
+        } catch (_) {
+          resolve([]);
+        }
+      });
+    });
+    req.on('error', () => resolve([]));
+    req.on('timeout', function () { this.destroy(); resolve([]); });
+  });
+}
+
 function fetchV8Quote(symbol) {
   return new Promise((resolve) => {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=1d`;
@@ -103,7 +170,9 @@ function fetchV8Quote(symbol) {
               regularMarketChange: Number(chg.toFixed(2)),
               regularMarketChangePercent: Number(pct.toFixed(2)),
               previousClose: Number(prev.toFixed(2)),
-              regularMarketVolume: Number(meta.regularMarketVolume || 0)
+              regularMarketVolume: Number(meta.regularMarketVolume || 0),
+              fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh ? Number(meta.fiftyTwoWeekHigh.toFixed(2)) : null,
+              fiftyTwoWeekLow: meta.fiftyTwoWeekLow ? Number(meta.fiftyTwoWeekLow.toFixed(2)) : null
             });
           }
         } catch (_) { }
@@ -111,7 +180,7 @@ function fetchV8Quote(symbol) {
       });
     });
     req.on('error', () => resolve(null));
-    req.on('timeout', function() { this.destroy(); resolve(null); });
+    req.on('timeout', function () { this.destroy(); resolve(null); });
   });
 }
 
@@ -133,7 +202,7 @@ async function poolAll(items, fn, concurrency = 8) {
 }
 
 // ==============================================================================
-// 1. STAGE 1: 3:45 PM EOD MARKET UPDATE (Sectors, EMAs, Heatmap Constituents)
+// 1. STAGE 1: 3:45 PM EOD MARKET UPDATE (Sectors, Heatmap, Screener, EMAs, A/D)
 // ==============================================================================
 async function runEodMarketUpdate() {
   const dateStr = getTodayDateStr();
@@ -148,15 +217,18 @@ async function runEodMarketUpdate() {
     quoteMatches: 0,
     updatedSectors: 0,
     updatedHeatmapStocks: 0,
+    updatedUniverseStocks: 0,
+    updatedEmasCount: 0,
+    adNetFlow: null,
     nifty50: null,
     bankNifty: null,
     errors: []
   };
 
-  // Collect all index tickers AND heatmap constituent symbols
+  // 1. Gather all symbols to fetch across benchmarks, heatmap, and screener universe
   const hmPath = path.join(__dirname, '..', 'data', 'heatmap-cache.json');
   let hmData = null;
-  const constituentSyms = new Set();
+  const hmSyms = new Set();
   if (fs.existsSync(hmPath)) {
     try {
       hmData = JSON.parse(fs.readFileSync(hmPath, 'utf8'));
@@ -164,7 +236,7 @@ async function runEodMarketUpdate() {
         Object.values(hmData.indices).forEach(arr => {
           if (Array.isArray(arr)) {
             arr.forEach(item => {
-              if (item && item.symbol) constituentSyms.add(item.symbol + '.NS');
+              if (item && item.symbol) hmSyms.add(item.symbol + '.NS');
             });
           }
         });
@@ -174,22 +246,71 @@ async function runEodMarketUpdate() {
     }
   }
 
-  const indexSyms = [...new Set(Object.values(SECTOR_TICKER_MAP))];
-  const allToFetch = [...new Set([...indexSyms, ...constituentSyms])];
-  console.log(`Fetching official closing quotes for ${indexSyms.length} benchmarks & ${constituentSyms.size} heatmap stocks...`);
+  const universePath = path.join(__dirname, '..', 'data', 'stocks-universe.json');
+  let universeData = null;
+  const universeSyms = new Set();
+  if (fs.existsSync(universePath)) {
+    try {
+      universeData = JSON.parse(fs.readFileSync(universePath, 'utf8'));
+      if (Array.isArray(universeData)) {
+        universeData.forEach(s => {
+          if (Array.isArray(s) && s[0]) universeSyms.add(s[0] + '.NS');
+        });
+      }
+    } catch (e) {
+      results.errors.push(`Error reading stocks-universe.json: ${e.message}`);
+    }
+  }
 
-  const rawQuotes = await poolAll(allToFetch, fetchV8Quote, 10);
+  const indexSyms = [...new Set(Object.values(SECTOR_TICKER_MAP))];
+  const prioritySyms = [...new Set([...indexSyms, ...hmSyms])];
+  const allToFetch = [...new Set([...prioritySyms, ...universeSyms])];
+
+  console.log(`Preparing EOD sync: ${indexSyms.length} benchmarks, ${hmSyms.size} heatmap stocks, ${universeSyms.size} universe equities (${allToFetch.length} unique symbols)...`);
+
   const quoteMap = {};
-  for (const q of rawQuotes) {
-    if (q && q.symbol) {
-      quoteMap[q.symbol] = q;
+
+  // Fast bulk v7 quote path (chunks of 100) using cookie+crumb
+  const cookie = await fetchYahooCookie();
+  const crumb = await fetchYahooCrumb(cookie);
+  if (cookie && crumb) {
+    console.log(`✓ Obtained Yahoo session crumb; fetching ${allToFetch.length} quotes in bulk batches...`);
+    const chunks = [];
+    for (let i = 0; i < allToFetch.length; i += 100) {
+      chunks.push(allToFetch.slice(i, i + 100));
+    }
+    const batchResults = await poolAll(chunks, (c) => fetchBulkV7Quotes(c, { cookie, crumb }), 6);
+    for (const batch of batchResults) {
+      for (const q of batch) {
+        if (q && q.symbol && q.regularMarketPrice !== undefined) {
+          quoteMap[q.symbol] = {
+            symbol: q.symbol,
+            regularMarketPrice: Number(Number(q.regularMarketPrice).toFixed(2)),
+            regularMarketChange: Number(Number(q.regularMarketChange || 0).toFixed(2)),
+            regularMarketChangePercent: Number(Number(q.regularMarketChangePercent || 0).toFixed(2)),
+            regularMarketVolume: Number(q.regularMarketVolume || 0),
+            fiftyTwoWeekHigh: q.fiftyTwoWeekHigh ? Number(Number(q.fiftyTwoWeekHigh).toFixed(2)) : null,
+            fiftyTwoWeekLow: q.fiftyTwoWeekLow ? Number(Number(q.fiftyTwoWeekLow).toFixed(2)) : null
+          };
+        }
+      }
+    }
+  }
+
+  // Fallback to v8 chart for any missing priority benchmarks/heatmap stocks
+  const missingPriority = prioritySyms.filter(sym => !quoteMap[sym]);
+  if (missingPriority.length > 0) {
+    console.log(`Fetching ${missingPriority.length} remaining priority symbols via /v8/finance/chart...`);
+    const v8Quotes = await poolAll(missingPriority, fetchV8Quote, 10);
+    for (const q of v8Quotes) {
+      if (q && q.symbol) quoteMap[q.symbol] = q;
     }
   }
 
   results.quoteMatches = Object.keys(quoteMap).length;
   console.log(`✓ Retrieved ${results.quoteMatches} real closing quotes.`);
 
-  // Update Sector JSON files
+  // 2. Update Sector JSON files (44 benchmarks)
   const sectorFiles = [
     path.join(__dirname, '..', 'data', 'market-sectors.json'),
     path.join(__dirname, '..', 'data', 'screeningmantis-sectors.json')
@@ -218,6 +339,7 @@ async function runEodMarketUpdate() {
         if (sec.ema20) sec.aboveEma20 = closeP >= sec.ema20;
         if (sec.ema50) sec.aboveEma50 = closeP >= sec.ema50;
         if (sec.ema200) sec.aboveEma200 = closeP >= sec.ema200;
+        if (sec.ema50 && sec.ema200) sec.emaCross = sec.ema50 >= sec.ema200 ? 'bull' : 'bear';
       }
 
       fs.writeFileSync(sFile, JSON.stringify(sectors, null, 2), 'utf8');
@@ -228,7 +350,7 @@ async function runEodMarketUpdate() {
     }
   }
 
-  // Update Heatmap Cache (both Index Stats AND Stock Tiles)
+  // 3. Update Heatmap Cache (Index Stats + 950 Constituent Stock Tiles)
   if (hmData) {
     try {
       hmData.asOfDate = dateLabel;
@@ -237,7 +359,6 @@ async function runEodMarketUpdate() {
       hmData.timestamp = new Date().toISOString();
       hmData.stats = hmData.stats || {};
 
-      // Update sector stats inside heatmap-cache.json
       for (const [secName, ticker] of Object.entries(SECTOR_TICKER_MAP)) {
         const q = quoteMap[ticker];
         if (q && q.regularMarketPrice !== undefined) {
@@ -270,7 +391,6 @@ async function runEodMarketUpdate() {
         }
       }
 
-      // Update individual stock tiles across all heatmap indices
       let hmStockCount = 0;
       if (hmData.indices) {
         for (const arr of Object.values(hmData.indices)) {
@@ -300,7 +420,93 @@ async function runEodMarketUpdate() {
     }
   }
 
-  // Update pipeline status
+  // 4. Update Smart Screener Universe (data/stocks-universe.json) + Compute A/D Net Flow
+  if (Array.isArray(universeData)) {
+    try {
+      let uniUpdated = 0;
+      let advances = 0;
+      let declines = 0;
+      let unchanged = 0;
+
+      for (const s of universeData) {
+        if (!Array.isArray(s) || !s[0]) continue;
+        const q = quoteMap[s[0] + '.NS'];
+        if (q && q.regularMarketPrice > 0) {
+          s[3] = q.regularMarketPrice;
+          s[4] = q.regularMarketChangePercent;
+          if (s[8] && typeof s[8] === 'object') {
+            if (q.fiftyTwoWeekHigh && (!s[8].high52 || q.fiftyTwoWeekHigh > s[8].high52)) {
+              s[8].high52 = q.fiftyTwoWeekHigh;
+            }
+            if (q.fiftyTwoWeekLow && (!s[8].low52 || q.fiftyTwoWeekLow < s[8].low52)) {
+              s[8].low52 = q.fiftyTwoWeekLow;
+            }
+          }
+          uniUpdated++;
+        }
+        const dayChg = Number(s[4] || 0);
+        if (dayChg > 0) advances++;
+        else if (dayChg < 0) declines++;
+        else unchanged++;
+      }
+
+      results.updatedUniverseStocks = uniUpdated;
+      results.adNetFlow = {
+        advances,
+        declines,
+        unchanged,
+        netAD: advances - declines,
+        adRatio: declines > 0 ? Number((advances / declines).toFixed(2)) : advances
+      };
+
+      fs.writeFileSync(universePath, JSON.stringify(universeData), 'utf8');
+      console.log(`✓ Updated data/stocks-universe.json (${uniUpdated} screener quotes refreshed; A/D Net Flow: ${advances} Adv / ${declines} Dec, Net ${advances - declines}).`);
+    } catch (uniErr) {
+      results.errors.push(`Failed updating stocks-universe.json: ${uniErr.message}`);
+    }
+  }
+
+  // 5. Update Market EMAs & ScreeningMantis EMAs (data/market-emas.json & data/screeningmantis-emas.json)
+  const emaFiles = [
+    path.join(__dirname, '..', 'data', 'market-emas.json'),
+    path.join(__dirname, '..', 'data', 'screeningmantis-emas.json')
+  ];
+
+  for (const emaFile of emaFiles) {
+    if (!fs.existsSync(emaFile)) continue;
+    try {
+      const emaMap = JSON.parse(fs.readFileSync(emaFile, 'utf8'));
+      if (emaMap && typeof emaMap === 'object' && !Array.isArray(emaMap)) {
+        let emaCount = 0;
+        for (const [sym, rec] of Object.entries(emaMap)) {
+          if (!rec || typeof rec !== 'object') continue;
+          const q = quoteMap[sym + '.NS'];
+          if (q && q.regularMarketPrice > 0) {
+            const p = q.regularMarketPrice;
+            rec.currentClose = p;
+            rec.chg1d = q.regularMarketChangePercent;
+            if (rec.ema10) rec.aboveEma10 = p >= rec.ema10;
+            if (rec.ema20) rec.aboveEma20 = p >= rec.ema20;
+            if (rec.ema50) rec.aboveEma50 = p >= rec.ema50;
+            if (rec.ema200) rec.aboveEma200 = p >= rec.ema200;
+            if (rec.wEma10) rec.wAboveEma10 = p >= rec.wEma10;
+            if (rec.wEma20) rec.wAboveEma20 = p >= rec.wEma20;
+            if (rec.wEma50) rec.wAboveEma50 = p >= rec.wEma50;
+            if (rec.wEma200) rec.wAboveEma200 = p >= rec.wEma200;
+            if (rec.ema20) rec.emaDistPct = Number((((p - rec.ema20) / rec.ema20) * 100).toFixed(2));
+            emaCount++;
+          }
+        }
+        fs.writeFileSync(emaFile, JSON.stringify(emaMap), 'utf8');
+        results.updatedEmasCount = Math.max(results.updatedEmasCount, emaCount);
+        console.log(`✓ Updated ${path.basename(emaFile)} (${emaCount} EMA records aligned with closing prices).`);
+      }
+    } catch (emaErr) {
+      results.errors.push(`Failed updating ${path.basename(emaFile)}: ${emaErr.message}`);
+    }
+  }
+
+  // 6. Update pipeline status
   const statusPath = path.join(__dirname, '..', 'data', 'pipeline-status.json');
   let pipelineStatus = {};
   try {
@@ -317,6 +523,9 @@ async function runEodMarketUpdate() {
     quoteMatches: results.quoteMatches,
     updatedSectors: results.updatedSectors,
     updatedHeatmapStocks: results.updatedHeatmapStocks,
+    updatedUniverseStocks: results.updatedUniverseStocks,
+    updatedEmasCount: results.updatedEmasCount,
+    adNetFlow: results.adNetFlow,
     nifty50: results.nifty50,
     bankNifty: results.bankNifty,
     errors: results.errors
@@ -328,7 +537,7 @@ async function runEodMarketUpdate() {
 }
 
 // ==============================================================================
-// 2. STAGE 2: 7:00 PM REAL FII / DII & SECTOR TURNOVER UPDATE (NO PLACEHOLDERS)
+// 2. STAGE 2: 7:00 PM REAL FII / DII & SECTOR TURNOVER UPDATE
 // ==============================================================================
 async function runFiiDiiUpdate(customData) {
   const dateStr = getTodayDateStr();
@@ -347,7 +556,6 @@ async function runFiiDiiUpdate(customData) {
 
   const fiiPath = path.join(__dirname, '..', 'data', 'fii-dii-history.json');
 
-  // If manual values explicitly submitted via Owner Studio UI
   if (customData && (customData.fiiNet !== undefined || customData.fiiBuy !== undefined)) {
     let fiiList = [];
     try {
@@ -379,7 +587,6 @@ async function runFiiDiiUpdate(customData) {
     results.source = 'Owner Studio Manual Entry';
     console.log(`✓ Saved Owner Studio FII/DII entry for ${todayEntry.date}: FII Net ₹${todayEntry.fiiNet} Cr.`);
   } else {
-    // Automated real scraper from Groww (zero placeholders!)
     try {
       const fiiRes = await runFiiScraper();
       results.fiiData = fiiRes?.latest || null;
@@ -389,7 +596,6 @@ async function runFiiDiiUpdate(customData) {
       console.error(`✗ Groww FII/DII fetch error:`, err.message);
     }
 
-    // Automated real sector turnover sync from ScreeningMantis
     try {
       const toRes = await runSectorTurnoverUpdate();
       results.sectorTurnover = toRes;
@@ -400,7 +606,6 @@ async function runFiiDiiUpdate(customData) {
     }
   }
 
-  // Update pipeline status
   const statusPath = path.join(__dirname, '..', 'data', 'pipeline-status.json');
   let pipelineStatus = {};
   try {

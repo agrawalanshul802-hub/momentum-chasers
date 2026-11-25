@@ -4387,13 +4387,6 @@
         </div>
       </nav>
       <div class="nr" style="display:flex;align-items:center;gap:12px;">
-        <button type="button" onclick="enterAsGuest()"
-          style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#34d399;font-weight:700;font-size:12.5px;padding:6px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;"
-          onmouseover="this.style.background='rgba(34,197,94,0.22)'"
-          onmouseout="this.style.background='rgba(34,197,94,0.12)'"
-          title="Instant access without signing in">
-          ⚡ Guest Demo
-        </button>
         <a class="lg" href="javascript:void(0)" id="nav-login-link" onclick="openNavAuth(event, 'signin')">Login</a>
         <a class="btn sm" href="javascript:void(0)" id="nav-signin-btn" onclick="openNavAuth(event, 'signin')">Sign In</a>
       </div>
@@ -4423,12 +4416,6 @@
             onclick="handleCtaClick(event, 'signup')">Sign In to Dashboard &rarr;</a>
           <a class="btn ghost" href="#about" id="hero-secondary-cta"
             style="display:inline-flex;align-items:center;gap:6px;">About Website &darr;</a>
-          <button type="button" onclick="enterAsGuest()"
-            style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:#34d399;font-weight:700;font-size:0.92rem;padding:10px 18px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;"
-            onmouseover="this.style.background='rgba(34,197,94,0.22)';this.style.transform='translateY(-1px)'"
-            onmouseout="this.style.background='rgba(34,197,94,0.12)';this.style.transform='none'">
-            <span>⚡</span> Explore as Guest &rarr;
-          </button>
         </div>
       </div>
       <div class="vis" aria-hidden="true">
@@ -5088,9 +5075,9 @@
             We empower self-directed Indian traders with institutional-grade data engineering, clean terminal UX, and zero advertising distractions. No spam, no paid tips—just pure quantitative edge.
           </p>
         </div>
-        <button type="button" onclick="enterAsGuest()" class="btn pri" style="padding:10px 22px;font-size:0.92rem;font-weight:700;border-radius:10px;">
-          ⚡ Try Guest Demo &rarr;
-        </button>
+        <a href="javascript:void(0)" onclick="handleCtaClick(event, 'signup')" class="btn pri" style="padding:10px 22px;font-size:0.92rem;font-weight:700;border-radius:10px;">
+          Sign In / Create Account &rarr;
+        </a>
       </div>
     </div>
   </section>
@@ -5400,7 +5387,7 @@
             <span class="mc-faq-icon">+</span>
           </div>
           <div class="mc-faq-answer">
-            Yes! Retail traders can explore our full quantitative analytics suite, smart screener, market breadth radar, and sector heatmap. You can either sign in with Google / Email to sync your starred watchlists across devices or click "⚡ Explore as Guest" for instant access without entering any credentials.
+            Yes! Retail traders can sign in with Google or Email to explore our full quantitative analytics suite, smart screener, market breadth radar, sector heatmap, and sync starred watchlists across devices.
           </div>
         </div>
 
@@ -5636,12 +5623,6 @@
         <div class="cta" style="display:flex;align-items:center;flex-wrap:wrap;gap:14px;justify-content:flex-start;">
           <a class="btn wh" href="login.html#signup" onclick="handleCtaClick(event, 'signup')"
             style="padding:12px 28px;font-size:0.95rem;font-weight:700;border-radius:10px;">Sign In to Terminal &rarr;</a>
-          <button type="button" onclick="enterAsGuest()"
-            style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.4);color:#ffffff;font-size:0.95rem;font-weight:700;border-radius:10px;padding:12px 24px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;"
-            onmouseover="this.style.background='rgba(34,197,94,0.28)';this.style.transform='translateY(-1px)'"
-            onmouseout="this.style.background='rgba(34,197,94,0.18)';this.style.transform='none'">
-            <span>⚡</span> Explore as Guest &rarr;
-          </button>
         </div>
       </div>
     </div>
@@ -5679,8 +5660,6 @@
         <a href="#comparison" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">Comparison</a>
         <span>&bull;</span>
         <a href="#faq" style="color:#ffffff;text-decoration:none;font-weight:600;" onmouseover="this.style.color='#22c55e'" onmouseout="this.style.color='#ffffff'">FAQ</a>
-        <span>&bull;</span>
-        <a href="javascript:void(0)" onclick="enterAsGuest()" style="color:#34d399;text-decoration:none;font-weight:700;">⚡ Instant Guest Demo</a>
       </div>
 
       <!-- Legal Links Row (Left Aligned) -->
@@ -6935,15 +6914,6 @@
           Sign in to Momentum Chasers &rarr;
         </button>
 
-        <div style="text-align:center;margin-top:12px;">
-          <button type="button" id="auth-guest-btn"
-            style="background:none;border:none;color:#94a3b8;font-size:12.5px;cursor:pointer;text-decoration:underline;padding:4px;font-family:inherit;transition:color 0.2s;"
-            onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='#94a3b8'"
-            title="Instant access without signing in">
-            ⚡ Skip login &amp; explore terminal as Guest &rarr;
-          </button>
-        </div>
-
         <button class="auth-back-btn" id="auth-back-btn" type="button">
           &larr; Back to Sign In
         </button>
@@ -7379,26 +7349,6 @@
         }
       });
 
-      // Guest / Demo Terminal Access Bypass
-      const guestBtn = document.getElementById("auth-guest-btn");
-      if (guestBtn) {
-        guestBtn.addEventListener("click", () => {
-          try {
-            localStorage.setItem("momentum_user", JSON.stringify({
-              id: "guest_" + Date.now(),
-              name: "Trader",
-              email: "trader@momentumchasers.in",
-              plan: "Normal User",
-              avatar: "T",
-              broker: "Demat Linked"
-            }));
-            localStorage.removeItem("momentum_signed_out");
-          } catch (e) { }
-          showMsg("Entering Terminal as Guest...", true);
-          window.location.href = "index.html#screener";
-        });
-      }
-
       // Email & Password Submit with Rate Limiting and Security Hardening
       emailForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -7577,24 +7527,7 @@
                     <code style="background:#0f172a;padding:3px 6px;border-radius:4px;color:#38bdf8;font-size:10.5px;display:block;margin:2px 0 6px 0;word-break:break-all;user-select:all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
                     <div>2. In <strong>Supabase Dashboard</strong> &rarr; Providers &rarr; Google, ensure Client Secret has no trailing spaces.</div>
                   </div>
-                  <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;">
-                    <button type="button" id="auth-err-guest-btn" style="background:#10b981;border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">🚀 Skip &amp; Enter as Guest Trader</button>
-                  </div>
                 `, false, true);
-                setTimeout(() => {
-                  const bBtn = document.getElementById("auth-err-guest-btn");
-                  if (bBtn) {
-                    bBtn.onclick = () => {
-                      const guestProfile = { id: "trader_" + Date.now().toString(36), name: "Trader", email: "trader@momentumchasers.in", plan: "Normal User", avatar: "T" };
-                      try {
-                        localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
-                        localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
-                        localStorage.removeItem("momentum_signed_out");
-                      } catch (_) { }
-                      window.location.href = "index.html#screener";
-                    };
-                  }
-                }, 50);
               } else {
                 showMsg(`Google sign-in notice: ${cleanErr}`, false);
               }
@@ -8644,25 +8577,6 @@
 
 
   <script>
-    // Global Guest Access Controller
-    function enterAsGuest() {
-      try {
-        const guestProfile = {
-          id: "trader_" + Date.now().toString(36),
-          name: "Trader",
-          email: "trader@momentumchasers.in",
-          plan: "Normal User",
-          avatar: "T",
-          broker: "Demat Linked"
-        };
-        localStorage.setItem("momentum_user", JSON.stringify(guestProfile));
-        localStorage.setItem("momentum_auth_user", JSON.stringify(guestProfile));
-        localStorage.removeItem("momentum_signed_out");
-      } catch (err) { }
-      window.location.href = "index.html#screener";
-    }
-    window.enterAsGuest = enterAsGuest;
-
     // Interactive FAQ Accordion Controller
     function toggleFaq(questionEl) {
       if (!questionEl) return;

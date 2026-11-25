@@ -14455,6 +14455,86 @@ body.theme-white .data-table-main th .col-close-btn:hover {
     background-color: var(--sf2) !important;
 }
 
+/* Precision Column Alignment & Fit for Smart Screener Table */
+.data-table-main.screener-table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.data-table-main.screener-table thead th {
+    padding: 9px 6px;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+}
+
+.data-table-main.screener-table td {
+    padding: 9px 6px;
+    vertical-align: middle;
+}
+
+.data-table-main.screener-table th .col-close-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    margin-left: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+}
+
+.data-table-main.screener-table th:hover .col-close-btn,
+.data-table-main.screener-table th .col-close-btn:focus-visible {
+    opacity: 0.95;
+}
+
+@media (hover: none) {
+    .data-table-main.screener-table th .col-close-btn {
+        opacity: 0.65;
+    }
+}
+
+.data-table-main.screener-table th.sortable-col::after {
+    font-size: 10px;
+    margin-left: 3px;
+}
+
+.data-table-main.screener-table td.font-mono {
+    font-variant-numeric: tabular-nums;
+}
+
+.data-table-main.screener-table .screener-stock-subname {
+    max-width: 145px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.data-table-main.screener-table .screener-col-sector {
+    max-width: 135px;
+    white-space: normal;
+    line-height: 1.25;
+    font-size: 12px;
+}
+
+.data-table-main.screener-table .stock-ema-cell {
+    padding: 9px 4px;
+}
+
+.data-table-main.screener-table .ema-status-pill {
+    min-width: 23px;
+    padding: 2px 4px;
+    font-size: 10px;
+    margin: 0 1px;
+}
+
+.data-table-main.screener-table .crossover-status-tag {
+    font-size: 10.5px;
+    padding: 3px 6px;
+}
+
 .screener-row td {
     user-select: text;
 }
