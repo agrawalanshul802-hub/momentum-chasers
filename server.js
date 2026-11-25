@@ -722,7 +722,8 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.pdf': 'application/pdf'
 };
 
 // ==============================================================================
@@ -7390,6 +7391,184 @@ const server = http.createServer(async (req, res) => {
       }
     });
     return;
+  }
+
+  // 6h. IPO Research PDFs Registry & Upload Engine: /api/ipo-pdfs
+  const ipoPdfsPath = path.join(__dirname, 'data', 'ipo-pdfs.json');
+  const ipoUploadsDir = path.join(__dirname, 'uploads', 'ipo-pdfs');
+
+  function getStoredIpoPdfs() {
+    try {
+      if (fs.existsSync(ipoPdfsPath)) {
+        const parsed = JSON.parse(fs.readFileSync(ipoPdfsPath, 'utf8'));
+        if (parsed && Array.isArray(parsed.items)) {
+          return {
+            globalPaidLock: !!parsed.globalPaidLock,
+            items: parsed.items
+          };
+        }
+      }
+    } catch (_) { }
+    return { globalPaidLock: false, items: [] };
+  }
+
+  function saveStoredIpoPdfs(data) {
+    try {
+      const dir = path.dirname(ipoPdfsPath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(ipoPdfsPath, JSON.stringify({
+        globalPaidLock: !!data.globalPaidLock,
+        items: Array.isArray(data.items) ? data.items : []
+      }, null, 2) + '\n', 'utf8');
+      return true;
+    } catch (e) {
+      console.error('Failed saving IPO PDFs:', e.message);
+      return false;
+    }
+  }
+
+  if (pathname === '/api/ipo-pdfs') {
+    if (req.method === 'GET') {
+      const store = getStoredIpoPdfs();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
+      res.end(JSON.stringify({ success: true, globalPaidLock: store.globalPaidLock, count: store.items.length, items: store.items }));
+      return;
+    }
+
+    if (req.method === 'POST') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || parsedUrl.query.pin || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+        return;
+      }
+
+      const store = getStoredIpoPdfs();
+
+      // Update global Paid Lock switch only
+      if (typeof body.globalPaidLock === 'boolean' && !body.company && !body.id && !body.toggleItemId) {
+        store.globalPaidLock = body.globalPaidLock;
+        saveStoredIpoPdfs(store);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, globalPaidLock: store.globalPaidLock, items: store.items }));
+        return;
+      }
+
+      // Toggle Paid/Free on an existing item
+      if (body.toggleItemId) {
+        const idx = store.items.findIndex(x => x.id === body.toggleItemId);
+        if (idx === -1) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'IPO PDF not found' }));
+          return;
+        }
+        store.items[idx].isPaid = typeof body.isPaid === 'boolean' ? body.isPaid : !store.items[idx].isPaid;
+        if (body.price !== undefined) {
+          const p = parseFloat(body.price);
+          if (Number.isFinite(p) && p > 0) store.items[idx].price = p;
+        }
+        saveStoredIpoPdfs(store);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, item: store.items[idx], globalPaidLock: store.globalPaidLock, items: store.items }));
+        return;
+      }
+
+      const company = (body.company || '').toString().trim();
+      const symbol = (body.symbol || '').toString().trim().toUpperCase();
+      if (!company && !symbol) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'IPO company or symbol is required' }));
+        return;
+      }
+
+      let finalPdfUrl = (body.pdfUrl || '').toString().trim();
+      let cleanFileName = (body.fileName || '').toString().trim();
+      let sizeLabel = (body.sizeLabel || '').toString().trim();
+
+      if (body.pdfBase64 && typeof body.pdfBase64 === 'string') {
+        const b64Match = body.pdfBase64.match(/^data:application\/pdf;base64,(.+)$/i);
+        const rawB64 = b64Match ? b64Match[1] : body.pdfBase64.replace(/^data:[^;]+;base64,/, '');
+        const buf = Buffer.from(rawB64, 'base64');
+        if (!buf || buf.length < 16) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid PDF file payload' }));
+          return;
+        }
+        if (!fs.existsSync(ipoUploadsDir)) fs.mkdirSync(ipoUploadsDir, { recursive: true });
+        const slugBase = (symbol || company).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'ipo';
+        const diskName = `${slugBase}-${Date.now()}.pdf`;
+        fs.writeFileSync(path.join(ipoUploadsDir, diskName), buf);
+        finalPdfUrl = `/uploads/ipo-pdfs/${diskName}`;
+        if (!cleanFileName) cleanFileName = `${slugBase}.pdf`;
+        sizeLabel = buf.length >= 1048576
+          ? `${(buf.length / 1048576).toFixed(2)} MB`
+          : `${Math.max(1, Math.round(buf.length / 1024))} KB`;
+      }
+
+      if (!finalPdfUrl) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Please upload a PDF file or provide a PDF URL' }));
+        return;
+      }
+
+      const normMatch = (s) => String(s || '').toLowerCase().replace(/\blimited\b|\bltd\.?\b|[^a-z0-9]/g, '');
+      const targetSym = symbol;
+      const targetCompNorm = normMatch(company);
+      const existingIdx = store.items.findIndex(x =>
+        (targetSym && (x.symbol || '').toUpperCase() === targetSym) ||
+        (targetCompNorm && normMatch(x.company) === targetCompNorm)
+      );
+
+      // Delete superseded local PDF file if replacing
+      if (existingIdx >= 0 && store.items[existingIdx].pdfUrl && store.items[existingIdx].pdfUrl.startsWith('/uploads/ipo-pdfs/') && store.items[existingIdx].pdfUrl !== finalPdfUrl) {
+        const oldDisk = path.join(__dirname, store.items[existingIdx].pdfUrl.replace(/^\/+/, ''));
+        try { if (fs.existsSync(oldDisk)) fs.unlinkSync(oldDisk); } catch (_) { }
+      }
+
+      const entry = {
+        id: (existingIdx >= 0 ? store.items[existingIdx].id : null) || ('ipopdf_' + Date.now()),
+        company: company || symbol,
+        symbol: symbol || '',
+        title: (body.title || 'IPO Research PDF').toString().trim(),
+        fileName: cleanFileName || 'IPO_Note.pdf',
+        sizeLabel: sizeLabel || 'PDF',
+        pdfUrl: finalPdfUrl,
+        isPaid: body.isPaid === true,
+        price: parseFloat(body.price) || 199,
+        uploadedAt: new Date().toISOString().slice(0, 10)
+      };
+
+      if (existingIdx >= 0) store.items[existingIdx] = entry;
+      else store.items.unshift(entry);
+
+      saveStoredIpoPdfs(store);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, item: entry, globalPaidLock: store.globalPaidLock, items: store.items }));
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      const body = await parseRequestBody(req);
+      const pin = (body.pin || req.headers['x-owner-pin'] || parsedUrl.query.pin || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid Owner PIN' }));
+        return;
+      }
+      const id = (parsedUrl.query.id || body.id || '').toString().trim();
+      const store = getStoredIpoPdfs();
+      const target = store.items.find(x => x.id === id);
+      if (target && target.pdfUrl && target.pdfUrl.startsWith('/uploads/ipo-pdfs/')) {
+        const oldDisk = path.join(__dirname, target.pdfUrl.replace(/^\/+/, ''));
+        try { if (fs.existsSync(oldDisk)) fs.unlinkSync(oldDisk); } catch (_) { }
+      }
+      store.items = store.items.filter(x => x.id !== id);
+      saveStoredIpoPdfs(store);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, items: store.items }));
+      return;
+    }
   }
 
   // 7. Static File Serving

@@ -17604,3 +17604,81 @@ body.theme-white #idea-code-input {
     color: #0f172a !important;
 }
 
+/* ==========================================================================
+   IPO RESEARCH PDF ICON & PILL BADGE (FREE & PAID VIP STATE)
+   ========================================================================== */
+.ipo-pdf-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.36);
+    color: #f87171;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: var(--font-sans);
+    white-space: nowrap;
+}
+
+.ipo-pdf-pill-btn:hover {
+    background: rgba(239, 68, 68, 0.22);
+    border-color: #ef4444;
+    color: #fecaca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.22);
+}
+
+.ipo-pdf-pill-btn.is-paid {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.42);
+    color: #fbbf24;
+}
+
+.ipo-pdf-pill-btn.is-paid:hover {
+    background: rgba(245, 158, 11, 0.24);
+    border-color: #f59e0b;
+    color: #fde68a;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.24);
+}
+
+.ipo-pdf-svg {
+    flex-shrink: 0;
+}
+
+.ipo-pdf-empty {
+    color: var(--mu);
+    opacity: 0.45;
+    font-size: 13px;
+    user-select: none;
+}
+
+body.theme-white .ipo-pdf-pill-btn {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
+body.theme-white .ipo-pdf-pill-btn:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+}
+
+body.theme-white .ipo-pdf-pill-btn.is-paid {
+    background: #fffbeb;
+    border-color: #fcd34d;
+    color: #b45309;
+}
+
+body.theme-white .ipo-pdf-pill-btn.is-paid:hover {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+

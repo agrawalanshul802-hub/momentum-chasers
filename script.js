@@ -17406,6 +17406,7 @@
               if (Array.isArray(json.performance) && json.performance.length) {
                 IPO_PERF.splice(0, IPO_PERF.length, ...json.performance);
               }
+              await fetchIPOPdfsRegistry(localBase);
               YahooFinanceLiveService.syncIPOQuotes();
               this.lastSynced = json.syncedAt || "Live";
               fetched = true;
@@ -17415,9 +17416,14 @@
         } catch (err) {
           // Fallback gracefully on static hosting
         }
+      } else if (localBase && !isStaticHost()) {
+        await fetchIPOPdfsRegistry(localBase).catch(() => { });
       }
 
       if (!fetched) {
+        if (localBase && !isStaticHost()) {
+          await fetchIPOPdfsRegistry(localBase).catch(() => { });
+        }
         // Maintain live active status using preloaded official registry
         this.status = "live";
         this.error = "";
@@ -29369,6 +29375,12 @@
   // ==========================================================================
 
   function renderIPOView() {
+    if (!State.ipoPdfData && !State._ipoPdfFetching) {
+      State._ipoPdfFetching = true;
+      fetchIPOPdfsRegistry().then(() => {
+        if (State.view === "ipo") renderActiveView();
+      });
+    }
     if (State.ipoTab !== "timetable" && State.ipoTab !== "tracker") {
       State.ipoTab = "timetable";
     }
@@ -29535,6 +29547,116 @@
     return "TBA";
   }
 
+  async function fetchIPOPdfsRegistry(baseUrl) {
+    const base = baseUrl || getApiBase();
+    if (!base) return;
+    try {
+      const res = await fetch(`${base}/api/ipo-pdfs`, { cache: "no-store" });
+      const cType = res.headers.get("content-type") || "";
+      if (res.ok && cType.includes("json")) {
+        const json = await res.json();
+        if (json && json.success) {
+          State.ipoPdfData = {
+            globalPaidLock: !!json.globalPaidLock,
+            items: Array.isArray(json.items) ? json.items : []
+          };
+        }
+      }
+    } catch (_) { }
+  }
+
+  function normalizeIpoKey(str) {
+    return String(str || "").toLowerCase().replace(/\blimited\b|\bltd\.?\b|[^a-z0-9]/g, "");
+  }
+
+  function findIPOPdfForIssue(ipo) {
+    const store = State.ipoPdfData;
+    if (!store || !Array.isArray(store.items) || !store.items.length || !ipo) return null;
+    const sym = String(ipo.symbol || "").trim().toUpperCase();
+    const compKey = normalizeIpoKey(ipo.company);
+    return store.items.find(item => {
+      if (sym && item.symbol && item.symbol.toUpperCase() === sym) return true;
+      if (compKey && item.company && normalizeIpoKey(item.company) === compKey) return true;
+      return false;
+    }) || null;
+  }
+
+  function isIPOPdfLockedForUser(pdfItem) {
+    if (!pdfItem) return false;
+    const globalLocked = !!(State.ipoPdfData && State.ipoPdfData.globalPaidLock);
+    if (!globalLocked && !pdfItem.isPaid) return false;
+    if (State.user && (State.user.role === "owner" || State.user.role === "admin" || State.user.isPro)) return false;
+    const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+    if (sub && sub.active && sub.daysRemaining > 0) return false;
+    const unlockedList = State.unlockedIdeas || [];
+    if (unlockedList.includes("ipo_" + pdfItem.id) || unlockedList.includes("all") || unlockedList.includes("*")) return false;
+    return true;
+  }
+
+  function renderIPOPdfBadgeHTML(ipo, compact = false) {
+    const pdf = findIPOPdfForIssue(ipo);
+    if (!pdf) {
+      return compact ? `<span class="ipo-pdf-empty" title="No PDF attached yet">—</span>` : "";
+    }
+    const locked = isIPOPdfLockedForUser(pdf);
+    const titleAttr = locked
+      ? `VIP Paid PDF (₹${pdf.price || 199}) — Click to unlock ${pdf.company}`
+      : `Open ${pdf.company} IPO PDF (${pdf.fileName || "PDF"})`;
+    return `
+      <button type="button"
+              class="ipo-pdf-pill-btn ${locked ? "is-paid" : ""}"
+              data-action="open-ipo-pdf"
+              data-pdf-id="${escapeHtml(pdf.id)}"
+              title="${escapeHtml(titleAttr)}">
+        <svg class="ipo-pdf-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M8 15h8M8 18h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>${locked ? "🔒 PDF" : "PDF"}</span>
+      </button>`;
+  }
+
+  function openIPOPdfAction(pdfId) {
+    const store = State.ipoPdfData;
+    if (!store || !Array.isArray(store.items)) return;
+    const pdf = store.items.find(x => x.id === pdfId);
+    if (!pdf || !pdf.pdfUrl) return;
+
+    if (isIPOPdfLockedForUser(pdf)) {
+      const virtualId = "ipo_" + pdf.id;
+      const list = Array.isArray(State.ownerIdeas) ? State.ownerIdeas : [];
+      if (!list.some(x => x.id === virtualId)) {
+        const entry = {
+          id: virtualId,
+          title: `${pdf.company} — ${pdf.title || "IPO Research PDF"}`,
+          category: "IPO Research Note",
+          symbols: [pdf.symbol || pdf.company],
+          timeframe: "IPO Listing Window",
+          entry: "IPO Issue Brief",
+          target: "Full Valuation & GMP Note PDF",
+          stopLoss: "Risk & Peer Valuation Inside",
+          thesis: `Unlock full research PDF (${pdf.fileName || "IPO Note.pdf"}) for ${pdf.company} along with VIP access.`,
+          price: pdf.price || 199,
+          isLocked: true,
+          active: true
+        };
+        State.ownerIdeas = [entry, ...list];
+        State.isOwnerIdeasLoaded = true;
+      }
+      if (typeof window.openOwnerIdeaDetailModal === "function") {
+        window.openOwnerIdeaDetailModal(virtualId);
+      } else {
+        showToast("Please activate VIP Pass to open this Paid IPO PDF.", "🔒");
+      }
+      return;
+    }
+
+    const base = getApiBase();
+    const fullUrl = pdf.pdfUrl.startsWith("http") ? pdf.pdfUrl : `${base || ""}${pdf.pdfUrl}`;
+    window.open(fullUrl, "_blank", "noopener,noreferrer");
+  }
+
   function renderIPOCurrent() {
     if (!IPO_CURRENT.length) {
       return `
@@ -29584,6 +29706,7 @@
               <span>Open: <strong>${escapeHtml(ipo.opens || "TBA")}</strong></span>
               <span>Close: <strong>${escapeHtml(ipo.closes || "TBA")}</strong></span>
               <span class="val-green">Subscribed: <strong>${escapeHtml(ipo.subscribed || "Open")}</strong></span>
+              ${renderIPOPdfBadgeHTML(ipo, false)}
             </div>
           </div>`;
     }).join("");
@@ -29616,6 +29739,7 @@
               <span>Opens: <strong>${escapeHtml(ipo.opens || "TBA")}</strong></span>
               <span>Closes: <strong>${escapeHtml(ipo.closes || "TBA")}</strong></span>
               ${ipo.documentUrl ? `<a href="${ipo.documentUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--g);font-size:11px;text-decoration:none">SEBI DRHP ↗</a>` : ''}
+              ${renderIPOPdfBadgeHTML(ipo, false)}
             </div>
           </div>`;
     }).join("");
@@ -29646,11 +29770,12 @@
             <td class="font-mono" style="text-align:right">${lotText}</td>
             <td>${escapeHtml(ipo.exchange || "NSE / BSE")}</td>
             <td><span class="ipo-type-badge ${typeCls}">${escapeHtml(ipo.type || "Mainboard")}</span></td>
+            <td style="text-align:center">${renderIPOPdfBadgeHTML(ipo, true)}</td>
           </tr>`;
     }).join("");
 
     if (!all.length) {
-      rows = `<tr><td colspan="9" style="text-align:center;color:var(--mu);padding:32px">0 IPOs currently active in bidding. Showing upcoming issues below.</td></tr>`;
+      rows = `<tr><td colspan="10" style="text-align:center;color:var(--mu);padding:32px">0 IPOs currently active in bidding. Showing upcoming issues below.</td></tr>`;
     }
 
     return `
@@ -29672,6 +29797,7 @@
                 <th style="text-align:right">Lot</th>
                 <th>Exchange</th>
                 <th>Type</th>
+                <th style="text-align:center">PDF</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -36734,6 +36860,11 @@
       }
       else if (action === "ipo-sync-live") {
         IPOLiveService.fetchIPOData(true, true);
+        return;
+      }
+      else if (action === "open-ipo-pdf") {
+        const pdfId = target.dataset.pdfId;
+        if (pdfId) openIPOPdfAction(pdfId);
         return;
       }
       else if (action === "set-heatmap-mode") {

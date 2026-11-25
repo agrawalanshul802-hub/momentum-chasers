@@ -1195,6 +1195,9 @@
     <button class="owner-tab-btn" id="btn-tab-pipeline" onclick="switchOwnerTab('pipeline')">
       <span>⚡</span> <span>Daily Market Pipeline</span>
     </button>
+    <button class="owner-tab-btn" id="btn-tab-ipo-pdfs" onclick="switchOwnerTab('ipo-pdfs')">
+      <span>📄</span> <span>IPO PDFs</span>
+    </button>
   </nav>
 
   <!-- TAB 1: IDEAS STUDIO -->
@@ -1896,6 +1899,100 @@
         <div id="pipeline-fii-console" style="display:none;margin-top:14px;padding:12px;border-radius:8px;background:#050914;border:1px solid rgba(255,255,255,0.1);font-family:monospace;font-size:12px;color:#38bdf8;max-height:160px;overflow-y:auto;white-space:pre-wrap;"></div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- TAB 6: IPO RESEARCH PDF MANAGER -->
+  <div id="tab-ipo-pdfs" class="tab-panel" style="display:none;max-width:1180px;margin:0 auto;padding:24px;">
+    <div class="studio-card" style="margin-bottom:20px;border:1px solid rgba(245,158,11,0.3);background:linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(18,24,36,0.9) 100%);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div class="card-title" style="color:#fbbf24;margin-bottom:4px;">
+          <span>👑</span> <span>IPO PDF Paywall Mode (Future Paid Lock)</span>
+        </div>
+        <div style="font-size:12.5px;color:#94a3b8;">
+          Keep Free now while growing users, or turn ON this master switch anytime to lock all IPO PDFs behind VIP Pass.
+        </div>
+      </div>
+      <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;border-radius:10px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12);font-weight:700;font-size:13px;">
+        <input type="checkbox" id="ipo-pdf-global-paid-toggle" onchange="toggleGlobalIpoPdfPaid(this.checked)" style="width:17px;height:17px;accent-color:#f59e0b;cursor:pointer;">
+        <span id="ipo-pdf-global-paid-label">Free for All Users (Default)</span>
+      </label>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:24px;align-items:start;">
+      <!-- LEFT: UPLOAD FORM -->
+      <div class="studio-card">
+        <div class="card-title" style="color:#f87171;">
+          <span>📄</span> <span>Attach PDF to an IPO</span>
+        </div>
+        <div class="card-subtitle" style="margin-bottom:16px;">
+          Select any Open or Upcoming IPO (or type a new one) and upload your research/DRHP PDF.
+        </div>
+
+        <form onsubmit="submitIpoPdfForm(event)">
+          <div style="margin-bottom:14px;">
+            <label class="form-label" style="font-size:12px;">Select IPO</label>
+            <select id="ipo-pdf-select" class="form-input" onchange="handleIpoSelectChange()" style="width:100%;">
+              <option value="">Loading live IPO list...</option>
+            </select>
+          </div>
+
+          <div id="ipo-pdf-custom-fields" style="display:none;grid-template-columns:1fr 120px;gap:10px;margin-bottom:14px;">
+            <div>
+              <label class="form-label" style="font-size:12px;">Custom IPO Company Name</label>
+              <input type="text" id="ipo-pdf-custom-company" class="form-input" placeholder="e.g. Zepto Ltd">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:12px;">Symbol (Opt.)</label>
+              <input type="text" id="ipo-pdf-custom-symbol" class="form-input" placeholder="ZEPTO">
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label class="form-label" style="font-size:12px;">PDF Label / Title</label>
+            <input type="text" id="ipo-pdf-title" class="form-input" value="IPO Research Note" placeholder="e.g. Valuation &amp; GMP Note">
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label class="form-label" style="font-size:12px;">Upload PDF File (Max 18 MB)</label>
+            <input type="file" id="ipo-pdf-file" accept="application/pdf,.pdf" onchange="handleIpoPdfFileSelect(event)"
+              style="width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px dashed rgba(248,113,113,0.45);color:#cbd5e1;font-size:12.5px;cursor:pointer;">
+            <div id="ipo-pdf-file-status" style="font-size:11.5px;color:#94a3b8;margin-top:6px;">No file selected yet</div>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <label class="form-label" style="font-size:12px;">Or Paste External PDF URL (Optional)</label>
+            <input type="url" id="ipo-pdf-url" class="form-input" placeholder="https://...">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:end;margin-bottom:16px;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px;font-weight:600;color:#e2e8f0;">
+              <input type="checkbox" id="ipo-pdf-is-paid" style="width:16px;height:16px;accent-color:#f59e0b;">
+              <span>🔒 Mark Paid (VIP Only)</span>
+            </label>
+            <div>
+              <label class="form-label" style="font-size:11px;">Unlock Price (₹)</label>
+              <input type="number" id="ipo-pdf-price" class="form-input" value="199" min="1">
+            </div>
+          </div>
+
+          <button type="submit" id="btn-submit-ipo-pdf" class="btn-submit"
+            style="width:100%;background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            📄 Upload &amp; Attach IPO PDF
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT: ATTACHED IPO PDFs LIST -->
+      <div class="studio-card">
+        <div class="card-title" style="justify-content:space-between;">
+          <span>📚 Attached IPO PDFs (<span id="ipo-pdf-count">0</span>)</span>
+          <button type="button" class="btn-outline" onclick="loadOwnerIpoPdfsTab()" style="padding:4px 10px;font-size:11px;">🔄 Refresh</button>
+        </div>
+        <div id="ipo-pdfs-admin-list" style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+          <div style="color:#94a3b8;font-size:13px;padding:18px;text-align:center;">No IPO PDFs attached yet.</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2875,7 +2972,7 @@
       activeTab = tabName;
       sessionStorage.setItem('mc_owner_active_tab', tabName);
 
-      var tabs = ['ideas', 'coupons', 'gateway', 'subscribers', 'pipeline'];
+      var tabs = ['ideas', 'coupons', 'gateway', 'subscribers', 'pipeline', 'ipo-pdfs'];
       tabs.forEach(function (t) {
         var btn = document.getElementById('btn-tab-' + t);
         var panel = document.getElementById('tab-' + t);
@@ -2893,6 +2990,7 @@
       else if (tabName === 'gateway') fetchGatewaySettings();
       else if (tabName === 'subscribers') { fetchMasterCode(); fetchPurchases(); }
       else if (tabName === 'pipeline') { fetchPipelineStatus(); }
+      else if (tabName === 'ipo-pdfs') { loadOwnerIpoPdfsTab(); }
     }
 
     // --- TAB 2: COUPONS MANAGER ---
@@ -3768,6 +3866,242 @@
       };
 
       triggerPipelineRun('fii', custom);
+    }
+
+    // --- TAB 6: IPO PDFs STUDIO ---
+    var _ownerIpoPdfBase64 = '';
+    var _ownerIpoPdfFileName = '';
+    var _ownerIpoPdfSizeLabel = '';
+    var _ownerIpoListCache = [];
+
+    function loadOwnerIpoPdfsTab() {
+      Promise.all([
+        fetch('/api/ipo', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; }),
+        fetch('/api/ipo-pdfs', { cache: 'no-store' }).then(function(r) { return r.json(); }).catch(function() { return null; })
+      ]).then(function(results) {
+        var ipoJson = results[0];
+        var pdfJson = results[1];
+
+        var select = document.getElementById('ipo-pdf-select');
+        if (select) {
+          var list = [];
+          if (ipoJson && Array.isArray(ipoJson.current)) {
+            ipoJson.current.forEach(function(x) { list.push({ company: x.company, symbol: x.symbol || '', badge: 'OPEN' }); });
+          }
+          if (ipoJson && Array.isArray(ipoJson.upcoming)) {
+            ipoJson.upcoming.forEach(function(x) { list.push({ company: x.company, symbol: x.symbol || '', badge: 'UPCOMING' }); });
+          }
+          _ownerIpoListCache = list;
+          var opts = list.map(function(item, idx) {
+            return '<option value="' + idx + '">' + item.company + ' (' + item.badge + ')</option>';
+          }).join('');
+          select.innerHTML = opts + '<option value="__custom__">+ Custom / Enter IPO Manually</option>';
+          handleIpoSelectChange();
+        }
+
+        if (pdfJson && pdfJson.success) {
+          renderOwnerIpoPdfsList(pdfJson);
+        }
+      });
+    }
+
+    function handleIpoSelectChange() {
+      var sel = document.getElementById('ipo-pdf-select');
+      var customBox = document.getElementById('ipo-pdf-custom-fields');
+      if (!sel || !customBox) return;
+      customBox.style.display = (sel.value === '__custom__') ? 'grid' : 'none';
+    }
+
+    function handleIpoPdfFileSelect(e) {
+      var file = e.target.files && e.target.files[0];
+      var statusEl = document.getElementById('ipo-pdf-file-status');
+      if (!file) {
+        _ownerIpoPdfBase64 = '';
+        _ownerIpoPdfFileName = '';
+        _ownerIpoPdfSizeLabel = '';
+        if (statusEl) statusEl.textContent = 'No file selected yet';
+        return;
+      }
+      if (file.size > 18 * 1024 * 1024) {
+        alert('PDF is larger than 18 MB. Please compress it or paste an external PDF URL.');
+        e.target.value = '';
+        return;
+      }
+      var sizeTxt = file.size >= 1048576 ? (file.size / 1048576).toFixed(2) + ' MB' : Math.max(1, Math.round(file.size / 1024)) + ' KB';
+      _ownerIpoPdfFileName = file.name;
+      _ownerIpoPdfSizeLabel = sizeTxt;
+      if (statusEl) statusEl.textContent = 'Reading ' + file.name + ' (' + sizeTxt + ')...';
+
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        _ownerIpoPdfBase64 = evt.target.result || '';
+        if (statusEl) statusEl.innerHTML = '<span style="color:#4ade80;font-weight:600;">✓ Ready: ' + file.name + ' (' + sizeTxt + ')</span>';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderOwnerIpoPdfsList(pdfJson) {
+      var globalToggle = document.getElementById('ipo-pdf-global-paid-toggle');
+      var globalLabel = document.getElementById('ipo-pdf-global-paid-label');
+      var isGlobal = !!(pdfJson && pdfJson.globalPaidLock);
+      if (globalToggle) globalToggle.checked = isGlobal;
+      if (globalLabel) {
+        globalLabel.textContent = isGlobal ? '👑 ALL IPO PDFs Locked (VIP Paid)' : '🆓 Free for All Users (Default)';
+        globalLabel.style.color = isGlobal ? '#fbbf24' : '#4ade80';
+      }
+
+      var items = (pdfJson && Array.isArray(pdfJson.items)) ? pdfJson.items : [];
+      var countEl = document.getElementById('ipo-pdf-count');
+      if (countEl) countEl.textContent = String(items.length);
+
+      var listEl = document.getElementById('ipo-pdfs-admin-list');
+      if (!listEl) return;
+      if (!items.length) {
+        listEl.innerHTML = '<div style="color:#94a3b8;font-size:13px;padding:18px;text-align:center;">No IPO PDFs attached yet.</div>';
+        return;
+      }
+
+      listEl.innerHTML = items.map(function(item) {
+        var paidBadge = item.isPaid
+          ? '<span style="font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(245,158,11,0.16);color:#fbbf24;border:1px solid rgba(245,158,11,0.35);">🔒 PAID ₹' + (item.price || 199) + '</span>'
+          : '<span style="font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(34,197,94,0.14);color:#4ade80;border:1px solid rgba(34,197,94,0.3);">🆓 FREE</span>';
+        return '<div style="padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">' +
+          '<div style="min-width:0;">' +
+            '<div style="font-weight:700;font-size:13.5px;color:#f1f5f9;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+              '<span>' + item.company + '</span>' + paidBadge +
+            '</div>' +
+            '<div style="font-size:11.5px;color:#94a3b8;margin-top:4px;">' +
+              (item.title || 'IPO PDF') + ' · ' + (item.fileName || 'PDF') + ' (' + (item.sizeLabel || 'PDF') + ') · ' + (item.uploadedAt || '') +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;align-items:center;">' +
+            '<a href="' + item.pdfUrl + '" target="_blank" rel="noopener noreferrer" class="btn-outline" style="padding:5px 9px;font-size:11px;">View ↗</a>' +
+            '<button type="button" class="btn-outline" onclick="toggleSingleIpoPdfPaid(\'' + item.id + '\', ' + (!item.isPaid) + ')" style="padding:5px 9px;font-size:11px;">' + (item.isPaid ? 'Make Free' : 'Set Paid') + '</button>' +
+            '<button type="button" class="btn-outline btn-danger" onclick="deleteIpoPdf(\'' + item.id + '\')" style="padding:5px 9px;font-size:11px;">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function submitIpoPdfForm(e) {
+      e.preventDefault();
+      var sel = document.getElementById('ipo-pdf-select');
+      var company = '';
+      var symbol = '';
+      if (sel && sel.value === '__custom__') {
+        company = (document.getElementById('ipo-pdf-custom-company').value || '').trim();
+        symbol = (document.getElementById('ipo-pdf-custom-symbol').value || '').trim().toUpperCase();
+      } else if (sel && _ownerIpoListCache[parseInt(sel.value, 10)]) {
+        var picked = _ownerIpoListCache[parseInt(sel.value, 10)];
+        company = picked.company;
+        symbol = picked.symbol || '';
+      }
+
+      if (!company) {
+        showToast('Please select or enter an IPO company name.', '⚠️');
+        return;
+      }
+
+      var externalUrl = (document.getElementById('ipo-pdf-url').value || '').trim();
+      if (!_ownerIpoPdfBase64 && !externalUrl) {
+        showToast('Please upload a PDF file or enter a PDF URL.', '⚠️');
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit-ipo-pdf');
+      if (btn) { btn.disabled = true; btn.textContent = 'Uploading PDF...'; }
+
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '1234';
+      fetch('/api/ipo-pdfs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': pin },
+        body: JSON.stringify({
+          pin: pin,
+          company: company,
+          symbol: symbol,
+          title: (document.getElementById('ipo-pdf-title').value || 'IPO Research Note').trim(),
+          pdfBase64: _ownerIpoPdfBase64 || undefined,
+          fileName: _ownerIpoPdfFileName || undefined,
+          sizeLabel: _ownerIpoPdfSizeLabel || undefined,
+          pdfUrl: externalUrl || undefined,
+          isPaid: !!(document.getElementById('ipo-pdf-is-paid') && document.getElementById('ipo-pdf-is-paid').checked),
+          price: parseFloat(document.getElementById('ipo-pdf-price').value) || 199
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (btn) { btn.disabled = false; btn.textContent = '📄 Upload & Attach IPO PDF'; }
+        if (data && data.success) {
+          showToast('IPO PDF attached successfully!', '📄');
+          _ownerIpoPdfBase64 = '';
+          _ownerIpoPdfFileName = '';
+          _ownerIpoPdfSizeLabel = '';
+          var fileInp = document.getElementById('ipo-pdf-file');
+          if (fileInp) fileInp.value = '';
+          var urlInp = document.getElementById('ipo-pdf-url');
+          if (urlInp) urlInp.value = '';
+          var statusEl = document.getElementById('ipo-pdf-file-status');
+          if (statusEl) statusEl.textContent = 'No file selected yet';
+          renderOwnerIpoPdfsList(data);
+        } else {
+          showToast(data.error || 'Failed to upload IPO PDF', '❌');
+        }
+      })
+      .catch(function(err) {
+        if (btn) { btn.disabled = false; btn.textContent = '📄 Upload & Attach IPO PDF'; }
+        showToast('Upload error: ' + err.message, '❌');
+      });
+    }
+
+    function toggleGlobalIpoPdfPaid(enabled) {
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '1234';
+      fetch('/api/ipo-pdfs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': pin },
+        body: JSON.stringify({ pin: pin, globalPaidLock: !!enabled })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          showToast(enabled ? 'All IPO PDFs are now Paid (VIP Only)' : 'IPO PDFs set to Free mode', enabled ? '👑' : '🆓');
+          renderOwnerIpoPdfsList(data);
+        } else {
+          showToast(data.error || 'Failed updating global lock', '❌');
+        }
+      });
+    }
+
+    function toggleSingleIpoPdfPaid(id, makePaid) {
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '1234';
+      fetch('/api/ipo-pdfs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': pin },
+        body: JSON.stringify({ pin: pin, toggleItemId: id, isPaid: !!makePaid })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          showToast(makePaid ? 'Marked PDF as Paid (VIP Only)' : 'Marked PDF as Free', '✓');
+          renderOwnerIpoPdfsList(data);
+        }
+      });
+    }
+
+    function deleteIpoPdf(id) {
+      if (!confirm('Remove this attached IPO PDF?')) return;
+      var pin = sessionStorage.getItem('mc_owner_pin') || ownerPin || '1234';
+      fetch('/api/ipo-pdfs?id=' + encodeURIComponent(id), {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': pin },
+        body: JSON.stringify({ pin: pin, id: id })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.success) {
+          showToast('IPO PDF deleted', '🗑️');
+          loadOwnerIpoPdfsTab();
+        }
+      });
     }
 
   </script>
