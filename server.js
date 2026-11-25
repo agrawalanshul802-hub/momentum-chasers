@@ -7658,7 +7658,7 @@ const server = http.createServer(async (req, res) => {
   const isPublicSitePage = pathname === '/' || pathname === '/index.html' || pathname === '/landing.html' || pathname === '/login' || pathname === '/login.html';
   let reqPath = pathname === '/login' ? 'login.html' : (pathname === '/owner' || pathname === '/admin' ? 'owner.html' : (pathname === '/' ? 'index.html' : pathname));
 
-  if (launchCfg.locked && isPublicSitePage) {
+  if (launchCfg.locked && isPublicSitePage && fs.existsSync(path.join(__dirname, 'coming-soon.html'))) {
     const cookiesStr = (req.headers.cookie || '').toString();
     const hasPreviewCookie = /(?:^|;\s*)mc_owner_preview=mc_owner_ok(?:;|$)/.test(cookiesStr);
     const qPrev = (parsedUrl.query.preview || '').toString().trim();
