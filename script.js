@@ -17899,7 +17899,7 @@
       <!-- Controls Toolbar with Sector Search & Sort -->
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;position:relative;flex:1;min-width:220px;max-width:380px;">
-          <input type="text" id="netflow-sector-search" placeholder="🔍 Search 44 sectors (Auto, Bank, IT, Defence...)" value="${escapeHtml(State.netflowSearch || '')}" style="width:100%;padding:8px 12px 8px 32px;background:var(--sf);border:1px solid var(--ln);border-radius:6px;color:var(--ink);font-size:12px;">
+          <input type="text" id="netflow-sector-search" placeholder="Search 44 sectors (Auto, Bank, IT, Defence...)" value="${escapeHtml(State.netflowSearch || '')}" style="width:100%;padding:8px 12px 8px 32px;background:var(--sf);border:1px solid var(--ln);border-radius:6px;color:var(--ink);font-size:12px;">
           <span style="position:absolute;left:10px;color:var(--mu);font-size:12px;pointer-events:none;">🔍</span>
           ${State.netflowSearch ? `<button id="netflow-search-clear" data-action="clear-netflow-search" style="position:absolute;right:8px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;" title="Clear search">✕</button>` : ''}
         </div>
