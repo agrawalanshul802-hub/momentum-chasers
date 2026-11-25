@@ -16,6 +16,7 @@ const path = require('path');
 const https = require('https');
 const { runFiiScraper } = require('./fetch-fii-dii');
 const { runSectorTurnoverUpdate } = require('./update-sector-turnover');
+const { syncLiveDealsData } = require('./fetch-deals');
 
 const SECTOR_TICKER_MAP = {
   'NIFTY 50': '^NSEI',
@@ -710,6 +711,16 @@ async function runFiiDiiUpdate(customData) {
     } catch (err) {
       results.errors.push(`ScreeningMantis sector turnover error: ${err.message}`);
       console.error(`✗ ScreeningMantis turnover error:`, err.message);
+    }
+
+    try {
+      const dealsList = await syncLiveDealsData();
+      results.dealsCount = dealsList.length;
+      const insiderCount = dealsList.filter(d => d.type === 'Insider').length;
+      console.log(`✓ Live Bulk/Block/Insider Deals synced (${dealsList.length} total, ${insiderCount} Insider).`);
+    } catch (err) {
+      results.errors.push(`NSE Deals/Insider sync error: ${err.message}`);
+      console.error(`✗ NSE Deals/Insider sync error:`, err.message);
     }
   }
 

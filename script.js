@@ -32058,7 +32058,7 @@
   }
 
   const DealsLiveService = {
-    syncDeals: async function () {
+    syncDeals: async function (force = false) {
       const syncBtn = document.getElementById("deals-sync-btn");
       if (syncBtn) {
         syncBtn.disabled = true;
@@ -32068,7 +32068,8 @@
         const base = getApiBase();
         let synced = false;
         if (base) {
-          const res = await fetch(`${base}/api/deals`);
+          const url = force ? `${base}/api/deals?force=true` : `${base}/api/deals`;
+          const res = await fetch(url);
           const cType = res.headers.get("content-type") || "";
           if (res.ok && cType.includes("json")) {
             const data = await res.json();
@@ -32841,7 +32842,7 @@
     const syncBtn = document.getElementById("deals-sync-btn");
     if (syncBtn) {
       syncBtn.addEventListener("click", () => {
-        DealsLiveService.syncDeals();
+        DealsLiveService.syncDeals(true);
       });
     }
 
