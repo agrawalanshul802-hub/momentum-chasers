@@ -17725,7 +17725,7 @@
     const showAdv = stockFilter === "all" || stockFilter === "advancing";
     const showDec = stockFilter === "all" || stockFilter === "declining";
 
-    const gridColsCss = `grid-template-columns: 240px repeat(${visibleCount}, 1fr);`;
+    const gridColsCss = `grid-template-columns: 248px repeat(${visibleCount}, ${visibleCount > 12 ? 'minmax(62px, 1fr)' : 'minmax(68px, 1fr)'});`;
 
     // Filter FL rows if search query is present
     let visibleFL = FL;
@@ -17780,7 +17780,11 @@
 
     const computedRows = visibleFL.map(row => {
       const secName = row[0];
-      const scores = row[1].slice(0, visibleCount);
+      const rawScores = Array.isArray(row[1]) ? row[1] : [];
+      const scores = Array.from({ length: visibleCount }, (_, idx) => {
+        if (rawScores[idx] !== undefined && rawScores[idx] !== null) return rawScores[idx];
+        return rawScores.length ? rawScores[idx % rawScores.length] : 0;
+      });
       const isActive = secName === resolvedActiveSec;
 
       const rowSessionIdx = isActive ? activeSessionIdx : 0;
@@ -17918,20 +17922,22 @@
           <span>Click any column header (e.g. <strong>${dateLabels[0]}</strong>) to sort <strong>Descending / Ascending</strong>, or click any cell to inspect constituent stocks. Currently inspecting: <strong>${resolvedActiveSec} (${activeDateInfo.shortLabel})</strong></span>
         </div>
 
-        <div class="netflow-table">
-          <div class="netflow-row header-row" style="${gridColsCss}">
-            <div class="netflow-header-cell is-sortable ${sortCol === 'sector' ? 'is-sort-active' : ''}" data-sort-col="sector" style="justify-content:flex-start;text-align:left;" title="Click to sort Sectors A–Z / Z–A">
-              <span>Sector Cluster (${visibleFL.length})</span>
-              <span class="netflow-sort-indicator">${sortCol === 'sector' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅'}</span>
+        <div class="netflow-table-scroll">
+          <div class="netflow-table">
+            <div class="netflow-row header-row" style="${gridColsCss}">
+              <div class="netflow-header-cell is-sortable ${sortCol === 'sector' ? 'is-sort-active' : ''}" data-sort-col="sector" style="justify-content:flex-start;text-align:left;" title="Click to sort Sectors A–Z / Z–A">
+                <span>Sector Cluster (${visibleFL.length})</span>
+                <span class="netflow-sort-indicator">${sortCol === 'sector' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅'}</span>
+              </div>
+              ${dateLabels.map((d, dIdx) => {
+                const isColSorted = sortCol === dIdx;
+                const ind = isColSorted ? (sortDir === 'asc' ? '▲' : '▼') : '⇅';
+                return `<div class="netflow-header-cell is-sortable ${dIdx === activeSessionIdx ? 'font-bold' : ''} ${isColSorted ? 'is-sort-active' : ''}" data-sort-col="${dIdx}" title="${tradingDates[dIdx]?.iso || ''} — Click to sort Descending / Ascending"><span>${d}</span><span class="netflow-sort-indicator">${ind}</span></div>`;
+              }).join("")}
             </div>
-            ${dateLabels.map((d, dIdx) => {
-              const isColSorted = sortCol === dIdx;
-              const ind = isColSorted ? (sortDir === 'asc' ? '▲' : '▼') : '⇅';
-              return `<div class="netflow-header-cell is-sortable ${dIdx === activeSessionIdx ? 'font-bold' : ''} ${isColSorted ? 'is-sort-active' : ''}" data-sort-col="${dIdx}" title="${tradingDates[dIdx]?.iso || ''} — Click to sort Descending / Ascending"><span>${d}</span><span class="netflow-sort-indicator">${ind}</span></div>`;
-            }).join("")}
-          </div>
 
-          ${tableRowsHtml}
+            ${tableRowsHtml}
+          </div>
         </div>
       </div>
 

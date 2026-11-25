@@ -4403,8 +4403,12 @@ body.theme-white .ema-status-pill.amber {
     border-radius: var(--radius-md);
     padding: 18px 20px;
     margin-bottom: 24px;
+}
+
+.netflow-table-scroll {
+    width: 100%;
     overflow-x: auto;
-    max-height: 850px;
+    max-height: 820px;
     overflow-y: auto;
 }
 
@@ -4429,7 +4433,8 @@ body.theme-white .ema-status-pill.amber {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    min-width: 820px;
+    width: max-content;
+    min-width: 100%;
 }
 
 .netflow-row {
@@ -4462,13 +4467,21 @@ body.theme-white .ema-status-pill.amber {
 
 .netflow-row.header-row {
     position: sticky;
-    top: -18px;
+    top: 0;
     background: var(--sf);
-    z-index: 10;
+    z-index: 12;
     cursor: default;
     padding: 8px 10px 10px 10px;
     border-bottom: 1px solid var(--ln);
     margin-bottom: 4px;
+}
+
+.netflow-row.header-row .netflow-header-cell[data-sort-col="sector"] {
+    position: sticky;
+    left: 0;
+    z-index: 14;
+    background: var(--sf);
+    padding-right: 10px;
 }
 
 .netflow-row.header-row,
@@ -4499,7 +4512,10 @@ body.theme-white .ema-status-pill.amber {
 }
 
 .netflow-header-cell.is-sortable {
-    padding: 4px 4px;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    padding: 5px 4px;
     border-radius: 6px;
     transition: background 0.15s ease, color 0.15s ease;
     display: inline-flex;
@@ -4543,7 +4559,18 @@ body.theme-white .netflow-header-cell.is-sort-active .netflow-sort-indicator {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    min-width: 200px;
+    min-width: 240px;
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    background: var(--sf);
+    padding: 4px 10px 4px 2px;
+    border-radius: 6px;
+}
+
+.netflow-row:hover .netflow-sector-cell,
+.netflow-row.active-sector-row .netflow-sector-cell {
+    background: var(--sf);
 }
 
 .netflow-sector-main {
