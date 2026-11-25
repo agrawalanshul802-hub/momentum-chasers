@@ -6404,10 +6404,10 @@ const server = http.createServer(async (req, res) => {
 
   // 6g. Owner Trading Ideas & Curated Setups Engine: /api/owner-ideas
   const ownerIdeasPath = path.join(__dirname, 'data', 'owner-ideas.json');
-  const OWNER_PIN = (process.env.OWNER_PIN || '1234').toString().trim();
+  const OWNER_PIN = (process.env.OWNER_PIN || '264500').toString().trim();
   function isAuthorizedOwnerPin(pin) {
     const p = (pin || '').toString().trim();
-    return p === OWNER_PIN || p === '1234' || p === 'momentum2026';
+    return p.length > 0 && p === OWNER_PIN;
   }
 
   // In-memory store (survives Render's ephemeral filesystem — seeded from committed JSON)
