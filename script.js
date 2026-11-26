@@ -13792,9 +13792,12 @@
             ? (State.ownerIdeas || [])
             : OWNER_IDEAS_SEED;
           const activeIdea = ideasList.find(i => i.id === State.activeOwnerIdeaId);
-          if (activeIdea && Array.isArray(activeIdea.symbols) && activeIdea.symbols.length > 0) {
-            const symsUpper = activeIdea.symbols.map(s => s.trim().toUpperCase());
-            if (!symsUpper.includes(stock[0].toUpperCase())) return false;
+          if (activeIdea) {
+            const symSet = new Set([
+              ...(Array.isArray(activeIdea.symbols) ? activeIdea.symbols : []),
+              ...Object.keys(activeIdea.stockLevels || {})
+            ].map(s => String(s).trim().toUpperCase()).filter(Boolean));
+            if (symSet.size > 0 && !symSet.has(stock[0].toUpperCase())) return false;
           }
         }
       }
@@ -15017,6 +15020,10 @@
       } catch (_) { }
     }
     State.activeOwnerIdeaId = ideaId; // Automatically reveal newly unlocked setup in screener!
+    State.marketCap = "all";
+    State.sector = "all";
+    State.searchQuery = "";
+    State.selectedPresets = [];
     const wrap = document.getElementById('owner-ideas-chips-container');
     if (wrap) wrap.innerHTML = renderOwnerIdeaChipsHTML();
     if (State.view === 'screener') {
@@ -37009,6 +37016,7 @@
             State.marketCap = "all";
             State.sector = "all";
             State.searchQuery = "";
+            State.selectedPresets = [];
           }
           renderActiveView();
         }
