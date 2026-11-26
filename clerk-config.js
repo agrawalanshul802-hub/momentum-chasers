@@ -161,7 +161,7 @@
         } catch (_) { }
         const clerk = await ensureClerkLoaded();
         if (!clerk) return { success: false, error: 'Clerk SDK is still loading. Please try again.' };
-        const targetUrl = window.location.origin + '/index.html#screener';
+        const targetUrl = window.location.origin + '/index.html';
         if (typeof clerk.openSignIn === 'function') {
           clerk.openSignIn({
             forceRedirectUrl: targetUrl,
