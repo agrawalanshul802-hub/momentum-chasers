@@ -18370,12 +18370,6 @@
     const stripped = s.replace(/^NIFTY\s+/, "").trim();
     if (TV_MAP[stripped]) return TV_MAP[stripped];
 
-    // Check if the symbol is in our active stocks catalog
-    if (typeof ST !== "undefined") {
-      const matchStock = ST.find(st => st[0].toUpperCase() === s || st[0].toUpperCase() === stripped);
-      if (matchStock) return `NSE:${matchStock[0]}`;
-    }
-
     // Default safely to NIFTY benchmark chart, NEVER a non-existent ticker
     return "NSE:NIFTY";
   }
@@ -18387,21 +18381,34 @@
       sym = resolveStockSymbol(sym) || sym;
     }
 
-    // 1. Check if it is a Sector or Thematic Index first
-    if (typeof getTradingViewSectorSymbol === "function") {
-      const secSym = getTradingViewSectorSymbol(sym);
-      if (secSym && secSym !== "NSE:NIFTY") return secSym;
-      if (sym === "NIFTY" || sym === "NIFTY 50" || sym === "NIFTY50") return "NSE:NIFTY";
-    }
-
     const SPECIAL_TV_MAP = {
-      "ANTALA": "BSE:545024",
-      "VECTRAS": "BSE:545020",
-      "VPFL": "NSE:VPFL",
+      // BSE-Only / SME Stocks (must use BSE: prefix)
+      "SAIURJA": "BSE:SAIURJA",
+      "ANTALA": "BSE:ANTALA",
+      "VECTRAS": "BSE:VECTRAS",
       "MAXENGS": "BSE:544988",
-      "JOHNSONCAB": "BSE:544986",
+      "JOHNSONCAB": "BSE:JOHNSONCAB",
       "HGSINDIALT": "BSE:544984",
-      "BCSSL": "BSE:544982",
+      "BCSSL": "NSE:BCSSL",
+      "BAGMANE": "BSE:BAGMANE",
+      "EIMS": "BSE:EIMS",
+      "SOLLFEGE": "BSE:SOLLFEGE",
+      "ACMEUNIV": "BSE:ACMEUNIV",
+      "ROOPA": "BSE:ROOPA",
+      "ROBOKIDZ": "BSE:ROBOKIDZ",
+      "SPEEDEX": "BSE:SPEEDEX",
+      "AMTECH": "BSE:AMTECH",
+      "FARMPEACE": "BSE:FARMPEACE",
+      "KWICK": "BSE:KWICK",
+      "TECHNOCRAT": "BSE:TECHNOCRAT",
+      "LAPL": "BSE:LAPL",
+      "AJWA": "BSE:AJWA",
+      "SHIVCHEM": "BSE:SHIVCHEM",
+      "VAMAWOVEN": "BSE:VAMAWOVEN",
+      "APANA": "BSE:APANA",
+      "DHANWEL": "BSE:DHANWEL",
+      "QTFOODS": "BSE:QTFOODS",
+      "VPFL": "NSE:VPFL",
       "TONBO": "NSE:TONBO",
       "SYMBIOTEC": "NSE:SYMBIOTEC",
       "HOTELS": "NSE:INDHOTEL",
@@ -18424,6 +18431,8 @@
       "HITACHI": "NSE:POWERINDIA",
       "POWERGRID": "NSE:POWERGRID",
       "TATAMOTORS": "NSE:TATAMOTORS",
+      "ZOMATO": "NSE:ETERNAL",
+      "ETERNAL": "NSE:ETERNAL",
       "NIFTY": "NSE:NIFTY",
       "NIFTY 50": "NSE:NIFTY",
       "NIFTY50": "NSE:NIFTY",
@@ -18432,6 +18441,14 @@
       "SENSEX": "BSE:SENSEX"
     };
     if (SPECIAL_TV_MAP[sym]) return SPECIAL_TV_MAP[sym];
+
+    // Check if it is a Sector or Thematic Index
+    if (typeof getTradingViewSectorSymbol === "function") {
+      const secSym = getTradingViewSectorSymbol(sym);
+      if (secSym && secSym !== "NSE:NIFTY") return secSym;
+      if (sym === "NIFTY" || sym === "NIFTY 50" || sym === "NIFTY50") return "NSE:NIFTY";
+    }
+
     sym = sym.replace(/-/g, "_").replace(/&/g, "_").replace(/\./g, "").replace(/\s+/g, "");
     if (!sym.includes(":")) {
       return `NSE:${sym}`;
