@@ -37995,6 +37995,7 @@
     document.querySelectorAll(".home-hero-logo-img").forEach(el => {
       el.src = isWhite ? "logo-icon-dark.png?v=2" : "logo-icon.png?v=2";
     });
+    if (typeof initScreenerChipsStarBorder === "function") initScreenerChipsStarBorder();
 
     const themeIcon = $("#theme-btn-icon");
     const themeText = $("#theme-btn-text");
@@ -39492,7 +39493,7 @@
         let tone = mixRgb(colors.tail, colors.head, u);
         if (!cur.light) tone = mixRgb(tone, WHITE, Math.pow(u, 6) * 0.65);
         ctx.lineCap = tip && i === 1 ? 'round' : 'butt';
-        strokeLine(px, py, pt.x, pt.y, 2 + 6 * cur.glow, rgbaStr(tone, fade * (cur.light ? 0.1 : 0.2) * cur.glow));
+        strokeLine(px, py, pt.x, pt.y, 2 + 6 * cur.glow, rgbaStr(tone, fade * (cur.light ? 0.28 : 0.2) * cur.glow));
         strokeLine(px, py, pt.x, pt.y, cur.thickness, rgbaStr(tone, fade));
         px = pt.x; py = pt.y;
       }
@@ -39501,9 +39502,9 @@
     const drawHead = (cur, x, y, intensity, twinkle) => {
       if (intensity <= 0) return;
       const tone = colors.head;
-      const reach = (12 + 40 * cur.glow) * (cur.light ? 0.6 : 1);
+      const reach = (12 + 40 * cur.glow) * (cur.light ? 0.75 : 1);
       const bloom = ctx.createRadialGradient(x, y, 0, x, y, reach);
-      const strength = (cur.light ? 0.08 : 0.4) * cur.glow * intensity;
+      const strength = (cur.light ? 0.35 : 0.4) * cur.glow * intensity;
       bloom.addColorStop(0, rgbaStr(tone, strength));
       bloom.addColorStop(0.2, rgbaStr(tone, strength * 0.4));
       bloom.addColorStop(0.5, rgbaStr(tone, strength * 0.1));
@@ -39697,17 +39698,18 @@
   function initScreenerChipsStarBorder() {
     const btn = document.getElementById('screener-toggle-presets');
     if (!btn) return;
+    if (btn._starBorderCleanup) btn._starBorderCleanup();
     const isLight = document.body.classList.contains('theme-white');
     initStarBorder(btn, {
       color: isLight ? '#d97706' : '#ffffff',
-      trailColor: isLight ? '#10b981' : '#38bdf8',
-      duration: 4,
+      trailColor: isLight ? '#059669' : '#38bdf8',
+      duration: 3.6,
       direction: 'clockwise',
-      stars: 1,
-      trailLength: 0.3,
-      thickness: 1.2,
+      stars: 2,
+      trailLength: 0.35,
+      thickness: isLight ? 2 : 1.4,
       radius: 8,
-      glow: 0.65,
+      glow: isLight ? 0.9 : 0.7,
       hover: 'lap',
       sparkle: true,
       clickPulse: true,
