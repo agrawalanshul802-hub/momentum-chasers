@@ -39006,344 +39006,6 @@
   }
   window.initKokonutAccountMenu = initKokonutAccountMenu;
 
-  function init() {
-    // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
-    function syncLiveAuthState() {
-      const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
-      if (stored && (!State.user || State.user.email !== stored.email)) {
-        State.user = stored;
-        savedUser = stored;
-        renderUserAuthUI();
-        if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
-          PortfolioService.syncFromCloud();
-        }
-      } else if (!stored && State.user) {
-        const signedOut = localStorage.getItem("momentum_signed_out");
-        if (signedOut === "true" || signedOut === "1") {
-          State.user = null;
-          savedUser = null;
-          renderUserAuthUI();
-        }
-      }
-    }
-    syncLiveAuthState();
-    window.addEventListener("storage", (ev) => {
-      if (!ev || !ev.key || ev.key.includes("momentum_") || ev.key.includes("auth-token") || ev.key.includes("supabase")) {
-        syncLiveAuthState();
-      }
-    });
-    [200, 600, 1500, 3000].forEach(delay => setTimeout(syncLiveAuthState, delay));
-
-    // Diagnostic modal for Supabase & Google OAuth exchange configuration
-    function showOAuthDiagnosticModal(rawErr) {
-      let existing = document.getElementById("oauth-diagnostic-modal");
-      if (existing) existing.remove();
-
-      const modal = document.createElement("div");
-      modal.id = "oauth-diagnostic-modal";
-      modal.className = "modal-backdrop active";
-      modal.style.cssText = "display:flex;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);z-index:999999;padding:16px;";
-
-      modal.innerHTML = `
-        <div style="background:#0f172a;border:1px solid rgba(239,68,68,0.35);border-radius:14px;max-width:560px;width:100%;padding:24px;color:#f8fafc;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);font-family:var(--font-sans, system-ui, sans-serif);position:relative;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-            <span style="font-size:24px;">⚠️</span>
-            <div>
-              <h3 style="margin:0;font-size:17px;font-weight:700;color:#f8fafc;">Google Sign-In: Setup Check Required</h3>
-              <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Supabase was unable to exchange external token with Google</div>
-            </div>
-            <button id="close-oauth-diag-btn" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:4px;" title="Close">✕</button>
-          </div>
-
-          <p style="font-size:12.5px;color:#cbd5e1;line-height:1.5;margin:0 0 14px 0;">
-            Google successfully authenticated your account, but Supabase could not trade the code for a session. This happens when the redirect URI or Client Secret is mismatched.
-          </p>
-
-          <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;">
-            <div style="font-weight:700;color:#f87171;margin-bottom:6px;">Two Quick Verifications:</div>
-            <ol style="margin:0 0 0 16px;padding:0;color:#cbd5e1;line-height:1.6;font-size:11.5px;">
-              <li style="margin-bottom:8px;">
-                <strong>Google Cloud Console &rarr; Credentials &rarr; OAuth 2.0 Client ID</strong><br>
-                Under <em>Authorized redirect URIs</em>, make sure this exact Supabase callback URL is added:
-                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
-                  <code id="oauth-diag-cb-url" style="background:#1e293b;padding:3px 7px;border-radius:4px;color:#38bdf8;font-family:var(--font-mono, monospace);font-size:11px;border:1px solid #334155;word-break:break-all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
-                  <button id="copy-oauth-cb-btn" style="background:#334155;border:1px solid #475569;color:#fff;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Copy</button>
-                </div>
-              </li>
-              <li>
-                <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong><br>
-                Verify your <em>Client Secret</em> was pasted without extra spaces or linebreaks.
-              </li>
-            </ol>
-          </div>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
-            <div style="font-size:11.5px;color:#94a3b8;">
-              You can also sign in using Email &amp; Password.
-            </div>
-            <div style="display:flex;gap:8px;">
-              <a href="login.html" style="background:#10b981;border:none;color:#fff;padding:8px 14px;border-radius:6px;font-weight:600;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;">
-                Use Email Login &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-
-      modal.querySelector("#close-oauth-diag-btn").onclick = () => modal.remove();
-      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-
-      const copyBtn = modal.querySelector("#copy-oauth-cb-btn");
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText("https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback").then(() => {
-          copyBtn.textContent = "Copied! ✓";
-          copyBtn.style.background = "#10b981";
-          setTimeout(() => {
-            copyBtn.textContent = "Copy";
-            copyBtn.style.background = "#334155";
-          }, 2000);
-        });
-      };
-    }
-
-    // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
-    if (window.MOMENTUM_SUPABASE) {
-      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
-        if (!result) return;
-        if (result.error) {
-          if (result.isOAuthExchangeError || (result.error && (result.error.includes("external code") || result.error.includes("exchange")))) {
-            showToast("Google OAuth check needed. Tap for details or use Email login.", "⚠️", 7000);
-            showOAuthDiagnosticModal(result.error);
-          } else {
-            showToast(`Google Sign-In notice: ${result.error}`, "⚠️");
-          }
-          return;
-        }
-        if (result.email) {
-          State.user = result;
-          savedUser = result;
-          try {
-            localStorage.setItem("momentum_user", JSON.stringify(result));
-            localStorage.setItem("momentum_auth_user", JSON.stringify(result));
-            localStorage.removeItem("momentum_signed_out");
-          } catch (e) { }
-          renderUserAuthUI();
-          loadTickerPreferences();
-          if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
-            PortfolioService.syncFromCloud();
-          }
-          showToast(`Welcome, ${result.name}! Signed in with Google.`, "🚀");
-        }
-      });
-
-      // Check existing Supabase session asynchronously on startup
-      if (window.MOMENTUM_SUPABASE.client && window.MOMENTUM_SUPABASE.client.auth) {
-        window.MOMENTUM_SUPABASE.client.auth.getSession().then(({ data: { session } }) => {
-          if (session && session.user && (!State.user || !State.user.email)) {
-            const u = session.user;
-            const meta = u.user_metadata || {};
-            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
-            const profile = {
-              id: u.id,
-              email: u.email,
-              name: name,
-              plan: "PRO Terminal",
-              avatar: name.charAt(0).toUpperCase() || "A",
-              broker: "Demat Linked",
-              provider: u.app_metadata?.provider || "supabase"
-            };
-            State.user = profile;
-            savedUser = profile;
-            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) { }
-            renderUserAuthUI();
-            if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
-              PortfolioService.syncFromCloud();
-            }
-          }
-        }).catch(() => { });
-
-        // Listen for live auth state changes (login, logout, token refresh)
-        window.MOMENTUM_SUPABASE.client.auth.onAuthStateChange((event, session) => {
-          if (session && session.user) {
-            const u = session.user;
-            const meta = u.user_metadata || {};
-            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
-            const profile = {
-              id: u.id,
-              email: u.email,
-              name: name,
-              plan: "PRO Terminal",
-              avatar: name.charAt(0).toUpperCase() || "A",
-              broker: "Demat Linked",
-              provider: u.app_metadata?.provider || "supabase"
-            };
-            State.user = profile;
-            savedUser = profile;
-            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) { }
-            renderUserAuthUI();
-          } else if (event === "SIGNED_OUT") {
-            State.user = null;
-            savedUser = null;
-            renderUserAuthUI();
-          }
-        });
-      }
-    }
-
-    // Hydrate Heatmap stocks with authentic live prices from ST
-    if (typeof syncHeatmapLivePrices === "function") {
-      syncHeatmapLivePrices();
-    }
-
-    // Load persisted theme preference (White or Midnight)
-    let savedTheme = "midnight";
-    try {
-      const stored = localStorage.getItem("momentum_theme_pref");
-      if (stored === "white" || stored === "midnight") {
-        savedTheme = stored;
-      }
-    } catch (e) { }
-    applyTheme(savedTheme);
-
-    // Restore collapsed sidebar workspace preference on desktop
-    try {
-      if (localStorage.getItem("momentum_sidebar_collapsed") === "1" && window.innerWidth > 768) {
-        document.body.classList.add("sidebar-collapsed");
-      }
-    } catch (e) { }
-
-    // Load persisted ticker & watchlist preferences from localStorage & Supabase
-    loadTickerPreferences();
-    if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
-      PortfolioService.syncFromCloud();
-    }
-
-    // Check initial hash for deep linking
-    const hash = window.location.hash.slice(1);
-    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
-    if (hash.startsWith("events-")) {
-      State.eventsTab = hash.replace("events-", "");
-      State.view = "events";
-    } else if (hash === "sector-turnover") {
-      State.sectorSubTab = "turnover";
-      State.view = "sector-turnover";
-    } else if (hash === "sectors") {
-      State.sectorSubTab = "indices";
-      State.view = "sectors";
-    } else if (validViews.includes(hash)) {
-      State.view = hash;
-    } else {
-      State.view = "screener";
-    }
-
-    renderTicker();
-    setupTickerModalEvents();
-    renderSidebarWatchlist();
-    initNavAccordions();
-    renderUserAuthUI();
-    setupGlobalEventListeners();
-    setupHoldingModalEvents();
-    if (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.preloadStaticData) {
-      ScreeningMantisClient.preloadStaticData();
-    }
-    try {
-      renderActiveView();
-    } catch (err) {
-      console.error("renderActiveView error during init:", err);
-    }
-
-    // Handle browser back/forward and deep link hash changes
-    window.addEventListener("hashchange", () => {
-      const h = window.location.hash.slice(1);
-      if (h) {
-        let nextView = h;
-        if (h.startsWith("events-")) {
-          State.eventsTab = h.replace("events-", "");
-          nextView = "events";
-        } else if (h === "sector-turnover") {
-          State.sectorSubTab = "turnover";
-          nextView = "sector-turnover";
-        } else if (h === "sectors") {
-          State.sectorSubTab = "indices";
-          nextView = "sectors";
-        }
-        if (nextView && nextView !== State.view) {
-          if (State.view !== "login") {
-            recordViewNavigation(State.view);
-            State.previousView = State.view;
-          }
-          State.view = nextView;
-          try {
-            renderActiveView();
-          } catch (e) {
-            console.error("renderActiveView error on hashchange:", e);
-          }
-        }
-      }
-    });
-
-    // Initialize stock alert modal events & evaluate alerts on startup
-    initStockAlertModalEvents();
-    evaluateStockAlerts(true);
-    setInterval(() => {
-      if (!document.hidden) evaluateStockAlerts();
-    }, 8000);
-
-    // Verified EOD Market Status Mode (3:45 PM EOD & 7:00 PM FII/DII)
-    LiveWebSocketService.connect();
-
-    // Fetch initial Market Mood Index (MMI)
-    MarketMoodService.fetchMMI();
-
-    // Fetch repository-synced daily EOD universe & verified indicators
-    syncNifty500Catalog();
-    ScreeningMantisClient.syncAll();
-
-    // Groww publishes FII/DII flows after the cash-market close
-    FiiDiiService.fetch();
-
-    // Fetch IPO feed from backend
-    IPOLiveService.fetchIPOData(false);
-
-    // Refresh owner ideas cleanly when returning to Screener tab
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && State.view === 'screener') {
-        fetchOwnerIdeas(false);
-      }
-    });
-
-    // Cross-tab broadcast sync for Owner Studio ideas
-    window.addEventListener('storage', function (e) {
-      if (e.key === 'mc_owner_ideas_sync') {
-        fetchOwnerIdeas(true);
-      }
-    });
-
-    // Load upcoming concall schedule
-    setTimeout(() => {
-      if (typeof ConcallLiveService !== "undefined") {
-        ConcallLiveService.fetchUpcoming(false);
-        ConcallLiveService.fetchResults(false);
-      }
-    }, 1200);
-
-    fetchOwnerIdeas();
-    window.State = State;
-    window.getHeatmapStocksForIndex = getHeatmapStocksForIndex;
-    window.renderHeatmapView = renderHeatmapView;
-    window.openStockAlertModal = openStockAlertModal;
-    window.closeStockAlertModal = closeStockAlertModal;
-    window.evaluateStockAlerts = evaluateStockAlerts;
-    window.saveStockAlerts = saveStockAlerts;
-    window.renderHomeView = renderHomeView;
-    window.renderDashboardAlertsSectionHTML = renderDashboardAlertsSectionHTML;
-    window.openStockAlertsManagerModal = openStockAlertsManagerModal;
-    window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
-    window.refreshAllAlertsContainers = refreshAllAlertsContainers;
-    window.renderBellToggleHTML = renderBellToggleHTML;
-    window.createSlideCommit = createSlideCommit;
     function initStarBorder(root, options = {}) {
     if (!root || root._starBorderCleanup) return;
     const canvas = root.querySelector('.star-border__light');
@@ -39737,6 +39399,346 @@
     });
   }
 
+
+  function init() {
+    // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
+    function syncLiveAuthState() {
+      const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
+      if (stored && (!State.user || State.user.email !== stored.email)) {
+        State.user = stored;
+        savedUser = stored;
+        renderUserAuthUI();
+        if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+          PortfolioService.syncFromCloud();
+        }
+      } else if (!stored && State.user) {
+        const signedOut = localStorage.getItem("momentum_signed_out");
+        if (signedOut === "true" || signedOut === "1") {
+          State.user = null;
+          savedUser = null;
+          renderUserAuthUI();
+        }
+      }
+    }
+    syncLiveAuthState();
+    window.addEventListener("storage", (ev) => {
+      if (!ev || !ev.key || ev.key.includes("momentum_") || ev.key.includes("auth-token") || ev.key.includes("supabase")) {
+        syncLiveAuthState();
+      }
+    });
+    [200, 600, 1500, 3000].forEach(delay => setTimeout(syncLiveAuthState, delay));
+
+    // Diagnostic modal for Supabase & Google OAuth exchange configuration
+    function showOAuthDiagnosticModal(rawErr) {
+      let existing = document.getElementById("oauth-diagnostic-modal");
+      if (existing) existing.remove();
+
+      const modal = document.createElement("div");
+      modal.id = "oauth-diagnostic-modal";
+      modal.className = "modal-backdrop active";
+      modal.style.cssText = "display:flex;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);z-index:999999;padding:16px;";
+
+      modal.innerHTML = `
+        <div style="background:#0f172a;border:1px solid rgba(239,68,68,0.35);border-radius:14px;max-width:560px;width:100%;padding:24px;color:#f8fafc;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);font-family:var(--font-sans, system-ui, sans-serif);position:relative;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:24px;">⚠️</span>
+            <div>
+              <h3 style="margin:0;font-size:17px;font-weight:700;color:#f8fafc;">Google Sign-In: Setup Check Required</h3>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Supabase was unable to exchange external token with Google</div>
+            </div>
+            <button id="close-oauth-diag-btn" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:4px;" title="Close">✕</button>
+          </div>
+
+          <p style="font-size:12.5px;color:#cbd5e1;line-height:1.5;margin:0 0 14px 0;">
+            Google successfully authenticated your account, but Supabase could not trade the code for a session. This happens when the redirect URI or Client Secret is mismatched.
+          </p>
+
+          <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;">
+            <div style="font-weight:700;color:#f87171;margin-bottom:6px;">Two Quick Verifications:</div>
+            <ol style="margin:0 0 0 16px;padding:0;color:#cbd5e1;line-height:1.6;font-size:11.5px;">
+              <li style="margin-bottom:8px;">
+                <strong>Google Cloud Console &rarr; Credentials &rarr; OAuth 2.0 Client ID</strong><br>
+                Under <em>Authorized redirect URIs</em>, make sure this exact Supabase callback URL is added:
+                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                  <code id="oauth-diag-cb-url" style="background:#1e293b;padding:3px 7px;border-radius:4px;color:#38bdf8;font-family:var(--font-mono, monospace);font-size:11px;border:1px solid #334155;word-break:break-all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
+                  <button id="copy-oauth-cb-btn" style="background:#334155;border:1px solid #475569;color:#fff;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Copy</button>
+                </div>
+              </li>
+              <li>
+                <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong><br>
+                Verify your <em>Client Secret</em> was pasted without extra spaces or linebreaks.
+              </li>
+            </ol>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="font-size:11.5px;color:#94a3b8;">
+              You can also sign in using Email &amp; Password.
+            </div>
+            <div style="display:flex;gap:8px;">
+              <a href="login.html" style="background:#10b981;border:none;color:#fff;padding:8px 14px;border-radius:6px;font-weight:600;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;">
+                Use Email Login &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      modal.querySelector("#close-oauth-diag-btn").onclick = () => modal.remove();
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+      const copyBtn = modal.querySelector("#copy-oauth-cb-btn");
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText("https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback").then(() => {
+          copyBtn.textContent = "Copied! ✓";
+          copyBtn.style.background = "#10b981";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy";
+            copyBtn.style.background = "#334155";
+          }, 2000);
+        });
+      };
+    }
+
+    // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
+    if (window.MOMENTUM_SUPABASE) {
+      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
+        if (!result) return;
+        if (result.error) {
+          if (result.isOAuthExchangeError || (result.error && (result.error.includes("external code") || result.error.includes("exchange")))) {
+            showToast("Google OAuth check needed. Tap for details or use Email login.", "⚠️", 7000);
+            showOAuthDiagnosticModal(result.error);
+          } else {
+            showToast(`Google Sign-In notice: ${result.error}`, "⚠️");
+          }
+          return;
+        }
+        if (result.email) {
+          State.user = result;
+          savedUser = result;
+          try {
+            localStorage.setItem("momentum_user", JSON.stringify(result));
+            localStorage.setItem("momentum_auth_user", JSON.stringify(result));
+            localStorage.removeItem("momentum_signed_out");
+          } catch (e) { }
+          renderUserAuthUI();
+          loadTickerPreferences();
+          if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+            PortfolioService.syncFromCloud();
+          }
+          showToast(`Welcome, ${result.name}! Signed in with Google.`, "🚀");
+        }
+      });
+
+      // Check existing Supabase session asynchronously on startup
+      if (window.MOMENTUM_SUPABASE.client && window.MOMENTUM_SUPABASE.client.auth) {
+        window.MOMENTUM_SUPABASE.client.auth.getSession().then(({ data: { session } }) => {
+          if (session && session.user && (!State.user || !State.user.email)) {
+            const u = session.user;
+            const meta = u.user_metadata || {};
+            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
+            const profile = {
+              id: u.id,
+              email: u.email,
+              name: name,
+              plan: "PRO Terminal",
+              avatar: name.charAt(0).toUpperCase() || "A",
+              broker: "Demat Linked",
+              provider: u.app_metadata?.provider || "supabase"
+            };
+            State.user = profile;
+            savedUser = profile;
+            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) { }
+            renderUserAuthUI();
+            if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+              PortfolioService.syncFromCloud();
+            }
+          }
+        }).catch(() => { });
+
+        // Listen for live auth state changes (login, logout, token refresh)
+        window.MOMENTUM_SUPABASE.client.auth.onAuthStateChange((event, session) => {
+          if (session && session.user) {
+            const u = session.user;
+            const meta = u.user_metadata || {};
+            const name = meta.full_name || meta.name || (u.email ? u.email.split('@')[0] : 'Trader');
+            const profile = {
+              id: u.id,
+              email: u.email,
+              name: name,
+              plan: "PRO Terminal",
+              avatar: name.charAt(0).toUpperCase() || "A",
+              broker: "Demat Linked",
+              provider: u.app_metadata?.provider || "supabase"
+            };
+            State.user = profile;
+            savedUser = profile;
+            try { localStorage.setItem("momentum_user", JSON.stringify(profile)); } catch (e) { }
+            renderUserAuthUI();
+          } else if (event === "SIGNED_OUT") {
+            State.user = null;
+            savedUser = null;
+            renderUserAuthUI();
+          }
+        });
+      }
+    }
+
+    // Hydrate Heatmap stocks with authentic live prices from ST
+    if (typeof syncHeatmapLivePrices === "function") {
+      syncHeatmapLivePrices();
+    }
+
+    // Load persisted theme preference (White or Midnight)
+    let savedTheme = "midnight";
+    try {
+      const stored = localStorage.getItem("momentum_theme_pref");
+      if (stored === "white" || stored === "midnight") {
+        savedTheme = stored;
+      }
+    } catch (e) { }
+    applyTheme(savedTheme);
+
+    // Restore collapsed sidebar workspace preference on desktop
+    try {
+      if (localStorage.getItem("momentum_sidebar_collapsed") === "1" && window.innerWidth > 768) {
+        document.body.classList.add("sidebar-collapsed");
+      }
+    } catch (e) { }
+
+    // Load persisted ticker & watchlist preferences from localStorage & Supabase
+    loadTickerPreferences();
+    if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
+      PortfolioService.syncFromCloud();
+    }
+
+    // Check initial hash for deep linking
+    const hash = window.location.hash.slice(1);
+    const validViews = ["screener", "home", "breadth", "sectors", "sector-turnover", "sector-stocks", "mmi", "netflow", "stock", "news", "heatmap", "valuation", "portfolio", "ipo", "events", "deals", "login"];
+    if (hash.startsWith("events-")) {
+      State.eventsTab = hash.replace("events-", "");
+      State.view = "events";
+    } else if (hash === "sector-turnover") {
+      State.sectorSubTab = "turnover";
+      State.view = "sector-turnover";
+    } else if (hash === "sectors") {
+      State.sectorSubTab = "indices";
+      State.view = "sectors";
+    } else if (validViews.includes(hash)) {
+      State.view = hash;
+    } else {
+      State.view = "screener";
+    }
+
+    renderTicker();
+    setupTickerModalEvents();
+    renderSidebarWatchlist();
+    initNavAccordions();
+    renderUserAuthUI();
+    setupGlobalEventListeners();
+    setupHoldingModalEvents();
+    if (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.preloadStaticData) {
+      ScreeningMantisClient.preloadStaticData();
+    }
+    try {
+      renderActiveView();
+    } catch (err) {
+      console.error("renderActiveView error during init:", err);
+    }
+
+    // Handle browser back/forward and deep link hash changes
+    window.addEventListener("hashchange", () => {
+      const h = window.location.hash.slice(1);
+      if (h) {
+        let nextView = h;
+        if (h.startsWith("events-")) {
+          State.eventsTab = h.replace("events-", "");
+          nextView = "events";
+        } else if (h === "sector-turnover") {
+          State.sectorSubTab = "turnover";
+          nextView = "sector-turnover";
+        } else if (h === "sectors") {
+          State.sectorSubTab = "indices";
+          nextView = "sectors";
+        }
+        if (nextView && nextView !== State.view) {
+          if (State.view !== "login") {
+            recordViewNavigation(State.view);
+            State.previousView = State.view;
+          }
+          State.view = nextView;
+          try {
+            renderActiveView();
+          } catch (e) {
+            console.error("renderActiveView error on hashchange:", e);
+          }
+        }
+      }
+    });
+
+    // Initialize stock alert modal events & evaluate alerts on startup
+    initStockAlertModalEvents();
+    evaluateStockAlerts(true);
+    setInterval(() => {
+      if (!document.hidden) evaluateStockAlerts();
+    }, 8000);
+
+    // Verified EOD Market Status Mode (3:45 PM EOD & 7:00 PM FII/DII)
+    LiveWebSocketService.connect();
+
+    // Fetch initial Market Mood Index (MMI)
+    MarketMoodService.fetchMMI();
+
+    // Fetch repository-synced daily EOD universe & verified indicators
+    syncNifty500Catalog();
+    ScreeningMantisClient.syncAll();
+
+    // Groww publishes FII/DII flows after the cash-market close
+    FiiDiiService.fetch();
+
+    // Fetch IPO feed from backend
+    IPOLiveService.fetchIPOData(false);
+
+    // Refresh owner ideas cleanly when returning to Screener tab
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && State.view === 'screener') {
+        fetchOwnerIdeas(false);
+      }
+    });
+
+    // Cross-tab broadcast sync for Owner Studio ideas
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'mc_owner_ideas_sync') {
+        fetchOwnerIdeas(true);
+      }
+    });
+
+    // Load upcoming concall schedule
+    setTimeout(() => {
+      if (typeof ConcallLiveService !== "undefined") {
+        ConcallLiveService.fetchUpcoming(false);
+        ConcallLiveService.fetchResults(false);
+      }
+    }, 1200);
+
+    fetchOwnerIdeas();
+    window.State = State;
+    window.getHeatmapStocksForIndex = getHeatmapStocksForIndex;
+    window.renderHeatmapView = renderHeatmapView;
+    window.openStockAlertModal = openStockAlertModal;
+    window.closeStockAlertModal = closeStockAlertModal;
+    window.evaluateStockAlerts = evaluateStockAlerts;
+    window.saveStockAlerts = saveStockAlerts;
+    window.renderHomeView = renderHomeView;
+    window.renderDashboardAlertsSectionHTML = renderDashboardAlertsSectionHTML;
+    window.openStockAlertsManagerModal = openStockAlertsManagerModal;
+    window.closeStockAlertsManagerModal = closeStockAlertsManagerModal;
+    window.refreshAllAlertsContainers = refreshAllAlertsContainers;
+    window.renderBellToggleHTML = renderBellToggleHTML;
+    window.createSlideCommit = createSlideCommit;
+    initScreenerChipsStarBorder();
   window.setVipPayPlan = setVipPayPlan;
     window.ringBellToggle = ringBellToggle;
     window.updateStockBellToggles = updateStockBellToggles;
