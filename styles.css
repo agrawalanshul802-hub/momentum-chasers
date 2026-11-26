@@ -17695,6 +17695,46 @@ body.theme-white #idea-code-input {
     border-color: #cbd5e1 !important;
     color: #0f172a !important;
 }
+body.theme-white #plan-tier-price-monthly {
+    color: #0f172a !important;
+}
+body.theme-white .vip-plan-card {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+body.theme-white .vip-plan-card.is-active {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-color: #16a34a !important;
+}
+body.theme-white #idea-detail-timeframe,
+body.theme-white #idea-detail-entry {
+    color: #0f172a !important;
+}
+body.theme-white #idea-modal-view-details > div[style*="grid"] > div[style*="rgba(255,255,255,0.03)"] {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+body.theme-white #idea-detail-thesis-box {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+body.theme-white #idea-detail-thesis-text {
+    color: #334155 !important;
+}
+body.theme-white .slide-commit__track {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+}
+body.theme-white .slide-commit__label {
+    text-shadow: none !important;
+}
+body.theme-white .slide-commit__text--plain {
+    color: #0f172a !important;
+}
+body.theme-white .btn-unlock-code-cta {
+    color: #475569 !important;
+}
 
 /* ==========================================================================
    IPO RESEARCH PDF ICON & PILL BADGE (FREE & PAID VIP STATE)
