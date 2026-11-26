@@ -15955,11 +15955,8 @@
     let sectors = [...(data.sectors || [])];
     const baselineN = parseInt(State.sectorTurnoverBaseline, 10) || 8;
 
-    // Filter
+    // Search query (keep all rows in DOM so clearing search restores all sectors immediately)
     const q = (State.sectorTurnoverSearch || '').trim().toLowerCase();
-    if (q) {
-      sectors = sectors.filter(s => (s.name || '').toLowerCase().includes(q) || (s.sym || '').toLowerCase().includes(q));
-    }
 
     // Sort
     const sortCol = State.sectorTurnoverSortCol || dates[0] || '25-11';
@@ -16003,8 +16000,9 @@
           ${sectors.map(sec => {
       const metric = getSectorBaselineMetrics(sec, baselineN, dates);
       const baselineAvg = metric.avg;
+      const isMatch = !q || (sec.name || '').toLowerCase().includes(q) || (sec.sym || '').toLowerCase().includes(q);
       return `
-              <tr class="turnover-row" data-sector-name="${escapeHtml(sec.name)}">
+              <tr class="turnover-row" data-sector-name="${escapeHtml(sec.name)}" data-sector-sym="${escapeHtml(sec.sym || '')}" style="${isMatch ? '' : 'display:none'}">
                 <td class="turnover-td-sector" data-action="open-sector-stocks" data-sector-index="${escapeHtml(sec.name)}" title="View ${escapeHtml(sec.name)} constituent stocks">
                   <div class="sector-td-name-cell">
                     <span class="sector-name-label">${escapeHtml(sec.name)}</span>
@@ -16768,7 +16766,8 @@
         const rows = document.querySelectorAll(".turnover-row");
         rows.forEach(r => {
           const secName = (r.dataset.sectorName || "").toLowerCase();
-          r.style.display = !State.sectorTurnoverSearch || secName.includes(State.sectorTurnoverSearch) ? "" : "none";
+          const secSym = (r.dataset.sectorSym || "").toLowerCase();
+          r.style.display = !State.sectorTurnoverSearch || secName.includes(State.sectorTurnoverSearch) || secSym.includes(State.sectorTurnoverSearch) ? "" : "none";
         });
       });
     }
