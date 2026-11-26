@@ -73,8 +73,8 @@ function loadEnv() {
 }
 loadEnv();
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || '';
+const CLERK_PUBLISHABLE_KEY = process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_dmFsdWVkLXBhcnJvdC02MTg3LmNsZXJrLmFjY291bnRzLmRldiQ';
+const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY || '';
 
 // ------------------------------------------------------------------------------
 // 1. MULTI-API KEY POOL & TOKEN-BUCKET RATE LIMITER
@@ -7863,7 +7863,7 @@ server.listen(PORT, async () => {
   console.log(`⚡ WebSocket Stream:     ws://localhost:${PORT}/live`);
   console.log(`🔑 Key Pool Status:      http://localhost:${PORT}/api/keys/status`);
   console.log(`🔐 Dhan Auth Status:     http://localhost:${PORT}/api/dhan/status`);
-  console.log(`🗄️ Supabase Status:      ${SUPABASE_URL ? 'Configured (' + SUPABASE_URL + ')' : 'Not configured (Local memory fallback active)'}`);
+  console.log(`🔐 Clerk Auth Status:    ${CLERK_PUBLISHABLE_KEY ? 'Configured' : 'Missing key'}`);
   console.log(`📈 15m 50x200 EMA Engine: Active`);
   console.log(`🌊 Order Flow F&O Engine: Active (http://localhost:${PORT}/order-flow/)`);
   console.log(`================================================================\n`);
