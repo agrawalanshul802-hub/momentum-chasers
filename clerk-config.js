@@ -161,20 +161,25 @@
         } catch (_) { }
         const clerk = await ensureClerkLoaded();
         if (!clerk) return { success: false, error: 'Clerk SDK is still loading. Please try again.' };
-        const origin = window.location.origin;
-        if (clerk.client && clerk.client.signIn) {
-          await clerk.client.signIn.authenticateWithRedirect({
-            strategy: 'oauth_google',
-            redirectUrl: origin + '/login.html#/sso-callback',
-            redirectUrlComplete: origin + '/index.html#screener'
+        const targetUrl = window.location.origin + '/index.html#screener';
+        if (typeof clerk.openSignIn === 'function') {
+          clerk.openSignIn({
+            forceRedirectUrl: targetUrl,
+            fallbackRedirectUrl: targetUrl,
+            signUpForceRedirectUrl: targetUrl,
+            signUpFallbackRedirectUrl: targetUrl
           });
           return { success: true };
         }
-        clerk.openSignIn({
-          afterSignInUrl: origin + '/index.html#screener',
-          afterSignUpUrl: origin + '/index.html#screener'
-        });
-        return { success: true };
+        if (clerk.client && clerk.client.signIn) {
+          await clerk.client.signIn.authenticateWithRedirect({
+            strategy: 'oauth_google',
+            redirectUrl: window.location.origin + '/login.html#/sso-callback',
+            redirectUrlComplete: targetUrl
+          });
+          return { success: true };
+        }
+        return { success: false, error: 'Clerk sign-in is unavailable.' };
       } catch (err) {
         return { success: false, error: (err && err.errors && err.errors[0] && err.errors[0].longMessage) || err.message || 'Google sign-in failed' };
       }
