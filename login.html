@@ -7876,81 +7876,16 @@
     <span>💬</span> Feedback
   </button>
 
-  <!-- Feedback Modal Window -->
+  <!-- Feedback Modal Window (KokonutUI HelpfulRating) -->
   <div class="feedback-backdrop" id="feedback-modal" aria-hidden="true">
-    <div class="feedback-card" role="dialog" aria-labelledby="feedback-card-title">
+    <div class="feedback-card" role="dialog" aria-labelledby="feedback-card-title" style="max-width:440px;padding:18px;background:transparent;border:none;box-shadow:none;">
       <button class="feedback-close" id="feedback-close-btn" onclick="closeFeedbackModal()"
-        aria-label="Close dialog">&times;</button>
-
-      <div class="feedback-header">
-        <div class="feedback-badge">
-          <span>💬</span> DIRECT EMAIL FEEDBACK
-        </div>
-        <h2 class="feedback-title" id="feedback-card-title">Share Your Thoughts</h2>
-        <p class="feedback-sub">Your message, feature request, or report is delivered directly to our founder's inbox at
-          <strong>support@momentumchasers.in</strong>.
-        </p>
-      </div>
-
-      <div class="feedback-status-msg" id="feedback-status-msg"></div>
-
-      <form class="feedback-form" id="feedback-form" onsubmit="handleFeedbackSubmit(event)">
-        <div class="feedback-row">
-          <div class="feedback-field">
-            <label class="feedback-label" for="fb-name">Your Name</label>
-            <input class="feedback-input" id="fb-name" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name">
-          </div>
-          <div class="feedback-field">
-            <label class="feedback-label" for="fb-email">Your Email <span style="color:#ef4444">*</span></label>
-            <input class="feedback-input" id="fb-email" type="email" placeholder="you@example.com" required
-              autocomplete="email">
-          </div>
-        </div>
-
-        <div class="feedback-field">
-          <label class="feedback-label" for="fb-topic">Category</label>
-          <select class="feedback-input feedback-select" id="fb-topic">
-            <option value="General Feedback">💡 General Feedback &amp; Suggestions</option>
-            <option value="Feature Request">🚀 Feature Request (New Screener/Indicator)</option>
-            <option value="Bug Report">🐛 Report an Issue / Bug</option>
-            <option value="Market Data Query">📊 Market Data or Calculation Query</option>
-            <option value="Terms & Legal Query">📜 Terms &amp; Conditions (T&amp;C) Query</option>
-            <option value="Collaboration / Business">🤝 Collaboration / Inquiry</option>
-          </select>
-        </div>
-
-        <div class="feedback-field">
-          <label class="feedback-label">Experience Rating</label>
-          <div class="feedback-sentiment-row">
-            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Awesome 🔥" checked>
-              <span>Awesome 🔥</span></label>
-            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Good 👍"> <span>Good
-                👍</span></label>
-            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Needs Work 🤔"> <span>Needs
-                Work 🤔</span></label>
-            <label class="sentiment-pill"><input type="radio" name="fb-sentiment" value="Found Bug 🐛"> <span>Found Bug
-                🐛</span></label>
-          </div>
-        </div>
-
-        <div class="feedback-field">
-          <label class="feedback-label" for="fb-message">Message <span style="color:#ef4444">*</span></label>
-          <textarea class="feedback-input feedback-textarea" id="fb-message" rows="4"
-            placeholder="Tell us what you like, what we should improve, or any issue you encountered..."
-            required></textarea>
-        </div>
-
-        <p class="feedback-legal-note">By submitting, you agree to our <a href="/terms.html" target="_blank">Terms &amp;
-            Conditions</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>.</p>
-
-        <button class="feedback-submit-btn" id="fb-submit-btn" type="submit">
-          <span id="fb-submit-btn-text">Send Feedback Directly &rarr;</span>
-          <span class="fb-spinner" id="fb-spinner" style="display:none;"></span>
-        </button>
-      </form>
+        aria-label="Close dialog" style="top:24px;right:28px;z-index:10;">&times;</button>
+      <div id="helpful-rating-login-mount"></div>
     </div>
   </div>
 
+  <script src="helpful-rating.js?v=1.0.0"></script>
   <script>
     function openFeedbackModal() {
       const modal = document.getElementById('feedback-modal');
@@ -7958,10 +7893,32 @@
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-          const firstInp = document.getElementById('fb-email');
-          if (firstInp) firstInp.focus();
-        }, 100);
+        const mount = document.getElementById('helpful-rating-login-mount');
+        if (mount && !mount.dataset.mounted && typeof window.mountHelpfulRating === 'function') {
+          mount.dataset.mounted = '1';
+          window.mountHelpfulRating(mount, {
+            question: 'Was this page helpful?',
+            onSubmit: async function (fb) {
+              const u = (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
+              const msgParts = [];
+              if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
+              if (fb.note) msgParts.push(fb.note);
+              try {
+                await fetch('/api/feedback', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    name: u.name || 'Visitor',
+                    email: u.email || 'visitor@momentumchasers.in',
+                    topic: 'Helpful Rating (' + fb.rating + '/5)',
+                    sentiment: fb.sentiment,
+                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
+                  })
+                });
+              } catch (_) { }
+            }
+          });
+        }
       }
     }
 

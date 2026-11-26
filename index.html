@@ -327,7 +327,8 @@
             <!-- Persistent SEBI Educational Disclaimer Footer -->
             <footer class="mc-app-disclaimer-footer" style="margin-top:28px;padding:14px 18px;border-top:1px solid rgba(148,163,184,0.18);font-size:12px;line-height:1.6;color:var(--mu,#64748b);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
                 <span>We are not SEBI registered. The information shared on this platform is for educational and informational purposes only and does not constitute investment advice or a buy/sell recommendation. All investment decisions are made at the user's own risk.</span>
-                <span style="display:inline-flex;gap:12px;white-space:nowrap;font-weight:600;">
+                <span style="display:inline-flex;gap:12px;white-space:nowrap;font-weight:600;align-items:center;">
+                    <a href="#feedback" onclick="event.preventDefault();if(window.openAppFeedbackModal)window.openAppFeedbackModal();" style="color:inherit;text-decoration:underline;">💬 Feedback</a>
                     <a href="/terms.html" target="_blank" style="color:inherit;text-decoration:underline;">Terms</a>
                     <a href="/privacy.html" target="_blank" style="color:inherit;text-decoration:underline;">Privacy</a>
                     <a href="/Momentum-Chasers-Terms-and-Privacy-Policy.pdf" target="_blank" style="color:inherit;text-decoration:underline;">Legal PDF</a>
@@ -1030,6 +1031,52 @@
     <!-- Clerk Client & Auth Configuration Engine -->
     <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_dmFsdWVkLXBhcnJvdC02MTg3LmNsZXJrLmFjY291bnRzLmRldiQ" src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@6/dist/clerk.browser.js" type="text/javascript"></script>
     <script src="clerk-config.js?v=1.0.2"></script>
+    <script src="helpful-rating.js?v=1.0.0"></script>
+
+    <!-- App Feedback Modal (KokonutUI HelpfulRating) -->
+    <div id="app-feedback-modal" onclick="if(event.target===this)window.closeAppFeedbackModal();" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,0.72);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:400px;">
+            <button type="button" onclick="window.closeAppFeedbackModal();" aria-label="Close feedback" style="position:absolute;top:12px;right:14px;z-index:10;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+            <div id="helpful-rating-app-mount"></div>
+        </div>
+    </div>
+    <script>
+      window.openAppFeedbackModal = function () {
+        var m = document.getElementById('app-feedback-modal');
+        if (!m) return;
+        m.style.display = 'flex';
+        var mount = document.getElementById('helpful-rating-app-mount');
+        if (mount && !mount.dataset.mounted && typeof window.mountHelpfulRating === 'function') {
+          mount.dataset.mounted = '1';
+          window.mountHelpfulRating(mount, {
+            question: 'Was Momentum Chasers helpful?',
+            onSubmit: async function (fb) {
+              var u = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
+              var msgParts = [];
+              if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
+              if (fb.note) msgParts.push(fb.note);
+              try {
+                await fetch('/api/feedback', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    name: u.name || 'Trader',
+                    email: u.email || localStorage.getItem('mc_user_email') || 'trader@momentumchasers.in',
+                    topic: 'Helpful Rating (' + fb.rating + '/5)',
+                    sentiment: fb.sentiment,
+                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
+                  })
+                });
+              } catch (_) { }
+            }
+          });
+        }
+      };
+      window.closeAppFeedbackModal = function () {
+        var m = document.getElementById('app-feedback-modal');
+        if (m) m.style.display = 'none';
+      };
+    </script>
 
     <!-- ScreeningMantis Live Authentic Technical Indicators Feed -->
     <script src="data/screeningmantis-emas.js?v=6.4.7"></script>
