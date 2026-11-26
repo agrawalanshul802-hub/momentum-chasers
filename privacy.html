@@ -382,7 +382,7 @@
         <p>When you interact with our Platform, we may collect the following categories of information:</p>
         <ul>
           <li><strong>Authentication Data:</strong> Your email address and optional display name provided during Email/Password registration or Google OAuth sign-in. For Google sign-in, we receive only your name, email address, and profile picture URL — no access to your Google Drive, Gmail, or other Google services.</li>
-          <li><strong>Portfolio &amp; Watchlist Data:</strong> Stock holdings, purchase prices, quantities, and watchlisted symbols that you voluntarily enter into the Portfolio Tracker and Watchlist Manager. This data is stored in Supabase and is accessible only by you.</li>
+          <li><strong>Portfolio &amp; Watchlist Data:</strong> Stock holdings, purchase prices, quantities, and watchlisted symbols that you voluntarily enter into the Portfolio Tracker and Watchlist Manager. This data is stored in Clerk and is accessible only by you.</li>
           <li><strong>Screener Preferences:</strong> Your customized screener column configurations, sort orders, filters, and UI layout preferences (stored in browser localStorage).</li>
           <li><strong>VIP Subscription Records:</strong> When you purchase a VIP subscription, we maintain a record of your registered email, UPI transaction ID provided by you, subscription plan, and activation date. We do <strong>not</strong> store your UPI ID or bank account details.</li>
           <li><strong>Feedback &amp; Correspondence:</strong> If you submit the in-app feedback form or email <strong>support@momentumchasers.in</strong>, we collect your name, email, star rating, and message content to respond to you.</li>
@@ -396,8 +396,8 @@
         <h2><span class="num">03</span> How We Use Your Information</h2>
         <p>We process your personal data only for the following legitimate operational purposes:</p>
         <ul>
-          <li>Authenticating your account via Supabase Auth (Email/Password or Google OAuth) and maintaining secure session tokens.</li>
-          <li>Syncing your stock watchlists, portfolio holdings, and screener preferences across your devices in real-time via Supabase.</li>
+          <li>Authenticating your account via Clerk Auth (Email/Password or Google OAuth) and maintaining secure session tokens.</li>
+          <li>Syncing your stock watchlists, portfolio holdings, and screener preferences across your devices in real-time via Clerk.</li>
           <li>Activating and verifying your VIP subscription access after confirmed UPI payment.</li>
           <li>Responding to your feedback, bug reports, refund requests, and support queries via <strong>support@momentumchasers.in</strong>.</li>
           <li>Sending pre-launch notifications to users who signed up on the Coming Soon waitlist (opt-out available on request).</li>
@@ -410,7 +410,7 @@
         <h2><span class="num">04</span> Third-Party Services &amp; Data Processors</h2>
         <p>To deliver the Platform, we rely on the following trusted third-party service providers. Each is subject to their own privacy policy:</p>
         <ul>
-          <li><strong>Supabase</strong> (supabase.co) — Cloud PostgreSQL database, Row-Level Security (RLS) enforced user auth, encrypted storage of portfolio/watchlist data. <a href="https://supabase.com/privacy" target="_blank" style="color:#93c5fd;">Supabase Privacy Policy ↗</a></li>
+          <li><strong>Clerk</strong> (Clerk.co) — Cloud PostgreSQL database, Row-Level Security (RLS) enforced user auth, encrypted storage of portfolio/watchlist data. <a href="https://Clerk.com/privacy" target="_blank" style="color:#93c5fd;">Clerk Privacy Policy ↗</a></li>
           <li><strong>Google Identity Services</strong> (OAuth 2.0) — Secure "Sign in with Google" authentication. Only your name, email, and profile photo are shared with our Platform. <a href="https://policies.google.com/privacy" target="_blank" style="color:#93c5fd;">Google Privacy Policy ↗</a></li>
           <li><strong>Render.com</strong> — Cloud hosting of the Node.js backend server and WebSocket live data proxy. Server logs may be retained by Render per their policy. <a href="https://render.com/privacy" target="_blank" style="color:#93c5fd;">Render Privacy Policy ↗</a></li>
           <li><strong>TradingView</strong> — Embedded charting widgets on Stock Deep Dive pages. TradingView may set their own cookies per their privacy policy. <a href="https://www.tradingview.com/privacy-policy/" target="_blank" style="color:#93c5fd;">TradingView Privacy Policy ↗</a></li>
@@ -442,7 +442,7 @@
         <h2><span class="num">06</span> Cookies &amp; Browser Storage</h2>
         <p>Momentum Chasers uses only functional cookies and browser storage — <strong>zero advertising or tracking cookies</strong>:</p>
         <ul>
-          <li><strong>Supabase Auth Token</strong> (localStorage) — Keeps you logged in across browser sessions. Cleared on logout.</li>
+          <li><strong>Clerk Auth Token</strong> (localStorage) — Keeps you logged in across browser sessions. Cleared on logout.</li>
           <li><strong>Screener Layout Preferences</strong> (localStorage) — Saves your column visibility, sort preferences, and filter states offline.</li>
           <li><strong>Watchlist &amp; Portfolio Cache</strong> (localStorage) — Temporarily caches your data for faster offline loading.</li>
           <li><strong>Owner Preview Cookie</strong> (<code>mc_owner_preview</code>) — A short-lived session cookie enabling the Platform operator to bypass the Coming Soon page on <code>momentumchasers.in</code> for internal testing. This cookie is not set for general users.</li>
@@ -454,7 +454,7 @@
       <section class="legal-section">
         <h2><span class="num">07</span> Data Retention</h2>
         <ul>
-          <li><strong>Account Data</strong> (Supabase): Retained for the lifetime of your active account. Permanently deleted within 48 business hours upon verified deletion request.</li>
+          <li><strong>Account Data</strong> (Clerk): Retained for the lifetime of your active account. Permanently deleted within 48 business hours upon verified deletion request.</li>
           <li><strong>Server Logs</strong>: Retained for up to 30 days for security and debugging purposes, then automatically purged.</li>
           <li><strong>Feedback Messages</strong>: Retained as long as necessary to respond and improve the Platform. Can be deleted on request.</li>
           <li><strong>VIP Subscription Records</strong>: Retained for accounting and dispute resolution purposes for a minimum of 2 years as required by Indian law.</li>
@@ -468,8 +468,8 @@
         <p>We employ defense-in-depth security measures to protect your personal information:</p>
         <ul>
           <li>All data transmissions between your browser and our servers use <strong>256-bit TLS/SSL HTTPS encryption</strong>.</li>
-          <li>Passwords are never stored in plaintext — they are cryptographically hashed using industry-standard bcrypt algorithms managed by Supabase Auth.</li>
-          <li>Supabase database enforces <strong>Row-Level Security (RLS)</strong> — your data rows are readable and writable only by your authenticated session, not by other users or public requests.</li>
+          <li>Passwords are never stored in plaintext — they are cryptographically hashed using industry-standard bcrypt algorithms managed by Clerk Auth.</li>
+          <li>Clerk database enforces <strong>Row-Level Security (RLS)</strong> — your data rows are readable and writable only by your authenticated session, not by other users or public requests.</li>
           <li>Backend server access is protected by API key authentication and environment variable secrets stored securely on Render.</li>
         </ul>
       </section>

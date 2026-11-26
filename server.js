@@ -669,49 +669,7 @@ function fetchJson(urlStr) {
 }
 
 // ------------------------------------------------------------------------------
-// 4. SUPABASE REST CONNECTOR HELPER
-// ------------------------------------------------------------------------------
-function querySupabase(table, queryParams = '') {
-  return new Promise((resolve, reject) => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      resolve({ configured: false, data: [] });
-      return;
-    }
-
-    const parsed = new URL(`${SUPABASE_URL}/rest/v1/${table}${queryParams ? '?' + queryParams : ''}`);
-    const options = {
-      hostname: parsed.hostname,
-      port: 443,
-      path: parsed.pathname + parsed.search,
-      method: 'GET',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsedData = JSON.parse(data);
-          resolve({ configured: true, status: res.statusCode, data: parsedData });
-        } catch (e) {
-          resolve({ configured: true, status: res.statusCode, raw: data });
-        }
-      });
-    });
-
-    req.on('error', err => resolve({ configured: true, error: err.message, data: [] }));
-    req.setTimeout(6000, () => { req.destroy(); resolve({ configured: true, error: 'Timeout', data: [] }); });
-    req.end();
-  });
-}
-
-// ------------------------------------------------------------------------------
-// 5. HTTP REQUEST ROUTER & STATIC FILE SERVER
+// 4. HTTP REQUEST ROUTER & STATIC FILE SERVER
 // ------------------------------------------------------------------------------
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -5319,16 +5277,14 @@ const server = http.createServer(async (req, res) => {
   if (orderFlowEngine.handleApi(req, res, pathname, parsedUrl.query)) return;
   if (orderFlowEngine.handleStatic(req, res, pathname)) return;
 
-  // Auth Public Configuration Endpoint (Clerk + Supabase)
+  // Auth Public Configuration Endpoint (Clerk)
   if (pathname === '/api/auth/config') {
     const clerkPubKey = process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_dmFsdWVkLXBhcnJvdC02MTg3LmNsZXJrLmFjY291bnRzLmRldiQ';
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       provider: 'clerk',
       clerkPublishableKey: clerkPubKey,
-      supabaseUrl: SUPABASE_URL || '',
-      supabaseAnonKey: SUPABASE_ANON_KEY || '',
-      configured: !!(clerkPubKey || (SUPABASE_URL && SUPABASE_ANON_KEY))
+      configured: !!clerkPubKey
     }));
     return;
   }
@@ -5339,7 +5295,7 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({
       status: 'operational',
       timeframe: '15m',
-      supabaseConnected: !!(SUPABASE_URL && SUPABASE_ANON_KEY),
+      clerkConfigured: true,
       activePoolKeys: keyPool.getStatus(),
       activeWebSocketClients: quantEngine.subscribers.size
     }, null, 2));
@@ -5668,22 +5624,6 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
       res.end(JSON.stringify({ success: false, source: 'Groww', error: err.message || 'Groww refresh failed' }));
     }
-    return;
-  }
-
-  // 5. Supabase Proxy Endpoint: /api/supabase/ipo
-  if (pathname === '/api/supabase/ipo') {
-    const result = await querySupabase('ipo_listings', 'order=listing_date.desc&limit=50');
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(result));
-    return;
-  }
-
-  // 6. Supabase Proxy Endpoint: /api/supabase/events
-  if (pathname === '/api/supabase/events') {
-    const result = await querySupabase('events_calendar', 'order=event_date.asc&limit=50');
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(result));
     return;
   }
 

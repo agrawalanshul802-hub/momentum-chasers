@@ -5433,7 +5433,7 @@
         <div style="background:rgba(15,23,42,0.75);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;">
           <h3 style="margin:0 0 10px;font-size:1rem;font-weight:800;color:#ffffff;">🔒 Auth, Cloud Sync &amp; DPDP 2023</h3>
           <ul style="margin:0;padding-left:18px;color:#cbd5e1;font-size:0.86rem;line-height:1.65;">
-            <li><strong>Supabase &amp; Google OAuth:</strong> 256-bit TLS encryption, bcrypt passwords &amp; Row-Level Security (RLS) for portfolios &amp; watchlists.</li>
+            <li><strong>Clerk &amp; Google OAuth:</strong> 256-bit TLS encryption, bcrypt passwords &amp; Row-Level Security (RLS) for portfolios &amp; watchlists.</li>
             <li><strong>Render &amp; Formspree:</strong> Cloud backend hosting &amp; Coming Soon waitlist form processing.</li>
             <li><strong>Zero Data Selling:</strong> We never sell personal data. Zero advertising cookies.</li>
             <li><strong>48-Hr Erasure:</strong> Email <strong>support@momentumchasers.in</strong> for full data deletion under India's DPDP Act, 2023.</li>
@@ -5579,7 +5579,7 @@
       try {
         var u = localStorage.getItem("momentum_auth_user");
         if (u && u.length > 5) return true;
-        var t = localStorage.getItem("supabase.auth.token");
+        var t = localStorage.getItem("Clerk.auth.token");
         if (t && t.length > 5) return true;
         for (var i = 0; i < localStorage.length; i++) {
           var k = localStorage.key(i) || "";
@@ -5996,7 +5996,7 @@
     })();
   </script>
 
-  <!-- ================= AUTH MODAL (SUPABASE & GOOGLE OAUTH) ================= -->
+  <!-- ================= AUTH MODAL (Clerk & Google OAuth) ================= -->
   <style>
     body.auth-modal-active {
       overflow: hidden;
@@ -6382,7 +6382,7 @@
       color: #64748b;
     }
 
-    .supabase-pill {
+    .Clerk-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -6391,7 +6391,7 @@
       cursor: pointer;
     }
 
-    .supabase-pill:hover {
+    .Clerk-pill:hover {
       text-decoration: underline;
     }
 
@@ -6761,8 +6761,8 @@
       </form>
 
       <div class="auth-footer-bar">
-        <span class="supabase-pill" id="auth-supabase-config-btn" title="View or edit Supabase project configuration">
-          <span>●</span> Supabase Auth Ready
+        <span class="Clerk-pill" id="auth-Clerk-config-btn" title="View or edit Clerk project configuration">
+          <span>●</span> Clerk Auth Ready
         </span>
         <span>256-bit SSL Encrypted</span>
       </div>
@@ -6771,7 +6771,7 @@
 
   <script>
     (function () {
-      // Modal Controller & Supabase Integration
+      // Modal Controller & Clerk Integration
       const modal = document.getElementById("auth-modal");
       const closeBtn = document.getElementById("auth-close-btn");
       const tabSignin = document.getElementById("tab-btn-signin");
@@ -6788,7 +6788,7 @@
       const emailInput = document.getElementById("auth-email-input");
       const passInput = document.getElementById("auth-password-input");
       const nameInput = document.getElementById("auth-name-input");
-      const cfgBtn = document.getElementById("auth-supabase-config-btn");
+      const cfgBtn = document.getElementById("auth-Clerk-config-btn");
       const backBtn = document.getElementById("auth-back-btn");
       const backArrow = document.getElementById("auth-back-arrow");
 
@@ -7086,15 +7086,15 @@
         if (window.MomentumAuth && typeof window.MomentumAuth.signInWithGoogle === "function") {
           return window.MomentumAuth;
         }
-        if (window.MOMENTUM_SUPABASE && typeof window.MOMENTUM_SUPABASE.signInWithGoogle === "function") {
-          window.MomentumAuth = window.MOMENTUM_SUPABASE;
+        if (window.MOMENTUM_Clerk && typeof window.MOMENTUM_Clerk.signInWithGoogle === "function") {
+          window.MomentumAuth = window.MOMENTUM_Clerk;
           return window.MomentumAuth;
         }
-        // Self-bootstrap fallback directly using Supabase CDN SDK if config script was delayed
-        if (window.supabase && typeof window.supabase.createClient === "function") {
+        // Self-bootstrap fallback directly using Clerk CDN SDK if config script was delayed
+        if (window.Clerk && typeof window.Clerk.createClient === "function") {
           try {
-            const fallbackClient = window.supabase.createClient(
-              'https://jxrvdlduhhcfbwjfqvog.supabase.co',
+            const fallbackClient = window.Clerk.createClient(
+              'https://jxrvdlduhhcfbwjfqvog.Clerk.co',
               'sb_publishable_e8oMJgGwxyXf0YomGTXYRg_wL2uxY12',
               { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: window.localStorage, flowType: 'pkce' } }
             );
@@ -7166,7 +7166,7 @@
                 }
               }
             };
-            window.MOMENTUM_SUPABASE = window.MomentumAuth;
+            window.MOMENTUM_Clerk = window.MomentumAuth;
             return window.MomentumAuth;
           } catch (bootErr) {
             console.warn('Fallback bootstrap failed:', bootErr);
@@ -7180,7 +7180,7 @@
         clearMsg();
         const auth = getAuth();
         if (!auth) {
-          showMsg("Connecting to Supabase... Please check your internet connection or refresh.", false);
+          showMsg("Connecting to Clerk... Please check your internet connection or refresh.", false);
           return;
         }
         showMsg("Opening Google Sign-In...", true);
@@ -7227,7 +7227,7 @@
 
         const auth = getAuth();
         if (!auth) {
-          showMsg("Connecting to Supabase... Please check your internet connection or refresh.", false);
+          showMsg("Connecting to Clerk... Please check your internet connection or refresh.", false);
           return;
         }
 
@@ -7295,7 +7295,7 @@
                         if (r && r.success) {
                           showMsg("Verification email resent! Please check your inbox and spam folder.", true);
                         } else {
-                          showMsg("Could not resend: " + ((r && r.error) || "Please check your Supabase dashboard email settings."), false);
+                          showMsg("Could not resend: " + ((r && r.error) || "Please check your Clerk dashboard email settings."), false);
                         }
                       } catch (e) {
                         showMsg("Failed to resend confirmation email.", false);
@@ -7316,7 +7316,7 @@
               try { localStorage.removeItem("momentum_signed_out"); } catch (e) { }
               if (res.confirmationRequired) {
                 showMsg(
-                  `<strong>Account created!</strong><br><span style="display:inline-block;margin-top:4px;font-size:12px;opacity:0.95;">Supabase has sent a confirmation email. Please check your inbox/spam folder to confirm your email before signing in, or use <strong>Continue with Google</strong> to sign in instantly.</span>`,
+                  `<strong>Account created!</strong><br><span style="display:inline-block;margin-top:4px;font-size:12px;opacity:0.95;">Clerk has sent a confirmation email. Please check your inbox/spam folder to confirm your email before signing in, or use <strong>Continue with Google</strong> to sign in instantly.</span>`,
                   true,
                   true
                 );
@@ -7329,7 +7329,7 @@
               if (err.toLowerCase().includes("already registered") || err.toLowerCase().includes("user already")) {
                 showMsg("Account already exists! Please click 'Sign In' above.", false);
               } else if (err.toLowerCase().includes("rate limit")) {
-                showMsg("Supabase email rate limit reached (free tier allows 3 emails/hr). Please click 'Continue with Google' to sign in instantly!", false);
+                showMsg("Clerk email rate limit reached (free tier allows 3 emails/hr). Please click 'Continue with Google' to sign in instantly!", false);
               } else {
                 showMsg(err || "Failed to create account.", false);
               }
@@ -7363,10 +7363,10 @@
                 showMsg(`
                   <div style="font-weight:700;color:#f87171;margin-bottom:5px;font-size:13px;">⚠️ Google Sign-In: Setup Step Required</div>
                   <div style="font-size:11.5px;color:#cbd5e1;line-height:1.5;">
-                    Supabase could not exchange the authorization code with Google. Please check two settings:
+                    Clerk could not exchange the authorization code with Google. Please check two settings:
                     <div style="margin:6px 0 2px 0;">1. In <strong>Google Cloud Console</strong> &rarr; Credentials &rarr; OAuth Client ID, add Authorized redirect URI:</div>
-                    <code style="background:#0f172a;padding:3px 6px;border-radius:4px;color:#38bdf8;font-size:10.5px;display:block;margin:2px 0 6px 0;word-break:break-all;user-select:all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
-                    <div>2. In <strong>Supabase Dashboard</strong> &rarr; Providers &rarr; Google, ensure Client Secret has no trailing spaces.</div>
+                    <code style="background:#0f172a;padding:3px 6px;border-radius:4px;color:#38bdf8;font-size:10.5px;display:block;margin:2px 0 6px 0;word-break:break-all;user-select:all;">https://jxrvdlduhhcfbwjfqvog.Clerk.co/auth/v1/callback</code>
+                    <div>2. In <strong>Clerk Dashboard</strong> &rarr; Providers &rarr; Google, ensure Client Secret has no trailing spaces.</div>
                   </div>
                 `, false, true);
               } else {
@@ -7495,7 +7495,7 @@
       try {
         const u = localStorage.getItem('momentum_user') || localStorage.getItem('momentum_auth_user');
         if (u && u.length > 5) return true;
-        const t = localStorage.getItem('supabase.auth.token');
+        const t = localStorage.getItem('Clerk.auth.token');
         if (t && t.length > 5) return true;
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i) || '';

@@ -10617,7 +10617,7 @@
         return null;
       }
 
-      // 3. Check Supabase cached session in localStorage (sb-*-auth-token or supabase.auth.token)
+      // 3. Check Clerk cached session in localStorage (sb-*-auth-token or supabase.auth.token)
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i) || "";
         if ((k.startsWith("sb-") && k.endsWith("-auth-token")) || k === "supabase.auth.token") {
@@ -35063,10 +35063,10 @@
     } catch (e) {
       console.warn("Could not remove momentum_user from localStorage", e);
     }
-    // Sign out from Supabase if connected
-    if (window.MOMENTUM_SUPABASE) {
+    // Sign out from Clerk if connected
+    if ((window.MOMENTUM_CLERK || window.MomentumAuth)) {
       try {
-        window.MOMENTUM_SUPABASE.signOut().catch(() => { });
+        (window.MOMENTUM_CLERK || window.MomentumAuth).signOut().catch(() => { });
       } catch (e) { }
     }
     // Close user profile modal
@@ -39425,7 +39425,7 @@
 
 
   function init() {
-    // 0. Auto-sync authentication state across Supabase, localStorage, and tabs
+    // 0. Auto-sync authentication state across Clerk, localStorage, and tabs
     function syncLiveAuthState() {
       const stored = (typeof getStoredUser === "function") ? getStoredUser() : null;
       if (stored && (!State.user || State.user.email !== stored.email)) {
@@ -39452,7 +39452,7 @@
     });
     [200, 600, 1500, 3000].forEach(delay => setTimeout(syncLiveAuthState, delay));
 
-    // Diagnostic modal for Supabase & Google OAuth exchange configuration
+    // Diagnostic modal for Clerk & Google OAuth exchange configuration
     function showOAuthDiagnosticModal(rawErr) {
       let existing = document.getElementById("oauth-diagnostic-modal");
       if (existing) existing.remove();
@@ -39468,13 +39468,13 @@
             <span style="font-size:24px;">⚠️</span>
             <div>
               <h3 style="margin:0;font-size:17px;font-weight:700;color:#f8fafc;">Google Sign-In: Setup Check Required</h3>
-              <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Supabase was unable to exchange external token with Google</div>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Clerk was unable to exchange external token with Google</div>
             </div>
             <button id="close-oauth-diag-btn" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:4px;" title="Close">✕</button>
           </div>
 
           <p style="font-size:12.5px;color:#cbd5e1;line-height:1.5;margin:0 0 14px 0;">
-            Google successfully authenticated your account, but Supabase could not trade the code for a session. This happens when the redirect URI or Client Secret is mismatched.
+            Google successfully authenticated your account, but Clerk could not trade the code for a session. This happens when the redirect URI or Client Secret is mismatched.
           </p>
 
           <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;">
@@ -39482,14 +39482,14 @@
             <ol style="margin:0 0 0 16px;padding:0;color:#cbd5e1;line-height:1.6;font-size:11.5px;">
               <li style="margin-bottom:8px;">
                 <strong>Google Cloud Console &rarr; Credentials &rarr; OAuth 2.0 Client ID</strong><br>
-                Under <em>Authorized redirect URIs</em>, make sure this exact Supabase callback URL is added:
+                Under <em>Authorized redirect URIs</em>, make sure this exact Clerk callback URL is added:
                 <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
                   <code id="oauth-diag-cb-url" style="background:#1e293b;padding:3px 7px;border-radius:4px;color:#38bdf8;font-family:var(--font-mono, monospace);font-size:11px;border:1px solid #334155;word-break:break-all;">https://jxrvdlduhhcfbwjfqvog.supabase.co/auth/v1/callback</code>
                   <button id="copy-oauth-cb-btn" style="background:#334155;border:1px solid #475569;color:#fff;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Copy</button>
                 </div>
               </li>
               <li>
-                <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong><br>
+                <strong>Clerk Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong><br>
                 Verify your <em>Client Secret</em> was pasted without extra spaces or linebreaks.
               </li>
             </ol>
@@ -39526,9 +39526,9 @@
       };
     }
 
-    // 0. Detect and process Supabase Google OAuth callback tokens & active sessions
-    if (window.MOMENTUM_SUPABASE) {
-      window.MOMENTUM_SUPABASE.handleOAuthCallback().then(result => {
+    // 0. Detect and process Clerk Google OAuth callback tokens & active sessions
+    if ((window.MOMENTUM_CLERK || window.MomentumAuth)) {
+      (window.MOMENTUM_CLERK || window.MomentumAuth).handleOAuthCallback().then(result => {
         if (!result) return;
         if (result.error) {
           if (result.isOAuthExchangeError || (result.error && (result.error.includes("external code") || result.error.includes("exchange")))) {
@@ -39556,9 +39556,9 @@
         }
       });
 
-      // Check existing Supabase session asynchronously on startup
-      if (window.MOMENTUM_SUPABASE.client && window.MOMENTUM_SUPABASE.client.auth) {
-        window.MOMENTUM_SUPABASE.client.auth.getSession().then(({ data: { session } }) => {
+      // Check existing Clerk session asynchronously on startup
+      if ((window.MOMENTUM_CLERK || window.MomentumAuth).client && (window.MOMENTUM_CLERK || window.MomentumAuth).client.auth) {
+        (window.MOMENTUM_CLERK || window.MomentumAuth).client.auth.getSession().then(({ data: { session } }) => {
           if (session && session.user && (!State.user || !State.user.email)) {
             const u = session.user;
             const meta = u.user_metadata || {};
@@ -39583,7 +39583,7 @@
         }).catch(() => { });
 
         // Listen for live auth state changes (login, logout, token refresh)
-        window.MOMENTUM_SUPABASE.client.auth.onAuthStateChange((event, session) => {
+        (window.MOMENTUM_CLERK || window.MomentumAuth).client.auth.onAuthStateChange((event, session) => {
           if (session && session.user) {
             const u = session.user;
             const meta = u.user_metadata || {};
@@ -39632,7 +39632,7 @@
       }
     } catch (e) { }
 
-    // Load persisted ticker & watchlist preferences from localStorage & Supabase
+    // Load persisted ticker & watchlist preferences from localStorage & Clerk
     loadTickerPreferences();
     if (typeof PortfolioService !== "undefined" && PortfolioService.syncFromCloud) {
       PortfolioService.syncFromCloud();

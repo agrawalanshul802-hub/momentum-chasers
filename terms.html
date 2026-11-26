@@ -425,11 +425,11 @@
           <li><strong>Market Mood Index (MMI):</strong> Sentiment speedometer aggregating multiple market breadth indicators to gauge fear/greed cycles.</li>
           <li><strong>IPO Tracker &amp; PDF Notes:</strong> Upcoming and recent IPO calendar with curated analytical PDF notes published by the platform operator.</li>
           <li><strong>Stock Deep Dive:</strong> Per-stock analysis page with TradingView embedded live charts and proprietary AI-generated trading signals.</li>
-          <li><strong>Portfolio Tracker:</strong> Cloud-synced personal portfolio holdings tracker powered by Supabase with real-time P&amp;L calculations.</li>
-          <li><strong>Watchlist Manager:</strong> Star and track custom stock watchlists synced across devices via Supabase.</li>
+          <li><strong>Portfolio Tracker:</strong> Cloud-synced personal portfolio holdings tracker powered by Clerk with real-time P&amp;L calculations.</li>
+          <li><strong>Watchlist Manager:</strong> Star and track custom stock watchlists synced across devices via Clerk.</li>
           <li><strong>Trading Ideas:</strong> Curated swing/positional trade ideas published exclusively by the platform operator — not financial advice.</li>
           <li><strong>VIP Subscription Access:</strong> Unlocks premium screener filters, advanced sector data, priority feature access, and future premium tools.</li>
-          <li><strong>User Authentication:</strong> Secure login via Email/Password or Google OAuth powered by Supabase Auth.</li>
+          <li><strong>User Authentication:</strong> Secure login via Email/Password or Google OAuth powered by Clerk Auth.</li>
         </ul>
       </section>
 
@@ -442,7 +442,7 @@
           <li><strong>NSE India (National Stock Exchange)</strong> — Stock universe, FII/DII institutional activity data, sector indices, and market breadth statistics sourced via NSE's official public disclosures.</li>
           <li><strong>BSE India (Bombay Stock Exchange)</strong> — Supplementary equity data for BSE-listed stocks accessed via Yahoo Finance's <code>.BO</code> symbol suffix.</li>
           <li><strong>TradingView (Embedded Widget)</strong> — Interactive live charts embedded on the Stock Deep Dive pages via TradingView's publicly available charting widget.</li>
-          <li><strong>Supabase</strong> (<code>jxrvdlduhhcfbwjfqvog.supabase.co</code>) — Secure cloud database and authentication infrastructure for user accounts, portfolio data, watchlists, and feedback storage.</li>
+          <li><strong>Clerk</strong> (<code>jxrvdlduhhcfbwjfqvog.Clerk.co</code>) — Secure cloud database and authentication infrastructure for user accounts, portfolio data, watchlists, and feedback storage.</li>
           <li><strong>Google Identity Services (OAuth 2.0)</strong> — Facilitates "Sign in with Google" authentication; Google profile name and email are accessed with your explicit consent.</li>
           <li><strong>Formspree</strong> (<code>formspree.io</code>) — Processes email notification/waitlist signup forms on the platform's Coming Soon page.</li>
           <li><strong>Google Fonts</strong> — Typography resources (Inter, JetBrains Mono, Manrope) loaded from Google's CDN for UI rendering.</li>
@@ -505,12 +505,12 @@
       <!-- Section 8 -->
       <section class="legal-section">
         <h2><span class="num">08</span> User Accounts &amp; Security</h2>
-        <p>When you register on the Platform (via Email or Google OAuth), your authentication and data are securely managed by Supabase with 256-bit SSL/TLS encryption.</p>
+        <p>When you register on the Platform (via Email or Google OAuth), your authentication and data are securely managed by Clerk with 256-bit SSL/TLS encryption.</p>
         <ul>
           <li>You are solely responsible for maintaining the confidentiality of your login credentials and session tokens.</li>
           <li>You agree to notify us immediately at <strong>support@momentumchasers.in</strong> if you detect any unauthorized access to your account.</li>
           <li>We reserve the right to suspend or permanently terminate accounts that violate these Terms, engage in unauthorized scraping, exploit the Platform, or attempt to circumvent access controls.</li>
-          <li>Upon account deletion, your personal data (email, watchlists, portfolio holdings) stored in Supabase will be permanently erased within 48 business hours of your verified written request.</li>
+          <li>Upon account deletion, your personal data (email, watchlists, portfolio holdings) stored in Clerk will be permanently erased within 48 business hours of your verified written request.</li>
         </ul>
       </section>
 
@@ -532,7 +532,7 @@
         <ul>
           <li>That any price, screener output, ATH figure, or sector breadth metric is 100% accurate or real-time.</li>
           <li>That the Platform will be available 24×7 without interruptions, maintenance windows, or force majeure events.</li>
-          <li>That any third-party embedded service (TradingView charts, Yahoo Finance feeds, Supabase) will remain continuously available.</li>
+          <li>That any third-party embedded service (TradingView charts, Yahoo Finance feeds, Clerk) will remain continuously available.</li>
         </ul>
       </section>
 
@@ -542,7 +542,7 @@
         <p>To the maximum extent permitted under applicable Indian law, Momentum Chasers, its founders, operators, contributors, and technology service providers shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to:</p>
         <ul>
           <li>Financial or trading losses resulting from reliance on any screener result, sector signal, trading idea, or AI output displayed on the Platform.</li>
-          <li>Platform downtime, server outages, Supabase unavailability, or third-party API failures.</li>
+          <li>Platform downtime, server outages, Clerk unavailability, or third-party API failures.</li>
           <li>Data loss, corruption, or unauthorized alteration of transmissions due to forces beyond our reasonable control.</li>
           <li>Decisions made based on Market Mood Index, FII/DII data, or any other indicator on the Platform.</li>
         </ul>
@@ -554,7 +554,7 @@
         <h2><span class="num">12</span> Cookies &amp; Browser Storage</h2>
         <p>Momentum Chasers uses the following cookies and browser storage mechanisms:</p>
         <ul>
-          <li><strong>Supabase Auth Token:</strong> Stored in browser localStorage to keep you authenticated across sessions.</li>
+          <li><strong>Clerk Auth Token:</strong> Stored in browser localStorage to keep you authenticated across sessions.</li>
           <li><strong>Screener Preferences:</strong> Your column configurations, sort orders, and filter settings stored in localStorage for a personalized experience.</li>
           <li><strong>Coming Soon Bypass Cookie</strong> (<code>mc_owner_preview</code>): A session cookie used exclusively by the platform operator to preview the full site on the <code>momentumchasers.in</code> domain before public launch.</li>
           <li><strong>No Advertising Cookies:</strong> We do not deploy any third-party advertising, retargeting, or behavioral tracking cookies.</li>
