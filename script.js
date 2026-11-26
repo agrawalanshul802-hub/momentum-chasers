@@ -11274,10 +11274,12 @@
       const ema50Data = fullEma50.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma50[idx] })) : [];
       const ema200Data = fullEma200.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma200[idx] })) : [];
 
-      // Latest prices & changes
+      // Latest prices & changes (never use meta.chartPreviousClose on multi-day/1y charts — it is the range-start price!)
       const currentPrice = meta.regularMarketPrice || prices[prices.length - 1];
-      const previousClose = meta.chartPreviousClose || meta.previousClose || (prices.length > 1 ? prices[prices.length - 2] : currentPrice);
-      const chgPercent = previousClose ? ((currentPrice - previousClose) / previousClose) * 100 : 0;
+      const previousClose = (allPrices.length >= 2 ? allPrices[allPrices.length - 2] : null) || meta.previousClose || currentPrice;
+      const chgPercent = (typeof meta.regularMarketChangePercent === "number" && Number.isFinite(meta.regularMarketChangePercent))
+        ? meta.regularMarketChangePercent
+        : (previousClose ? ((currentPrice - previousClose) / previousClose) * 100 : 0);
       const rsi = this.calculateRSI(allPrices, 14);
 
       return {
@@ -11336,7 +11338,7 @@
           const chgEl = document.querySelector(".tv-quote-chg");
           if (ltpEl) ltpEl.textContent = `₹${formatNumber(live.currentPrice)}`;
           if (chgEl) {
-            const chgVal = (live.currentPrice * (live.chgPercent / 100)).toFixed(2);
+            const chgVal = (live.previousClose ? (live.currentPrice - live.previousClose) : (live.currentPrice - (live.currentPrice / (1 + (live.chgPercent / 100))))).toFixed(2);
             const chgSign = live.chgPercent >= 0 ? "+" : "";
             chgEl.className = `tv-quote-chg font-mono ${getColorClass(live.chgPercent)}`;
             chgEl.textContent = `${chgSign}${chgVal} (${formatPercent(live.chgPercent)})`;
@@ -19400,7 +19402,7 @@
               <div class="tv-quote-big-price">
                 <div class="tv-quote-ltp font-mono">₹${formatNumber(s[3])}</div>
                 <div class="tv-quote-chg font-mono ${getColorClass(s[4])}">
-                  ${s[4] >= 0 ? "+" : ""}${(s[3] * (s[4] / 100)).toFixed(2)} (${formatPercent(s[4])})
+                  ${s[4] >= 0 ? "+" : ""}${(s[3] - (s[3] / (1 + (s[4] / 100)))).toFixed(2)} (${formatPercent(s[4])})
                 </div>
               </div>
 
