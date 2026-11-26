@@ -35109,9 +35109,9 @@
     const rawName = user.name || "Trader";
     const initial = rawName.trim().charAt(0).toUpperCase() || "T";
     const avatar = user.avatar && user.avatar.length <= 3 ? user.avatar : initial;
-    const isPro = user && (user.isPro === true || (user.plan && user.plan.toUpperCase().includes("PRO")));
-    const planName = user.plan || "Normal User";
     const vipSub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+    const isPro = Boolean(vipSub && vipSub.active && vipSub.daysRemaining > 0);
+    const planName = isPro ? (vipSub.planTier || "PRO VIP") : "Standard (Free)";
 
     const vipSectionHTML = (vipSub && vipSub.active && vipSub.daysRemaining > 0) ? `
       <div style="background:linear-gradient(135deg, rgba(245,158,11,0.12), rgba(16,185,129,0.08));border:1px solid rgba(245,158,11,0.35);padding:12px 14px;border-radius:var(--radius-sm);margin-bottom:14px;">
@@ -35169,7 +35169,7 @@
         <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;gap:8px">
             <h4 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(rawName)}</h4>
-            ${isPro ? `<span style="font-size:10px;font-weight:800;background:rgba(5,150,105,0.18);color:var(--g);border:1px solid rgba(5,150,105,0.3);padding:1px 6px;border-radius:6px">PRO</span>` : `<span style="font-size:10px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);padding:1px 6px;border-radius:6px">NORMAL</span>`}
+            ${isPro ? `<span style="font-size:10px;font-weight:800;background:rgba(5,150,105,0.18);color:var(--g);border:1px solid rgba(5,150,105,0.3);padding:1px 6px;border-radius:6px">PRO</span>` : ''}
           </div>
           <div style="font-size:12px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(user.email || "trader@momentumchasers.in")}</div>
         </div>
@@ -35281,8 +35281,8 @@
       }
       const rawName = State.user.name || "Trader";
       const email = State.user.email || "trader@momentumchasers.in";
-      const isPro = State.user && (State.user.isPro === true || (State.user.plan && State.user.plan.toUpperCase().includes("PRO")));
-      const plan = isPro ? "PRO" : (State.user.plan || "NORMAL");
+      const isPro = Boolean(sub && sub.active && sub.daysRemaining > 0);
+      const plan = isPro ? "PRO" : "Standard";
       const broker = State.user.broker || "Dhan Connected";
       const initial = rawName.trim().charAt(0).toUpperCase() || "T";
       const avatar = State.user.avatar && State.user.avatar.length <= 3 ? State.user.avatar : initial;
@@ -35297,7 +35297,7 @@
             </div>
             <div class="header-user-details">
               <span class="header-user-name">${escapeHtml(rawName)}</span>
-              ${isPro ? `<span class="header-pro-badge">PRO</span>` : `<span class="header-normal-badge" style="font-size:9.5px;font-weight:800;letter-spacing:0.5px;padding:1px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);margin-left:4px;">${escapeHtml(plan)}</span>`}
+              ${isPro ? `<span class="header-pro-badge">PRO</span>` : ''}
             </div>
             <svg class="header-user-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
@@ -35317,7 +35317,7 @@
                   <div class="hud-user-info">
                     <div class="hud-user-name-row">
                       <span class="hud-name">${escapeHtml(rawName)}</span>
-                      ${isPro ? `<span class="hud-badge">PRO</span>` : `<span class="hud-badge" style="background:rgba(255,255,255,0.06);color:var(--mu);border:1px solid var(--bdr);">${escapeHtml(plan)}</span>`}
+                      ${isPro ? `<span class="hud-badge">PRO</span>` : ''}
                     </div>
                     <div class="hud-email">${escapeHtml(email)}</div>
                   </div>

@@ -26,7 +26,7 @@
       id: user.id,
       name: fullName,
       email: primaryEmail,
-      plan: 'PRO Terminal',
+      plan: 'Standard',
       avatar: avatar,
       provider: hasGoogle ? 'google' : 'clerk',
       broker: 'Kite / Demat Linked',
