@@ -7520,6 +7520,46 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // External Cron Endpoint (for cron-job.org exact 3:45 PM & 7:10 PM IST automation)
+  if (pathname === '/api/pipeline/cron' && (req.method === 'GET' || req.method === 'POST')) {
+    const cronSecret = process.env.CRON_SECRET || 'mc_cron_9f3a7b2e1c8d4056';
+    const providedKey = (parsedUrl.query.key || req.headers['x-cron-key'] || '').toString().trim();
+    if (!providedKey || providedKey !== cronSecret) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Unauthorized: Invalid cron key' }));
+      return;
+    }
+
+    const mode = (parsedUrl.query.mode || 'eod').toString().toLowerCase();
+    try {
+      const pipelineModule = require('./scripts/daily_market_pipeline');
+      const result = {};
+      if (mode === 'eod' || mode === 'all') {
+        result.eod = await pipelineModule.runEodMarketUpdate();
+      }
+      if (mode === 'fii' || mode === 'all') {
+        result.fii = await pipelineModule.runFiiDiiUpdate();
+      }
+      CACHE.clear();
+      if (typeof MomentumMarketEngine !== 'undefined') {
+        MomentumMarketEngine.cachedSectors = null;
+        MomentumMarketEngine.cachedSnapshot = null;
+        MomentumMarketEngine.cachedBreadth = null;
+        MomentumMarketEngine.cachedSectorShare = null;
+        MomentumMarketEngine.lastSectorsTime = 0;
+        MomentumMarketEngine.lastSnapshotTime = 0;
+        MomentumMarketEngine.lastBreadthTime = 0;
+        MomentumMarketEngine.lastSectorShareTime = 0;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, mode, timestamp: new Date().toISOString(), result }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: err.message }));
+    }
+    return;
+  }
+
   // 6h. IPO Research PDFs Registry & Upload Engine: /api/ipo-pdfs
   const ipoPdfsPath = path.join(__dirname, 'data', 'ipo-pdfs.json');
   const ipoUploadsDir = path.join(__dirname, 'uploads', 'ipo-pdfs');
