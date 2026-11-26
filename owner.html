@@ -3338,7 +3338,11 @@
     }
 
     function fetchPurchases() {
-      fetch('/api/owner/purchases?_t=' + Date.now())
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '';
+      if (!activePin) return;
+      fetch('/api/owner/purchases?_t=' + Date.now(), {
+        headers: { 'x-owner-pin': activePin }
+      })
         .then(function (res) { return res.json(); })
         .then(function (data) {
           if (data && data.success && Array.isArray(data.purchases)) {

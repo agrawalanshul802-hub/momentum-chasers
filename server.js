@@ -6981,6 +6981,12 @@ const server = http.createServer(async (req, res) => {
   // 6g-4. VIP Purchases & Subscribers Access Log Endpoints
   if (pathname === '/api/owner/purchases') {
     if (req.method === 'GET') {
+      const pin = (req.headers['x-owner-pin'] || parsedUrl.query.pin || '').toString().trim();
+      if (!isAuthorizedOwnerPin(pin)) {
+        res.writeHead(401, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+        res.end(JSON.stringify({ success: false, error: 'Unauthorized PIN' }));
+        return;
+      }
       const purchases = getStoredPurchases();
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ success: true, count: purchases.length, purchases }));
@@ -7115,7 +7121,13 @@ const server = http.createServer(async (req, res) => {
       active: isActive,
       pending: isPending,
       revoked: isRevoked,
-      pass: matched
+      pass: {
+        id: matched.id,
+        tierKey: matched.tierKey,
+        planTier: matched.planTier,
+        expiresAt: matched.expiresAt,
+        status: matched.status
+      }
     }));
     return;
   }
@@ -7126,17 +7138,25 @@ const server = http.createServer(async (req, res) => {
     const purchaseId = (parsedUrl.query.purchaseId || '').toString().trim();
     const ideaId = (parsedUrl.query.ideaId || '').toString().trim();
     const purchases = getStoredPurchases();
-    const matched = purchases.find(p =>
-      (purchaseId && p.id === purchaseId) ||
-      (txRef && p.txRef === txRef)
-    ) || null;
-    const isPaid = Boolean(
-      (matched && (matched.status === 'Active' || matched.status === 'Active (Auto-Verified)')) ||
-      (!txRef && !purchaseId && ideaId && purchases.some(p => p.ideaId === ideaId && (p.status === 'Active' || p.status === 'Active (Auto-Verified)')))
-    );
+    const matched = (purchaseId || txRef)
+      ? (purchases.find(p => (purchaseId && p.id === purchaseId) || (txRef && p.txRef === txRef)) || null)
+      : null;
+    const isPaid = Boolean(matched && (matched.status === 'Active' || matched.status === 'Active (Auto-Verified)'));
     const isRejected = Boolean(matched && (matched.status === 'Rejected' || matched.status === 'Revoked'));
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
-    res.end(JSON.stringify({ success: true, paid: isPaid, rejected: isRejected, purchase: isPaid ? matched : null, ideaId }));
+    res.end(JSON.stringify({
+      success: true,
+      paid: isPaid,
+      rejected: isRejected,
+      purchase: isPaid ? {
+        id: matched.id,
+        tierKey: matched.tierKey,
+        planTier: matched.planTier,
+        daysTotal: matched.daysTotal,
+        expiresAt: matched.expiresAt
+      } : null,
+      ideaId
+    }));
     return;
   }
 
