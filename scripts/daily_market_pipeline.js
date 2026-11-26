@@ -391,6 +391,28 @@ async function runEodMarketUpdate() {
       const candles = await poolAll(missingPriority, (s) => fetchCompletedDailyCandle(s, dateStr), 12);
       for (const q of candles) if (q && q.symbol) quoteMap[q.symbol] = q;
     }
+    // Also fetch .BO (BSE / BSE SME) fallback for universe stocks not found on .NS
+    const missingNsForBo = [...universeSyms].filter(nsSym => !quoteMap[nsSym]).map(nsSym => nsSym.replace(/\.NS$/, '.BO'));
+    if (missingNsForBo.length > 0 && cookie && crumb) {
+      const boChunks = [];
+      for (let i = 0; i < missingNsForBo.length; i += 100) boChunks.push(missingNsForBo.slice(i, i + 100));
+      const boResults = await poolAll(boChunks, (c) => fetchBulkV7Quotes(c, { cookie, crumb }), 4);
+      for (const batch of boResults) {
+        for (const q of batch) {
+          if (q && q.symbol && q.regularMarketPrice > 0) {
+            quoteMap[q.symbol] = {
+              symbol: q.symbol,
+              regularMarketPrice: Number(Number(q.regularMarketPrice).toFixed(2)),
+              regularMarketChange: Number(Number(q.regularMarketChange || 0).toFixed(2)),
+              regularMarketChangePercent: Number(Number(q.regularMarketChangePercent || 0).toFixed(2)),
+              regularMarketVolume: Number(q.regularMarketVolume || 0),
+              fiftyTwoWeekHigh: q.fiftyTwoWeekHigh ? Number(Number(q.fiftyTwoWeekHigh).toFixed(2)) : null,
+              fiftyTwoWeekLow: q.fiftyTwoWeekLow ? Number(Number(q.fiftyTwoWeekLow).toFixed(2)) : null
+            };
+          }
+        }
+      }
+    }
   } else {
     // BEFORE 3:40 PM IST (or weekend/holiday): strictly pull COMPLETED daily candle <= dateStr
     // (Never pulls today's incomplete live intraday price!)
@@ -398,6 +420,13 @@ async function runEodMarketUpdate() {
     const candles = await poolAll(allToFetch, (s) => fetchCompletedDailyCandle(s, dateStr), 28);
     for (const q of candles) {
       if (q && q.symbol) quoteMap[q.symbol] = q;
+    }
+    const missingNsForBo = [...universeSyms].filter(nsSym => !quoteMap[nsSym]).map(nsSym => nsSym.replace(/\.NS$/, '.BO'));
+    if (missingNsForBo.length > 0) {
+      const boCandles = await poolAll(missingNsForBo, (s) => fetchCompletedDailyCandle(s, dateStr), 28);
+      for (const q of boCandles) {
+        if (q && q.symbol) quoteMap[q.symbol] = q;
+      }
     }
   }
 
@@ -532,22 +561,32 @@ async function runEodMarketUpdate() {
 
       for (const s of universeData) {
         if (!Array.isArray(s) || !s[0]) continue;
-        const q = quoteMap[s[0] + '.NS'];
+        const q = quoteMap[s[0] + '.NS'] || quoteMap[s[0] + '.BO'];
         if (q && q.regularMarketPrice > 0) {
+          const prevStoredPrice = s[3];
           s[3] = q.regularMarketPrice;
           if (!q.preserveExistingChg && q.regularMarketChangePercent !== null) {
             s[4] = q.regularMarketChangePercent;
           }
           if (s[8] && typeof s[8] === 'object') {
-            if (q.fiftyTwoWeekHigh && (!s[8].high52 || q.fiftyTwoWeekHigh > s[8].high52)) {
+            const isSyntheticPlaceholder = (s[8].pe === 22.4 && s[8].pb === 2.1 && s[8].mcapCr === 450);
+            const prevRefHigh = Number(s[8].ath) || Number(s[8].high52) || 0;
+            const hasFake23Ath = (prevStoredPrice > 0 && prevRefHigh > 0 && Math.abs(((prevStoredPrice - prevRefHigh) / prevRefHigh) * 100 + 23.0769) < 0.25);
+            if ((isSyntheticPlaceholder || hasFake23Ath) && q.fiftyTwoWeekHigh) {
               s[8].high52 = q.fiftyTwoWeekHigh;
-            }
-            const curMaxHigh = Math.max(Number(s[8].ath) || 0, Number(s[8].high52) || 0, q.fiftyTwoWeekHigh || 0, q.regularMarketPrice || 0);
-            if (curMaxHigh > 0) {
-              s[8].ath = Number(curMaxHigh.toFixed(2));
-            }
-            if (q.fiftyTwoWeekLow && (!s[8].low52 || q.fiftyTwoWeekLow < s[8].low52)) {
-              s[8].low52 = q.fiftyTwoWeekLow;
+              s[8].ath = Number(Math.max(q.fiftyTwoWeekHigh, q.regularMarketPrice).toFixed(2));
+              if (q.fiftyTwoWeekLow) s[8].low52 = q.fiftyTwoWeekLow;
+            } else {
+              if (q.fiftyTwoWeekHigh && (!s[8].high52 || q.fiftyTwoWeekHigh > s[8].high52)) {
+                s[8].high52 = q.fiftyTwoWeekHigh;
+              }
+              const curMaxHigh = Math.max(Number(s[8].ath) || 0, Number(s[8].high52) || 0, q.fiftyTwoWeekHigh || 0, q.regularMarketPrice || 0);
+              if (curMaxHigh > 0) {
+                s[8].ath = Number(curMaxHigh.toFixed(2));
+              }
+              if (q.fiftyTwoWeekLow && (!s[8].low52 || q.fiftyTwoWeekLow < s[8].low52)) {
+                s[8].low52 = q.fiftyTwoWeekLow;
+              }
             }
           }
           uniUpdated++;

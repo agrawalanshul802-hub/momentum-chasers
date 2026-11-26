@@ -1,21 +1,21 @@
 {
   "eodMarket": {
-    "lastRun": "2026-11-26T10:17:14.415Z",
+    "lastRun": "2026-11-26T10:42:24.493Z",
     "status": "success",
     "date": "2026-11-26",
     "dateLabel": "26 Nov 2026 (3:30 pm Closing)",
     "shortEodLabel": "26 Nov EOD",
-    "quoteMatches": 2644,
+    "quoteMatches": 2704,
     "updatedSectors": 40,
     "updatedHeatmapStocks": 956,
-    "updatedUniverseStocks": 2601,
+    "updatedUniverseStocks": 2661,
     "updatedEmasCount": 1611,
     "adNetFlow": {
-      "advances": 1352,
-      "declines": 1270,
-      "unchanged": 76,
-      "netAD": 82,
-      "adRatio": 1.06
+      "advances": 1360,
+      "declines": 1269,
+      "unchanged": 69,
+      "netAD": 91,
+      "adRatio": 1.07
     },
     "nifty50": {
       "price": "25,884.50",

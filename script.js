@@ -12759,7 +12759,8 @@
         const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
         const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
         const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
-        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive));
+        const isNewSmePlaceholder = Boolean(Array.isArray(s) && s[8] && s[8].pe === 22.4 && s[8].pb === 2.1 && s[8].mcapCr === 450);
+        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive) || isNewSmePlaceholder);
 
         const above10 = smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0];
         const above20 = smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1];
@@ -12793,7 +12794,8 @@
         const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
         const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
         const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
-        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive));
+        const isNewSmePlaceholder = Boolean(Array.isArray(s) && s[8] && s[8].pe === 22.4 && s[8].pb === 2.1 && s[8].mcapCr === 450);
+        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive) || isNewSmePlaceholder);
 
         if (hasLiveEma && (e50 == null || e200 == null)) {
           crossCell.innerHTML = `<span class="crossover-status-tag na" title="50×200 EMA Cross: NA (Insufficient trading sessions)">NA</span>`;
@@ -13996,7 +13998,8 @@
             const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
             const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
             const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
-            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive));
+            const isNewSmePlaceholder = Boolean(Array.isArray(s) && s[8] && s[8].pe === 22.4 && s[8].pb === 2.1 && s[8].mcapCr === 450);
+            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive) || isNewSmePlaceholder);
 
             const above10 = (e10Val != null && typeof price === "number" && price > 0) ? (price >= e10Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0]);
             const above20 = (e20Val != null && typeof price === "number" && price > 0) ? (price >= e20Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1]);
@@ -14030,7 +14033,8 @@
             const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
             const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
             const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
-            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive));
+            const isNewSmePlaceholder = Boolean(Array.isArray(s) && s[8] && s[8].pe === 22.4 && s[8].pb === 2.1 && s[8].mcapCr === 450);
+            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive) || isNewSmePlaceholder);
 
             if (hasLiveEma && (e50 == null || e200 == null)) {
               return `<span class="crossover-status-tag na" title="50×200 EMA Cross: NA (Insufficient trading sessions)">NA</span>`;
