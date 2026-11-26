@@ -38895,11 +38895,9 @@
     const detailPrice = document.getElementById('idea-detail-price');
     const amtEl = document.getElementById('idea-modal-amount');
     const planLbl = document.getElementById('idea-modal-plan-label');
-    const payCtaText = document.getElementById('idea-detail-pay-cta-text');
     if (detailPrice) detailPrice.textContent = '₹' + formatNumber(price);
     if (amtEl) amtEl.textContent = '₹' + formatNumber(price);
     if (planLbl) planLbl.textContent = label;
-    if (payCtaText) payCtaText.textContent = '⚡ Instant Pay ₹' + formatNumber(price) + ' (' + cfg.days + 'd) & Unlock VIP';
 
     // 4. Update Dynamic UPI QR Code & Links
     const vpa = (gw && gw.directVpa) || '8767823878@slc';
