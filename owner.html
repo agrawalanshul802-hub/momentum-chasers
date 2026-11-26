@@ -1193,6 +1193,17 @@
     </div>
   </header>
 
+  <!-- PENDING APPROVAL NOTIFICATION BANNER -->
+  <div id="owner-pending-banner" style="display:none;max-width:1380px;margin:12px auto 0;padding:12px 18px;border-radius:10px;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;color:#fbbf24;font-weight:700;font-size:13px;">
+      <span>🔔</span>
+      <span id="owner-pending-banner-text">1 VIP Payment Request waiting for your approval</span>
+    </div>
+    <button type="button" onclick="switchOwnerTab('subscribers');fetchPurchases();" style="background:#f59e0b;color:#0b1120;border:none;border-radius:7px;padding:7px 14px;font-weight:800;font-size:12px;cursor:pointer;">
+      Review &amp; Approve Now →
+    </button>
+  </div>
+
   <!-- OWNER NAVIGATION TABS -->
   <nav class="owner-nav-tabs">
     <button class="owner-tab-btn active" id="btn-tab-ideas" onclick="switchOwnerTab('ideas')">
@@ -3340,13 +3351,24 @@
 
     function updatePendingPurchasesBadge(list) {
       var badge = document.getElementById('pending-purchases-badge');
-      if (!badge) return;
+      var banner = document.getElementById('owner-pending-banner');
+      var bannerText = document.getElementById('owner-pending-banner-text');
       var pendingCount = (list || []).filter(function (p) { return p.status === 'Pending Approval'; }).length;
-      if (pendingCount > 0) {
-        badge.textContent = pendingCount + ' Pending';
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
+      if (badge) {
+        if (pendingCount > 0) {
+          badge.textContent = pendingCount + ' Pending';
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+      if (banner && bannerText) {
+        if (pendingCount > 0) {
+          bannerText.textContent = pendingCount + ' VIP Payment Request' + (pendingCount > 1 ? 's' : '') + ' waiting for your approval';
+          banner.style.display = 'flex';
+        } else {
+          banner.style.display = 'none';
+        }
       }
     }
 
