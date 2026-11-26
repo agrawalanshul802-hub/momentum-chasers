@@ -14735,6 +14735,10 @@ body.theme-white .idea-metric-pill strong {
 }
 
 /* Stock Alerts Manager Modal */
+#stock-alert-modal {
+    z-index: 100000 !important;
+}
+
 #stock-alerts-manager-modal {
     position: fixed;
     top: 0;
@@ -14791,7 +14795,11 @@ body.theme-white .idea-metric-pill strong {
     transform: scale(1.05);
 }
 
-body.theme-white #stock-alerts-manager-modal {
+body.theme-white #stock-alert-modal {
+    z-index: 100000 !important;
+}
+
+#stock-alerts-manager-modal {
     background: rgba(15, 23, 42, 0.6);
 }
 
@@ -15767,6 +15775,10 @@ body.theme-white .hud-vip-status-card.is-expired {
 /* ==========================================================================
    ALERTS MANAGER MODAL & CLEAN TABLE (MATCHING TRADING TERMINAL SPEC)
    ========================================================================== */
+
+#stock-alert-modal {
+    z-index: 100000 !important;
+}
 
 #stock-alerts-manager-modal {
     position: fixed;
