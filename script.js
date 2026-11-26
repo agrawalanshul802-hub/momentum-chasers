@@ -11243,11 +11243,11 @@
       const maxRawVol = Math.max(...rawVols, 1);
       const volumes = rawVols.map(v => Math.max(15, Math.round((v / maxRawVol) * 120)));
 
-      // Compute true historical EMAs over entire series, then slice last 30
-      const fullEma10 = this.calculateEMA(allPrices, 10);
-      const fullEma20 = this.calculateEMA(allPrices, 20);
-      const fullEma50 = this.calculateEMA(allPrices, 50);
-      const fullEma200 = this.calculateEMA(allPrices, Math.min(200, Math.max(50, allPrices.length)));
+      // Compute true historical EMAs over entire series only when enough sessions exist, then slice last 30
+      const fullEma10 = allPrices.length >= 10 ? this.calculateEMA(allPrices, 10) : [];
+      const fullEma20 = allPrices.length >= 20 ? this.calculateEMA(allPrices, 20) : [];
+      const fullEma50 = allPrices.length >= 50 ? this.calculateEMA(allPrices, 50) : [];
+      const fullEma200 = allPrices.length >= 200 ? this.calculateEMA(allPrices, 200) : [];
 
       const ema10 = fullEma10.slice(-30);
       const ema20 = fullEma20.slice(-30);
@@ -11269,10 +11269,10 @@
         color: p.close >= p.open ? 'rgba(34, 197, 94, 0.45)' : 'rgba(239, 68, 68, 0.45)'
       }));
 
-      const ema10Data = validPoints.map((p, idx) => ({ time: p.time, value: fullEma10[idx] }));
-      const ema20Data = validPoints.map((p, idx) => ({ time: p.time, value: fullEma20[idx] }));
-      const ema50Data = validPoints.map((p, idx) => ({ time: p.time, value: fullEma50[idx] }));
-      const ema200Data = validPoints.map((p, idx) => ({ time: p.time, value: fullEma200[idx] }));
+      const ema10Data = fullEma10.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma10[idx] })) : [];
+      const ema20Data = fullEma20.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma20[idx] })) : [];
+      const ema50Data = fullEma50.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma50[idx] })) : [];
+      const ema200Data = fullEma200.length ? validPoints.map((p, idx) => ({ time: p.time, value: fullEma200[idx] })) : [];
 
       // Latest prices & changes
       const currentPrice = meta.regularMarketPrice || prices[prices.length - 1];
@@ -12759,23 +12759,29 @@
         const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
         const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
         const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
+        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive));
 
         const above10 = smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0];
         const above20 = smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1];
         const above50 = smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2];
         const above200 = smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3];
 
-        const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (Live Market Engine)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
-        const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (Live Market Engine)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
-        const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (Live Market Engine)` : `50 EMA: ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
-        const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (Live Market Engine)` : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`;
+        const pillFor = (period, val, above) => {
+          if (hasLiveEma && val == null) {
+            return `<span class="ema-status-pill na" title="${period} EMA: NA (Insufficient trading sessions)">NA</span>`;
+          }
+          const tip = val != null
+            ? `${period} EMA: ₹${formatNumber(val)} · ${above ? `Price Above ${period} EMA` : `Price Below ${period} EMA`} (Live Market Engine)`
+            : `${period} EMA: ${above ? `Price Above ${period} EMA` : `Price Below ${period} EMA`}`;
+          return `<span class="ema-status-pill ${above ? "above" : "below"}" title="${escapeHtml(tip)}">${period}</span>`;
+        };
 
-        emaCell.innerHTML = `
-          <span class="ema-status-pill ${above10 ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
-          <span class="ema-status-pill ${above20 ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
-          <span class="ema-status-pill ${above50 ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
-          <span class="ema-status-pill ${above200 ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
-        `;
+        emaCell.innerHTML = [
+          pillFor(10, e10Val, above10),
+          pillFor(20, e20Val, above20),
+          pillFor(50, e50Val, above50),
+          pillFor(200, e200Val, above200)
+        ].join("");
       }
       const crossCell = row.querySelector(".stock-cross-cell");
       if (crossCell) {
@@ -12787,33 +12793,38 @@
         const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
         const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
         const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
+        const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].isLive));
 
-        let isGolden = false;
-        if (e50 != null && e200 != null) {
-          isGolden = Number(e50) >= Number(e200);
-        } else if (smRec && (isW ? smRec.wEmaCross : smRec.emaCross)) {
-          isGolden = (isW ? smRec.wEmaCross : smRec.emaCross) === "bull";
-        } else if (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].ema50 && CHART_DATA[sSym].ema200 && CHART_DATA[sSym].ema50.length && CHART_DATA[sSym].ema200.length) {
-          const cd = CHART_DATA[sSym];
-          isGolden = Number(cd.ema50[cd.ema50.length - 1]) >= Number(cd.ema200[cd.ema200.length - 1]);
+        if (hasLiveEma && (e50 == null || e200 == null)) {
+          crossCell.innerHTML = `<span class="crossover-status-tag na" title="50×200 EMA Cross: NA (Insufficient trading sessions)">NA</span>`;
         } else {
-          isGolden = Array.isArray(s) ? (s[7] >= 3 || (s[5] && (s[5].includes("a") || s[5].includes("b")))) : true;
-        }
+          let isGolden = false;
+          if (e50 != null && e200 != null) {
+            isGolden = Number(e50) >= Number(e200);
+          } else if (smRec && (isW ? smRec.wEmaCross : smRec.emaCross)) {
+            isGolden = (isW ? smRec.wEmaCross : smRec.emaCross) === "bull";
+          } else if (typeof CHART_DATA !== "undefined" && CHART_DATA[sSym] && CHART_DATA[sSym].ema50 && CHART_DATA[sSym].ema200 && CHART_DATA[sSym].ema50.length && CHART_DATA[sSym].ema200.length) {
+            const cd = CHART_DATA[sSym];
+            isGolden = Number(cd.ema50[cd.ema50.length - 1]) >= Number(cd.ema200[cd.ema200.length - 1]);
+          } else {
+            isGolden = Array.isArray(s) ? (s[7] >= 3 || (s[5] && (s[5].includes("a") || s[5].includes("b")))) : true;
+          }
 
-        const label = isGolden
-          ? `● ${candleSuffix ? candleSuffix + ' ' : ''}Golden Cross (50>200)`
-          : `● ${candleSuffix ? candleSuffix + ' ' : ''}Death Cross (50<200)`;
-        const tagCls = isGolden ? "bullish" : "bearish";
+          const label = isGolden
+            ? `● ${candleSuffix ? candleSuffix + ' ' : ''}Golden Cross (50>200)`
+            : `● ${candleSuffix ? candleSuffix + ' ' : ''}Death Cross (50<200)`;
+          const tagCls = isGolden ? "bullish" : "bearish";
 
-        const tooltip = (e50 != null && e200 != null)
-          ? `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50 EMA ≥ 200 EMA)' : 'Death Cross (50 EMA < 200 EMA)'} · 50 EMA: ₹${formatNumber(e50)}, 200 EMA: ₹${formatNumber(e200)}${candles ? ` (${candles} candles)` : ''}`
-          : `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50>200)' : 'Death Cross (50<200)'}`;
+          const tooltip = (e50 != null && e200 != null)
+            ? `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50 EMA ≥ 200 EMA)' : 'Death Cross (50 EMA < 200 EMA)'} · 50 EMA: ₹${formatNumber(e50)}, 200 EMA: ₹${formatNumber(e200)}${candles ? ` (${candles} candles)` : ''}`
+            : `50×200 EMA Cross: ${isGolden ? 'Golden Cross (50>200)' : 'Death Cross (50<200)'}`;
 
-        crossCell.innerHTML = `
+          crossCell.innerHTML = `
           <span class="crossover-status-tag ${tagCls}" title="${escapeHtml(tooltip)}">
             ${label}
           </span>
         `;
+        }
       }
     };
 
@@ -13985,23 +13996,29 @@
             const e20Val = smRec ? (isW ? smRec.wEma20 : smRec.ema20) : null;
             const e50Val = smRec ? (isW ? smRec.wEma50 : smRec.ema50) : null;
             const e200Val = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
+            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive));
 
             const above10 = (e10Val != null && typeof price === "number" && price > 0) ? (price >= e10Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma10 !== undefined ? smRec.wAboveEma10 : smRec.aboveEma10) : smRec.aboveEma10) : emas[0]);
             const above20 = (e20Val != null && typeof price === "number" && price > 0) ? (price >= e20Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma20 !== undefined ? smRec.wAboveEma20 : smRec.aboveEma20) : smRec.aboveEma20) : emas[1]);
             const above50 = (e50Val != null && typeof price === "number" && price > 0) ? (price >= e50Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma50 !== undefined ? smRec.wAboveEma50 : smRec.aboveEma50) : smRec.aboveEma50) : emas[2]);
             const above200 = (e200Val != null && typeof price === "number" && price > 0) ? (price >= e200Val) : (smRec ? Boolean(isW ? (smRec.wAboveEma200 !== undefined ? smRec.wAboveEma200 : smRec.aboveEma200) : smRec.aboveEma200) : emas[3]);
 
-            const t10 = e10Val != null ? `10 EMA: ₹${formatNumber(e10Val)} · ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'} (Live Market Engine)` : `10 EMA: ${above10 ? 'Price Above 10 EMA' : 'Price Below 10 EMA'}`;
-            const t20 = e20Val != null ? `20 EMA: ₹${formatNumber(e20Val)} · ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'} (Live Market Engine)` : `20 EMA: ${above20 ? 'Price Above 20 EMA' : 'Price Below 20 EMA'}`;
-            const t50 = e50Val != null ? `50 EMA: ₹${formatNumber(e50Val)} · ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'} (Live Market Engine)` : `50 EMA: ${above50 ? 'Price Above 50 EMA' : 'Price Below 50 EMA'}`;
-            const t200 = e200Val != null ? `200 EMA: ₹${formatNumber(e200Val)} · ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'} (Live Market Engine)` : (smRec && smRec.ema200 === null ? '200 EMA: Not Available (<200 trading sessions)' : `200 EMA: ${above200 ? 'Price Above 200 EMA' : 'Price Below 200 EMA'}`);
+            const pillFor = (period, val, above) => {
+              if (hasLiveEma && val == null) {
+                return `<span class="ema-status-pill na" title="${period} EMA: NA (Insufficient trading sessions)">NA</span>`;
+              }
+              const tip = val != null
+                ? `${period} EMA: ₹${formatNumber(val)} · ${above ? `Price Above ${period} EMA` : `Price Below ${period} EMA`} (Live Market Engine)`
+                : `${period} EMA: ${above ? `Price Above ${period} EMA` : `Price Below ${period} EMA`}`;
+              return `<span class="ema-status-pill ${above ? "above" : "below"}" title="${escapeHtml(tip)}">${period}</span>`;
+            };
 
-            return `
-                  <span class="ema-status-pill ${above10 ? "above" : "below"}" title="${escapeHtml(t10)}">10</span>
-                  <span class="ema-status-pill ${above20 ? "above" : "below"}" title="${escapeHtml(t20)}">20</span>
-                  <span class="ema-status-pill ${above50 ? "above" : "below"}" title="${escapeHtml(t50)}">50</span>
-                  <span class="ema-status-pill ${above200 ? "above" : "below"}" title="${escapeHtml(t200)}">200</span>
-                `;
+            return [
+              pillFor(10, e10Val, above10),
+              pillFor(20, e20Val, above20),
+              pillFor(50, e50Val, above50),
+              pillFor(200, e200Val, above200)
+            ].join("");
           })()}
             </td>` : ''}
           ${State.screenerCols.cross !== false ? `
@@ -14013,6 +14030,11 @@
             const e200 = smRec ? (isW ? smRec.wEma200 : smRec.ema200) : null;
             const candles = smRec ? (isW ? smRec.wEmaCrossCandles : smRec.emaCrossCandles) : null;
             const candleSuffix = candles != null && candles > 0 ? `${candles}${isW ? 'w' : 'd'}` : '';
+            const hasLiveEma = Boolean(smRec || (typeof CHART_DATA !== "undefined" && CHART_DATA[s[0]] && CHART_DATA[s[0]].isLive));
+
+            if (hasLiveEma && (e50 == null || e200 == null)) {
+              return `<span class="crossover-status-tag na" title="50×200 EMA Cross: NA (Insufficient trading sessions)">NA</span>`;
+            }
 
             let isGolden = false;
             if (e50 != null && e200 != null) {
@@ -19035,14 +19057,15 @@
 
     const smRec = (typeof ScreeningMantisClient !== "undefined" && ScreeningMantisClient.cachedEmaMap && ScreeningMantisClient.cachedEmaMap[s[0]]) ||
       (window._screeningMantisEmaMap && window._screeningMantisEmaMap[s[0]]);
-    const e10 = (chart.ema10 && chart.ema10.length > 0) ? chart.ema10[chart.ema10.length - 1] : (smRec?.ema10 || s[3] * 0.99);
-    const e20 = (chart.ema20 && chart.ema20.length > 0) ? chart.ema20[chart.ema20.length - 1] : (smRec?.ema20 || s[3] * 0.98);
-    const e50 = (chart.ema50 && chart.ema50.length > 0) ? chart.ema50[chart.ema50.length - 1] : (smRec?.ema50 || s[3] * 0.97);
-    const e200 = (chart.ema200 && chart.ema200.length > 0) ? chart.ema200[chart.ema200.length - 1] : (smRec?.ema200 || s[3] * 0.95);
+    const hasLiveChart = Boolean(chart && chart.isLive);
+    const e10 = (chart.ema10 && chart.ema10.length > 0) ? chart.ema10[chart.ema10.length - 1] : (smRec ? (smRec.ema10 ?? null) : (hasLiveChart ? null : s[3] * 0.99));
+    const e20 = (chart.ema20 && chart.ema20.length > 0) ? chart.ema20[chart.ema20.length - 1] : (smRec ? (smRec.ema20 ?? null) : (hasLiveChart ? null : s[3] * 0.98));
+    const e50 = (chart.ema50 && chart.ema50.length > 0) ? chart.ema50[chart.ema50.length - 1] : (smRec ? (smRec.ema50 ?? null) : (hasLiveChart ? null : s[3] * 0.97));
+    const e200 = (chart.ema200 && chart.ema200.length > 0) ? chart.ema200[chart.ema200.length - 1] : (smRec ? (smRec.ema200 ?? null) : (hasLiveChart ? null : s[3] * 0.95));
     const rsiVal = chart.rsi || (s[4] > 0 ? 58.4 : 46.2);
 
-    const dist10 = ((s[3] - e10) / e10 * 100).toFixed(1);
-    const dist20 = ((s[3] - e20) / e20 * 100).toFixed(1);
+    const dist10 = e10 != null ? ((s[3] - e10) / e10 * 100).toFixed(1) : null;
+    const dist20 = e20 != null ? ((s[3] - e20) / e20 * 100).toFixed(1) : null;
     const dist52w = meta.high52 ? Math.max(0, (((meta.high52 - s[3]) / meta.high52) * 100)).toFixed(1) : "10.0";
 
     // Day's range and 52W range calculations
@@ -19237,10 +19260,10 @@
                 <span style="color:var(--mu);margin-left:4px;">Vol: <strong id="legend-vol-val" style="color:var(--ink)">${defaultVol}</strong></span>
               </div>
               <div style="display:flex;gap:12px;align-items:center;font-size:11px;flex-wrap:wrap;">
-                <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>10 EMA: <strong id="legend-ema10-val">₹${formatNumber(e10)}</strong></span>
-                <span style="color:#22c55e;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>20 EMA: <strong id="legend-ema20-val">₹${formatNumber(e20)}</strong></span>
-                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">${e50 != null ? '₹' + formatNumber(e50) : 'N/A'}</strong></span>
-                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">${e200 != null ? '₹' + formatNumber(e200) : 'N/A'}</strong></span>
+                <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>10 EMA: <strong id="legend-ema10-val">${e10 != null ? '₹' + formatNumber(e10) : 'NA'}</strong></span>
+                <span style="color:#22c55e;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>20 EMA: <strong id="legend-ema20-val">${e20 != null ? '₹' + formatNumber(e20) : 'NA'}</strong></span>
+                <span style="color:#a855f7;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;display:inline-block;"></span>50 EMA: <strong id="legend-ema50-val">${e50 != null ? '₹' + formatNumber(e50) : 'NA'}</strong></span>
+                <span style="color:#f59e0b;display:inline-flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>200 EMA: <strong id="legend-ema200-val">${e200 != null ? '₹' + formatNumber(e200) : 'NA'}</strong></span>
               </div>
             </div>
 
@@ -19273,23 +19296,23 @@
             <div class="stock-metrics-grid">
               <div class="stock-metric-card">
                 <span class="stock-metric-label">10 EMA (Short-Term)</span>
-                <span class="stock-metric-val">₹${formatNumber(e10)}</span>
-                <span class="stock-metric-sub ${dist10 >= 0 ? 'val-green' : 'val-red'}">${dist10 > 0 ? '+' : ''}${dist10}% from LTP</span>
+                <span class="stock-metric-val">${e10 != null ? '₹' + formatNumber(e10) : 'NA'}</span>
+                <span class="stock-metric-sub ${dist10 != null ? (dist10 >= 0 ? 'val-green' : 'val-red') : ''}">${dist10 != null ? (dist10 > 0 ? '+' : '') + dist10 + '% from LTP' : 'Insufficient History'}</span>
               </div>
               <div class="stock-metric-card">
                 <span class="stock-metric-label">20 EMA (Pullback Pivot)</span>
-                <span class="stock-metric-val">₹${formatNumber(e20)}</span>
-                <span class="stock-metric-sub ${dist20 >= 0 ? 'val-green' : 'val-red'}">${dist20 > 0 ? '+' : ''}${dist20}% from LTP</span>
+                <span class="stock-metric-val">${e20 != null ? '₹' + formatNumber(e20) : 'NA'}</span>
+                <span class="stock-metric-sub ${dist20 != null ? (dist20 >= 0 ? 'val-green' : 'val-red') : ''}">${dist20 != null ? (dist20 > 0 ? '+' : '') + dist20 + '% from LTP' : 'Insufficient History'}</span>
               </div>
               <div class="stock-metric-card">
                 <span class="stock-metric-label">50 EMA (Intermediate)</span>
-                <span class="stock-metric-val">₹${formatNumber(e50)}</span>
-                <span class="stock-metric-sub ${e50 >= e200 ? 'val-green' : 'val-red'}">${e50 >= e200 ? 'Bullish Alignment' : 'Bearish Pullback'}</span>
+                <span class="stock-metric-val">${e50 != null ? '₹' + formatNumber(e50) : 'NA'}</span>
+                <span class="stock-metric-sub ${e50 != null && e200 != null ? (e50 >= e200 ? 'val-green' : 'val-red') : (e50 != null ? (s[3] >= e50 ? 'val-green' : 'val-red') : '')}">${e50 != null && e200 != null ? (e50 >= e200 ? 'Bullish Alignment' : 'Bearish Pullback') : (e50 != null ? (s[3] >= e50 ? 'Above 50 EMA' : 'Below 50 EMA') : 'Insufficient History')}</span>
               </div>
               <div class="stock-metric-card">
                 <span class="stock-metric-label">200 EMA (Institutional)</span>
-                <span class="stock-metric-val">₹${formatNumber(e200)}</span>
-                <span class="stock-metric-sub val-green">Major Institutional Base</span>
+                <span class="stock-metric-val">${e200 != null ? '₹' + formatNumber(e200) : 'NA'}</span>
+                <span class="stock-metric-sub ${e200 != null ? 'val-green' : ''}">${e200 != null ? 'Major Institutional Base' : 'Insufficient History'}</span>
               </div>
             </div>
 
@@ -19298,7 +19321,7 @@
               <div style="display:flex;align-items:center;gap:12px">
                 <span style="font-size:12px;font-weight:600">50×200 CROSS:</span>
                 <span class="nav-badge-pill" style="background:${e50 != null && e200 != null ? (e50 >= e200 ? 'var(--gs)' : 'var(--rs)') : 'rgba(255,255,255,0.06)'};color:${e50 != null && e200 != null ? (e50 >= e200 ? 'var(--g)' : 'var(--r)') : 'var(--mu)'};font-weight:700">
-                  ${e50 != null && e200 != null ? (e50 >= e200 ? '🟢 Golden Cross Confirmed' : '🔴 Death Cross Warning') : '⚪ EMA Calibrating'}
+                  ${e50 != null && e200 != null ? (e50 >= e200 ? '🟢 Golden Cross Confirmed' : '🔴 Death Cross Warning') : 'NA'}
                 </span>
               </div>
               <div style="display:flex;align-items:center;gap:12px">
