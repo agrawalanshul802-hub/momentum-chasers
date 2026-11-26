@@ -7978,7 +7978,17 @@ server.listen(PORT, async () => {
 
       if (updatedAny) {
         CACHE.clear();
-        console.log('✓ Auto-Catchup pipeline sync completed & server cache cleared.');
+        if (typeof MomentumMarketEngine !== 'undefined') {
+          MomentumMarketEngine.cachedSectors = null;
+          MomentumMarketEngine.cachedSnapshot = null;
+          MomentumMarketEngine.cachedBreadth = null;
+          MomentumMarketEngine.cachedSectorShare = null;
+          MomentumMarketEngine.lastSectorsTime = 0;
+          MomentumMarketEngine.lastSnapshotTime = 0;
+          MomentumMarketEngine.lastBreadthTime = 0;
+          MomentumMarketEngine.lastSectorShareTime = 0;
+        }
+        console.log('✓ Auto-Catchup pipeline sync completed & server + engine caches cleared.');
       }
     } catch (e) {
       console.warn('Auto-Catchup pipeline warning:', e.message);
@@ -7988,5 +7998,5 @@ server.listen(PORT, async () => {
   }
 
   setTimeout(() => { checkAndAutoUpdateMarketData().catch(() => { }); }, 12 * 1000);
-  setInterval(() => { checkAndAutoUpdateMarketData().catch(() => { }); }, 15 * 60 * 1000);
+  setInterval(() => { checkAndAutoUpdateMarketData().catch(() => { }); }, 5 * 60 * 1000);
 });
