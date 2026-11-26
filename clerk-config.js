@@ -76,13 +76,15 @@
           await window.Clerk.load({ publishableKey: pubKey });
         }
         const isOAuthReturn = window.location.hash.includes('sso-callback') ||
-          window.location.search.includes('__clerk') ||
-          localStorage.getItem('mc_clerk_oauth_pending') === '1';
+          window.location.search.includes('__clerk');
+        try { localStorage.removeItem('mc_clerk_oauth_pending'); } catch (_) { }
         if (isOAuthReturn && !window.Clerk.user && typeof window.Clerk.handleRedirectCallback === 'function') {
           try {
             await window.Clerk.handleRedirectCallback({
-              afterSignInUrl: window.location.origin + '/index.html#screener',
-              afterSignUpUrl: window.location.origin + '/index.html#screener'
+              afterSignInUrl: window.location.origin + '/index.html',
+              afterSignUpUrl: window.location.origin + '/index.html',
+              signInForceRedirectUrl: window.location.origin + '/index.html',
+              signUpForceRedirectUrl: window.location.origin + '/index.html'
             });
           } catch (_) { }
         }
