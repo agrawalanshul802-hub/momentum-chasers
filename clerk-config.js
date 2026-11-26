@@ -92,6 +92,9 @@
           authListeners.forEach(cb => {
             try { cb('SIGNED_IN', { user: profile }); } catch (_) { }
           });
+          if (window.location.pathname.toLowerCase().includes('login') && localStorage.getItem('momentum_signed_out') !== '1') {
+            window.location.href = window.location.origin + '/index.html#screener';
+          }
         }
         window.Clerk.addListener(({ user }) => {
           if (user) {
@@ -172,6 +175,9 @@
         }
         if (typeof clerk.redirectToSignIn === 'function') {
           await clerk.redirectToSignIn({
+            redirectUrl: targetUrl,
+            afterSignInUrl: targetUrl,
+            afterSignUpUrl: targetUrl,
             signInForceRedirectUrl: targetUrl,
             signUpForceRedirectUrl: targetUrl
           });
