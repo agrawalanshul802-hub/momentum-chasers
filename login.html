@@ -3949,7 +3949,7 @@
 
   <!-- Clerk Auth Client Library & Integration -->
   <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_dmFsdWVkLXBhcnJvdC02MTg3LmNsZXJrLmFjY291bnRzLmRldiQ" src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@6/dist/clerk.browser.js" type="text/javascript"></script>
-  <script src="clerk-config.js?v=1.0.1"></script>
+  <script src="clerk-config.js?v=1.0.2"></script>
 
   <!-- GSAP & ScrollTrigger Engine for React Bits Components -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -7380,7 +7380,10 @@
 
         if (!hasTokens) {
           try {
-            if (localStorage.getItem("momentum_signed_out") !== "1") {
+            const oauthPending = localStorage.getItem("mc_clerk_oauth_pending") === "1" ||
+              hash.includes("sso-callback") ||
+              search.includes("__clerk");
+            if (oauthPending || localStorage.getItem("momentum_signed_out") !== "1") {
               const auth = getAuth();
               if (auth && typeof auth.handleOAuthCallback === 'function') {
                 const profile = await auth.handleOAuthCallback();
@@ -7388,6 +7391,8 @@
                   profile.plan = "Normal User";
                   localStorage.setItem("momentum_user", JSON.stringify(profile));
                   localStorage.setItem("momentum_auth_user", JSON.stringify(profile));
+                  localStorage.removeItem("momentum_signed_out");
+                  localStorage.removeItem("mc_clerk_oauth_pending");
                   window.location.href = "index.html#screener";
                   return;
                 }

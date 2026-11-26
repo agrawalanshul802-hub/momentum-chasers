@@ -42,6 +42,7 @@
       localStorage.setItem('mc_user_email', profile.email);
       if (profile.name) localStorage.setItem('mc_user_name', profile.name);
       localStorage.removeItem('momentum_signed_out');
+      localStorage.removeItem('mc_clerk_oauth_pending');
       if (window.MomentumCloudSync && window.MomentumCloudSync.syncProfile) {
         window.MomentumCloudSync.syncProfile(profile);
       }
@@ -73,6 +74,17 @@
         if (!window.Clerk.loaded) {
           const pubKey = await getPubKey();
           await window.Clerk.load({ publishableKey: pubKey });
+        }
+        const isOAuthReturn = window.location.hash.includes('sso-callback') ||
+          window.location.search.includes('__clerk') ||
+          localStorage.getItem('mc_clerk_oauth_pending') === '1';
+        if (isOAuthReturn && !window.Clerk.user && typeof window.Clerk.handleRedirectCallback === 'function') {
+          try {
+            await window.Clerk.handleRedirectCallback({
+              afterSignInUrl: window.location.origin + '/index.html#screener',
+              afterSignUpUrl: window.location.origin + '/index.html#screener'
+            });
+          } catch (_) { }
         }
         if (window.Clerk.user) {
           const profile = mapClerkUser(window.Clerk.user);
@@ -143,20 +155,24 @@
 
     async signInWithGoogle() {
       try {
+        try {
+          localStorage.removeItem('momentum_signed_out');
+          localStorage.setItem('mc_clerk_oauth_pending', '1');
+        } catch (_) { }
         const clerk = await ensureClerkLoaded();
         if (!clerk) return { success: false, error: 'Clerk SDK is still loading. Please try again.' };
         const origin = window.location.origin;
         if (clerk.client && clerk.client.signIn) {
           await clerk.client.signIn.authenticateWithRedirect({
             strategy: 'oauth_google',
-            redirectUrl: origin + '/login.html',
-            redirectUrlComplete: origin + '/index.html'
+            redirectUrl: origin + '/login.html#/sso-callback',
+            redirectUrlComplete: origin + '/index.html#screener'
           });
           return { success: true };
         }
         clerk.openSignIn({
-          afterSignInUrl: origin + '/index.html',
-          afterSignUpUrl: origin + '/index.html'
+          afterSignInUrl: origin + '/index.html#screener',
+          afterSignUpUrl: origin + '/index.html#screener'
         });
         return { success: true };
       } catch (err) {
