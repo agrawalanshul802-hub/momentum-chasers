@@ -17813,4 +17813,52 @@ body.theme-white .ipo-pdf-pill-btn.is-paid:hover {
     color: #92400e;
 }
 
+/* ==========================================================================
+   REACT BITS: STARBORDER COMPONENT (Show All Chips Button)
+   ========================================================================== */
+.star-border {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: var(--star-border-radius, 8px);
+    background: var(--star-border-surface, #0c1220);
+    color: var(--star-border-text, #fafafa);
+    -webkit-tap-highlight-color: transparent;
+    overflow: visible;
+}
+
+.star-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 var(--star-border-thickness, 1px) var(--star-border-track, rgba(255, 255, 255, 0.14));
+    pointer-events: none;
+}
+
+.star-border__light {
+    position: absolute;
+    top: -48px;
+    left: -48px;
+    z-index: -1;
+    width: calc(100% + 96px);
+    height: calc(100% + 96px);
+    pointer-events: none;
+}
+
+#screener-toggle-presets.star-border {
+    border: 0 !important;
+    background: var(--star-border-surface, #0f172a) !important;
+    color: var(--star-border-text, #e2e8f0) !important;
+}
+
+body.theme-white #screener-toggle-presets.star-border {
+    background: var(--star-border-surface, #ffffff) !important;
+    color: var(--star-border-text, #18181b) !important;
+}
+
 

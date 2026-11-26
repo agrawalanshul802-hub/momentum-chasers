@@ -14280,7 +14280,8 @@
           <!-- Clear All Filters & Chips Button -->
           <div style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;">
             <button class="clear-all-filters-btn" id="screener-clear-all">Clear All Filters</button>
-            <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
+            <button class="clear-all-filters-btn star-border" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
+              <canvas class="star-border__light" aria-hidden="true"></canvas>
               <span>${State.presetsCollapsed ? "Show All Chips ▾" : "Hide Chips ▴"}</span>
             </button>
           </div>
@@ -35438,6 +35439,7 @@
         break;
       case "screener":
         container.innerHTML = renderScreenerView();
+        if (typeof initScreenerChipsStarBorder === "function") initScreenerChipsStarBorder();
         break;
       case "breadth":
         container.innerHTML = renderBreadthView();
@@ -39321,7 +39323,399 @@
     window.refreshAllAlertsContainers = refreshAllAlertsContainers;
     window.renderBellToggleHTML = renderBellToggleHTML;
     window.createSlideCommit = createSlideCommit;
-    window.setVipPayPlan = setVipPayPlan;
+    function initStarBorder(root, options = {}) {
+    if (!root || root._starBorderCleanup) return;
+    const canvas = root.querySelector('.star-border__light');
+    const ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
+    if (!canvas || !ctx) return;
+
+    const theme = options.theme === 'light' ? 'light' : 'dark';
+    const THEMES = {
+      dark: { surface: '#0f172a', text: '#fafafa', track: 'rgba(255, 255, 255, 0.14)', light: '#ffffff' },
+      light: { surface: '#ffffff', text: '#18181b', track: 'rgba(24, 24, 27, 0.16)', light: '#18181b' }
+    };
+    const palette = THEMES[theme] || THEMES.dark;
+    const clampVal = (v, min, max) => Math.min(max, Math.max(min, v));
+    const wrapVal = (v, total) => ((v % total) + total) % total;
+    const easeVal = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(2 - 2 * t, 3) / 2);
+    const mixRgb = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+    const rgbaStr = (rgb, a) => `rgba(${Math.round(rgb[0])}, ${Math.round(rgb[1])}, ${Math.round(rgb[2])}, ${clampVal(a, 0, 1).toFixed(3)})`;
+    const WHITE = [255, 255, 255];
+    const BLEED = 48;
+    const LAP = 0.9;
+    const TAU = Math.PI * 2;
+
+    const s = {
+      light: theme === 'light',
+      color: options.color || palette.light,
+      trailColor: options.trailColor || options.color || palette.light,
+      duration: Math.max(0.3, options.duration || 4),
+      thickness: Math.max(0.5, options.thickness || 1),
+      radius: Math.max(0, options.radius !== undefined ? options.radius : 8),
+      trailLength: clampVal(options.trailLength !== undefined ? options.trailLength : 0.3, 0, 1),
+      stars: clampVal(Math.round(options.stars || 1), 1, 6),
+      glow: clampVal(options.glow !== undefined ? options.glow : 0.6, 0, 1),
+      sparkle: !!options.sparkle,
+      direction: options.direction === 'counterclockwise' ? -1 : 1,
+      hover: ['lap', 'brighten', 'reveal', 'none'].includes(options.hover) ? options.hover : 'lap',
+      clickPulse: options.clickPulse !== false
+    };
+
+    root.style.setProperty('--star-border-radius', `${s.radius}px`);
+    root.style.setProperty('--star-border-thickness', `${s.thickness}px`);
+    root.style.setProperty('--star-border-surface', options.backgroundColor || palette.surface);
+    root.style.setProperty('--star-border-text', options.textColor || palette.text);
+    root.style.setProperty('--star-border-track', options.borderColor || palette.track);
+
+    let colorCtx = null;
+    const toRgb = color => {
+      colorCtx = colorCtx || document.createElement('canvas').getContext('2d');
+      if (!colorCtx) return WHITE;
+      colorCtx.fillStyle = '#000000';
+      colorCtx.fillStyle = color;
+      const val = String(colorCtx.fillStyle);
+      if (val.startsWith('#')) {
+        const hex = parseInt(val.slice(1, 7), 16);
+        return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
+      }
+      const parts = (val.match(/[\d.]+/g) || []).map(Number);
+      return parts.length >= 3 ? [parts[0], parts[1], parts[2]] : WHITE;
+    };
+
+    const outline = (w, h, rad) => {
+      const r = Math.max(0, Math.min(rad, w / 2, h / 2));
+      const arc = (Math.PI * r) / 2;
+      const across = Math.max(0, w - 2 * r);
+      const down = Math.max(0, h - 2 * r);
+      const segments = [
+        { length: across, x: r, y: 0, dx: 1, dy: 0, angle: null },
+        { length: arc, x: w - r, y: r, dx: 0, dy: 0, angle: -Math.PI / 2 },
+        { length: down, x: w, y: r, dx: 0, dy: 1, angle: null },
+        { length: arc, x: w - r, y: h - r, dx: 0, dy: 0, angle: 0 },
+        { length: across, x: w - r, y: h, dx: -1, dy: 0, angle: null },
+        { length: arc, x: r, y: h - r, dx: 0, dy: 0, angle: Math.PI / 2 },
+        { length: down, x: 0, y: h - r, dx: 0, dy: -1, angle: null },
+        { length: arc, x: r, y: r, dx: 0, dy: 0, angle: Math.PI }
+      ];
+      return { r, segments, total: Math.max(1, segments.reduce((sum, seg) => sum + seg.length, 0)) };
+    };
+
+    const pointAt = (shape, dist, pt) => {
+      let rem = wrapVal(dist, shape.total);
+      for (const seg of shape.segments) {
+        if (seg.length > 0 && rem <= seg.length) {
+          if (seg.angle === null) {
+            pt.x = seg.x + seg.dx * rem;
+            pt.y = seg.y + seg.dy * rem;
+            pt.nx = seg.dy;
+            pt.ny = -seg.dx;
+          } else {
+            const ang = seg.angle + rem / shape.r;
+            pt.nx = Math.cos(ang);
+            pt.ny = Math.sin(ang);
+            pt.x = seg.x + pt.nx * shape.r;
+            pt.y = seg.y + pt.ny * shape.r;
+          }
+          return pt;
+        }
+        rem -= seg.length;
+      }
+      return pt;
+    };
+
+    const projectPt = (shape, px, py) => {
+      let best = Infinity, found = 0, offset = 0;
+      shape.segments.forEach(seg => {
+        if (seg.length > 0) {
+          let segS = 0, x = 0, y = 0;
+          if (seg.angle === null) {
+            segS = clampVal((px - seg.x) * seg.dx + (py - seg.y) * seg.dy, 0, seg.length);
+            x = seg.x + seg.dx * segS;
+            y = seg.y + seg.dy * segS;
+          } else {
+            let ang = wrapVal(Math.atan2(py - seg.y, px - seg.x) - seg.angle, TAU);
+            if (ang > Math.PI / 2) ang = ang > Math.PI * 1.25 ? 0 : Math.PI / 2;
+            segS = ang * shape.r;
+            x = seg.x + Math.cos(seg.angle + ang) * shape.r;
+            y = seg.y + Math.sin(seg.angle + ang) * shape.r;
+          }
+          const d = (px - x) ** 2 + (py - y) ** 2;
+          if (d < best) { best = d; found = offset + segS; }
+        }
+        offset += seg.length;
+      });
+      return found;
+    };
+
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pt = { x: 0, y: 0, nx: 0, ny: -1 };
+    const state = {
+      width: 0, height: 0, dpr: 1, phase: 0, velocity: 0, motion: 0,
+      lap: -1, time: 0, reveal: 0, boost: 0, flash: 0, emit: 0,
+      hovered: false, focused: false, pointerX: 0, pointerY: 0, visible: true
+    };
+    const pulses = [], dust = [];
+    const colors = { head: toRgb(s.color), tail: toRgb(s.trailColor) };
+    let raf = 0, last = performance.now(), alive = true, resizePending = false;
+
+    const applyMeasure = () => {
+      state.width = root.offsetWidth;
+      state.height = root.offsetHeight;
+      state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round((state.width + BLEED * 2) * state.dpr));
+      canvas.height = Math.max(1, Math.round((state.height + BLEED * 2) * state.dpr));
+    };
+
+    const wake = () => {
+      if (raf || !alive || !state.visible) return;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+
+    const measure = () => { resizePending = true; wake(); };
+    const shapeFor = cur => outline(Math.max(1, state.width - cur.thickness), Math.max(1, state.height - cur.thickness), cur.radius - cur.thickness / 2);
+
+    const strokeLine = (x1, y1, x2, y2, w, style) => {
+      ctx.lineWidth = w; ctx.strokeStyle = style;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    };
+
+    const drawTrail = (cur, shape, head, len, sign, intensity, tip = true) => {
+      if (len < 0.5 || intensity <= 0) return;
+      const steps = clampVal(Math.ceil(len / 2), 2, 90);
+      pointAt(shape, head, pt);
+      let px = pt.x, py = pt.y;
+      for (let i = 1; i <= steps; i++) {
+        pointAt(shape, head - sign * len * (i / steps), pt);
+        const u = 1 - (i - 0.5) / steps;
+        const fade = u * u * intensity;
+        let tone = mixRgb(colors.tail, colors.head, u);
+        if (!cur.light) tone = mixRgb(tone, WHITE, Math.pow(u, 6) * 0.65);
+        ctx.lineCap = tip && i === 1 ? 'round' : 'butt';
+        strokeLine(px, py, pt.x, pt.y, 2 + 6 * cur.glow, rgbaStr(tone, fade * (cur.light ? 0.1 : 0.2) * cur.glow));
+        strokeLine(px, py, pt.x, pt.y, cur.thickness, rgbaStr(tone, fade));
+        px = pt.x; py = pt.y;
+      }
+    };
+
+    const drawHead = (cur, x, y, intensity, twinkle) => {
+      if (intensity <= 0) return;
+      const tone = colors.head;
+      const reach = (12 + 40 * cur.glow) * (cur.light ? 0.6 : 1);
+      const bloom = ctx.createRadialGradient(x, y, 0, x, y, reach);
+      const strength = (cur.light ? 0.08 : 0.4) * cur.glow * intensity;
+      bloom.addColorStop(0, rgbaStr(tone, strength));
+      bloom.addColorStop(0.2, rgbaStr(tone, strength * 0.4));
+      bloom.addColorStop(0.5, rgbaStr(tone, strength * 0.1));
+      bloom.addColorStop(1, rgbaStr(tone, 0));
+      ctx.fillStyle = bloom;
+      ctx.fillRect(x - reach, y - reach, reach * 2, reach * 2);
+      if (!cur.sparkle) return;
+
+      const size = (1 + cur.thickness * 0.6) * (cur.light ? 0.85 : 1);
+      const core = ctx.createRadialGradient(x, y, 0, x, y, size * 2.2);
+      core.addColorStop(0, rgbaStr(cur.light ? tone : WHITE, intensity));
+      core.addColorStop(cur.light ? 0.3 : 0.4, rgbaStr(cur.light ? tone : mixRgb(tone, WHITE, 0.5), intensity * 0.9));
+      core.addColorStop(cur.light ? 0.55 : 1, rgbaStr(tone, cur.light ? intensity * 0.12 : 0));
+      core.addColorStop(1, rgbaStr(tone, 0));
+      ctx.fillStyle = core;
+      ctx.beginPath(); ctx.arc(x, y, size * 2.2, 0, TAU); ctx.fill();
+
+      const spike = (3 + 4 * cur.glow + cur.thickness * 1.5) * twinkle;
+      const center = cur.light ? tone : WHITE;
+      const hGrad = ctx.createLinearGradient(x - spike, y, x + spike, y);
+      hGrad.addColorStop(0, rgbaStr(tone, 0)); hGrad.addColorStop(0.5, rgbaStr(center, intensity * 0.95)); hGrad.addColorStop(1, rgbaStr(tone, 0));
+      strokeLine(x - spike, y, x + spike, y, cur.light ? 0.75 : 1, hGrad);
+      const vGrad = ctx.createLinearGradient(x, y - spike, x, y + spike);
+      vGrad.addColorStop(0, rgbaStr(tone, 0)); vGrad.addColorStop(0.5, rgbaStr(center, intensity * 0.95)); vGrad.addColorStop(1, rgbaStr(tone, 0));
+      strokeLine(x, y - spike, x, y + spike, cur.light ? 0.75 : 1, vGrad);
+    };
+
+    const draw = (base, shape) => {
+      const cur = state.boost > 0.001 ? { ...base, glow: Math.min(1.5, base.glow + 0.4 * state.boost) } : base;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (state.width < 2 || state.height < 2) return;
+      const offset = (BLEED + cur.thickness / 2) * state.dpr;
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, offset, offset);
+      ctx.globalCompositeOperation = cur.light ? 'source-over' : 'lighter';
+      ctx.lineCap = 'butt';
+
+      const total = shape.total, spacing = total / cur.stars;
+      const speed = Math.abs(state.motion), sign = state.motion >= 0 ? 1 : -1;
+      const len = Math.min(speed * cur.trailLength * cur.duration, spacing * 0.92, total * 0.6);
+      const intensity = state.reveal * (1 + 0.4 * state.boost + 0.6 * state.flash);
+
+      const ring = state.flash * (cur.light ? 0.18 : 0.32) + state.boost * state.reveal * (cur.light ? 0.07 : 0.12);
+      if (ring > 0.005 && ctx.roundRect) {
+        ctx.lineWidth = cur.thickness + 2 * cur.glow;
+        ctx.strokeStyle = rgbaStr(colors.head, ring);
+        ctx.beginPath();
+        ctx.roundRect(0, 0, Math.max(1, state.width - cur.thickness), Math.max(1, state.height - cur.thickness), Math.max(0, shape.r));
+        ctx.stroke();
+      }
+
+      const still = clampVal(1 - speed / Math.max(1, (total / cur.duration) * 0.6), 0, 1) * Math.min(1, intensity);
+      const rest = (10 + 14 * cur.glow + cur.thickness * 2) * still;
+      for (let i = 0; i < cur.stars; i++) {
+        const head = state.phase + i * spacing;
+        drawTrail(cur, shape, head, len, sign, Math.min(1, intensity));
+        if (still > 0.01) {
+          drawTrail(cur, shape, head, rest, 1, still, false);
+          drawTrail(cur, shape, head, rest, -1, still, false);
+        }
+      }
+
+      pulses.forEach(p => {
+        const fade = Math.pow(1 - p.age / 0.65, 2);
+        const travel = (total / 2) * (1 - Math.pow(1 - Math.min(1, p.age / 0.5), 2));
+        const tail = Math.min(travel, total * 0.16);
+        [1, -1].forEach(way => {
+          const front = p.origin + way * travel;
+          drawTrail(cur, shape, front, tail, way, fade);
+          pointAt(shape, front, pt);
+          drawHead(cur, pt.x, pt.y, fade * 0.8, 0.8);
+        });
+      });
+
+      for (let i = 0; i < cur.stars; i++) {
+        pointAt(shape, state.phase + i * spacing, pt);
+        const twinkle = 0.82 + 0.18 * Math.sin(state.time * 6.1 + i * 2.3) * Math.sin(state.time * 2.7 + i);
+        drawHead(cur, pt.x, pt.y, Math.min(1.3, intensity), twinkle);
+      }
+
+      dust.forEach(m => {
+        const left = 1 - m.age / m.life;
+        const alpha = left * (0.45 + 0.55 * Math.sin(state.time * 20 + m.seed)) * state.reveal * (cur.light ? 0.35 : 0.9);
+        if (alpha <= 0.01) return;
+        ctx.fillStyle = rgbaStr(cur.light ? colors.head : mixRgb(colors.tail, WHITE, 0.6), alpha);
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.size * (0.6 + 0.4 * left), 0, TAU); ctx.fill();
+      });
+    };
+
+    function frame(now) {
+      raf = 0;
+      if (!root.isConnected) { cleanup(); return; }
+      if (resizePending) { resizePending = false; applyMeasure(); }
+      if (!alive) return;
+      const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+      last = now; state.time += dt;
+
+      const shape = shapeFor(s);
+      const total = shape.total, spacing = total / s.stars;
+      const engaged = state.hovered || state.focused;
+      const cruise = reduce ? 0 : (s.direction * total) / s.duration;
+
+      const revealTarget = s.hover === 'reveal' && !engaged ? 0 : 1;
+      state.reveal += (revealTarget - state.reveal) * (1 - Math.exp(-dt / (revealTarget > state.reveal ? 0.16 : 0.45)));
+      const boostTarget = s.hover === 'brighten' && engaged ? 1 : 0;
+      state.boost += (boostTarget - state.boost) * (1 - Math.exp(-dt / (boostTarget > state.boost ? 0.18 : 0.5)));
+      state.flash *= Math.exp(-dt / 0.22);
+
+      state.velocity += (cruise - state.velocity) * (1 - Math.exp(-dt / 0.45));
+      let extra = 0;
+      if (state.lap >= 0) {
+        const before = easeVal(Math.min(1, state.lap / LAP));
+        state.lap += dt;
+        extra = (easeVal(Math.min(1, state.lap / LAP)) - before) * total * s.direction;
+        if (state.lap >= LAP) state.lap = -1;
+      }
+      state.motion = state.velocity + extra / dt;
+      state.phase = wrapVal(state.phase + state.velocity * dt + extra, total);
+
+      const pace = Math.abs(state.motion) / Math.max(1, Math.abs(total / s.duration));
+      if (s.sparkle && !reduce && state.reveal > 0.05) {
+        state.emit += dt * (2 + 6 * Math.min(2, pace)) * s.stars;
+        while (state.emit > 1 && dust.length <= 48) {
+          state.emit -= 1;
+          pointAt(shape, state.phase + Math.floor(Math.random() * s.stars) * spacing, pt);
+          const push = 3 + Math.random() * 10, drift = (Math.random() - 0.5) * 8;
+          dust.push({
+            x: pt.x + pt.nx * (Math.random() * 3 - 1), y: pt.y + pt.ny * (Math.random() * 3 - 1),
+            vx: pt.nx * push - pt.ny * drift - state.motion * -pt.ny * 0.04,
+            vy: pt.ny * push + pt.nx * drift - state.motion * pt.nx * 0.04,
+            age: 0, life: 0.35 + Math.random() * 0.5, size: 0.45 + Math.random() * 0.7, seed: Math.random() * TAU
+          });
+        }
+      }
+      for (let i = dust.length - 1; i >= 0; i--) {
+        dust[i].age += dt;
+        dust[i].x += dust[i].vx * dt; dust[i].y += dust[i].vy * dt;
+        dust[i].vx *= Math.exp(-dt * 2.2); dust[i].vy *= Math.exp(-dt * 2.2);
+        if (dust[i].age >= dust[i].life) dust.splice(i, 1);
+      }
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        pulses[i].age += dt;
+        if (pulses[i].age >= 0.65) pulses.splice(i, 1);
+      }
+
+      draw(s, shape);
+      const settling = Math.abs(revealTarget - state.reveal) > 0.002 || Math.abs(boostTarget - state.boost) > 0.002 || state.flash > 0.01 || pulses.length > 0 || dust.length > 0;
+      const moving = Math.abs(state.motion) > 0.05 || cruise !== 0 || state.lap >= 0;
+      const showing = state.reveal > 0.002 || revealTarget > 0;
+      if (state.visible && (settling || (moving && showing) || state.hovered)) raf = requestAnimationFrame(frame);
+    }
+
+    const localPt = e => {
+      const rect = root.getBoundingClientRect();
+      return [(e.clientX - rect.left) * (rect.width ? state.width / rect.width : 1), (e.clientY - rect.top) * (rect.height ? state.height / rect.height : 1)];
+    };
+    const onEnter = e => { [state.pointerX, state.pointerY] = localPt(e); state.hovered = true; if (s.hover === 'lap' && state.lap < 0 && !reduce) state.lap = 0; wake(); };
+    const onLeave = () => { state.hovered = false; wake(); };
+    const pulse = origin => { if (!s.clickPulse) return; pulses.push({ origin, age: 0 }); if (pulses.length > 4) pulses.shift(); state.flash = 1; wake(); };
+    const onDown = e => { if (e.button !== 0 && e.pointerType === 'mouse') return; const [x, y] = localPt(e); pulse(projectPt(shapeFor(s), x - s.thickness / 2, y - s.thickness / 2)); };
+    const onFocus = () => { state.focused = root.matches(':focus-visible'); if (state.focused && s.hover === 'lap' && state.lap < 0 && !reduce) state.lap = 0; wake(); };
+    const onBlur = () => { state.focused = false; wake(); };
+
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    if (ro) ro.observe(root);
+    const io = typeof IntersectionObserver !== 'undefined' ? new IntersectionObserver(entries => { state.visible = entries.some(e => e.isIntersecting); if (state.visible) wake(); }) : null;
+    if (io) io.observe(root);
+
+    root.addEventListener('pointerenter', onEnter);
+    root.addEventListener('pointerleave', onLeave);
+    root.addEventListener('pointerdown', onDown);
+    root.addEventListener('focus', onFocus);
+    root.addEventListener('blur', onBlur);
+    measure();
+
+    function cleanup() {
+      alive = false;
+      cancelAnimationFrame(raf);
+      if (ro) ro.disconnect();
+      if (io) io.disconnect();
+      root.removeEventListener('pointerenter', onEnter);
+      root.removeEventListener('pointerleave', onLeave);
+      root.removeEventListener('pointerdown', onDown);
+      root.removeEventListener('focus', onFocus);
+      root.removeEventListener('blur', onBlur);
+      delete root._starBorderCleanup;
+    }
+    root._starBorderCleanup = cleanup;
+  }
+
+  function initScreenerChipsStarBorder() {
+    const btn = document.getElementById('screener-toggle-presets');
+    if (!btn) return;
+    const isLight = document.body.classList.contains('theme-white');
+    initStarBorder(btn, {
+      color: isLight ? '#d97706' : '#ffffff',
+      trailColor: isLight ? '#10b981' : '#38bdf8',
+      duration: 4,
+      direction: 'clockwise',
+      stars: 1,
+      trailLength: 0.3,
+      thickness: 1.2,
+      radius: 8,
+      glow: 0.65,
+      hover: 'lap',
+      sparkle: true,
+      clickPulse: true,
+      theme: isLight ? 'light' : 'dark'
+    });
+  }
+
+  window.setVipPayPlan = setVipPayPlan;
     window.ringBellToggle = ringBellToggle;
     window.updateStockBellToggles = updateStockBellToggles;
     window.renderAlertsGridHTML = renderAlertsGridHTML;
