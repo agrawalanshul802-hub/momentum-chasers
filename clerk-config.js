@@ -162,20 +162,18 @@
         const clerk = await ensureClerkLoaded();
         if (!clerk) return { success: false, error: 'Clerk SDK is still loading. Please try again.' };
         const targetUrl = window.location.origin + '/index.html';
-        if (typeof clerk.openSignIn === 'function') {
-          clerk.openSignIn({
-            forceRedirectUrl: targetUrl,
-            fallbackRedirectUrl: targetUrl,
-            signUpForceRedirectUrl: targetUrl,
-            signUpFallbackRedirectUrl: targetUrl
-          });
-          return { success: true };
-        }
         if (clerk.client && clerk.client.signIn) {
           await clerk.client.signIn.authenticateWithRedirect({
             strategy: 'oauth_google',
             redirectUrl: window.location.origin + '/login.html#/sso-callback',
             redirectUrlComplete: targetUrl
+          });
+          return { success: true };
+        }
+        if (typeof clerk.redirectToSignIn === 'function') {
+          await clerk.redirectToSignIn({
+            signInForceRedirectUrl: targetUrl,
+            signUpForceRedirectUrl: targetUrl
           });
           return { success: true };
         }
