@@ -1206,6 +1206,7 @@
     </button>
     <button class="owner-tab-btn" id="btn-tab-subscribers" onclick="switchOwnerTab('subscribers')">
       <span>👥</span> <span>VIP Passes & Customer Log</span>
+      <span id="pending-purchases-badge" style="display:none;background:#f59e0b;color:#0b1120;font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;margin-left:4px;">0</span>
     </button>
     <button class="owner-tab-btn" id="btn-tab-pipeline" onclick="switchOwnerTab('pipeline')">
       <span>⚡</span> <span>Daily Market Pipeline</span>
@@ -3331,10 +3332,26 @@
         .then(function (data) {
           if (data && data.success && Array.isArray(data.purchases)) {
             allPurchases = data.purchases;
+            updatePendingPurchasesBadge(allPurchases);
             renderPurchasesTable(allPurchases);
           }
         });
     }
+
+    function updatePendingPurchasesBadge(list) {
+      var badge = document.getElementById('pending-purchases-badge');
+      if (!badge) return;
+      var pendingCount = (list || []).filter(function (p) { return p.status === 'Pending Approval'; }).length;
+      if (pendingCount > 0) {
+        badge.textContent = pendingCount + ' Pending';
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    setTimeout(fetchPurchases, 800);
+    setInterval(fetchPurchases, 15000);
 
     function renderPurchasesTable(list) {
       var tbody = document.getElementById('purchases-table-body');
@@ -3347,29 +3364,37 @@
       var html = '';
       for (var i = 0; i < list.length; i++) {
         var p = list[i];
+        var isPending = (p.status === 'Pending Approval');
+        var isRejected = (p.status === 'Rejected');
         var expDate = p.expiresAt ? new Date(p.expiresAt).getTime() : 0;
         var diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
-        var timeLeftText = diffDays > 0 ? (diffDays + ' Days Left') : 'Expired';
-        var timeLeftClass = (diffDays > 0 && p.status === 'Active') ? 'active' : 'disabled';
-        if (p.planTier && p.planTier.includes('Lifetime')) {
+        var timeLeftText = isPending ? '⏳ Pending Approval' : (isRejected ? '❌ Declined' : (diffDays > 0 ? (diffDays + ' Days Left') : 'Expired'));
+        var timeLeftClass = isPending ? 'disabled' : ((!isRejected && diffDays > 0 && (p.status === 'Active' || p.status === 'Active (Auto-Verified)')) ? 'active' : 'disabled');
+        if (!isPending && !isRejected && p.planTier && p.planTier.includes('Lifetime')) {
           timeLeftText = 'Lifetime Active';
           timeLeftClass = 'active';
         }
 
-        html += '<tr>' +
-          '<td><strong>+91 ' + escapeHtml(p.mobile) + '</strong>' + (p.email ? '<br><span style="font-size:10.5px;color:#38bdf8;">' + escapeHtml(p.email) + '</span>' : '') + '<br><span style="font-size:10.5px;color:#94a3b8;">Issued: ' + escapeHtml(p.issuedAt || '') + ' • Exp: ' + escapeHtml(p.expiresAt || '-') + '</span></td>' +
+        var rowStyle = isPending ? ' style="background:rgba(245,158,11,0.08);"' : '';
+        var utrLine = p.utr ? '<br><span style="font-size:10.5px;color:#fbbf24;">UTR: ' + escapeHtml(p.utr) + (p.amount ? ' · ₹' + escapeHtml(p.amount) : '') + '</span>' : (p.txRef ? '<br><span style="font-size:10.5px;color:#94a3b8;">Ref: ' + escapeHtml(p.txRef) + (p.amount ? ' · ₹' + escapeHtml(p.amount) : '') + '</span>' : '');
+        var actionButtons = isPending
+          ? '<button type="button" class="btn-outline" style="padding:3px 9px;font-size:11px;margin-right:4px;background:rgba(34,197,94,0.16);color:#22c55e;border-color:rgba(34,197,94,0.45);font-weight:700;" onclick="approvePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">✅ Approve</button>' +
+            '<button type="button" class="btn-outline" style="padding:3px 9px;font-size:11px;margin-right:4px;background:rgba(239,68,68,0.14);color:#ef4444;border-color:rgba(239,68,68,0.4);font-weight:700;" onclick="rejectPass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">❌ Reject</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>'
+          : '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:#38bdf8;border-color:rgba(56,189,248,0.35);" title="Edit or Renew VIP Pass" onclick="openEditPassModal(\'' + escapeHtml(p.id) + '\')">✏️ Edit / Renew</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
+            (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
+            '</button>' +
+            '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>';
+
+        html += '<tr' + rowStyle + '>' +
+          '<td><strong>' + escapeHtml(p.mobile) + '</strong>' + (p.email ? '<br><span style="font-size:10.5px;color:#38bdf8;">' + escapeHtml(p.email) + '</span>' : '') + utrLine + '<br><span style="font-size:10.5px;color:#94a3b8;">Issued: ' + escapeHtml(p.issuedAt || (p.purchasedAt ? p.purchasedAt.slice(0, 10) : '')) + ' • Exp: ' + escapeHtml(p.expiresAt || '-') + '</span></td>' +
           '<td><span style="background:rgba(56,189,248,0.12);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">' + escapeHtml(p.planTier) + '</span></td>' +
           '<td><code style="color:#f59e0b;font-weight:700;font-size:12px;background:#090d14;padding:2px 6px;border-radius:3px;">' + escapeHtml(p.secretPin || '----') + '</code></td>' +
           '<td><span style="font-size:11px;color:' + (p.deviceLock && p.deviceLock.includes('Locked') ? '#22c55e' : '#94a3b8') + ';">' + escapeHtml(p.deviceLock || 'Unbound') + '</span></td>' +
-          '<td><span class="badge-status ' + timeLeftClass + '">' + escapeHtml(timeLeftText) + '</span></td>' +
-          '<td style="text-align:right;white-space:nowrap;">' +
-          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:#38bdf8;border-color:rgba(56,189,248,0.35);" title="Edit or Renew VIP Pass" onclick="openEditPassModal(\'' + escapeHtml(p.id) + '\')">✏️ Edit / Renew</button>' +
-          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;" title="Reset device binding for user" onclick="resetDeviceLock(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🔄 Reset Device</button>' +
-          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;margin-right:4px;color:' + (p.status === 'Revoked' ? '#22c55e' : '#f59e0b') + ';" onclick="revokePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">' +
-          (p.status === 'Revoked' ? 'Activate' : 'Revoke') +
-          '</button>' +
-          '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>' +
-          '</td>' +
+          '<td><span class="badge-status ' + timeLeftClass + '"' + (isPending ? ' style="background:rgba(245,158,11,0.18);color:#fbbf24;border-color:rgba(245,158,11,0.45);"' : '') + '>' + escapeHtml(timeLeftText) + '</span></td>' +
+          '<td style="text-align:right;white-space:nowrap;">' + actionButtons + '</td>' +
           '</tr>';
       }
       tbody.innerHTML = html;
@@ -3459,6 +3484,46 @@
             showToast('VIP Pass updated / renewed successfully!');
           } else {
             alert('Error: ' + (data.error || 'Failed to update pass'));
+          }
+        });
+    }
+
+    function approvePass(id, mobile) {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'approve', id: id, mobile: mobile })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            updatePendingPurchasesBadge(allPurchases);
+            renderPurchasesTable(allPurchases);
+            showToast('VIP Pass Approved & Activated!');
+          } else {
+            alert('Error: ' + (data.error || 'Failed to approve'));
+          }
+        });
+    }
+
+    function rejectPass(id, mobile) {
+      var activePin = ownerPin || sessionStorage.getItem('mc_owner_pin') || '';
+      fetch('/api/owner/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
+        body: JSON.stringify({ pin: activePin, action: 'reject', id: id, mobile: mobile })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success) {
+            allPurchases = data.purchases || [];
+            updatePendingPurchasesBadge(allPurchases);
+            renderPurchasesTable(allPurchases);
+            showToast('Payment request declined.');
+          } else {
+            alert('Error: ' + (data.error || 'Failed to reject'));
           }
         });
     }

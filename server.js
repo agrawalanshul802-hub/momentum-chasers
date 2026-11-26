@@ -7111,6 +7111,23 @@ const server = http.createServer(async (req, res) => {
         } else if (body.expiresAt && !isNaN(new Date(body.expiresAt).getTime())) {
           target.expiresAt = new Date(body.expiresAt).toISOString().slice(0, 10);
         }
+      } else if (body.action === 'approve') {
+        const target = purchases.find(p => p.id === body.id || (body.mobile && p.mobile === body.mobile));
+        if (target) {
+          const days = Number(target.daysTotal) || (target.tierKey === 'yearly' ? 365 : (target.tierKey === 'monthly' ? 30 : 90));
+          const now = new Date();
+          const exp = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+          target.status = 'Active';
+          target.issuedAt = now.toISOString().slice(0, 10);
+          target.expiresAt = exp.toISOString().slice(0, 10);
+          target.approvedAt = now.toISOString().replace('T', ' ').slice(0, 19);
+        }
+      } else if (body.action === 'reject') {
+        const target = purchases.find(p => p.id === body.id || (body.mobile && p.mobile === body.mobile));
+        if (target) {
+          target.status = 'Rejected';
+          target.rejectedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        }
       } else if (body.action === 'reset_device') {
         const target = purchases.find(p => p.id === body.id || p.mobile === body.mobile);
         if (target) target.deviceLock = 'Unbound (Device lock reset)';
@@ -7137,21 +7154,23 @@ const server = http.createServer(async (req, res) => {
       matched = purchases.find(p => p.id === purchaseId) || null;
     }
     if (!matched && email) {
-      matched = purchases.find(p => p.email && p.email.toLowerCase() === email && p.status !== 'Revoked') || null;
+      matched = purchases.find(p => p.email && p.email.toLowerCase() === email && p.status !== 'Revoked' && p.status !== 'Rejected' && p.status !== 'Pending Approval') || null;
     }
     if (!matched) {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ success: true, found: false, active: false, revoked: false }));
       return;
     }
-    const isRevoked = (matched.status === 'Revoked');
+    const isRevoked = (matched.status === 'Revoked' || matched.status === 'Rejected');
+    const isPending = (matched.status === 'Pending Approval');
     const expTime = matched.expiresAt ? new Date(matched.expiresAt + 'T23:59:59Z').getTime() : 0;
-    const isActive = !isRevoked && expTime > Date.now();
+    const isActive = !isRevoked && !isPending && expTime > Date.now();
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
     res.end(JSON.stringify({
       success: true,
       found: true,
       active: isActive,
+      pending: isPending,
       revoked: isRevoked,
       pass: matched
     }));
@@ -7161,14 +7180,20 @@ const server = http.createServer(async (req, res) => {
   // 6g-5. Instant Payment Auto-Detection & Verification Endpoints
   if (pathname === '/api/payment/check-status' && req.method === 'GET') {
     const txRef = (parsedUrl.query.txRef || '').toString().trim();
+    const purchaseId = (parsedUrl.query.purchaseId || '').toString().trim();
     const ideaId = (parsedUrl.query.ideaId || '').toString().trim();
     const purchases = getStoredPurchases();
-    const isPaid = purchases.some(p =>
-      (txRef && p.txRef === txRef) ||
-      (ideaId && p.ideaId === ideaId && (p.status === 'Active' || p.status === 'Active (Auto-Verified)'))
+    const matched = purchases.find(p =>
+      (purchaseId && p.id === purchaseId) ||
+      (txRef && p.txRef === txRef)
+    ) || null;
+    const isPaid = Boolean(
+      (matched && (matched.status === 'Active' || matched.status === 'Active (Auto-Verified)')) ||
+      (!txRef && !purchaseId && ideaId && purchases.some(p => p.ideaId === ideaId && (p.status === 'Active' || p.status === 'Active (Auto-Verified)')))
     );
+    const isRejected = Boolean(matched && (matched.status === 'Rejected' || matched.status === 'Revoked'));
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
-    res.end(JSON.stringify({ success: true, paid: isPaid, ideaId }));
+    res.end(JSON.stringify({ success: true, paid: isPaid, rejected: isRejected, purchase: isPaid ? matched : null, ideaId }));
     return;
   }
 
@@ -7177,7 +7202,9 @@ const server = http.createServer(async (req, res) => {
     const ideaId = (body.ideaId || '').toString().trim();
     const txRef = (body.txRef || ('TX-' + Date.now().toString().slice(-8))).toString().trim();
     const utr = (body.utr || '').toString().trim();
-    const mobile = (body.mobile || 'UPI Customer (' + (utr ? 'UTR:' + utr.slice(-6) : (txRef.slice(-6))) + ')').toString().trim();
+    const email = (body.email || '').toString().trim().toLowerCase();
+    const userName = (body.userName || '').toString().trim();
+    const mobile = (body.mobile || (userName ? userName : 'UPI Customer') + ' (' + (utr ? 'UTR:' + utr.slice(-6) : txRef.slice(-6)) + ')').toString().trim();
     const gw = getStoredGatewaySettings();
     const tierRaw = (body.planTier || body.plan || body.tier || 'quarterly').toString().toLowerCase();
 
@@ -7202,17 +7229,43 @@ const server = http.createServer(async (req, res) => {
     const nowDate = new Date();
     const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
     const purchases = getStoredPurchases();
+
+    let existingPending = purchases.find(p => p.txRef === txRef && p.status === 'Pending Approval');
+    if (existingPending) {
+      if (utr) existingPending.utr = utr;
+      if (email) existingPending.email = email;
+      existingPending.amount = amount;
+      existingPending.tierKey = tierKey;
+      existingPending.planTier = planTitle;
+      existingPending.daysTotal = durationDays;
+      saveStoredPurchases(purchases);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: true,
+        unlocked: false,
+        pending: true,
+        purchaseId: existingPending.id,
+        txRef,
+        message: 'Payment verification request is pending Owner approval.'
+      }));
+      return;
+    }
+
     const newPurchase = {
       id: 'PUR-' + Date.now().toString().slice(-6),
       mobile: mobile,
+      email: email,
+      userName: userName,
       secretPin: 'VIP-' + Math.floor(1000 + Math.random() * 9000),
       tierKey: tierKey,
       planTier: planTitle,
+      daysTotal: durationDays,
       amount: amount,
+      issuedAt: nowDate.toISOString().slice(0, 10),
       purchasedAt: nowDate.toISOString().replace('T', ' ').slice(0, 19),
       expiresAt: expDate.toISOString().slice(0, 10),
       deviceLock: '1 Active Device',
-      status: 'Active (Auto-Verified)',
+      status: 'Pending Approval',
       ideaId: ideaId || 'all',
       utr: utr,
       txRef: txRef
@@ -7224,15 +7277,15 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       success: true,
-      unlocked: true,
+      unlocked: false,
+      pending: true,
       ideaId: 'all',
       tierKey: tierKey,
       planTier: planTitle,
-      activatedAt: nowDate.toISOString(),
-      expiresAt: expDate.toISOString(),
       daysTotal: durationDays,
-      daysRemaining: durationDays,
-      purchase: newPurchase
+      purchaseId: newPurchase.id,
+      txRef: txRef,
+      message: 'Payment request sent to Owner Panel for verification & approval.'
     }));
     return;
   }
