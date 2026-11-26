@@ -17845,7 +17845,7 @@ body.theme-white .ipo-pdf-pill-btn.is-paid:hover {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
+    z-index: 1;
     border-radius: inherit;
     box-shadow: inset 0 0 0 var(--star-border-thickness, 1px) var(--star-border-track, rgba(255, 255, 255, 0.14));
     pointer-events: none;
@@ -17868,13 +17868,15 @@ body.theme-white .ipo-pdf-pill-btn.is-paid:hover {
 
 #screener-toggle-presets.star-border {
     border: 0 !important;
-    background: var(--star-border-surface, #0f172a) !important;
-    color: var(--star-border-text, #e2e8f0) !important;
+    border-radius: var(--star-border-radius, 12px) !important;
+    background: var(--star-border-surface, #0c0c0f) !important;
+    color: var(--star-border-text, #fafafa) !important;
 }
 
 body.theme-white #screener-toggle-presets.star-border {
+    border-radius: var(--star-border-radius, 12px) !important;
     background: var(--star-border-surface, #ffffff) !important;
-    color: var(--star-border-text, #0f172a) !important;
+    color: var(--star-border-text, #18181b) !important;
 }
 
 

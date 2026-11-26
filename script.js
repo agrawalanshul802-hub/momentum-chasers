@@ -39721,17 +39721,17 @@
     if (btn._starBorderCleanup) btn._starBorderCleanup();
     const isLight = document.body.classList.contains('theme-white');
     initStarBorder(btn, {
-      color: isLight ? '#d97706' : '#ffffff',
-      trailColor: isLight ? '#059669' : '#38bdf8',
-      duration: 3.6,
+      color: isLight ? '#18181b' : '#ffffff',
+      trailColor: isLight ? '#18181b' : '#ffffff',
+      duration: 4,
       direction: 'clockwise',
-      stars: 2,
-      trailLength: 0.35,
-      thickness: isLight ? 2 : 1.4,
-      radius: 8,
-      glow: isLight ? 0.9 : 0.7,
+      stars: 1,
+      trailLength: 0.3,
+      thickness: 1,
+      radius: 12,
+      glow: 0.6,
       hover: 'lap',
-      sparkle: true,
+      sparkle: false,
       clickPulse: true,
       theme: isLight ? 'light' : 'dark'
     });
