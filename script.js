@@ -14277,16 +14277,32 @@
             </div>
           </div>
 
-          <!-- Clear All Filters Button -->
+          <!-- Clear All Filters & VIP Chips Button -->
           <div style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;">
             <button class="clear-all-filters-btn" id="screener-clear-all">Clear All Filters</button>
-            <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:4px;" title="Toggle chip pill buttons view">
-              <span>${State.presetsCollapsed ? "Show All Chips ▾" : "Hide Chips ▴"}</span>
+            <button class="clear-all-filters-btn" id="screener-toggle-presets" data-action="toggle-screener-presets" style="display:inline-flex;align-items:center;gap:5px;border-color:rgba(245,158,11,0.45);color:#f59e0b;background:rgba(245,158,11,0.08);font-weight:700;" title="Unlock VIP Technical Presets, Earnings Scanners &amp; Owner Setups">
+              <span>${State.presetsCollapsed ? "👑 VIP Chips &amp; Setups ▾" : "Hide VIP Chips ▴"}</span>
             </button>
           </div>
         </div>
 
         <div id="screener-presets-wrap" style="${State.presetsCollapsed ? 'display:none;' : ''}">
+          ${(() => {
+            const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+            const hasVip = (State.user && (State.user.role === "owner" || State.user.role === "admin" || State.user.isPro)) || !!(sub && sub.active && sub.daysRemaining > 0);
+            if (hasVip) return '';
+            return `
+              <div style="margin-top:10px;margin-bottom:6px;padding:10px 14px;border-radius:10px;background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(16,185,129,0.08));border:1px solid rgba(245,158,11,0.35);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);">
+                  <span style="font-size:16px;">👑</span>
+                  <span><strong>VIP Screener Chips:</strong> Unlock all Owner Setups, Technical Scanners &amp; Earnings Presets with 1 VIP Pass.</span>
+                </div>
+                <button type="button" onclick="window.openOwnerIdeaPaymentModal && window.openOwnerIdeaPaymentModal()" style="padding:6px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#070b17;font-size:11.5px;font-weight:800;cursor:pointer;white-space:nowrap;">
+                  ⚡ Unlock All VIP Chips
+                </button>
+              </div>
+            `;
+          })()}
           <!-- Owner Ideas Row (Published by Owner) -->
           <div class="preset-section-divider owner-ideas-section" style="padding-top:10px;margin-bottom:8px;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
@@ -14306,33 +14322,51 @@
             </div>
           </div>
 
-          <!-- Technical Presets Row -->
+          <!-- Technical Presets Row (VIP Paid) -->
           <div class="preset-section-divider">
-            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
-              Technical Presets (Price & Momentum Setups)
+            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;">
+              <span>Technical Presets (Price &amp; Momentum Setups)</span>
+              <span class="idea-chip-price-badge">VIP</span>
             </div>
             <div class="chips-wrap-group">
-              ${PR.map(p => `
-                <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
-                  <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
-                  <span>${p[1]}</span>
-                </button>
-              `).join("")}
+              ${(() => {
+                const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+                const hasVip = (State.user && (State.user.role === "owner" || State.user.role === "admin" || State.user.isPro)) || !!(sub && sub.active && sub.daysRemaining > 0);
+                return PR.map(p => {
+                  const isAct = hasVip && State.selectedPresets.includes(p[0]);
+                  return `
+                    <button class="preset-chip-btn ${!hasVip ? 'is-locked-chip' : ''} ${isAct ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}" title="${hasVip ? p[1] : 'VIP Only — Unlock with Monthly, Quarterly or Yearly Plan'}">
+                      <span>${!hasVip ? "🔒" : (isAct ? "✓" : "＋")}</span>
+                      <span>${p[1]}</span>
+                      ${!hasVip ? '<span class="idea-chip-price-badge">VIP</span>' : ''}
+                    </button>
+                  `;
+                }).join("");
+              })()}
             </div>
           </div>
 
-          <!-- Financial Results Presets Row -->
+          <!-- Financial Results Presets Row (VIP Paid) -->
           <div class="preset-section-divider">
-            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em">
-              Financial & Results Presets (Earnings Growth)
+            <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;">
+              <span>Financial &amp; Results Presets (Earnings Growth)</span>
+              <span class="idea-chip-price-badge">VIP</span>
             </div>
             <div class="chips-wrap-group">
-              ${RS.map(p => `
-                <button class="preset-chip-btn ${State.selectedPresets.includes(p[0]) ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}">
-                  <span>${State.selectedPresets.includes(p[0]) ? "✓" : "＋"}</span>
-                  <span>${p[1]}</span>
-                </button>
-              `).join("")}
+              ${(() => {
+                const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+                const hasVip = (State.user && (State.user.role === "owner" || State.user.role === "admin" || State.user.isPro)) || !!(sub && sub.active && sub.daysRemaining > 0);
+                return RS.map(p => {
+                  const isAct = hasVip && State.selectedPresets.includes(p[0]);
+                  return `
+                    <button class="preset-chip-btn ${!hasVip ? 'is-locked-chip' : ''} ${isAct ? "active" : ""}" data-action="toggle-preset" data-preset="${p[0]}" title="${hasVip ? p[1] : 'VIP Only — Unlock with Monthly, Quarterly or Yearly Plan'}">
+                      <span>${!hasVip ? "🔒" : (isAct ? "✓" : "＋")}</span>
+                      <span>${p[1]}</span>
+                      ${!hasVip ? '<span class="idea-chip-price-badge">VIP</span>' : ''}
+                    </button>
+                  `;
+                }).join("");
+              })()}
             </div>
           </div>
         </div>
@@ -36975,6 +37009,17 @@
         if (typeof showToast === 'function') showToast("Refreshing published ideas...", "💡");
       }
       else if (action === "toggle-preset") {
+        const sub = (typeof getVipSubscription === "function") ? getVipSubscription() : null;
+        const hasVip = (State.user && (State.user.role === "owner" || State.user.role === "admin" || State.user.isPro)) || !!(sub && sub.active && sub.daysRemaining > 0);
+        if (!hasVip) {
+          if (typeof window.openOwnerIdeaPaymentModal === "function") {
+            window.openOwnerIdeaPaymentModal();
+          }
+          if (typeof showToast === "function") {
+            showToast("👑 VIP Pass required to use Technical & Earnings Preset Chips!", "🔒");
+          }
+          return;
+        }
         const btn = target.closest("[data-preset]") || target;
         const p = btn ? btn.dataset.preset : null;
         if (p) {
