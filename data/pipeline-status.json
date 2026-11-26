@@ -1,33 +1,33 @@
 {
   "eodMarket": {
-    "lastRun": "2026-11-26T10:42:24.493Z",
+    "lastRun": "2026-11-26T19:40:03.014Z",
     "status": "success",
-    "date": "2026-11-26",
-    "dateLabel": "26 Nov 2026 (3:30 pm Closing)",
-    "shortEodLabel": "26 Nov EOD",
-    "quoteMatches": 2704,
+    "date": "2026-11-25",
+    "dateLabel": "25 Nov 2026 (3:30 pm Closing)",
+    "shortEodLabel": "25 Nov EOD",
+    "quoteMatches": 2703,
     "updatedSectors": 40,
     "updatedHeatmapStocks": 956,
-    "updatedUniverseStocks": 2661,
+    "updatedUniverseStocks": 2660,
     "updatedEmasCount": 1611,
     "adNetFlow": {
-      "advances": 1360,
-      "declines": 1269,
-      "unchanged": 69,
-      "netAD": 91,
-      "adRatio": 1.07
+      "advances": 1046,
+      "declines": 1588,
+      "unchanged": 63,
+      "netAD": -542,
+      "adRatio": 0.66
     },
     "nifty50": {
-      "price": "25,884.50",
-      "chg": "65.25",
-      "pct": "0.25",
+      "price": "25,819.25",
+      "chg": "469.60",
+      "pct": "1.85",
       "isUp": true
     },
     "bankNifty": {
-      "price": "63,535.30",
-      "chg": "-167.95",
-      "pct": "-0.26",
-      "isUp": false
+      "price": "63,703.25",
+      "chg": "1117.90",
+      "pct": "1.79",
+      "isUp": true
     },
     "errors": []
   },
