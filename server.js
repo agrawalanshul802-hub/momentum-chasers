@@ -5319,13 +5319,16 @@ const server = http.createServer(async (req, res) => {
   if (orderFlowEngine.handleApi(req, res, pathname, parsedUrl.query)) return;
   if (orderFlowEngine.handleStatic(req, res, pathname)) return;
 
-  // Supabase Auth Public Configuration Endpoint
+  // Auth Public Configuration Endpoint (Clerk + Supabase)
   if (pathname === '/api/auth/config') {
+    const clerkPubKey = process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_dmFsdWVkLXBhcnJvdC02MTg3LmNsZXJrLmFjY291bnRzLmRldiQ';
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
+      provider: 'clerk',
+      clerkPublishableKey: clerkPubKey,
       supabaseUrl: SUPABASE_URL || '',
       supabaseAnonKey: SUPABASE_ANON_KEY || '',
-      configured: !!(SUPABASE_URL && SUPABASE_ANON_KEY)
+      configured: !!(clerkPubKey || (SUPABASE_URL && SUPABASE_ANON_KEY))
     }));
     return;
   }
