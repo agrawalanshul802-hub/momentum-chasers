@@ -32734,6 +32734,16 @@
       );
     }
 
+    // Always show newest date deals first (e.g. today's deals on top), then largest Value(Cr)
+    list.sort((a, b) => {
+      const da = parseDealDate(a.date);
+      const db = parseDealDate(b.date);
+      const ta = da ? da.getTime() : 0;
+      const tb = db ? db.getTime() : 0;
+      if (tb !== ta) return tb - ta;
+      return (b.valueCr || 0) - (a.valueCr || 0);
+    });
+
     return list;
   }
 
@@ -33091,11 +33101,6 @@
               📥 Export CSV
             </button>
           </div>
-        </div>
-
-        <!-- Top Highlight Cards (Matching Exact Screenshot) -->
-        <div class="deals-cards-scroll-wrap" id="deals-cards-scroll">
-          ${renderDealsHighlightCards()}
         </div>
 
         <!-- Dedicated Stock Search Panel -->
