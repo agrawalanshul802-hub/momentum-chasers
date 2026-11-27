@@ -28799,7 +28799,6 @@
                     { val: "All Stocks", label: "All Stocks", sel: activeNorm === "ALL STOCKS" }
                   ].map(opt => `
                     <button type="button" class="hm-picker-item ${opt.sel ? "active" : ""}" data-group="core" data-value="${escapeHtml(opt.val)}" data-search="${escapeHtml(opt.label.toLowerCase())}">
-                      <span class="hm-picker-check">${opt.sel ? "✓" : ""}</span>
                       <span>${escapeHtml(opt.label)}</span>
                     </button>
                   `).join("")}
@@ -28809,7 +28808,6 @@
                     const isSel = (activeNorm === secName.toUpperCase() || activeNorm === secName.replace(/^NIFTY\s+/, '').toUpperCase());
                     return `
                       <button type="button" class="hm-picker-item ${isSel ? "active" : ""}" data-group="sector" data-value="${escapeHtml(secName)}" data-search="${escapeHtml(secName.toLowerCase())}">
-                        <span class="hm-picker-check">${isSel ? "✓" : ""}</span>
                         <span>${escapeHtml(secName)}</span>
                       </button>`;
                   }).join("")}
