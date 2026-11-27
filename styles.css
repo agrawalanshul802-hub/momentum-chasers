@@ -58,7 +58,7 @@ body.theme-midnight {
     --radius-md: 10px;
     --radius-lg: 14px;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
     --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.15);
@@ -3840,6 +3840,7 @@ body.theme-white .data-table-main th.sort-desc {
 
 .data-table-main td.font-mono {
     font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
