@@ -3241,6 +3241,240 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     transform: translateY(1px);
 }
 
+/* Live Order Flow & Volume Profile Card */
+.tv-orderflow-card {
+    background: var(--sf2);
+    border: 1px solid var(--ln);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.of-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.of-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--mu);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.of-live-badge.live {
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--g);
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.of-live-badge .of-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.of-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+@media (max-width: 900px) {
+    .of-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.of-kpi {
+    background: var(--sf1, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--ln);
+    border-radius: 6px;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.of-kpi-lbl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--mu);
+    font-weight: 600;
+}
+
+.of-kpi-val {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+}
+
+.of-kpi-sub {
+    font-size: 11px;
+    color: var(--mu);
+}
+
+.of-pressure-bar {
+    height: 5px;
+    border-radius: 999px;
+    overflow: hidden;
+    display: flex;
+    background: rgba(255, 255, 255, 0.06);
+    margin-top: 3px;
+}
+
+.of-p-buy {
+    background: #22c55e;
+}
+
+.of-p-sell {
+    background: #ef4444;
+}
+
+.of-body-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 900px) {
+    .of-body-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.of-sub-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mu);
+    margin-bottom: 8px;
+}
+
+.of-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.of-ladder-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 92px;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+.of-ladder-row.in-va {
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.of-ladder-row.is-poc {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.of-price-lbl {
+    color: var(--mu);
+    font-size: 10.5px;
+    white-space: nowrap;
+}
+
+.of-bar-track {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.of-bar-fill {
+    height: 100%;
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.of-bar-buy {
+    background: #22c55e;
+    height: 100%;
+}
+
+.of-bar-sell {
+    background: #ef4444;
+    height: 100%;
+}
+
+.of-vol-lbl {
+    text-align: right;
+    color: var(--ink);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.of-poc-tag {
+    color: #f59e0b;
+    font-size: 10px;
+    margin-left: 3px;
+}
+
+.of-delta-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.of-delta-pill {
+    padding: 6px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--ln);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.of-delta-pill.pos {
+    border-color: rgba(34, 197, 94, 0.35);
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.of-delta-pill.neg {
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.of-delta-time {
+    font-size: 10px;
+    color: var(--mu);
+}
+
+.of-delta-val {
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.of-delta-pill.pos .of-delta-val {
+    color: var(--g);
+}
+
+.of-delta-pill.neg .of-delta-val {
+    color: var(--r);
+}
+
 /* Preset Chips Rows */
 .preset-section-divider {
     display: flex;

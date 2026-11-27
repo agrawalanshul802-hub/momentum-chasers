@@ -5516,6 +5516,223 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // 3b. /api/orderflow endpoint — Live Intraday 5m Order Flow, Delta & Volume Profile
+  if (pathname === '/api/orderflow') {
+    const rawSym = String(parsedUrl.query.symbol || '').trim().toUpperCase();
+    if (!rawSym) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Missing required "symbol" parameter' }));
+      return;
+    }
+
+    const baseSym = rawSym.replace(/\.(NS|BO)$/i, '');
+    const explicitSuffix = /\.(NS|BO)$/i.test(rawSym) ? rawSym.match(/\.(NS|BO)$/i)[0].toUpperCase() : null;
+    const candidates = explicitSuffix ? [`${baseSym}${explicitSuffix}`] : [`${baseSym}.NS`, `${baseSym}.BO`];
+
+    const cacheKey = `orderflow_${baseSym}`;
+    const forceRefresh = parsedUrl.query.refresh === '1';
+    const cached = CACHE.get(cacheKey);
+    if (!forceRefresh && cached && (Date.now() - cached.time < 15 * 1000)) {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'HIT', 'Cache-Control': 'no-cache' });
+      res.end(cached.data);
+      return;
+    }
+
+    let resolvedSym = null;
+    let chartJson = null;
+    for (const candidate of candidates) {
+      try {
+        const yahooPath = `/v8/finance/chart/${encodeURIComponent(candidate)}?range=5d&interval=5m&includePrePost=false`;
+        const raw = await fetchWithKeyPool(yahooPath);
+        const parsed = JSON.parse(raw);
+        if (parsed?.chart?.result?.[0]?.timestamp?.length) {
+          resolvedSym = candidate;
+          chartJson = parsed.chart.result[0];
+          break;
+        }
+      } catch (_) { }
+    }
+
+    if (!chartJson) {
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Live intraday feed unavailable for ' + baseSym }));
+      return;
+    }
+
+    try {
+      const meta = chartJson.meta || {};
+      const timestamps = chartJson.timestamp || [];
+      const q = chartJson.indicators?.quote?.[0] || {};
+      const opens = q.open || [];
+      const highs = q.high || [];
+      const lows = q.low || [];
+      const closes = q.close || [];
+      const vols = q.volume || [];
+
+      const istOffsetMs = 5.5 * 60 * 60 * 1000;
+      const toIstDate = (sec) => new Date(sec * 1000 + istOffsetMs).toISOString().slice(0, 10);
+      const toIstTime = (sec) => new Date(sec * 1000 + istOffsetMs).toISOString().slice(11, 16);
+
+      const bars = [];
+      for (let i = 0; i < timestamps.length; i++) {
+        const c = closes[i];
+        const o = opens[i] != null ? opens[i] : c;
+        const h = highs[i] != null ? highs[i] : Math.max(o || 0, c || 0);
+        const l = lows[i] != null ? lows[i] : Math.min(o || 0, c || 0);
+        const v = Number(vols[i] || 0);
+        if (c == null || isNaN(c) || c <= 0) continue;
+
+        // Intrabar close-location value (CLV) splits volume into buyer vs seller aggression
+        let buyRatio = 0.5;
+        if (h > l) {
+          const clv = ((c - l) - (h - c)) / (h - l); // -1 to +1
+          buyRatio = Math.max(0.1, Math.min(0.9, 0.5 + 0.4 * clv));
+        } else if (c > o) {
+          buyRatio = 0.7;
+        } else if (c < o) {
+          buyRatio = 0.3;
+        }
+        const buyVol = Math.round(v * buyRatio);
+        const sellVol = Math.max(0, v - buyVol);
+        bars.push({
+          ts: timestamps[i],
+          dateIST: toIstDate(timestamps[i]),
+          timeIST: toIstTime(timestamps[i]),
+          open: Number(o.toFixed(2)),
+          high: Number(h.toFixed(2)),
+          low: Number(l.toFixed(2)),
+          close: Number(c.toFixed(2)),
+          vol: v,
+          buyVol,
+          sellVol,
+          delta: buyVol - sellVol
+        });
+      }
+
+      if (!bars.length) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'No intraday bars available' }));
+        return;
+      }
+
+      const latestDate = bars[bars.length - 1].dateIST;
+      const sessionBars = bars.filter(b => b.dateIST === latestDate);
+      const todayIST = new Date(Date.now() + istOffsetMs).toISOString().slice(0, 10);
+      const nowIstHHMM = new Date(Date.now() + istOffsetMs).toISOString().slice(11, 16);
+      const isLiveSession = (latestDate === todayIST && nowIstHHMM >= '09:15' && nowIstHHMM <= '15:35');
+
+      let totalVol = 0, buyVol = 0, sellVol = 0;
+      let minPrice = Infinity, maxPrice = -Infinity;
+      for (const b of sessionBars) {
+        totalVol += b.vol;
+        buyVol += b.buyVol;
+        sellVol += b.sellVol;
+        if (b.low < minPrice) minPrice = b.low;
+        if (b.high > maxPrice) maxPrice = b.high;
+      }
+
+      const netDelta = buyVol - sellVol;
+      const buyPct = totalVol > 0 ? Number(((buyVol / totalVol) * 100).toFixed(1)) : 50;
+      const sellPct = Number((100 - buyPct).toFixed(1));
+
+      // Build 8-level Volume Profile Ladder across the active session range
+      const numBuckets = 8;
+      const rangeSpan = Math.max(0.05, maxPrice - minPrice);
+      const step = rangeSpan / numBuckets;
+      const buckets = Array.from({ length: numBuckets }, (_, idx) => {
+        const pFrom = minPrice + idx * step;
+        const pTo = minPrice + (idx + 1) * step;
+        return {
+          priceFrom: Number(pFrom.toFixed(2)),
+          priceTo: Number(pTo.toFixed(2)),
+          midPrice: Number(((pFrom + pTo) / 2).toFixed(2)),
+          totalVol: 0,
+          buyVol: 0,
+          sellVol: 0,
+          isPoc: false,
+          inValueArea: false
+        };
+      });
+
+      for (const b of sessionBars) {
+        if (b.vol <= 0) continue;
+        const idx = Math.min(numBuckets - 1, Math.max(0, Math.floor((b.close - minPrice) / step)));
+        buckets[idx].totalVol += b.vol;
+        buckets[idx].buyVol += b.buyVol;
+        buckets[idx].sellVol += b.sellVol;
+      }
+
+      let pocIdx = 0;
+      for (let i = 1; i < buckets.length; i++) {
+        if (buckets[i].totalVol > buckets[pocIdx].totalVol) pocIdx = i;
+      }
+      buckets[pocIdx].isPoc = true;
+      buckets[pocIdx].inValueArea = true;
+
+      // Expand Value Area (70% of session volume) around POC
+      let vaVol = buckets[pocIdx].totalVol;
+      const targetVaVol = totalVol * 0.70;
+      let loIdx = pocIdx, hiIdx = pocIdx;
+      while (vaVol < targetVaVol && (loIdx > 0 || hiIdx < buckets.length - 1)) {
+        const upVol = hiIdx < buckets.length - 1 ? buckets[hiIdx + 1].totalVol : -1;
+        const dnVol = loIdx > 0 ? buckets[loIdx - 1].totalVol : -1;
+        if (upVol >= dnVol && hiIdx < buckets.length - 1) {
+          hiIdx++;
+          vaVol += buckets[hiIdx].totalVol;
+          buckets[hiIdx].inValueArea = true;
+        } else if (loIdx > 0) {
+          loIdx--;
+          vaVol += buckets[loIdx].totalVol;
+          buckets[loIdx].inValueArea = true;
+        } else {
+          break;
+        }
+      }
+
+      const cvdTrend = buyPct >= 56 ? 'Bullish Accumulation' : (buyPct <= 44 ? 'Bearish Distribution' : 'Balanced Two-Way');
+      const lastBar = sessionBars[sessionBars.length - 1];
+
+      const payload = JSON.stringify({
+        success: true,
+        symbol: resolvedSym,
+        source: isLiveSession ? 'NSE/BSE Live 5m Intraday Feed' : 'NSE/BSE Last Session 5m Feed',
+        sessionDate: latestDate,
+        lastBarTime: `${lastBar.timeIST} IST`,
+        isLiveSession,
+        ltp: Number((meta.regularMarketPrice || lastBar.close).toFixed(2)),
+        sessionStats: {
+          totalVol,
+          buyVol,
+          sellVol,
+          netDelta,
+          buyPct,
+          sellPct,
+          cvdTrend,
+          poc: buckets[pocIdx].midPrice,
+          vah: buckets[hiIdx].priceTo,
+          val: buckets[loIdx].priceFrom
+        },
+        buckets: buckets.slice().reverse(), // Highest price at top, lowest at bottom
+        recentBars: sessionBars.slice(-12).map(b => ({
+          timeIST: b.timeIST,
+          close: b.close,
+          vol: b.vol,
+          buyVol: b.buyVol,
+          sellVol: b.sellVol,
+          delta: b.delta
+        }))
+      });
+
+      CACHE.set(cacheKey, { time: Date.now(), data: payload });
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Cache': 'MISS', 'Cache-Control': 'no-cache' });
+      res.end(payload);
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Order flow calculation failed', details: err.message }));
+    }
+    return;
+  }
+
 
   // 4b. Market Mood Index (MMI) Quant Engine & Cache: /api/mmi
   if (pathname === '/api/mmi') {

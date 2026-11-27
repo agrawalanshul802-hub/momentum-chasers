@@ -18536,7 +18536,155 @@
   let tvEma50Series = null;
   let tvEma200Series = null;
 
+  let _lastOrderFlowKey = "";
+  let _orderFlowTimer = null;
+
+  function formatCompactVol(v) {
+    const n = Number(v || 0);
+    const abs = Math.abs(n);
+    const sign = n < 0 ? "-" : "";
+    if (abs >= 1e7) return sign + (abs / 1e7).toFixed(2) + " Cr";
+    if (abs >= 1e5) return sign + (abs / 1e5).toFixed(2) + " L";
+    if (abs >= 1e3) return sign + (abs / 1e3).toFixed(1) + " K";
+    return String(Math.round(n));
+  }
+
+  function renderOrderFlowPanel(data) {
+    const host = document.getElementById("tv-orderflow-panel");
+    if (!host) return;
+    if (!data || !data.success) {
+      host.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--mu);">
+        <span>📊 Order Flow &amp; Volume Profile unavailable (${escapeHtml((data && data.error) || "feed offline")})</span>
+      </div>`;
+      return;
+    }
+
+    const st = data.sessionStats || {};
+    const buckets = Array.isArray(data.buckets) ? data.buckets : [];
+    const bars = Array.isArray(data.recentBars) ? data.recentBars : [];
+    const maxBucketVol = Math.max(1, ...buckets.map(b => b.totalVol || 0));
+    const deltaPositive = (st.netDelta || 0) >= 0;
+    const baseSym = String(data.symbol || "").replace(/\.(NS|BO)$/i, "");
+
+    const ladderHtml = buckets.map(b => {
+      const wPct = Math.max(4, Math.round((b.totalVol / maxBucketVol) * 100));
+      const buyShare = b.totalVol > 0 ? Math.round((b.buyVol / b.totalVol) * 100) : 50;
+      const sellShare = 100 - buyShare;
+      return `
+        <div class="of-ladder-row ${b.isPoc ? "is-poc" : ""} ${b.inValueArea ? "in-va" : ""}">
+          <span class="of-price-lbl font-mono">₹${formatNumber(b.priceFrom)}–${formatNumber(b.priceTo)}</span>
+          <div class="of-bar-track">
+            <div class="of-bar-fill" style="width:${wPct}%">
+              <span class="of-bar-buy" style="width:${buyShare}%"></span>
+              <span class="of-bar-sell" style="width:${sellShare}%"></span>
+            </div>
+          </div>
+          <span class="of-vol-lbl font-mono">${formatCompactVol(b.totalVol)}${b.isPoc ? ' <strong class="of-poc-tag">POC</strong>' : ""}</span>
+        </div>`;
+    }).join("");
+
+    const stripHtml = bars.map(b => {
+      const pos = b.delta >= 0;
+      return `
+        <div class="of-delta-pill ${pos ? "pos" : "neg"}" title="${b.timeIST} IST · Close ₹${formatNumber(b.close)} · Vol ${formatCompactVol(b.vol)}">
+          <span class="of-delta-time">${escapeHtml(b.timeIST)}</span>
+          <span class="of-delta-val font-mono">${pos ? "+" : ""}${formatCompactVol(b.delta)}</span>
+        </div>`;
+    }).join("");
+
+    host.innerHTML = `
+      <div class="of-header">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:700;color:var(--ink);">📊 Live Order Flow &amp; Volume Profile (5m)</span>
+          <span class="of-live-badge ${data.isLiveSession ? "live" : "eod"}">
+            <span class="of-dot"></span>
+            ${data.isLiveSession ? "LIVE INTRADAY" : "LAST SESSION"} · ${escapeHtml(data.sessionDate)} ${escapeHtml(data.lastBarTime)}
+          </span>
+        </div>
+        <button class="toolbar-refresh-btn" type="button" onclick="window.loadStockOrderFlow('${escapeHtml(baseSym)}', true)" style="height:28px;font-size:11px;padding:0 10px;">
+          <span>⚡</span> Refresh Flow
+        </button>
+      </div>
+
+      <div class="of-kpi-grid">
+        <div class="of-kpi">
+          <span class="of-kpi-lbl">Net Session Delta</span>
+          <span class="of-kpi-val font-mono ${deltaPositive ? "val-green" : "val-red"}">${deltaPositive ? "+" : ""}${formatCompactVol(st.netDelta)}</span>
+          <span class="of-kpi-sub">${escapeHtml(st.cvdTrend || "")}</span>
+        </div>
+        <div class="of-kpi">
+          <span class="of-kpi-lbl">Buy vs Sell Pressure</span>
+          <span class="of-kpi-val font-mono"><span class="val-green">${st.buyPct}%</span> / <span class="val-red">${st.sellPct}%</span></span>
+          <div class="of-pressure-bar"><span class="of-p-buy" style="width:${st.buyPct}%"></span><span class="of-p-sell" style="width:${st.sellPct}%"></span></div>
+        </div>
+        <div class="of-kpi">
+          <span class="of-kpi-lbl">POC (Point of Control)</span>
+          <span class="of-kpi-val font-mono" style="color:#f59e0b;">₹${formatNumber(st.poc)}</span>
+          <span class="of-kpi-sub">Highest Traded Volume</span>
+        </div>
+        <div class="of-kpi">
+          <span class="of-kpi-lbl">70% Value Area</span>
+          <span class="of-kpi-val font-mono">₹${formatNumber(st.val)}–${formatNumber(st.vah)}</span>
+          <span class="of-kpi-sub">Total Vol: ${formatCompactVol(st.totalVol)}</span>
+        </div>
+      </div>
+
+      <div class="of-body-grid">
+        <div>
+          <div class="of-sub-title">Price-by-Volume Footprint Ladder (Green = Buy, Red = Sell)</div>
+          <div class="of-ladder">${ladderHtml}</div>
+        </div>
+        <div>
+          <div class="of-sub-title">Recent 5m Bar Net Delta Stream</div>
+          <div class="of-delta-strip">${stripHtml}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadStockOrderFlow(symbol, forceRefresh = false) {
+    if (!symbol) return;
+    const cleanSym = String(symbol).trim().toUpperCase();
+    const key = `${cleanSym}_${forceRefresh ? Date.now() : "std"}`;
+    if (!forceRefresh && _lastOrderFlowKey === cleanSym && document.querySelector("#tv-orderflow-panel .of-kpi-grid")) {
+      return;
+    }
+    _lastOrderFlowKey = cleanSym;
+
+    const host = document.getElementById("tv-orderflow-panel");
+    if (host && forceRefresh) {
+      host.style.opacity = "0.7";
+    }
+
+    try {
+      const resp = await fetch(`/api/orderflow?symbol=${encodeURIComponent(cleanSym)}${forceRefresh ? "&refresh=1" : ""}`);
+      const json = await resp.json();
+      if (document.getElementById("tv-orderflow-panel")) {
+        document.getElementById("tv-orderflow-panel").style.opacity = "1";
+        renderOrderFlowPanel(json);
+      }
+      if (_orderFlowTimer) clearInterval(_orderFlowTimer);
+      if (json && json.isLiveSession) {
+        _orderFlowTimer = setInterval(() => {
+          if (document.getElementById("tv-orderflow-panel") && State.activeStock === cleanSym) {
+            loadStockOrderFlow(cleanSym, true);
+          } else {
+            clearInterval(_orderFlowTimer);
+            _orderFlowTimer = null;
+          }
+        }, 30000);
+      }
+    } catch (err) {
+      if (host) {
+        host.style.opacity = "1";
+        renderOrderFlowPanel({ success: false, error: err.message });
+      }
+    }
+  }
+  window.loadStockOrderFlow = loadStockOrderFlow;
+
   function renderNativeCandlestickChart(symbol) {
+    if (typeof loadStockOrderFlow === "function") loadStockOrderFlow(symbol);
     const container = document.getElementById("canvas-candlestick-box");
     if (!container) return;
 
@@ -19387,6 +19535,11 @@
                   -${dist52w}% (₹${formatNumber(meta.high52)})
                 </span>
               </div>
+            </div>
+
+            <!-- Live Order Flow & Volume Profile Panel -->
+            <div id="tv-orderflow-panel" class="tv-orderflow-card">
+              <div style="font-size:12px;color:var(--mu);">Loading live 5m Order Flow &amp; Volume Profile for ${escapeHtml(s[0])}...</div>
             </div>
 
             <!-- Bottom Time Status Bar -->
