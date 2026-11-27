@@ -13396,8 +13396,15 @@
 
       <!-- Breadth by Index Table -->
       <div class="table-card-container">
-        <div class="table-summary-bar">
-          <span class="match-counter-text">Index-wise Breadth Participation Breakdown (Threshold: >60% Green, 40-60% Amber, &lt;40% Red)</span>
+        <div class="table-summary-bar" style="gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span class="match-counter-text">Index-wise Breadth Participation Breakdown</span>
+            <span style="display:inline-flex;align-items:center;gap:10px;font-size:11px;color:var(--mu);font-family:var(--font-mono);">
+              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:#22c55e;display:inline-block;"></span>&gt;60%</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:#f59e0b;display:inline-block;"></span>40–60%</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:#ef4444;display:inline-block;"></span>&lt;40%</span>
+            </span>
+          </div>
           <span style="font-size:11px;color:var(--g);display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;"></span> ${escapeHtml(BREADTH_LAST_UPDATED)}</span>
         </div>
         <div class="table-scroll-wrapper">
