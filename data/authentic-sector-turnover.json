@@ -27,111 +27,111 @@
       "name": "Private Banks",
       "sym": "NIFTY PVT BANK",
       "category": "Banking",
-      "baseAvg": 9180.3,
+      "baseAvg": 9182,
       "days": {
         "26-11": {
-          "turnover": 11766.7,
-          "ratio": 1.28,
-          "avg": 9180.3,
-          "formattedTurnover": "₹11,766.7 Cr",
-          "formattedRatio": "1.28x"
+          "turnover": 11859,
+          "ratio": 1.29,
+          "avg": 9182,
+          "formattedTurnover": "₹11,859.0 Cr",
+          "formattedRatio": "1.29x"
         },
         "25-11": {
-          "turnover": 9161.5,
+          "turnover": 9149.8,
           "ratio": 1,
-          "avg": 9180.3,
-          "formattedTurnover": "₹9,161.5 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹9,149.8 Cr",
           "formattedRatio": "1.00x"
         },
         "23-11": {
-          "turnover": 12237.3,
+          "turnover": 12221.7,
           "ratio": 1.33,
-          "avg": 9180.3,
-          "formattedTurnover": "₹12,237.3 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹12,221.7 Cr",
           "formattedRatio": "1.33x"
         },
         "20-11": {
-          "turnover": 12579.2,
+          "turnover": 12563.1,
           "ratio": 1.37,
-          "avg": 9180.3,
-          "formattedTurnover": "₹12,579.2 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹12,563.1 Cr",
           "formattedRatio": "1.37x"
         },
         "19-11": {
-          "turnover": 6184.4,
+          "turnover": 6176.5,
           "ratio": 0.67,
-          "avg": 9180.3,
-          "formattedTurnover": "₹6,184.4 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹6,176.5 Cr",
           "formattedRatio": "0.67x"
         },
         "18-11": {
-          "turnover": 6910.4,
+          "turnover": 6901.5,
           "ratio": 0.75,
-          "avg": 9180.3,
-          "formattedTurnover": "₹6,910.4 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹6,901.5 Cr",
           "formattedRatio": "0.75x"
         },
         "17-11": {
-          "turnover": 8348,
+          "turnover": 8337.3,
           "ratio": 0.91,
-          "avg": 9180.3,
-          "formattedTurnover": "₹8,348.0 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹8,337.3 Cr",
           "formattedRatio": "0.91x"
         },
         "16-11": {
-          "turnover": 6255.1,
+          "turnover": 6247.1,
           "ratio": 0.68,
-          "avg": 9180.3,
-          "formattedTurnover": "₹6,255.1 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹6,247.1 Cr",
           "formattedRatio": "0.68x"
         },
         "13-11": {
-          "turnover": 718.3,
+          "turnover": 717.4,
           "ratio": 0.08,
-          "avg": 9180.3,
-          "formattedTurnover": "₹718.3 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹717.4 Cr",
           "formattedRatio": "0.08x"
         },
         "12-11": {
-          "turnover": 8138.1,
+          "turnover": 8127.7,
           "ratio": 0.89,
-          "avg": 9180.3,
-          "formattedTurnover": "₹8,138.1 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹8,127.7 Cr",
           "formattedRatio": "0.89x"
         },
         "11-11": {
-          "turnover": 10447.8,
+          "turnover": 10434.5,
           "ratio": 1.14,
-          "avg": 9180.3,
-          "formattedTurnover": "₹10,447.8 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹10,434.5 Cr",
           "formattedRatio": "1.14x"
         },
         "09-11": {
-          "turnover": 9939.1,
+          "turnover": 9926.3,
           "ratio": 1.08,
-          "avg": 9180.3,
-          "formattedTurnover": "₹9,939.1 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹9,926.3 Cr",
           "formattedRatio": "1.08x"
         },
         "08-11": {
-          "turnover": 6209.2,
+          "turnover": 6201.2,
           "ratio": 0.68,
-          "avg": 9180.3,
-          "formattedTurnover": "₹6,209.2 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹6,201.2 Cr",
           "formattedRatio": "0.68x"
         },
         "06-11": {
-          "turnover": 10187.6,
+          "turnover": 10174.6,
           "ratio": 1.11,
-          "avg": 9180.3,
-          "formattedTurnover": "₹10,187.6 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹10,174.6 Cr",
           "formattedRatio": "1.11x"
         },
         "05-11": {
-          "turnover": 9001.3,
+          "turnover": 8989.8,
           "ratio": 0.98,
-          "avg": 9180.3,
-          "formattedTurnover": "₹9,001.3 Cr",
+          "avg": 9182,
+          "formattedTurnover": "₹8,989.8 Cr",
           "formattedRatio": "0.98x"
         }
       }
@@ -141,111 +141,111 @@
       "name": "Pharmaceuticals",
       "sym": "NIFTY PHARMA",
       "category": "Healthcare",
-      "baseAvg": 3581,
+      "baseAvg": 3580.8,
       "days": {
         "26-11": {
-          "turnover": 4152.2,
+          "turnover": 4141.2,
           "ratio": 1.16,
-          "avg": 3581,
-          "formattedTurnover": "₹4,152.2 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹4,141.2 Cr",
           "formattedRatio": "1.16x"
         },
         "25-11": {
-          "turnover": 4140.5,
+          "turnover": 4142,
           "ratio": 1.16,
-          "avg": 3581,
-          "formattedTurnover": "₹4,140.5 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹4,142.0 Cr",
           "formattedRatio": "1.16x"
         },
         "23-11": {
-          "turnover": 3796.1,
+          "turnover": 3797.5,
           "ratio": 1.06,
-          "avg": 3581,
-          "formattedTurnover": "₹3,796.1 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹3,797.5 Cr",
           "formattedRatio": "1.06x"
         },
         "20-11": {
-          "turnover": 2191.6,
+          "turnover": 2192.5,
           "ratio": 0.61,
-          "avg": 3581,
-          "formattedTurnover": "₹2,191.6 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹2,192.5 Cr",
           "formattedRatio": "0.61x"
         },
         "19-11": {
-          "turnover": 2742.1,
+          "turnover": 2743.1,
           "ratio": 0.77,
-          "avg": 3581,
-          "formattedTurnover": "₹2,742.1 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹2,743.1 Cr",
           "formattedRatio": "0.77x"
         },
         "18-11": {
-          "turnover": 3851.2,
+          "turnover": 3852.7,
           "ratio": 1.08,
-          "avg": 3581,
-          "formattedTurnover": "₹3,851.2 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹3,852.7 Cr",
           "formattedRatio": "1.08x"
         },
         "17-11": {
-          "turnover": 3461.5,
+          "turnover": 3462.8,
           "ratio": 0.97,
-          "avg": 3581,
-          "formattedTurnover": "₹3,461.5 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹3,462.8 Cr",
           "formattedRatio": "0.97x"
         },
         "16-11": {
-          "turnover": 4312.6,
+          "turnover": 4314.2,
           "ratio": 1.2,
-          "avg": 3581,
-          "formattedTurnover": "₹4,312.6 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹4,314.2 Cr",
           "formattedRatio": "1.20x"
         },
         "13-11": {
-          "turnover": 425.7,
+          "turnover": 425.8,
           "ratio": 0.12,
-          "avg": 3581,
-          "formattedTurnover": "₹425.7 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹425.8 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 3949.7,
+          "turnover": 3951.2,
           "ratio": 1.1,
-          "avg": 3581,
-          "formattedTurnover": "₹3,949.7 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹3,951.2 Cr",
           "formattedRatio": "1.10x"
         },
         "11-11": {
-          "turnover": 4137,
+          "turnover": 4138.6,
           "ratio": 1.16,
-          "avg": 3581,
-          "formattedTurnover": "₹4,137.0 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹4,138.6 Cr",
           "formattedRatio": "1.16x"
         },
         "09-11": {
-          "turnover": 8396.8,
-          "ratio": 2.34,
-          "avg": 3581,
-          "formattedTurnover": "₹8,396.8 Cr",
-          "formattedRatio": "2.34x"
+          "turnover": 8400.1,
+          "ratio": 2.35,
+          "avg": 3580.8,
+          "formattedTurnover": "₹8,400.1 Cr",
+          "formattedRatio": "2.35x"
         },
         "08-11": {
-          "turnover": 6417.7,
+          "turnover": 6420.2,
           "ratio": 1.79,
-          "avg": 3581,
-          "formattedTurnover": "₹6,417.7 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹6,420.2 Cr",
           "formattedRatio": "1.79x"
         },
         "06-11": {
-          "turnover": 4357.6,
+          "turnover": 4359.3,
           "ratio": 1.22,
-          "avg": 3581,
-          "formattedTurnover": "₹4,357.6 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹4,359.3 Cr",
           "formattedRatio": "1.22x"
         },
         "05-11": {
-          "turnover": 3151.4,
+          "turnover": 3152.6,
           "ratio": 0.88,
-          "avg": 3581,
-          "formattedTurnover": "₹3,151.4 Cr",
+          "avg": 3580.8,
+          "formattedTurnover": "₹3,152.6 Cr",
           "formattedRatio": "0.88x"
         }
       }
@@ -255,111 +255,111 @@
       "name": "PSU Banks",
       "sym": "NIFTY PSU BANK",
       "category": "Banking",
-      "baseAvg": 10513.2,
+      "baseAvg": 10512.9,
       "days": {
         "26-11": {
-          "turnover": 5907.1,
+          "turnover": 5891.5,
           "ratio": 0.56,
-          "avg": 10513.2,
-          "formattedTurnover": "₹5,907.1 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹5,891.5 Cr",
           "formattedRatio": "0.56x"
         },
         "25-11": {
-          "turnover": 6850.1,
+          "turnover": 6851.3,
           "ratio": 0.65,
-          "avg": 10513.2,
-          "formattedTurnover": "₹6,850.1 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹6,851.3 Cr",
           "formattedRatio": "0.65x"
         },
         "23-11": {
-          "turnover": 10475.6,
+          "turnover": 10477.3,
           "ratio": 1,
-          "avg": 10513.2,
-          "formattedTurnover": "₹10,475.6 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹10,477.3 Cr",
           "formattedRatio": "1.00x"
         },
         "20-11": {
-          "turnover": 10656.2,
+          "turnover": 10658,
           "ratio": 1.01,
-          "avg": 10513.2,
-          "formattedTurnover": "₹10,656.2 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹10,658.0 Cr",
           "formattedRatio": "1.01x"
         },
         "19-11": {
-          "turnover": 13701.6,
+          "turnover": 13703.9,
           "ratio": 1.3,
-          "avg": 10513.2,
-          "formattedTurnover": "₹13,701.6 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹13,703.9 Cr",
           "formattedRatio": "1.30x"
         },
         "18-11": {
-          "turnover": 15086.4,
-          "ratio": 1.43,
-          "avg": 10513.2,
-          "formattedTurnover": "₹15,086.4 Cr",
-          "formattedRatio": "1.43x"
+          "turnover": 15089,
+          "ratio": 1.44,
+          "avg": 10512.9,
+          "formattedTurnover": "₹15,089.0 Cr",
+          "formattedRatio": "1.44x"
         },
         "17-11": {
-          "turnover": 12843.8,
+          "turnover": 12846,
           "ratio": 1.22,
-          "avg": 10513.2,
-          "formattedTurnover": "₹12,843.8 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹12,846.0 Cr",
           "formattedRatio": "1.22x"
         },
         "16-11": {
-          "turnover": 8584.7,
+          "turnover": 8586.2,
           "ratio": 0.82,
-          "avg": 10513.2,
-          "formattedTurnover": "₹8,584.7 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹8,586.2 Cr",
           "formattedRatio": "0.82x"
         },
         "13-11": {
-          "turnover": 1171.6,
+          "turnover": 1171.8,
           "ratio": 0.11,
-          "avg": 10513.2,
-          "formattedTurnover": "₹1,171.6 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹1,171.8 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 11520.5,
+          "turnover": 11522.5,
           "ratio": 1.1,
-          "avg": 10513.2,
-          "formattedTurnover": "₹11,520.5 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹11,522.5 Cr",
           "formattedRatio": "1.10x"
         },
         "11-11": {
-          "turnover": 14047.3,
+          "turnover": 14049.7,
           "ratio": 1.34,
-          "avg": 10513.2,
-          "formattedTurnover": "₹14,047.3 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹14,049.7 Cr",
           "formattedRatio": "1.34x"
         },
         "09-11": {
-          "turnover": 11323.3,
+          "turnover": 11325.3,
           "ratio": 1.08,
-          "avg": 10513.2,
-          "formattedTurnover": "₹11,323.3 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹11,325.3 Cr",
           "formattedRatio": "1.08x"
         },
         "08-11": {
-          "turnover": 4445.4,
+          "turnover": 4446.1,
           "ratio": 0.42,
-          "avg": 10513.2,
-          "formattedTurnover": "₹4,445.4 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹4,446.1 Cr",
           "formattedRatio": "0.42x"
         },
         "06-11": {
-          "turnover": 5039.8,
+          "turnover": 5040.7,
           "ratio": 0.48,
-          "avg": 10513.2,
-          "formattedTurnover": "₹5,039.8 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹5,040.7 Cr",
           "formattedRatio": "0.48x"
         },
         "05-11": {
-          "turnover": 7384.4,
+          "turnover": 7385.6,
           "ratio": 0.7,
-          "avg": 10513.2,
-          "formattedTurnover": "₹7,384.4 Cr",
+          "avg": 10512.9,
+          "formattedTurnover": "₹7,385.6 Cr",
           "formattedRatio": "0.70x"
         }
       }
@@ -369,112 +369,112 @@
       "name": "Information Technology",
       "sym": "NIFTY IT",
       "category": "Tech",
-      "baseAvg": 7172.3,
+      "baseAvg": 7174.3,
       "days": {
         "26-11": {
-          "turnover": 10501.3,
-          "ratio": 1.46,
-          "avg": 7172.3,
-          "formattedTurnover": "₹10,501.3 Cr",
-          "formattedRatio": "1.46x"
+          "turnover": 10611,
+          "ratio": 1.48,
+          "avg": 7174.3,
+          "formattedTurnover": "₹10,611.0 Cr",
+          "formattedRatio": "1.48x"
         },
         "25-11": {
-          "turnover": 7026.7,
+          "turnover": 7012.7,
           "ratio": 0.98,
-          "avg": 7172.3,
-          "formattedTurnover": "₹7,026.7 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹7,012.7 Cr",
           "formattedRatio": "0.98x"
         },
         "23-11": {
-          "turnover": 9904.5,
+          "turnover": 9884.7,
           "ratio": 1.38,
-          "avg": 7172.3,
-          "formattedTurnover": "₹9,904.5 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹9,884.7 Cr",
           "formattedRatio": "1.38x"
         },
         "20-11": {
-          "turnover": 9057.8,
+          "turnover": 9039.7,
           "ratio": 1.26,
-          "avg": 7172.3,
-          "formattedTurnover": "₹9,057.8 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹9,039.7 Cr",
           "formattedRatio": "1.26x"
         },
         "19-11": {
-          "turnover": 6536.6,
+          "turnover": 6523.6,
           "ratio": 0.91,
-          "avg": 7172.3,
-          "formattedTurnover": "₹6,536.6 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹6,523.6 Cr",
           "formattedRatio": "0.91x"
         },
         "18-11": {
-          "turnover": 4791,
+          "turnover": 4781.4,
           "ratio": 0.67,
-          "avg": 7172.3,
-          "formattedTurnover": "₹4,791.0 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹4,781.4 Cr",
           "formattedRatio": "0.67x"
         },
         "17-11": {
-          "turnover": 5366.5,
+          "turnover": 5355.7,
           "ratio": 0.75,
-          "avg": 7172.3,
-          "formattedTurnover": "₹5,366.5 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹5,355.7 Cr",
           "formattedRatio": "0.75x"
         },
         "16-11": {
-          "turnover": 4194,
+          "turnover": 4185.6,
           "ratio": 0.58,
-          "avg": 7172.3,
-          "formattedTurnover": "₹4,194.0 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹4,185.6 Cr",
           "formattedRatio": "0.58x"
         },
         "13-11": {
-          "turnover": 722.8,
+          "turnover": 721.3,
           "ratio": 0.1,
-          "avg": 7172.3,
-          "formattedTurnover": "₹722.8 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹721.3 Cr",
           "formattedRatio": "0.10x"
         },
         "12-11": {
-          "turnover": 5071.1,
+          "turnover": 5061,
           "ratio": 0.71,
-          "avg": 7172.3,
-          "formattedTurnover": "₹5,071.1 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹5,061.0 Cr",
           "formattedRatio": "0.71x"
         },
         "11-11": {
-          "turnover": 6372.9,
+          "turnover": 6360.1,
           "ratio": 0.89,
-          "avg": 7172.3,
-          "formattedTurnover": "₹6,372.9 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹6,360.1 Cr",
           "formattedRatio": "0.89x"
         },
         "09-11": {
-          "turnover": 5548.8,
+          "turnover": 5537.7,
           "ratio": 0.77,
-          "avg": 7172.3,
-          "formattedTurnover": "₹5,548.8 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹5,537.7 Cr",
           "formattedRatio": "0.77x"
         },
         "08-11": {
-          "turnover": 4287.8,
+          "turnover": 4279.2,
           "ratio": 0.6,
-          "avg": 7172.3,
-          "formattedTurnover": "₹4,287.8 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹4,279.2 Cr",
           "formattedRatio": "0.60x"
         },
         "06-11": {
-          "turnover": 6875,
+          "turnover": 6861.2,
           "ratio": 0.96,
-          "avg": 7172.3,
-          "formattedTurnover": "₹6,875.0 Cr",
+          "avg": 7174.3,
+          "formattedTurnover": "₹6,861.2 Cr",
           "formattedRatio": "0.96x"
         },
         "05-11": {
-          "turnover": 5642.8,
-          "ratio": 0.79,
-          "avg": 7172.3,
-          "formattedTurnover": "₹5,642.8 Cr",
-          "formattedRatio": "0.79x"
+          "turnover": 5631.5,
+          "ratio": 0.78,
+          "avg": 7174.3,
+          "formattedTurnover": "₹5,631.5 Cr",
+          "formattedRatio": "0.78x"
         }
       }
     },
@@ -483,111 +483,111 @@
       "name": "NBFC",
       "sym": "NIFTY FIN SERVICE",
       "category": "Finance",
-      "baseAvg": 7313.5,
+      "baseAvg": 7312.8,
       "days": {
         "26-11": {
-          "turnover": 7261.3,
+          "turnover": 7226.7,
           "ratio": 0.99,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,261.3 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,226.7 Cr",
           "formattedRatio": "0.99x"
         },
         "25-11": {
-          "turnover": 7449.7,
+          "turnover": 7454,
           "ratio": 1.02,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,449.7 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,454.0 Cr",
           "formattedRatio": "1.02x"
         },
         "23-11": {
-          "turnover": 7658.3,
+          "turnover": 7662.7,
           "ratio": 1.05,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,658.3 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,662.7 Cr",
           "formattedRatio": "1.05x"
         },
         "20-11": {
-          "turnover": 7445.4,
+          "turnover": 7449.7,
           "ratio": 1.02,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,445.4 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,449.7 Cr",
           "formattedRatio": "1.02x"
         },
         "19-11": {
-          "turnover": 7543.4,
+          "turnover": 7547.8,
           "ratio": 1.03,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,543.4 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,547.8 Cr",
           "formattedRatio": "1.03x"
         },
         "18-11": {
-          "turnover": 9400.9,
+          "turnover": 9406.3,
           "ratio": 1.29,
-          "avg": 7313.5,
-          "formattedTurnover": "₹9,400.9 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹9,406.3 Cr",
           "formattedRatio": "1.29x"
         },
         "17-11": {
-          "turnover": 6117.1,
+          "turnover": 6120.7,
           "ratio": 0.84,
-          "avg": 7313.5,
-          "formattedTurnover": "₹6,117.1 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹6,120.7 Cr",
           "formattedRatio": "0.84x"
         },
         "16-11": {
-          "turnover": 5631.5,
+          "turnover": 5634.7,
           "ratio": 0.77,
-          "avg": 7313.5,
-          "formattedTurnover": "₹5,631.5 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹5,634.7 Cr",
           "formattedRatio": "0.77x"
         },
         "13-11": {
-          "turnover": 889.6,
+          "turnover": 890.1,
           "ratio": 0.12,
-          "avg": 7313.5,
-          "formattedTurnover": "₹889.6 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹890.1 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 6451.7,
+          "turnover": 6455.4,
           "ratio": 0.88,
-          "avg": 7313.5,
-          "formattedTurnover": "₹6,451.7 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹6,455.4 Cr",
           "formattedRatio": "0.88x"
         },
         "11-11": {
-          "turnover": 7550.8,
+          "turnover": 7555.2,
           "ratio": 1.03,
-          "avg": 7313.5,
-          "formattedTurnover": "₹7,550.8 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹7,555.2 Cr",
           "formattedRatio": "1.03x"
         },
         "09-11": {
-          "turnover": 5435,
+          "turnover": 5438.2,
           "ratio": 0.74,
-          "avg": 7313.5,
-          "formattedTurnover": "₹5,435.0 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹5,438.2 Cr",
           "formattedRatio": "0.74x"
         },
         "08-11": {
-          "turnover": 4430,
+          "turnover": 4432.6,
           "ratio": 0.61,
-          "avg": 7313.5,
-          "formattedTurnover": "₹4,430.0 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹4,432.6 Cr",
           "formattedRatio": "0.61x"
         },
         "06-11": {
-          "turnover": 4430.8,
+          "turnover": 4433.4,
           "ratio": 0.61,
-          "avg": 7313.5,
-          "formattedTurnover": "₹4,430.8 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹4,433.4 Cr",
           "formattedRatio": "0.61x"
         },
         "05-11": {
-          "turnover": 8161.4,
+          "turnover": 8166.1,
           "ratio": 1.12,
-          "avg": 7313.5,
-          "formattedTurnover": "₹8,161.4 Cr",
+          "avg": 7312.8,
+          "formattedTurnover": "₹8,166.1 Cr",
           "formattedRatio": "1.12x"
         }
       }
@@ -597,111 +597,111 @@
       "name": "Renewable Energy",
       "sym": "NIFTY ENERGY",
       "category": "Energy",
-      "baseAvg": 4469.8,
+      "baseAvg": 4469.1,
       "days": {
         "26-11": {
-          "turnover": 4801,
+          "turnover": 4760.6,
           "ratio": 1.07,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,801.0 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,760.6 Cr",
           "formattedRatio": "1.07x"
         },
         "25-11": {
-          "turnover": 4982.9,
-          "ratio": 1.11,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,982.9 Cr",
-          "formattedRatio": "1.11x"
+          "turnover": 4988.4,
+          "ratio": 1.12,
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,988.4 Cr",
+          "formattedRatio": "1.12x"
         },
         "23-11": {
-          "turnover": 4438.8,
+          "turnover": 4443.7,
           "ratio": 0.99,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,438.8 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,443.7 Cr",
           "formattedRatio": "0.99x"
         },
         "20-11": {
-          "turnover": 3216,
+          "turnover": 3219.5,
           "ratio": 0.72,
-          "avg": 4469.8,
-          "formattedTurnover": "₹3,216.0 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹3,219.5 Cr",
           "formattedRatio": "0.72x"
         },
         "19-11": {
-          "turnover": 3417.3,
-          "ratio": 0.76,
-          "avg": 4469.8,
-          "formattedTurnover": "₹3,417.3 Cr",
-          "formattedRatio": "0.76x"
+          "turnover": 3421.1,
+          "ratio": 0.77,
+          "avg": 4469.1,
+          "formattedTurnover": "₹3,421.1 Cr",
+          "formattedRatio": "0.77x"
         },
         "18-11": {
-          "turnover": 4229.2,
+          "turnover": 4233.9,
           "ratio": 0.95,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,229.2 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,233.9 Cr",
           "formattedRatio": "0.95x"
         },
         "17-11": {
-          "turnover": 5275.4,
+          "turnover": 5281.3,
           "ratio": 1.18,
-          "avg": 4469.8,
-          "formattedTurnover": "₹5,275.4 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹5,281.3 Cr",
           "formattedRatio": "1.18x"
         },
         "16-11": {
-          "turnover": 5398,
+          "turnover": 5404,
           "ratio": 1.21,
-          "avg": 4469.8,
-          "formattedTurnover": "₹5,398.0 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹5,404.0 Cr",
           "formattedRatio": "1.21x"
         },
         "13-11": {
-          "turnover": 806.6,
+          "turnover": 807.5,
           "ratio": 0.18,
-          "avg": 4469.8,
-          "formattedTurnover": "₹806.6 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹807.5 Cr",
           "formattedRatio": "0.18x"
         },
         "12-11": {
-          "turnover": 4098.2,
+          "turnover": 4102.8,
           "ratio": 0.92,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,098.2 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,102.8 Cr",
           "formattedRatio": "0.92x"
         },
         "11-11": {
-          "turnover": 6650.2,
+          "turnover": 6657.6,
           "ratio": 1.49,
-          "avg": 4469.8,
-          "formattedTurnover": "₹6,650.2 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹6,657.6 Cr",
           "formattedRatio": "1.49x"
         },
         "09-11": {
-          "turnover": 8145,
+          "turnover": 8154.1,
           "ratio": 1.82,
-          "avg": 4469.8,
-          "formattedTurnover": "₹8,145.0 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹8,154.1 Cr",
           "formattedRatio": "1.82x"
         },
         "08-11": {
-          "turnover": 5734.8,
+          "turnover": 5741.2,
           "ratio": 1.28,
-          "avg": 4469.8,
-          "formattedTurnover": "₹5,734.8 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹5,741.2 Cr",
           "formattedRatio": "1.28x"
         },
         "06-11": {
-          "turnover": 3028.9,
+          "turnover": 3032.3,
           "ratio": 0.68,
-          "avg": 4469.8,
-          "formattedTurnover": "₹3,028.9 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹3,032.3 Cr",
           "formattedRatio": "0.68x"
         },
         "05-11": {
-          "turnover": 4279.2,
+          "turnover": 4284,
           "ratio": 0.96,
-          "avg": 4469.8,
-          "formattedTurnover": "₹4,279.2 Cr",
+          "avg": 4469.1,
+          "formattedTurnover": "₹4,284.0 Cr",
           "formattedRatio": "0.96x"
         }
       }
@@ -711,111 +711,111 @@
       "name": "FMCG",
       "sym": "NIFTY FMCG",
       "category": "Consumer",
-      "baseAvg": 2577.5,
+      "baseAvg": 2577.6,
       "days": {
         "26-11": {
-          "turnover": 2846.2,
-          "ratio": 1.1,
-          "avg": 2577.5,
-          "formattedTurnover": "₹2,846.2 Cr",
-          "formattedRatio": "1.10x"
+          "turnover": 2848.6,
+          "ratio": 1.11,
+          "avg": 2577.6,
+          "formattedTurnover": "₹2,848.6 Cr",
+          "formattedRatio": "1.11x"
         },
         "25-11": {
-          "turnover": 4159.8,
+          "turnover": 4159.4,
           "ratio": 1.61,
-          "avg": 2577.5,
-          "formattedTurnover": "₹4,159.8 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹4,159.4 Cr",
           "formattedRatio": "1.61x"
         },
         "23-11": {
-          "turnover": 2473.4,
+          "turnover": 2473.1,
           "ratio": 0.96,
-          "avg": 2577.5,
-          "formattedTurnover": "₹2,473.4 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹2,473.1 Cr",
           "formattedRatio": "0.96x"
         },
         "20-11": {
-          "turnover": 1944.4,
+          "turnover": 1944.1,
           "ratio": 0.75,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,944.4 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,944.1 Cr",
           "formattedRatio": "0.75x"
         },
         "19-11": {
-          "turnover": 2416.9,
+          "turnover": 2416.7,
           "ratio": 0.94,
-          "avg": 2577.5,
-          "formattedTurnover": "₹2,416.9 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹2,416.7 Cr",
           "formattedRatio": "0.94x"
         },
         "18-11": {
-          "turnover": 1873.4,
+          "turnover": 1873.2,
           "ratio": 0.73,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,873.4 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,873.2 Cr",
           "formattedRatio": "0.73x"
         },
         "17-11": {
-          "turnover": 1951.2,
+          "turnover": 1951,
           "ratio": 0.76,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,951.2 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,951.0 Cr",
           "formattedRatio": "0.76x"
         },
         "16-11": {
-          "turnover": 2954.7,
+          "turnover": 2954.3,
           "ratio": 1.15,
-          "avg": 2577.5,
-          "formattedTurnover": "₹2,954.7 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹2,954.3 Cr",
           "formattedRatio": "1.15x"
         },
         "13-11": {
           "turnover": 288,
           "ratio": 0.11,
-          "avg": 2577.5,
+          "avg": 2577.6,
           "formattedTurnover": "₹288.0 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 3282.2,
+          "turnover": 3281.8,
           "ratio": 1.27,
-          "avg": 2577.5,
-          "formattedTurnover": "₹3,282.2 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹3,281.8 Cr",
           "formattedRatio": "1.27x"
         },
         "11-11": {
-          "turnover": 1860.8,
+          "turnover": 1860.6,
           "ratio": 0.72,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,860.8 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,860.6 Cr",
           "formattedRatio": "0.72x"
         },
         "09-11": {
-          "turnover": 1996.5,
+          "turnover": 1996.3,
           "ratio": 0.77,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,996.5 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,996.3 Cr",
           "formattedRatio": "0.77x"
         },
         "08-11": {
-          "turnover": 1263.7,
+          "turnover": 1263.6,
           "ratio": 0.49,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,263.7 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,263.6 Cr",
           "formattedRatio": "0.49x"
         },
         "06-11": {
-          "turnover": 1231.7,
+          "turnover": 1231.6,
           "ratio": 0.48,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,231.7 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,231.6 Cr",
           "formattedRatio": "0.48x"
         },
         "05-11": {
-          "turnover": 1792.2,
+          "turnover": 1792,
           "ratio": 0.7,
-          "avg": 2577.5,
-          "formattedTurnover": "₹1,792.2 Cr",
+          "avg": 2577.6,
+          "formattedTurnover": "₹1,792.0 Cr",
           "formattedRatio": "0.70x"
         }
       }
@@ -825,111 +825,111 @@
       "name": "Realty",
       "sym": "NIFTY REALTY",
       "category": "Real Estate",
-      "baseAvg": 1123.2,
+      "baseAvg": 1122.7,
       "days": {
         "26-11": {
-          "turnover": 2487.8,
-          "ratio": 2.21,
-          "avg": 1123.2,
-          "formattedTurnover": "₹2,487.8 Cr",
-          "formattedRatio": "2.21x"
+          "turnover": 2459.4,
+          "ratio": 2.19,
+          "avg": 1122.7,
+          "formattedTurnover": "₹2,459.4 Cr",
+          "formattedRatio": "2.19x"
         },
         "25-11": {
-          "turnover": 1284.4,
-          "ratio": 1.14,
-          "avg": 1123.2,
-          "formattedTurnover": "₹1,284.4 Cr",
-          "formattedRatio": "1.14x"
+          "turnover": 1289.3,
+          "ratio": 1.15,
+          "avg": 1122.7,
+          "formattedTurnover": "₹1,289.3 Cr",
+          "formattedRatio": "1.15x"
         },
         "23-11": {
-          "turnover": 1207.6,
+          "turnover": 1212.1,
           "ratio": 1.08,
-          "avg": 1123.2,
-          "formattedTurnover": "₹1,207.6 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹1,212.1 Cr",
           "formattedRatio": "1.08x"
         },
         "20-11": {
-          "turnover": 914.2,
-          "ratio": 0.81,
-          "avg": 1123.2,
-          "formattedTurnover": "₹914.2 Cr",
-          "formattedRatio": "0.81x"
+          "turnover": 917.6,
+          "ratio": 0.82,
+          "avg": 1122.7,
+          "formattedTurnover": "₹917.6 Cr",
+          "formattedRatio": "0.82x"
         },
         "19-11": {
-          "turnover": 568.1,
+          "turnover": 570.3,
           "ratio": 0.51,
-          "avg": 1123.2,
-          "formattedTurnover": "₹568.1 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹570.3 Cr",
           "formattedRatio": "0.51x"
         },
         "18-11": {
-          "turnover": 832.9,
+          "turnover": 836,
           "ratio": 0.74,
-          "avg": 1123.2,
-          "formattedTurnover": "₹832.9 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹836.0 Cr",
           "formattedRatio": "0.74x"
         },
         "17-11": {
-          "turnover": 1065.7,
+          "turnover": 1069.8,
           "ratio": 0.95,
-          "avg": 1123.2,
-          "formattedTurnover": "₹1,065.7 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹1,069.8 Cr",
           "formattedRatio": "0.95x"
         },
         "16-11": {
-          "turnover": 624.6,
+          "turnover": 626.9,
           "ratio": 0.56,
-          "avg": 1123.2,
-          "formattedTurnover": "₹624.6 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹626.9 Cr",
           "formattedRatio": "0.56x"
         },
         "13-11": {
-          "turnover": 99.8,
+          "turnover": 100.2,
           "ratio": 0.09,
-          "avg": 1123.2,
-          "formattedTurnover": "₹99.8 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹100.2 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 1382.9,
-          "ratio": 1.23,
-          "avg": 1123.2,
-          "formattedTurnover": "₹1,382.9 Cr",
-          "formattedRatio": "1.23x"
+          "turnover": 1388.1,
+          "ratio": 1.24,
+          "avg": 1122.7,
+          "formattedTurnover": "₹1,388.1 Cr",
+          "formattedRatio": "1.24x"
         },
         "11-11": {
-          "turnover": 750.6,
+          "turnover": 753.4,
           "ratio": 0.67,
-          "avg": 1123.2,
-          "formattedTurnover": "₹750.6 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹753.4 Cr",
           "formattedRatio": "0.67x"
         },
         "09-11": {
-          "turnover": 866,
+          "turnover": 869.3,
           "ratio": 0.77,
-          "avg": 1123.2,
-          "formattedTurnover": "₹866.0 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹869.3 Cr",
           "formattedRatio": "0.77x"
         },
         "08-11": {
-          "turnover": 544.5,
-          "ratio": 0.48,
-          "avg": 1123.2,
-          "formattedTurnover": "₹544.5 Cr",
-          "formattedRatio": "0.48x"
+          "turnover": 546.6,
+          "ratio": 0.49,
+          "avg": 1122.7,
+          "formattedTurnover": "₹546.6 Cr",
+          "formattedRatio": "0.49x"
         },
         "06-11": {
-          "turnover": 720.1,
+          "turnover": 722.8,
           "ratio": 0.64,
-          "avg": 1123.2,
-          "formattedTurnover": "₹720.1 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹722.8 Cr",
           "formattedRatio": "0.64x"
         },
         "05-11": {
-          "turnover": 1066.8,
+          "turnover": 1070.8,
           "ratio": 0.95,
-          "avg": 1123.2,
-          "formattedTurnover": "₹1,066.8 Cr",
+          "avg": 1122.7,
+          "formattedTurnover": "₹1,070.8 Cr",
           "formattedRatio": "0.95x"
         }
       }
@@ -939,111 +939,111 @@
       "name": "Gas Distribution",
       "sym": "NIFTY OIL AND GAS",
       "category": "Energy",
-      "baseAvg": 1918.4,
+      "baseAvg": 1918.7,
       "days": {
         "26-11": {
-          "turnover": 1796.2,
-          "ratio": 0.94,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,796.2 Cr",
-          "formattedRatio": "0.94x"
+          "turnover": 1815.1,
+          "ratio": 0.95,
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,815.1 Cr",
+          "formattedRatio": "0.95x"
         },
         "25-11": {
-          "turnover": 1758.4,
+          "turnover": 1756.3,
           "ratio": 0.92,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,758.4 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,756.3 Cr",
           "formattedRatio": "0.92x"
         },
         "23-11": {
-          "turnover": 1540.8,
+          "turnover": 1539,
           "ratio": 0.8,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,540.8 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,539.0 Cr",
           "formattedRatio": "0.80x"
         },
         "20-11": {
-          "turnover": 1669.5,
+          "turnover": 1667.5,
           "ratio": 0.87,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,669.5 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,667.5 Cr",
           "formattedRatio": "0.87x"
         },
         "19-11": {
-          "turnover": 2323.4,
+          "turnover": 2320.7,
           "ratio": 1.21,
-          "avg": 1918.4,
-          "formattedTurnover": "₹2,323.4 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹2,320.7 Cr",
           "formattedRatio": "1.21x"
         },
         "18-11": {
-          "turnover": 2985.6,
-          "ratio": 1.56,
-          "avg": 1918.4,
-          "formattedTurnover": "₹2,985.6 Cr",
-          "formattedRatio": "1.56x"
+          "turnover": 2982.1,
+          "ratio": 1.55,
+          "avg": 1918.7,
+          "formattedTurnover": "₹2,982.1 Cr",
+          "formattedRatio": "1.55x"
         },
         "17-11": {
-          "turnover": 1653.4,
+          "turnover": 1651.4,
           "ratio": 0.86,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,653.4 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,651.4 Cr",
           "formattedRatio": "0.86x"
         },
         "16-11": {
-          "turnover": 1619.5,
+          "turnover": 1617.6,
           "ratio": 0.84,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,619.5 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,617.6 Cr",
           "formattedRatio": "0.84x"
         },
         "13-11": {
-          "turnover": 315.5,
+          "turnover": 315.1,
           "ratio": 0.16,
-          "avg": 1918.4,
-          "formattedTurnover": "₹315.5 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹315.1 Cr",
           "formattedRatio": "0.16x"
         },
         "12-11": {
-          "turnover": 2339.6,
+          "turnover": 2336.8,
           "ratio": 1.22,
-          "avg": 1918.4,
-          "formattedTurnover": "₹2,339.6 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹2,336.8 Cr",
           "formattedRatio": "1.22x"
         },
         "11-11": {
-          "turnover": 2657.8,
-          "ratio": 1.39,
-          "avg": 1918.4,
-          "formattedTurnover": "₹2,657.8 Cr",
-          "formattedRatio": "1.39x"
+          "turnover": 2654.6,
+          "ratio": 1.38,
+          "avg": 1918.7,
+          "formattedTurnover": "₹2,654.6 Cr",
+          "formattedRatio": "1.38x"
         },
         "09-11": {
-          "turnover": 2698.8,
-          "ratio": 1.41,
-          "avg": 1918.4,
-          "formattedTurnover": "₹2,698.8 Cr",
-          "formattedRatio": "1.41x"
+          "turnover": 2695.6,
+          "ratio": 1.4,
+          "avg": 1918.7,
+          "formattedTurnover": "₹2,695.6 Cr",
+          "formattedRatio": "1.40x"
         },
         "08-11": {
-          "turnover": 1290.7,
+          "turnover": 1289.1,
           "ratio": 0.67,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,290.7 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,289.1 Cr",
           "formattedRatio": "0.67x"
         },
         "06-11": {
-          "turnover": 1318.9,
+          "turnover": 1317.3,
           "ratio": 0.69,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,318.9 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,317.3 Cr",
           "formattedRatio": "0.69x"
         },
         "05-11": {
-          "turnover": 1934.7,
+          "turnover": 1932.4,
           "ratio": 1.01,
-          "avg": 1918.4,
-          "formattedTurnover": "₹1,934.7 Cr",
+          "avg": 1918.7,
+          "formattedTurnover": "₹1,932.4 Cr",
           "formattedRatio": "1.01x"
         }
       }
@@ -1053,111 +1053,111 @@
       "name": "Insurance",
       "sym": "NIFTY FIN SERVICE",
       "category": "Finance",
-      "baseAvg": 1781.8,
+      "baseAvg": 1781.7,
       "days": {
         "26-11": {
-          "turnover": 1949.3,
+          "turnover": 1939,
           "ratio": 1.09,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,949.3 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,939.0 Cr",
           "formattedRatio": "1.09x"
         },
         "25-11": {
-          "turnover": 2582.4,
+          "turnover": 2584.2,
           "ratio": 1.45,
-          "avg": 1781.8,
-          "formattedTurnover": "₹2,582.4 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹2,584.2 Cr",
           "formattedRatio": "1.45x"
         },
         "23-11": {
-          "turnover": 1579,
+          "turnover": 1580.2,
           "ratio": 0.89,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,579.0 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,580.2 Cr",
           "formattedRatio": "0.89x"
         },
         "20-11": {
-          "turnover": 1966.1,
+          "turnover": 1967.5,
           "ratio": 1.1,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,966.1 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,967.5 Cr",
           "formattedRatio": "1.10x"
         },
         "19-11": {
-          "turnover": 1510.1,
+          "turnover": 1511.2,
           "ratio": 0.85,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,510.1 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,511.2 Cr",
           "formattedRatio": "0.85x"
         },
         "18-11": {
-          "turnover": 1794.3,
+          "turnover": 1795.6,
           "ratio": 1.01,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,794.3 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,795.6 Cr",
           "formattedRatio": "1.01x"
         },
         "17-11": {
-          "turnover": 1405.7,
+          "turnover": 1406.7,
           "ratio": 0.79,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,405.7 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,406.7 Cr",
           "formattedRatio": "0.79x"
         },
         "16-11": {
-          "turnover": 1467.8,
+          "turnover": 1468.9,
           "ratio": 0.82,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,467.8 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,468.9 Cr",
           "formattedRatio": "0.82x"
         },
         "13-11": {
-          "turnover": 214.2,
+          "turnover": 214.4,
           "ratio": 0.12,
-          "avg": 1781.8,
-          "formattedTurnover": "₹214.2 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹214.4 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 2671.2,
+          "turnover": 2673.1,
           "ratio": 1.5,
-          "avg": 1781.8,
-          "formattedTurnover": "₹2,671.2 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹2,673.1 Cr",
           "formattedRatio": "1.50x"
         },
         "11-11": {
-          "turnover": 1687.9,
+          "turnover": 1689.1,
           "ratio": 0.95,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,687.9 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,689.1 Cr",
           "formattedRatio": "0.95x"
         },
         "09-11": {
-          "turnover": 1081.8,
+          "turnover": 1082.6,
           "ratio": 0.61,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,081.8 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,082.6 Cr",
           "formattedRatio": "0.61x"
         },
         "08-11": {
-          "turnover": 618.7,
+          "turnover": 619.2,
           "ratio": 0.35,
-          "avg": 1781.8,
-          "formattedTurnover": "₹618.7 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹619.2 Cr",
           "formattedRatio": "0.35x"
         },
         "06-11": {
-          "turnover": 1275.2,
+          "turnover": 1276.1,
           "ratio": 0.72,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,275.2 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,276.1 Cr",
           "formattedRatio": "0.72x"
         },
         "05-11": {
-          "turnover": 1206.9,
+          "turnover": 1207.7,
           "ratio": 0.68,
-          "avg": 1781.8,
-          "formattedTurnover": "₹1,206.9 Cr",
+          "avg": 1781.7,
+          "formattedTurnover": "₹1,207.7 Cr",
           "formattedRatio": "0.68x"
         }
       }
@@ -1170,108 +1170,108 @@
       "baseAvg": 4035.5,
       "days": {
         "26-11": {
-          "turnover": 3280.9,
+          "turnover": 3277.2,
           "ratio": 0.81,
           "avg": 4035.5,
-          "formattedTurnover": "₹3,280.9 Cr",
+          "formattedTurnover": "₹3,277.2 Cr",
           "formattedRatio": "0.81x"
         },
         "25-11": {
-          "turnover": 3204.5,
+          "turnover": 3204.8,
           "ratio": 0.79,
           "avg": 4035.5,
-          "formattedTurnover": "₹3,204.5 Cr",
+          "formattedTurnover": "₹3,204.8 Cr",
           "formattedRatio": "0.79x"
         },
         "23-11": {
-          "turnover": 3604.1,
+          "turnover": 3604.5,
           "ratio": 0.89,
           "avg": 4035.5,
-          "formattedTurnover": "₹3,604.1 Cr",
+          "formattedTurnover": "₹3,604.5 Cr",
           "formattedRatio": "0.89x"
         },
         "20-11": {
-          "turnover": 4365.8,
+          "turnover": 4366.3,
           "ratio": 1.08,
           "avg": 4035.5,
-          "formattedTurnover": "₹4,365.8 Cr",
+          "formattedTurnover": "₹4,366.3 Cr",
           "formattedRatio": "1.08x"
         },
         "19-11": {
-          "turnover": 5249.9,
+          "turnover": 5250.5,
           "ratio": 1.3,
           "avg": 4035.5,
-          "formattedTurnover": "₹5,249.9 Cr",
+          "formattedTurnover": "₹5,250.5 Cr",
           "formattedRatio": "1.30x"
         },
         "18-11": {
-          "turnover": 4586,
+          "turnover": 4586.5,
           "ratio": 1.14,
           "avg": 4035.5,
-          "formattedTurnover": "₹4,586.0 Cr",
+          "formattedTurnover": "₹4,586.5 Cr",
           "formattedRatio": "1.14x"
         },
         "17-11": {
-          "turnover": 4993.2,
+          "turnover": 4993.8,
           "ratio": 1.24,
           "avg": 4035.5,
-          "formattedTurnover": "₹4,993.2 Cr",
+          "formattedTurnover": "₹4,993.8 Cr",
           "formattedRatio": "1.24x"
         },
         "16-11": {
-          "turnover": 2999.8,
+          "turnover": 3000.1,
           "ratio": 0.74,
           "avg": 4035.5,
-          "formattedTurnover": "₹2,999.8 Cr",
+          "formattedTurnover": "₹3,000.1 Cr",
           "formattedRatio": "0.74x"
         },
         "13-11": {
-          "turnover": 494.1,
+          "turnover": 494.2,
           "ratio": 0.12,
           "avg": 4035.5,
-          "formattedTurnover": "₹494.1 Cr",
+          "formattedTurnover": "₹494.2 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 4862.9,
+          "turnover": 4863.4,
           "ratio": 1.21,
           "avg": 4035.5,
-          "formattedTurnover": "₹4,862.9 Cr",
+          "formattedTurnover": "₹4,863.4 Cr",
           "formattedRatio": "1.21x"
         },
         "11-11": {
-          "turnover": 6930.2,
+          "turnover": 6930.9,
           "ratio": 1.72,
           "avg": 4035.5,
-          "formattedTurnover": "₹6,930.2 Cr",
+          "formattedTurnover": "₹6,930.9 Cr",
           "formattedRatio": "1.72x"
         },
         "09-11": {
-          "turnover": 5342.5,
+          "turnover": 5343.1,
           "ratio": 1.32,
           "avg": 4035.5,
-          "formattedTurnover": "₹5,342.5 Cr",
+          "formattedTurnover": "₹5,343.1 Cr",
           "formattedRatio": "1.32x"
         },
         "08-11": {
+          "turnover": 4830.9,
+          "ratio": 1.2,
+          "avg": 4035.5,
+          "formattedTurnover": "₹4,830.9 Cr",
+          "formattedRatio": "1.20x"
+        },
+        "06-11": {
           "turnover": 4830.4,
           "ratio": 1.2,
           "avg": 4035.5,
           "formattedTurnover": "₹4,830.4 Cr",
           "formattedRatio": "1.20x"
         },
-        "06-11": {
-          "turnover": 4829.8,
-          "ratio": 1.2,
-          "avg": 4035.5,
-          "formattedTurnover": "₹4,829.8 Cr",
-          "formattedRatio": "1.20x"
-        },
         "05-11": {
-          "turnover": 5585.1,
+          "turnover": 5585.7,
           "ratio": 1.38,
           "avg": 4035.5,
-          "formattedTurnover": "₹5,585.1 Cr",
+          "formattedTurnover": "₹5,585.7 Cr",
           "formattedRatio": "1.38x"
         }
       }
@@ -1281,111 +1281,111 @@
       "name": "Transport",
       "sym": "NIFTY TRANS LOGIS",
       "category": "Logistics",
-      "baseAvg": 2279.2,
+      "baseAvg": 2279.1,
       "days": {
         "26-11": {
-          "turnover": 2019.5,
-          "ratio": 0.89,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,019.5 Cr",
-          "formattedRatio": "0.89x"
+          "turnover": 2010.5,
+          "ratio": 0.88,
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,010.5 Cr",
+          "formattedRatio": "0.88x"
         },
         "25-11": {
-          "turnover": 3848.5,
+          "turnover": 3850.3,
           "ratio": 1.69,
-          "avg": 2279.2,
-          "formattedTurnover": "₹3,848.5 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹3,850.3 Cr",
           "formattedRatio": "1.69x"
         },
         "23-11": {
-          "turnover": 1933.7,
+          "turnover": 1934.6,
           "ratio": 0.85,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,933.7 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,934.6 Cr",
           "formattedRatio": "0.85x"
         },
         "20-11": {
-          "turnover": 1697.3,
-          "ratio": 0.74,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,697.3 Cr",
-          "formattedRatio": "0.74x"
+          "turnover": 1698.1,
+          "ratio": 0.75,
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,698.1 Cr",
+          "formattedRatio": "0.75x"
         },
         "19-11": {
-          "turnover": 2708.6,
+          "turnover": 2709.9,
           "ratio": 1.19,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,708.6 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,709.9 Cr",
           "formattedRatio": "1.19x"
         },
         "18-11": {
-          "turnover": 1893,
+          "turnover": 1893.9,
           "ratio": 0.83,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,893.0 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,893.9 Cr",
           "formattedRatio": "0.83x"
         },
         "17-11": {
-          "turnover": 2444.6,
+          "turnover": 2445.8,
           "ratio": 1.07,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,444.6 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,445.8 Cr",
           "formattedRatio": "1.07x"
         },
         "16-11": {
-          "turnover": 1688.7,
+          "turnover": 1689.5,
           "ratio": 0.74,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,688.7 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,689.5 Cr",
           "formattedRatio": "0.74x"
         },
         "13-11": {
-          "turnover": 270.7,
+          "turnover": 270.9,
           "ratio": 0.12,
-          "avg": 2279.2,
-          "formattedTurnover": "₹270.7 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹270.9 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 1519.3,
+          "turnover": 1520.1,
           "ratio": 0.67,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,519.3 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,520.1 Cr",
           "formattedRatio": "0.67x"
         },
         "11-11": {
-          "turnover": 3554.8,
+          "turnover": 3556.5,
           "ratio": 1.56,
-          "avg": 2279.2,
-          "formattedTurnover": "₹3,554.8 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹3,556.5 Cr",
           "formattedRatio": "1.56x"
         },
         "09-11": {
-          "turnover": 2020.5,
+          "turnover": 2021.4,
           "ratio": 0.89,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,020.5 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,021.4 Cr",
           "formattedRatio": "0.89x"
         },
         "08-11": {
-          "turnover": 1538.3,
-          "ratio": 0.67,
-          "avg": 2279.2,
-          "formattedTurnover": "₹1,538.3 Cr",
-          "formattedRatio": "0.67x"
+          "turnover": 1539,
+          "ratio": 0.68,
+          "avg": 2279.1,
+          "formattedTurnover": "₹1,539.0 Cr",
+          "formattedRatio": "0.68x"
         },
         "06-11": {
-          "turnover": 2379.6,
+          "turnover": 2380.8,
           "ratio": 1.04,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,379.6 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,380.8 Cr",
           "formattedRatio": "1.04x"
         },
         "05-11": {
-          "turnover": 2815.7,
+          "turnover": 2817.1,
           "ratio": 1.24,
-          "avg": 2279.2,
-          "formattedTurnover": "₹2,815.7 Cr",
+          "avg": 2279.1,
+          "formattedTurnover": "₹2,817.1 Cr",
           "formattedRatio": "1.24x"
         }
       }
@@ -1395,111 +1395,111 @@
       "name": "Hotels",
       "sym": "NIFTY IND TOURISM",
       "category": "Hospitality",
-      "baseAvg": 882.8,
+      "baseAvg": 882.9,
       "days": {
         "26-11": {
-          "turnover": 697.1,
-          "ratio": 0.79,
-          "avg": 882.8,
-          "formattedTurnover": "₹697.1 Cr",
-          "formattedRatio": "0.79x"
+          "turnover": 703.8,
+          "ratio": 0.8,
+          "avg": 882.9,
+          "formattedTurnover": "₹703.8 Cr",
+          "formattedRatio": "0.80x"
         },
         "25-11": {
-          "turnover": 1097.5,
+          "turnover": 1096.5,
           "ratio": 1.24,
-          "avg": 882.8,
-          "formattedTurnover": "₹1,097.5 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹1,096.5 Cr",
           "formattedRatio": "1.24x"
         },
         "23-11": {
-          "turnover": 958.7,
-          "ratio": 1.09,
-          "avg": 882.8,
-          "formattedTurnover": "₹958.7 Cr",
-          "formattedRatio": "1.09x"
+          "turnover": 957.9,
+          "ratio": 1.08,
+          "avg": 882.9,
+          "formattedTurnover": "₹957.9 Cr",
+          "formattedRatio": "1.08x"
         },
         "20-11": {
-          "turnover": 1019.7,
-          "ratio": 1.16,
-          "avg": 882.8,
-          "formattedTurnover": "₹1,019.7 Cr",
-          "formattedRatio": "1.16x"
+          "turnover": 1018.8,
+          "ratio": 1.15,
+          "avg": 882.9,
+          "formattedTurnover": "₹1,018.8 Cr",
+          "formattedRatio": "1.15x"
         },
         "19-11": {
-          "turnover": 759.5,
+          "turnover": 758.8,
           "ratio": 0.86,
-          "avg": 882.8,
-          "formattedTurnover": "₹759.5 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹758.8 Cr",
           "formattedRatio": "0.86x"
         },
         "18-11": {
-          "turnover": 674.7,
+          "turnover": 674.1,
           "ratio": 0.76,
-          "avg": 882.8,
-          "formattedTurnover": "₹674.7 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹674.1 Cr",
           "formattedRatio": "0.76x"
         },
         "17-11": {
-          "turnover": 1253.7,
+          "turnover": 1252.6,
           "ratio": 1.42,
-          "avg": 882.8,
-          "formattedTurnover": "₹1,253.7 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹1,252.6 Cr",
           "formattedRatio": "1.42x"
         },
         "16-11": {
-          "turnover": 601.5,
+          "turnover": 600.9,
           "ratio": 0.68,
-          "avg": 882.8,
-          "formattedTurnover": "₹601.5 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹600.9 Cr",
           "formattedRatio": "0.68x"
         },
         "13-11": {
-          "turnover": 167.4,
+          "turnover": 167.2,
           "ratio": 0.19,
-          "avg": 882.8,
-          "formattedTurnover": "₹167.4 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹167.2 Cr",
           "formattedRatio": "0.19x"
         },
         "12-11": {
-          "turnover": 918.1,
+          "turnover": 917.3,
           "ratio": 1.04,
-          "avg": 882.8,
-          "formattedTurnover": "₹918.1 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹917.3 Cr",
           "formattedRatio": "1.04x"
         },
         "11-11": {
-          "turnover": 868.2,
+          "turnover": 867.4,
           "ratio": 0.98,
-          "avg": 882.8,
-          "formattedTurnover": "₹868.2 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹867.4 Cr",
           "formattedRatio": "0.98x"
         },
         "09-11": {
-          "turnover": 944.6,
+          "turnover": 943.7,
           "ratio": 1.07,
-          "avg": 882.8,
-          "formattedTurnover": "₹944.6 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹943.7 Cr",
           "formattedRatio": "1.07x"
         },
         "08-11": {
-          "turnover": 631.8,
-          "ratio": 0.72,
-          "avg": 882.8,
-          "formattedTurnover": "₹631.8 Cr",
-          "formattedRatio": "0.72x"
+          "turnover": 631.2,
+          "ratio": 0.71,
+          "avg": 882.9,
+          "formattedTurnover": "₹631.2 Cr",
+          "formattedRatio": "0.71x"
         },
         "06-11": {
-          "turnover": 935.1,
+          "turnover": 934.2,
           "ratio": 1.06,
-          "avg": 882.8,
-          "formattedTurnover": "₹935.1 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹934.2 Cr",
           "formattedRatio": "1.06x"
         },
         "05-11": {
-          "turnover": 789,
+          "turnover": 788.3,
           "ratio": 0.89,
-          "avg": 882.8,
-          "formattedTurnover": "₹789.0 Cr",
+          "avg": 882.9,
+          "formattedTurnover": "₹788.3 Cr",
           "formattedRatio": "0.89x"
         }
       }
@@ -1512,59 +1512,59 @@
       "baseAvg": 1516.5,
       "days": {
         "26-11": {
-          "turnover": 1185.3,
+          "turnover": 1188.5,
           "ratio": 0.78,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,185.3 Cr",
+          "formattedTurnover": "₹1,188.5 Cr",
           "formattedRatio": "0.78x"
         },
         "25-11": {
-          "turnover": 1247.2,
+          "turnover": 1246.8,
           "ratio": 0.82,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,247.2 Cr",
+          "formattedTurnover": "₹1,246.8 Cr",
           "formattedRatio": "0.82x"
         },
         "23-11": {
-          "turnover": 1691.1,
-          "ratio": 1.12,
+          "turnover": 1690.7,
+          "ratio": 1.11,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,691.1 Cr",
-          "formattedRatio": "1.12x"
+          "formattedTurnover": "₹1,690.7 Cr",
+          "formattedRatio": "1.11x"
         },
         "20-11": {
-          "turnover": 2932.2,
+          "turnover": 2931.5,
           "ratio": 1.93,
           "avg": 1516.5,
-          "formattedTurnover": "₹2,932.2 Cr",
+          "formattedTurnover": "₹2,931.5 Cr",
           "formattedRatio": "1.93x"
         },
         "19-11": {
-          "turnover": 1410,
+          "turnover": 1409.6,
           "ratio": 0.93,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,410.0 Cr",
+          "formattedTurnover": "₹1,409.6 Cr",
           "formattedRatio": "0.93x"
         },
         "18-11": {
-          "turnover": 1198.6,
+          "turnover": 1198.3,
           "ratio": 0.79,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,198.6 Cr",
+          "formattedTurnover": "₹1,198.3 Cr",
           "formattedRatio": "0.79x"
         },
         "17-11": {
-          "turnover": 1313,
+          "turnover": 1312.7,
           "ratio": 0.87,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,313.0 Cr",
+          "formattedTurnover": "₹1,312.7 Cr",
           "formattedRatio": "0.87x"
         },
         "16-11": {
-          "turnover": 1154.2,
+          "turnover": 1153.9,
           "ratio": 0.76,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,154.2 Cr",
+          "formattedTurnover": "₹1,153.9 Cr",
           "formattedRatio": "0.76x"
         },
         "13-11": {
@@ -1575,45 +1575,45 @@
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 1144.6,
+          "turnover": 1144.3,
           "ratio": 0.75,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,144.6 Cr",
+          "formattedTurnover": "₹1,144.3 Cr",
           "formattedRatio": "0.75x"
         },
         "11-11": {
-          "turnover": 1311.9,
-          "ratio": 0.87,
+          "turnover": 1311.5,
+          "ratio": 0.86,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,311.9 Cr",
-          "formattedRatio": "0.87x"
+          "formattedTurnover": "₹1,311.5 Cr",
+          "formattedRatio": "0.86x"
         },
         "09-11": {
-          "turnover": 1550.3,
+          "turnover": 1550,
           "ratio": 1.02,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,550.3 Cr",
+          "formattedTurnover": "₹1,550.0 Cr",
           "formattedRatio": "1.02x"
         },
         "08-11": {
-          "turnover": 1217.9,
+          "turnover": 1217.6,
           "ratio": 0.8,
           "avg": 1516.5,
-          "formattedTurnover": "₹1,217.9 Cr",
+          "formattedTurnover": "₹1,217.6 Cr",
           "formattedRatio": "0.80x"
         },
         "06-11": {
-          "turnover": 2097,
+          "turnover": 2096.5,
           "ratio": 1.38,
           "avg": 1516.5,
-          "formattedTurnover": "₹2,097.0 Cr",
+          "formattedTurnover": "₹2,096.5 Cr",
           "formattedRatio": "1.38x"
         },
         "05-11": {
-          "turnover": 2138.6,
+          "turnover": 2138,
           "ratio": 1.41,
           "avg": 1516.5,
-          "formattedTurnover": "₹2,138.6 Cr",
+          "formattedTurnover": "₹2,138.0 Cr",
           "formattedRatio": "1.41x"
         }
       }
@@ -1623,111 +1623,111 @@
       "name": "Commodity Chemicals",
       "sym": "NIFTY CHEMICALS",
       "category": "Chemicals",
-      "baseAvg": 2406.7,
+      "baseAvg": 2406.4,
       "days": {
         "26-11": {
-          "turnover": 1707.9,
-          "ratio": 0.71,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,707.9 Cr",
-          "formattedRatio": "0.71x"
+          "turnover": 1690.6,
+          "ratio": 0.7,
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,690.6 Cr",
+          "formattedRatio": "0.70x"
         },
         "25-11": {
-          "turnover": 1675.8,
+          "turnover": 1677.2,
           "ratio": 0.7,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,675.8 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,677.2 Cr",
           "formattedRatio": "0.70x"
         },
         "23-11": {
-          "turnover": 2951.1,
+          "turnover": 2953.6,
           "ratio": 1.23,
-          "avg": 2406.7,
-          "formattedTurnover": "₹2,951.1 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹2,953.6 Cr",
           "formattedRatio": "1.23x"
         },
         "20-11": {
-          "turnover": 2006.7,
+          "turnover": 2008.4,
           "ratio": 0.83,
-          "avg": 2406.7,
-          "formattedTurnover": "₹2,006.7 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹2,008.4 Cr",
           "formattedRatio": "0.83x"
         },
         "19-11": {
-          "turnover": 1449.7,
+          "turnover": 1451,
           "ratio": 0.6,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,449.7 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,451.0 Cr",
           "formattedRatio": "0.60x"
         },
         "18-11": {
-          "turnover": 1541.2,
+          "turnover": 1542.5,
           "ratio": 0.64,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,541.2 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,542.5 Cr",
           "formattedRatio": "0.64x"
         },
         "17-11": {
-          "turnover": 6055.5,
+          "turnover": 6060.7,
           "ratio": 2.52,
-          "avg": 2406.7,
-          "formattedTurnover": "₹6,055.5 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹6,060.7 Cr",
           "formattedRatio": "2.52x"
         },
         "16-11": {
-          "turnover": 1865.5,
+          "turnover": 1867.1,
           "ratio": 0.78,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,865.5 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,867.1 Cr",
           "formattedRatio": "0.78x"
         },
         "13-11": {
-          "turnover": 205.8,
+          "turnover": 206,
           "ratio": 0.09,
-          "avg": 2406.7,
-          "formattedTurnover": "₹205.8 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹206.0 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 1941,
+          "turnover": 1942.6,
           "ratio": 0.81,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,941.0 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,942.6 Cr",
           "formattedRatio": "0.81x"
         },
         "11-11": {
-          "turnover": 1839.1,
+          "turnover": 1840.7,
           "ratio": 0.76,
-          "avg": 2406.7,
-          "formattedTurnover": "₹1,839.1 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹1,840.7 Cr",
           "formattedRatio": "0.76x"
         },
         "09-11": {
-          "turnover": 3960.9,
+          "turnover": 3964.3,
           "ratio": 1.65,
-          "avg": 2406.7,
-          "formattedTurnover": "₹3,960.9 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹3,964.3 Cr",
           "formattedRatio": "1.65x"
         },
         "08-11": {
-          "turnover": 3097,
+          "turnover": 3099.7,
           "ratio": 1.29,
-          "avg": 2406.7,
-          "formattedTurnover": "₹3,097.0 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹3,099.7 Cr",
           "formattedRatio": "1.29x"
         },
         "06-11": {
-          "turnover": 2272.4,
-          "ratio": 0.94,
-          "avg": 2406.7,
-          "formattedTurnover": "₹2,272.4 Cr",
-          "formattedRatio": "0.94x"
+          "turnover": 2274.3,
+          "ratio": 0.95,
+          "avg": 2406.4,
+          "formattedTurnover": "₹2,274.3 Cr",
+          "formattedRatio": "0.95x"
         },
         "05-11": {
-          "turnover": 3176.3,
+          "turnover": 3179,
           "ratio": 1.32,
-          "avg": 2406.7,
-          "formattedTurnover": "₹3,176.3 Cr",
+          "avg": 2406.4,
+          "formattedTurnover": "₹3,179.0 Cr",
           "formattedRatio": "1.32x"
         }
       }
@@ -1737,111 +1737,111 @@
       "name": "Restaurants",
       "sym": "NIFTY CONSUMPTION",
       "category": "Consumer",
-      "baseAvg": 713.9,
+      "baseAvg": 713.8,
       "days": {
         "26-11": {
-          "turnover": 791.6,
-          "ratio": 1.11,
-          "avg": 713.9,
-          "formattedTurnover": "₹791.6 Cr",
-          "formattedRatio": "1.11x"
+          "turnover": 784,
+          "ratio": 1.1,
+          "avg": 713.8,
+          "formattedTurnover": "₹784.0 Cr",
+          "formattedRatio": "1.10x"
         },
         "25-11": {
-          "turnover": 1011.6,
+          "turnover": 1013,
           "ratio": 1.42,
-          "avg": 713.9,
-          "formattedTurnover": "₹1,011.6 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹1,013.0 Cr",
           "formattedRatio": "1.42x"
         },
         "23-11": {
-          "turnover": 780.1,
+          "turnover": 781.1,
           "ratio": 1.09,
-          "avg": 713.9,
-          "formattedTurnover": "₹780.1 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹781.1 Cr",
           "formattedRatio": "1.09x"
         },
         "20-11": {
-          "turnover": 498,
+          "turnover": 498.7,
           "ratio": 0.7,
-          "avg": 713.9,
-          "formattedTurnover": "₹498.0 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹498.7 Cr",
           "formattedRatio": "0.70x"
         },
         "19-11": {
-          "turnover": 1112.2,
+          "turnover": 1113.7,
           "ratio": 1.56,
-          "avg": 713.9,
-          "formattedTurnover": "₹1,112.2 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹1,113.7 Cr",
           "formattedRatio": "1.56x"
         },
         "18-11": {
-          "turnover": 470.2,
+          "turnover": 470.8,
           "ratio": 0.66,
-          "avg": 713.9,
-          "formattedTurnover": "₹470.2 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹470.8 Cr",
           "formattedRatio": "0.66x"
         },
         "17-11": {
-          "turnover": 483.5,
+          "turnover": 484.2,
           "ratio": 0.68,
-          "avg": 713.9,
-          "formattedTurnover": "₹483.5 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹484.2 Cr",
           "formattedRatio": "0.68x"
         },
         "16-11": {
-          "turnover": 564.3,
+          "turnover": 565,
           "ratio": 0.79,
-          "avg": 713.9,
-          "formattedTurnover": "₹564.3 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹565.0 Cr",
           "formattedRatio": "0.79x"
         },
         "13-11": {
-          "turnover": 128.6,
+          "turnover": 128.8,
           "ratio": 0.18,
-          "avg": 713.9,
-          "formattedTurnover": "₹128.6 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹128.8 Cr",
           "formattedRatio": "0.18x"
         },
         "12-11": {
-          "turnover": 1003.8,
+          "turnover": 1005.1,
           "ratio": 1.41,
-          "avg": 713.9,
-          "formattedTurnover": "₹1,003.8 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹1,005.1 Cr",
           "formattedRatio": "1.41x"
         },
         "11-11": {
-          "turnover": 1214.9,
+          "turnover": 1216.5,
           "ratio": 1.7,
-          "avg": 713.9,
-          "formattedTurnover": "₹1,214.9 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹1,216.5 Cr",
           "formattedRatio": "1.70x"
         },
         "09-11": {
-          "turnover": 1713.5,
+          "turnover": 1715.7,
           "ratio": 2.4,
-          "avg": 713.9,
-          "formattedTurnover": "₹1,713.5 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹1,715.7 Cr",
           "formattedRatio": "2.40x"
         },
         "08-11": {
-          "turnover": 577,
+          "turnover": 577.7,
           "ratio": 0.81,
-          "avg": 713.9,
-          "formattedTurnover": "₹577.0 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹577.7 Cr",
           "formattedRatio": "0.81x"
         },
         "06-11": {
-          "turnover": 708.3,
+          "turnover": 709.3,
           "ratio": 0.99,
-          "avg": 713.9,
-          "formattedTurnover": "₹708.3 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹709.3 Cr",
           "formattedRatio": "0.99x"
         },
         "05-11": {
-          "turnover": 2253.4,
+          "turnover": 2256.3,
           "ratio": 3.16,
-          "avg": 713.9,
-          "formattedTurnover": "₹2,253.4 Cr",
+          "avg": 713.8,
+          "formattedTurnover": "₹2,256.3 Cr",
           "formattedRatio": "3.16x"
         }
       }
@@ -1851,111 +1851,111 @@
       "name": "Paints",
       "sym": "NIFTY CONSUMPTION",
       "category": "Building",
-      "baseAvg": 1047.4,
+      "baseAvg": 1047.3,
       "days": {
         "26-11": {
-          "turnover": 1311,
+          "turnover": 1304.3,
           "ratio": 1.25,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,311.0 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,304.3 Cr",
           "formattedRatio": "1.25x"
         },
         "25-11": {
-          "turnover": 877.2,
+          "turnover": 877.9,
           "ratio": 0.84,
-          "avg": 1047.4,
-          "formattedTurnover": "₹877.2 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹877.9 Cr",
           "formattedRatio": "0.84x"
         },
         "23-11": {
-          "turnover": 681.3,
+          "turnover": 681.8,
           "ratio": 0.65,
-          "avg": 1047.4,
-          "formattedTurnover": "₹681.3 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹681.8 Cr",
           "formattedRatio": "0.65x"
         },
         "20-11": {
-          "turnover": 532.1,
+          "turnover": 532.5,
           "ratio": 0.51,
-          "avg": 1047.4,
-          "formattedTurnover": "₹532.1 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹532.5 Cr",
           "formattedRatio": "0.51x"
         },
         "19-11": {
-          "turnover": 926.2,
-          "ratio": 0.88,
-          "avg": 1047.4,
-          "formattedTurnover": "₹926.2 Cr",
-          "formattedRatio": "0.88x"
+          "turnover": 926.9,
+          "ratio": 0.89,
+          "avg": 1047.3,
+          "formattedTurnover": "₹926.9 Cr",
+          "formattedRatio": "0.89x"
         },
         "18-11": {
-          "turnover": 1016.3,
+          "turnover": 1017.1,
           "ratio": 0.97,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,016.3 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,017.1 Cr",
           "formattedRatio": "0.97x"
         },
         "17-11": {
-          "turnover": 1777.7,
+          "turnover": 1779.2,
           "ratio": 1.7,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,777.7 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,779.2 Cr",
           "formattedRatio": "1.70x"
         },
         "16-11": {
-          "turnover": 1257.2,
+          "turnover": 1258.3,
           "ratio": 1.2,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,257.2 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,258.3 Cr",
           "formattedRatio": "1.20x"
         },
         "13-11": {
           "turnover": 90.5,
           "ratio": 0.09,
-          "avg": 1047.4,
+          "avg": 1047.3,
           "formattedTurnover": "₹90.5 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 988.1,
+          "turnover": 988.9,
           "ratio": 0.94,
-          "avg": 1047.4,
-          "formattedTurnover": "₹988.1 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹988.9 Cr",
           "formattedRatio": "0.94x"
         },
         "11-11": {
-          "turnover": 1309.8,
+          "turnover": 1310.8,
           "ratio": 1.25,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,309.8 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,310.8 Cr",
           "formattedRatio": "1.25x"
         },
         "09-11": {
-          "turnover": 1029.8,
+          "turnover": 1030.7,
           "ratio": 0.98,
-          "avg": 1047.4,
-          "formattedTurnover": "₹1,029.8 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹1,030.7 Cr",
           "formattedRatio": "0.98x"
         },
         "08-11": {
-          "turnover": 509.4,
+          "turnover": 509.8,
           "ratio": 0.49,
-          "avg": 1047.4,
-          "formattedTurnover": "₹509.4 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹509.8 Cr",
           "formattedRatio": "0.49x"
         },
         "06-11": {
-          "turnover": 837.3,
+          "turnover": 837.9,
           "ratio": 0.8,
-          "avg": 1047.4,
-          "formattedTurnover": "₹837.3 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹837.9 Cr",
           "formattedRatio": "0.80x"
         },
         "05-11": {
-          "turnover": 2184.4,
+          "turnover": 2186.2,
           "ratio": 2.09,
-          "avg": 1047.4,
-          "formattedTurnover": "₹2,184.4 Cr",
+          "avg": 1047.3,
+          "formattedTurnover": "₹2,186.2 Cr",
           "formattedRatio": "2.09x"
         }
       }
@@ -1965,111 +1965,111 @@
       "name": "Refineries & Lubricants",
       "sym": "NIFTY OIL AND GAS",
       "category": "Energy",
-      "baseAvg": 5208.3,
+      "baseAvg": 5210.6,
       "days": {
         "26-11": {
-          "turnover": 6903,
-          "ratio": 1.33,
-          "avg": 5208.3,
-          "formattedTurnover": "₹6,903.0 Cr",
-          "formattedRatio": "1.33x"
+          "turnover": 7037.1,
+          "ratio": 1.35,
+          "avg": 5210.6,
+          "formattedTurnover": "₹7,037.1 Cr",
+          "formattedRatio": "1.35x"
         },
         "25-11": {
-          "turnover": 5706.5,
-          "ratio": 1.1,
-          "avg": 5208.3,
-          "formattedTurnover": "₹5,706.5 Cr",
-          "formattedRatio": "1.10x"
+          "turnover": 5687.6,
+          "ratio": 1.09,
+          "avg": 5210.6,
+          "formattedTurnover": "₹5,687.6 Cr",
+          "formattedRatio": "1.09x"
         },
         "23-11": {
-          "turnover": 5337.9,
+          "turnover": 5320.2,
           "ratio": 1.02,
-          "avg": 5208.3,
-          "formattedTurnover": "₹5,337.9 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹5,320.2 Cr",
           "formattedRatio": "1.02x"
         },
         "20-11": {
-          "turnover": 4091.8,
-          "ratio": 0.79,
-          "avg": 5208.3,
-          "formattedTurnover": "₹4,091.8 Cr",
-          "formattedRatio": "0.79x"
+          "turnover": 4078.2,
+          "ratio": 0.78,
+          "avg": 5210.6,
+          "formattedTurnover": "₹4,078.2 Cr",
+          "formattedRatio": "0.78x"
         },
         "19-11": {
-          "turnover": 4388.8,
+          "turnover": 4374.3,
           "ratio": 0.84,
-          "avg": 5208.3,
-          "formattedTurnover": "₹4,388.8 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹4,374.3 Cr",
           "formattedRatio": "0.84x"
         },
         "18-11": {
-          "turnover": 6525.3,
+          "turnover": 6503.8,
           "ratio": 1.25,
-          "avg": 5208.3,
-          "formattedTurnover": "₹6,525.3 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹6,503.8 Cr",
           "formattedRatio": "1.25x"
         },
         "17-11": {
-          "turnover": 5713.4,
-          "ratio": 1.1,
-          "avg": 5208.3,
-          "formattedTurnover": "₹5,713.4 Cr",
-          "formattedRatio": "1.10x"
+          "turnover": 5694.5,
+          "ratio": 1.09,
+          "avg": 5210.6,
+          "formattedTurnover": "₹5,694.5 Cr",
+          "formattedRatio": "1.09x"
         },
         "16-11": {
-          "turnover": 2999.3,
-          "ratio": 0.58,
-          "avg": 5208.3,
-          "formattedTurnover": "₹2,999.3 Cr",
-          "formattedRatio": "0.58x"
+          "turnover": 2989.4,
+          "ratio": 0.57,
+          "avg": 5210.6,
+          "formattedTurnover": "₹2,989.4 Cr",
+          "formattedRatio": "0.57x"
         },
         "13-11": {
-          "turnover": 566.7,
+          "turnover": 564.9,
           "ratio": 0.11,
-          "avg": 5208.3,
-          "formattedTurnover": "₹566.7 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹564.9 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 4674.6,
-          "ratio": 0.9,
-          "avg": 5208.3,
-          "formattedTurnover": "₹4,674.6 Cr",
-          "formattedRatio": "0.90x"
+          "turnover": 4659.2,
+          "ratio": 0.89,
+          "avg": 5210.6,
+          "formattedTurnover": "₹4,659.2 Cr",
+          "formattedRatio": "0.89x"
         },
         "11-11": {
-          "turnover": 6053.6,
+          "turnover": 6033.6,
           "ratio": 1.16,
-          "avg": 5208.3,
-          "formattedTurnover": "₹6,053.6 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹6,033.6 Cr",
           "formattedRatio": "1.16x"
         },
         "09-11": {
-          "turnover": 6311.8,
+          "turnover": 6290.9,
           "ratio": 1.21,
-          "avg": 5208.3,
-          "formattedTurnover": "₹6,311.8 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹6,290.9 Cr",
           "formattedRatio": "1.21x"
         },
         "08-11": {
-          "turnover": 6472.4,
+          "turnover": 6451,
           "ratio": 1.24,
-          "avg": 5208.3,
-          "formattedTurnover": "₹6,472.4 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹6,451.0 Cr",
           "formattedRatio": "1.24x"
         },
         "06-11": {
-          "turnover": 5650.7,
+          "turnover": 5632,
           "ratio": 1.08,
-          "avg": 5208.3,
-          "formattedTurnover": "₹5,650.7 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹5,632.0 Cr",
           "formattedRatio": "1.08x"
         },
         "05-11": {
-          "turnover": 5991.7,
+          "turnover": 5971.8,
           "ratio": 1.15,
-          "avg": 5208.3,
-          "formattedTurnover": "₹5,991.7 Cr",
+          "avg": 5210.6,
+          "formattedTurnover": "₹5,971.8 Cr",
           "formattedRatio": "1.15x"
         }
       }
@@ -2079,111 +2079,111 @@
       "name": "Railways",
       "sym": "NIFTY RAILWAYS PSU",
       "category": "Infra",
-      "baseAvg": 3043.1,
+      "baseAvg": 3041.8,
       "days": {
         "26-11": {
-          "turnover": 11251.5,
-          "ratio": 3.7,
-          "avg": 3043.1,
-          "formattedTurnover": "₹11,251.5 Cr",
-          "formattedRatio": "3.70x"
+          "turnover": 11174.4,
+          "ratio": 3.67,
+          "avg": 3041.8,
+          "formattedTurnover": "₹11,174.4 Cr",
+          "formattedRatio": "3.67x"
         },
         "25-11": {
-          "turnover": 6132.9,
-          "ratio": 2.02,
-          "avg": 3043.1,
-          "formattedTurnover": "₹6,132.9 Cr",
-          "formattedRatio": "2.02x"
+          "turnover": 6164.1,
+          "ratio": 2.03,
+          "avg": 3041.8,
+          "formattedTurnover": "₹6,164.1 Cr",
+          "formattedRatio": "2.03x"
         },
         "23-11": {
-          "turnover": 1319.2,
-          "ratio": 0.43,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,319.2 Cr",
-          "formattedRatio": "0.43x"
+          "turnover": 1325.9,
+          "ratio": 0.44,
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,325.9 Cr",
+          "formattedRatio": "0.44x"
         },
         "20-11": {
-          "turnover": 933,
+          "turnover": 937.7,
           "ratio": 0.31,
-          "avg": 3043.1,
-          "formattedTurnover": "₹933.0 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹937.7 Cr",
           "formattedRatio": "0.31x"
         },
         "19-11": {
-          "turnover": 1103.5,
+          "turnover": 1109.1,
           "ratio": 0.36,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,103.5 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,109.1 Cr",
           "formattedRatio": "0.36x"
         },
         "18-11": {
-          "turnover": 1031.4,
+          "turnover": 1036.6,
           "ratio": 0.34,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,031.4 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,036.6 Cr",
           "formattedRatio": "0.34x"
         },
         "17-11": {
-          "turnover": 1172.7,
+          "turnover": 1178.7,
           "ratio": 0.39,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,172.7 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,178.7 Cr",
           "formattedRatio": "0.39x"
         },
         "16-11": {
-          "turnover": 1400.5,
+          "turnover": 1407.6,
           "ratio": 0.46,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,400.5 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,407.6 Cr",
           "formattedRatio": "0.46x"
         },
         "13-11": {
-          "turnover": 192.4,
+          "turnover": 193.4,
           "ratio": 0.06,
-          "avg": 3043.1,
-          "formattedTurnover": "₹192.4 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹193.4 Cr",
           "formattedRatio": "0.06x"
         },
         "12-11": {
-          "turnover": 1720.4,
+          "turnover": 1729.1,
           "ratio": 0.57,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,720.4 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,729.1 Cr",
           "formattedRatio": "0.57x"
         },
         "11-11": {
-          "turnover": 7364.3,
-          "ratio": 2.42,
-          "avg": 3043.1,
-          "formattedTurnover": "₹7,364.3 Cr",
-          "formattedRatio": "2.42x"
+          "turnover": 7401.7,
+          "ratio": 2.43,
+          "avg": 3041.8,
+          "formattedTurnover": "₹7,401.7 Cr",
+          "formattedRatio": "2.43x"
         },
         "09-11": {
-          "turnover": 1475.2,
-          "ratio": 0.48,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,475.2 Cr",
-          "formattedRatio": "0.48x"
+          "turnover": 1482.7,
+          "ratio": 0.49,
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,482.7 Cr",
+          "formattedRatio": "0.49x"
         },
         "08-11": {
-          "turnover": 1328.2,
+          "turnover": 1335,
           "ratio": 0.44,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,328.2 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,335.0 Cr",
           "formattedRatio": "0.44x"
         },
         "06-11": {
-          "turnover": 894.7,
-          "ratio": 0.29,
-          "avg": 3043.1,
-          "formattedTurnover": "₹894.7 Cr",
-          "formattedRatio": "0.29x"
+          "turnover": 899.2,
+          "ratio": 0.3,
+          "avg": 3041.8,
+          "formattedTurnover": "₹899.2 Cr",
+          "formattedRatio": "0.30x"
         },
         "05-11": {
-          "turnover": 1296.5,
+          "turnover": 1303,
           "ratio": 0.43,
-          "avg": 3043.1,
-          "formattedTurnover": "₹1,296.5 Cr",
+          "avg": 3041.8,
+          "formattedTurnover": "₹1,303.0 Cr",
           "formattedRatio": "0.43x"
         }
       }
@@ -2193,112 +2193,112 @@
       "name": "Fertilizers & Agrochemicals",
       "sym": "NIFTY COMMODITIES",
       "category": "Agri",
-      "baseAvg": 1436.8,
+      "baseAvg": 1436.2,
       "days": {
         "26-11": {
-          "turnover": 1866.7,
-          "ratio": 1.3,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,866.7 Cr",
-          "formattedRatio": "1.30x"
+          "turnover": 1835.4,
+          "ratio": 1.28,
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,835.4 Cr",
+          "formattedRatio": "1.28x"
         },
         "25-11": {
-          "turnover": 774.9,
+          "turnover": 777,
           "ratio": 0.54,
-          "avg": 1436.8,
-          "formattedTurnover": "₹774.9 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹777.0 Cr",
           "formattedRatio": "0.54x"
         },
         "23-11": {
-          "turnover": 954.1,
-          "ratio": 0.66,
-          "avg": 1436.8,
-          "formattedTurnover": "₹954.1 Cr",
-          "formattedRatio": "0.66x"
+          "turnover": 956.8,
+          "ratio": 0.67,
+          "avg": 1436.2,
+          "formattedTurnover": "₹956.8 Cr",
+          "formattedRatio": "0.67x"
         },
         "20-11": {
-          "turnover": 833.1,
+          "turnover": 835.4,
           "ratio": 0.58,
-          "avg": 1436.8,
-          "formattedTurnover": "₹833.1 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹835.4 Cr",
           "formattedRatio": "0.58x"
         },
         "19-11": {
-          "turnover": 1627.4,
-          "ratio": 1.13,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,627.4 Cr",
-          "formattedRatio": "1.13x"
+          "turnover": 1631.9,
+          "ratio": 1.14,
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,631.9 Cr",
+          "formattedRatio": "1.14x"
         },
         "18-11": {
-          "turnover": 1585.5,
-          "ratio": 1.1,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,585.5 Cr",
-          "formattedRatio": "1.10x"
+          "turnover": 1589.9,
+          "ratio": 1.11,
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,589.9 Cr",
+          "formattedRatio": "1.11x"
         },
         "17-11": {
-          "turnover": 1914.9,
-          "ratio": 1.33,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,914.9 Cr",
-          "formattedRatio": "1.33x"
+          "turnover": 1920.2,
+          "ratio": 1.34,
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,920.2 Cr",
+          "formattedRatio": "1.34x"
         },
         "16-11": {
-          "turnover": 1937.7,
+          "turnover": 1943,
           "ratio": 1.35,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,937.7 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,943.0 Cr",
           "formattedRatio": "1.35x"
         },
         "13-11": {
-          "turnover": 177.5,
+          "turnover": 178,
           "ratio": 0.12,
-          "avg": 1436.8,
-          "formattedTurnover": "₹177.5 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹178.0 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 1286.7,
+          "turnover": 1290.2,
           "ratio": 0.9,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,286.7 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,290.2 Cr",
           "formattedRatio": "0.90x"
         },
         "11-11": {
-          "turnover": 2510.4,
+          "turnover": 2517.3,
           "ratio": 1.75,
-          "avg": 1436.8,
-          "formattedTurnover": "₹2,510.4 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹2,517.3 Cr",
           "formattedRatio": "1.75x"
         },
         "09-11": {
-          "turnover": 1239.7,
-          "ratio": 0.86,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,239.7 Cr",
-          "formattedRatio": "0.86x"
+          "turnover": 1243.1,
+          "ratio": 0.87,
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,243.1 Cr",
+          "formattedRatio": "0.87x"
         },
         "08-11": {
-          "turnover": 1180,
+          "turnover": 1183.3,
           "ratio": 0.82,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,180.0 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,183.3 Cr",
           "formattedRatio": "0.82x"
         },
         "06-11": {
-          "turnover": 1047.5,
+          "turnover": 1050.4,
           "ratio": 0.73,
-          "avg": 1436.8,
-          "formattedTurnover": "₹1,047.5 Cr",
+          "avg": 1436.2,
+          "formattedTurnover": "₹1,050.4 Cr",
           "formattedRatio": "0.73x"
         },
         "05-11": {
-          "turnover": 3108,
-          "ratio": 2.16,
-          "avg": 1436.8,
-          "formattedTurnover": "₹3,108.0 Cr",
-          "formattedRatio": "2.16x"
+          "turnover": 3116.6,
+          "ratio": 2.17,
+          "avg": 1436.2,
+          "formattedTurnover": "₹3,116.6 Cr",
+          "formattedRatio": "2.17x"
         }
       }
     },
@@ -2310,59 +2310,59 @@
       "baseAvg": 924.6,
       "days": {
         "26-11": {
-          "turnover": 736.9,
-          "ratio": 0.8,
+          "turnover": 731.4,
+          "ratio": 0.79,
           "avg": 924.6,
-          "formattedTurnover": "₹736.9 Cr",
-          "formattedRatio": "0.80x"
+          "formattedTurnover": "₹731.4 Cr",
+          "formattedRatio": "0.79x"
         },
         "25-11": {
-          "turnover": 967.7,
+          "turnover": 968.4,
           "ratio": 1.05,
           "avg": 924.6,
-          "formattedTurnover": "₹967.7 Cr",
+          "formattedTurnover": "₹968.4 Cr",
           "formattedRatio": "1.05x"
         },
         "23-11": {
-          "turnover": 837.6,
+          "turnover": 838.2,
           "ratio": 0.91,
           "avg": 924.6,
-          "formattedTurnover": "₹837.6 Cr",
+          "formattedTurnover": "₹838.2 Cr",
           "formattedRatio": "0.91x"
         },
         "20-11": {
-          "turnover": 600.7,
+          "turnover": 601.2,
           "ratio": 0.65,
           "avg": 924.6,
-          "formattedTurnover": "₹600.7 Cr",
+          "formattedTurnover": "₹601.2 Cr",
           "formattedRatio": "0.65x"
         },
         "19-11": {
-          "turnover": 1972.1,
+          "turnover": 1973.5,
           "ratio": 2.13,
           "avg": 924.6,
-          "formattedTurnover": "₹1,972.1 Cr",
+          "formattedTurnover": "₹1,973.5 Cr",
           "formattedRatio": "2.13x"
         },
         "18-11": {
-          "turnover": 654.6,
+          "turnover": 655.1,
           "ratio": 0.71,
           "avg": 924.6,
-          "formattedTurnover": "₹654.6 Cr",
+          "formattedTurnover": "₹655.1 Cr",
           "formattedRatio": "0.71x"
         },
         "17-11": {
-          "turnover": 986.1,
+          "turnover": 986.8,
           "ratio": 1.07,
           "avg": 924.6,
-          "formattedTurnover": "₹986.1 Cr",
+          "formattedTurnover": "₹986.8 Cr",
           "formattedRatio": "1.07x"
         },
         "16-11": {
-          "turnover": 641.4,
+          "turnover": 641.8,
           "ratio": 0.69,
           "avg": 924.6,
-          "formattedTurnover": "₹641.4 Cr",
+          "formattedTurnover": "₹641.8 Cr",
           "formattedRatio": "0.69x"
         },
         "13-11": {
@@ -2373,45 +2373,45 @@
           "formattedRatio": "0.10x"
         },
         "12-11": {
-          "turnover": 847.7,
+          "turnover": 848.3,
           "ratio": 0.92,
           "avg": 924.6,
-          "formattedTurnover": "₹847.7 Cr",
+          "formattedTurnover": "₹848.3 Cr",
           "formattedRatio": "0.92x"
         },
         "11-11": {
-          "turnover": 558.3,
+          "turnover": 558.7,
           "ratio": 0.6,
           "avg": 924.6,
-          "formattedTurnover": "₹558.3 Cr",
+          "formattedTurnover": "₹558.7 Cr",
           "formattedRatio": "0.60x"
         },
         "09-11": {
-          "turnover": 467.6,
+          "turnover": 467.9,
           "ratio": 0.51,
           "avg": 924.6,
-          "formattedTurnover": "₹467.6 Cr",
+          "formattedTurnover": "₹467.9 Cr",
           "formattedRatio": "0.51x"
         },
         "08-11": {
-          "turnover": 390.2,
+          "turnover": 390.4,
           "ratio": 0.42,
           "avg": 924.6,
-          "formattedTurnover": "₹390.2 Cr",
+          "formattedTurnover": "₹390.4 Cr",
           "formattedRatio": "0.42x"
         },
         "06-11": {
-          "turnover": 424,
+          "turnover": 424.3,
           "ratio": 0.46,
           "avg": 924.6,
-          "formattedTurnover": "₹424.0 Cr",
+          "formattedTurnover": "₹424.3 Cr",
           "formattedRatio": "0.46x"
         },
         "05-11": {
-          "turnover": 671,
+          "turnover": 671.5,
           "ratio": 0.73,
           "avg": 924.6,
-          "formattedTurnover": "₹671.0 Cr",
+          "formattedTurnover": "₹671.5 Cr",
           "formattedRatio": "0.73x"
         }
       }
@@ -2421,111 +2421,111 @@
       "name": "Retail",
       "sym": "NIFTY CONSUMPTION",
       "category": "Consumer",
-      "baseAvg": 3343.2,
+      "baseAvg": 3342.7,
       "days": {
         "26-11": {
-          "turnover": 2139.9,
-          "ratio": 0.64,
-          "avg": 3343.2,
-          "formattedTurnover": "₹2,139.9 Cr",
-          "formattedRatio": "0.64x"
+          "turnover": 2116.4,
+          "ratio": 0.63,
+          "avg": 3342.7,
+          "formattedTurnover": "₹2,116.4 Cr",
+          "formattedRatio": "0.63x"
         },
         "25-11": {
-          "turnover": 3118.6,
+          "turnover": 3121.1,
           "ratio": 0.93,
-          "avg": 3343.2,
-          "formattedTurnover": "₹3,118.6 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹3,121.1 Cr",
           "formattedRatio": "0.93x"
         },
         "23-11": {
-          "turnover": 2338,
+          "turnover": 2339.9,
           "ratio": 0.7,
-          "avg": 3343.2,
-          "formattedTurnover": "₹2,338.0 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹2,339.9 Cr",
           "formattedRatio": "0.70x"
         },
         "20-11": {
-          "turnover": 3406.7,
+          "turnover": 3409.5,
           "ratio": 1.02,
-          "avg": 3343.2,
-          "formattedTurnover": "₹3,406.7 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹3,409.5 Cr",
           "formattedRatio": "1.02x"
         },
         "19-11": {
-          "turnover": 3416.8,
+          "turnover": 3419.5,
           "ratio": 1.02,
-          "avg": 3343.2,
-          "formattedTurnover": "₹3,416.8 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹3,419.5 Cr",
           "formattedRatio": "1.02x"
         },
         "18-11": {
-          "turnover": 4122.1,
+          "turnover": 4125.5,
           "ratio": 1.23,
-          "avg": 3343.2,
-          "formattedTurnover": "₹4,122.1 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹4,125.5 Cr",
           "formattedRatio": "1.23x"
         },
         "17-11": {
-          "turnover": 5294.6,
-          "ratio": 1.58,
-          "avg": 3343.2,
-          "formattedTurnover": "₹5,294.6 Cr",
-          "formattedRatio": "1.58x"
+          "turnover": 5298.9,
+          "ratio": 1.59,
+          "avg": 3342.7,
+          "formattedTurnover": "₹5,298.9 Cr",
+          "formattedRatio": "1.59x"
         },
         "16-11": {
-          "turnover": 2908.6,
+          "turnover": 2911,
           "ratio": 0.87,
-          "avg": 3343.2,
-          "formattedTurnover": "₹2,908.6 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹2,911.0 Cr",
           "formattedRatio": "0.87x"
         },
         "13-11": {
-          "turnover": 375.7,
+          "turnover": 376,
           "ratio": 0.11,
-          "avg": 3343.2,
-          "formattedTurnover": "₹375.7 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹376.0 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 2387.9,
+          "turnover": 2389.8,
           "ratio": 0.71,
-          "avg": 3343.2,
-          "formattedTurnover": "₹2,387.9 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹2,389.8 Cr",
           "formattedRatio": "0.71x"
         },
         "11-11": {
-          "turnover": 3749.8,
+          "turnover": 3752.9,
           "ratio": 1.12,
-          "avg": 3343.2,
-          "formattedTurnover": "₹3,749.8 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹3,752.9 Cr",
           "formattedRatio": "1.12x"
         },
         "09-11": {
-          "turnover": 1910.4,
+          "turnover": 1911.9,
           "ratio": 0.57,
-          "avg": 3343.2,
-          "formattedTurnover": "₹1,910.4 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹1,911.9 Cr",
           "formattedRatio": "0.57x"
         },
         "08-11": {
-          "turnover": 1943.3,
+          "turnover": 1944.9,
           "ratio": 0.58,
-          "avg": 3343.2,
-          "formattedTurnover": "₹1,943.3 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹1,944.9 Cr",
           "formattedRatio": "0.58x"
         },
         "06-11": {
-          "turnover": 2420.2,
+          "turnover": 2422.1,
           "ratio": 0.72,
-          "avg": 3343.2,
-          "formattedTurnover": "₹2,420.2 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹2,422.1 Cr",
           "formattedRatio": "0.72x"
         },
         "05-11": {
-          "turnover": 3620.9,
+          "turnover": 3623.9,
           "ratio": 1.08,
-          "avg": 3343.2,
-          "formattedTurnover": "₹3,620.9 Cr",
+          "avg": 3342.7,
+          "formattedTurnover": "₹3,623.9 Cr",
           "formattedRatio": "1.08x"
         }
       }
@@ -2535,111 +2535,111 @@
       "name": "Packaging",
       "sym": "NIFTY COMMODITIES",
       "category": "Manufacturing",
-      "baseAvg": 548.4,
+      "baseAvg": 548.3,
       "days": {
         "26-11": {
-          "turnover": 392.9,
-          "ratio": 0.72,
-          "avg": 548.4,
-          "formattedTurnover": "₹392.9 Cr",
-          "formattedRatio": "0.72x"
+          "turnover": 387.5,
+          "ratio": 0.71,
+          "avg": 548.3,
+          "formattedTurnover": "₹387.5 Cr",
+          "formattedRatio": "0.71x"
         },
         "25-11": {
-          "turnover": 411.3,
+          "turnover": 411.8,
           "ratio": 0.75,
-          "avg": 548.4,
-          "formattedTurnover": "₹411.3 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹411.8 Cr",
           "formattedRatio": "0.75x"
         },
         "23-11": {
-          "turnover": 742.6,
-          "ratio": 1.35,
-          "avg": 548.4,
-          "formattedTurnover": "₹742.6 Cr",
-          "formattedRatio": "1.35x"
+          "turnover": 743.4,
+          "ratio": 1.36,
+          "avg": 548.3,
+          "formattedTurnover": "₹743.4 Cr",
+          "formattedRatio": "1.36x"
         },
         "20-11": {
-          "turnover": 347.2,
+          "turnover": 347.6,
           "ratio": 0.63,
-          "avg": 548.4,
-          "formattedTurnover": "₹347.2 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹347.6 Cr",
           "formattedRatio": "0.63x"
         },
         "19-11": {
-          "turnover": 315,
-          "ratio": 0.57,
-          "avg": 548.4,
-          "formattedTurnover": "₹315.0 Cr",
-          "formattedRatio": "0.57x"
+          "turnover": 315.4,
+          "ratio": 0.58,
+          "avg": 548.3,
+          "formattedTurnover": "₹315.4 Cr",
+          "formattedRatio": "0.58x"
         },
         "18-11": {
-          "turnover": 516.1,
+          "turnover": 516.7,
           "ratio": 0.94,
-          "avg": 548.4,
-          "formattedTurnover": "₹516.1 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹516.7 Cr",
           "formattedRatio": "0.94x"
         },
         "17-11": {
-          "turnover": 441.9,
+          "turnover": 442.4,
           "ratio": 0.81,
-          "avg": 548.4,
-          "formattedTurnover": "₹441.9 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹442.4 Cr",
           "formattedRatio": "0.81x"
         },
         "16-11": {
-          "turnover": 1220,
-          "ratio": 2.22,
-          "avg": 548.4,
-          "formattedTurnover": "₹1,220.0 Cr",
-          "formattedRatio": "2.22x"
+          "turnover": 1221.4,
+          "ratio": 2.23,
+          "avg": 548.3,
+          "formattedTurnover": "₹1,221.4 Cr",
+          "formattedRatio": "2.23x"
         },
         "13-11": {
-          "turnover": 76.1,
+          "turnover": 76.2,
           "ratio": 0.14,
-          "avg": 548.4,
-          "formattedTurnover": "₹76.1 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹76.2 Cr",
           "formattedRatio": "0.14x"
         },
         "12-11": {
-          "turnover": 491.4,
+          "turnover": 492,
           "ratio": 0.9,
-          "avg": 548.4,
-          "formattedTurnover": "₹491.4 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹492.0 Cr",
           "formattedRatio": "0.90x"
         },
         "11-11": {
-          "turnover": 528.2,
+          "turnover": 528.8,
           "ratio": 0.96,
-          "avg": 548.4,
-          "formattedTurnover": "₹528.2 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹528.8 Cr",
           "formattedRatio": "0.96x"
         },
         "09-11": {
-          "turnover": 336.4,
+          "turnover": 336.8,
           "ratio": 0.61,
-          "avg": 548.4,
-          "formattedTurnover": "₹336.4 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹336.8 Cr",
           "formattedRatio": "0.61x"
         },
         "08-11": {
-          "turnover": 549.5,
+          "turnover": 550.1,
           "ratio": 1,
-          "avg": 548.4,
-          "formattedTurnover": "₹549.5 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹550.1 Cr",
           "formattedRatio": "1.00x"
         },
         "06-11": {
-          "turnover": 319,
+          "turnover": 319.4,
           "ratio": 0.58,
-          "avg": 548.4,
-          "formattedTurnover": "₹319.0 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹319.4 Cr",
           "formattedRatio": "0.58x"
         },
         "05-11": {
-          "turnover": 591.8,
+          "turnover": 592.4,
           "ratio": 1.08,
-          "avg": 548.4,
-          "formattedTurnover": "₹591.8 Cr",
+          "avg": 548.3,
+          "formattedTurnover": "₹592.4 Cr",
           "formattedRatio": "1.08x"
         }
       }
@@ -2649,111 +2649,111 @@
       "name": "Paper Products",
       "sym": "NIFTY COMMODITIES",
       "category": "Manufacturing",
-      "baseAvg": 433.4,
+      "baseAvg": 433.2,
       "days": {
         "26-11": {
-          "turnover": 1058.5,
-          "ratio": 2.44,
-          "avg": 433.4,
-          "formattedTurnover": "₹1,058.5 Cr",
-          "formattedRatio": "2.44x"
+          "turnover": 1050.5,
+          "ratio": 2.42,
+          "avg": 433.2,
+          "formattedTurnover": "₹1,050.5 Cr",
+          "formattedRatio": "2.42x"
         },
         "25-11": {
-          "turnover": 281.7,
+          "turnover": 282.5,
           "ratio": 0.65,
-          "avg": 433.4,
-          "formattedTurnover": "₹281.7 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹282.5 Cr",
           "formattedRatio": "0.65x"
         },
         "23-11": {
-          "turnover": 199.1,
+          "turnover": 199.6,
           "ratio": 0.46,
-          "avg": 433.4,
-          "formattedTurnover": "₹199.1 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹199.6 Cr",
           "formattedRatio": "0.46x"
         },
         "20-11": {
-          "turnover": 332.2,
+          "turnover": 333.1,
           "ratio": 0.77,
-          "avg": 433.4,
-          "formattedTurnover": "₹332.2 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹333.1 Cr",
           "formattedRatio": "0.77x"
         },
         "19-11": {
-          "turnover": 433.4,
+          "turnover": 434.6,
           "ratio": 1,
-          "avg": 433.4,
-          "formattedTurnover": "₹433.4 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹434.6 Cr",
           "formattedRatio": "1.00x"
         },
         "18-11": {
-          "turnover": 402.9,
+          "turnover": 404.1,
           "ratio": 0.93,
-          "avg": 433.4,
-          "formattedTurnover": "₹402.9 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹404.1 Cr",
           "formattedRatio": "0.93x"
         },
         "17-11": {
-          "turnover": 315.3,
+          "turnover": 316.2,
           "ratio": 0.73,
-          "avg": 433.4,
-          "formattedTurnover": "₹315.3 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹316.2 Cr",
           "formattedRatio": "0.73x"
         },
         "16-11": {
-          "turnover": 444.1,
-          "ratio": 1.02,
-          "avg": 433.4,
-          "formattedTurnover": "₹444.1 Cr",
-          "formattedRatio": "1.02x"
+          "turnover": 445.4,
+          "ratio": 1.03,
+          "avg": 433.2,
+          "formattedTurnover": "₹445.4 Cr",
+          "formattedRatio": "1.03x"
         },
         "13-11": {
-          "turnover": 40.8,
+          "turnover": 40.9,
           "ratio": 0.09,
-          "avg": 433.4,
-          "formattedTurnover": "₹40.8 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹40.9 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 341.5,
+          "turnover": 342.5,
           "ratio": 0.79,
-          "avg": 433.4,
-          "formattedTurnover": "₹341.5 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹342.5 Cr",
           "formattedRatio": "0.79x"
         },
         "11-11": {
-          "turnover": 338.2,
+          "turnover": 339.1,
           "ratio": 0.78,
-          "avg": 433.4,
-          "formattedTurnover": "₹338.2 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹339.1 Cr",
           "formattedRatio": "0.78x"
         },
         "09-11": {
-          "turnover": 466.4,
+          "turnover": 467.7,
           "ratio": 1.08,
-          "avg": 433.4,
-          "formattedTurnover": "₹466.4 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹467.7 Cr",
           "formattedRatio": "1.08x"
         },
         "08-11": {
-          "turnover": 900,
+          "turnover": 902.5,
           "ratio": 2.08,
-          "avg": 433.4,
-          "formattedTurnover": "₹900.0 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹902.5 Cr",
           "formattedRatio": "2.08x"
         },
         "06-11": {
-          "turnover": 1230.1,
-          "ratio": 2.84,
-          "avg": 433.4,
-          "formattedTurnover": "₹1,230.1 Cr",
-          "formattedRatio": "2.84x"
+          "turnover": 1233.5,
+          "ratio": 2.85,
+          "avg": 433.2,
+          "formattedTurnover": "₹1,233.5 Cr",
+          "formattedRatio": "2.85x"
         },
         "05-11": {
-          "turnover": 237.1,
+          "turnover": 237.7,
           "ratio": 0.55,
-          "avg": 433.4,
-          "formattedTurnover": "₹237.1 Cr",
+          "avg": 433.2,
+          "formattedTurnover": "₹237.7 Cr",
           "formattedRatio": "0.55x"
         }
       }
@@ -2766,60 +2766,60 @@
       "baseAvg": 5500.8,
       "days": {
         "26-11": {
-          "turnover": 4185.3,
+          "turnover": 4182.6,
           "ratio": 0.76,
           "avg": 5500.8,
-          "formattedTurnover": "₹4,185.3 Cr",
+          "formattedTurnover": "₹4,182.6 Cr",
           "formattedRatio": "0.76x"
         },
         "25-11": {
-          "turnover": 5115.8,
+          "turnover": 5116.1,
           "ratio": 0.93,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,115.8 Cr",
+          "formattedTurnover": "₹5,116.1 Cr",
           "formattedRatio": "0.93x"
         },
         "23-11": {
-          "turnover": 5662.8,
+          "turnover": 5663.2,
           "ratio": 1.03,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,662.8 Cr",
+          "formattedTurnover": "₹5,663.2 Cr",
           "formattedRatio": "1.03x"
         },
         "20-11": {
-          "turnover": 5496.1,
+          "turnover": 5496.4,
           "ratio": 1,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,496.1 Cr",
+          "formattedTurnover": "₹5,496.4 Cr",
           "formattedRatio": "1.00x"
         },
         "19-11": {
-          "turnover": 7356.6,
+          "turnover": 7357,
           "ratio": 1.34,
           "avg": 5500.8,
-          "formattedTurnover": "₹7,356.6 Cr",
+          "formattedTurnover": "₹7,357.0 Cr",
           "formattedRatio": "1.34x"
         },
         "18-11": {
-          "turnover": 4631.5,
+          "turnover": 4631.8,
           "ratio": 0.84,
           "avg": 5500.8,
-          "formattedTurnover": "₹4,631.5 Cr",
+          "formattedTurnover": "₹4,631.8 Cr",
           "formattedRatio": "0.84x"
         },
         "17-11": {
-          "turnover": 5865.6,
+          "turnover": 5866,
           "ratio": 1.07,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,865.6 Cr",
+          "formattedTurnover": "₹5,866.0 Cr",
           "formattedRatio": "1.07x"
         },
         "16-11": {
-          "turnover": 5693.1,
-          "ratio": 1.03,
+          "turnover": 5693.4,
+          "ratio": 1.04,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,693.1 Cr",
-          "formattedRatio": "1.03x"
+          "formattedTurnover": "₹5,693.4 Cr",
+          "formattedRatio": "1.04x"
         },
         "13-11": {
           "turnover": 499.7,
@@ -2829,45 +2829,45 @@
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 4570.8,
+          "turnover": 4571.1,
           "ratio": 0.83,
           "avg": 5500.8,
-          "formattedTurnover": "₹4,570.8 Cr",
+          "formattedTurnover": "₹4,571.1 Cr",
           "formattedRatio": "0.83x"
         },
         "11-11": {
-          "turnover": 5127.4,
+          "turnover": 5127.7,
           "ratio": 0.93,
           "avg": 5500.8,
-          "formattedTurnover": "₹5,127.4 Cr",
+          "formattedTurnover": "₹5,127.7 Cr",
           "formattedRatio": "0.93x"
         },
         "09-11": {
-          "turnover": 3749.6,
+          "turnover": 3749.8,
           "ratio": 0.68,
           "avg": 5500.8,
-          "formattedTurnover": "₹3,749.6 Cr",
+          "formattedTurnover": "₹3,749.8 Cr",
           "formattedRatio": "0.68x"
         },
         "08-11": {
-          "turnover": 4019.6,
+          "turnover": 4019.8,
           "ratio": 0.73,
           "avg": 5500.8,
-          "formattedTurnover": "₹4,019.6 Cr",
+          "formattedTurnover": "₹4,019.8 Cr",
           "formattedRatio": "0.73x"
         },
         "06-11": {
-          "turnover": 4879.3,
+          "turnover": 4879.6,
           "ratio": 0.89,
           "avg": 5500.8,
-          "formattedTurnover": "₹4,879.3 Cr",
+          "formattedTurnover": "₹4,879.6 Cr",
           "formattedRatio": "0.89x"
         },
         "05-11": {
-          "turnover": 6935.8,
+          "turnover": 6936.2,
           "ratio": 1.26,
           "avg": 5500.8,
-          "formattedTurnover": "₹6,935.8 Cr",
+          "formattedTurnover": "₹6,936.2 Cr",
           "formattedRatio": "1.26x"
         }
       }
@@ -2877,111 +2877,111 @@
       "name": "Metals & Mining",
       "sym": "NIFTY METAL",
       "category": "Metals",
-      "baseAvg": 5288.7,
+      "baseAvg": 5288.4,
       "days": {
         "26-11": {
-          "turnover": 5440.3,
+          "turnover": 5427.2,
           "ratio": 1.03,
-          "avg": 5288.7,
-          "formattedTurnover": "₹5,440.3 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹5,427.2 Cr",
           "formattedRatio": "1.03x"
         },
         "25-11": {
-          "turnover": 6046.4,
+          "turnover": 6048.3,
           "ratio": 1.14,
-          "avg": 5288.7,
-          "formattedTurnover": "₹6,046.4 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹6,048.3 Cr",
           "formattedRatio": "1.14x"
         },
         "23-11": {
-          "turnover": 7846.2,
+          "turnover": 7848.6,
           "ratio": 1.48,
-          "avg": 5288.7,
-          "formattedTurnover": "₹7,846.2 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹7,848.6 Cr",
           "formattedRatio": "1.48x"
         },
         "20-11": {
-          "turnover": 4803.1,
+          "turnover": 4804.6,
           "ratio": 0.91,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,803.1 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,804.6 Cr",
           "formattedRatio": "0.91x"
         },
         "19-11": {
-          "turnover": 4073.1,
+          "turnover": 4074.4,
           "ratio": 0.77,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,073.1 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,074.4 Cr",
           "formattedRatio": "0.77x"
         },
         "18-11": {
-          "turnover": 4592.8,
+          "turnover": 4594.2,
           "ratio": 0.87,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,592.8 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,594.2 Cr",
           "formattedRatio": "0.87x"
         },
         "17-11": {
-          "turnover": 5172,
+          "turnover": 5173.6,
           "ratio": 0.98,
-          "avg": 5288.7,
-          "formattedTurnover": "₹5,172.0 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹5,173.6 Cr",
           "formattedRatio": "0.98x"
         },
         "16-11": {
-          "turnover": 4335.4,
+          "turnover": 4336.7,
           "ratio": 0.82,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,335.4 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,336.7 Cr",
           "formattedRatio": "0.82x"
         },
         "13-11": {
-          "turnover": 484.2,
+          "turnover": 484.3,
           "ratio": 0.09,
-          "avg": 5288.7,
-          "formattedTurnover": "₹484.2 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹484.3 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 4829.6,
+          "turnover": 4831.1,
           "ratio": 0.91,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,829.6 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,831.1 Cr",
           "formattedRatio": "0.91x"
         },
         "11-11": {
-          "turnover": 4215.2,
+          "turnover": 4216.5,
           "ratio": 0.8,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,215.2 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,216.5 Cr",
           "formattedRatio": "0.80x"
         },
         "09-11": {
-          "turnover": 4368.8,
+          "turnover": 4370.2,
           "ratio": 0.83,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,368.8 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,370.2 Cr",
           "formattedRatio": "0.83x"
         },
         "08-11": {
-          "turnover": 4982.4,
+          "turnover": 4983.9,
           "ratio": 0.94,
-          "avg": 5288.7,
-          "formattedTurnover": "₹4,982.4 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹4,983.9 Cr",
           "formattedRatio": "0.94x"
         },
         "06-11": {
-          "turnover": 3440.7,
+          "turnover": 3441.7,
           "ratio": 0.65,
-          "avg": 5288.7,
-          "formattedTurnover": "₹3,440.7 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹3,441.7 Cr",
           "formattedRatio": "0.65x"
         },
         "05-11": {
-          "turnover": 3514.6,
+          "turnover": 3515.6,
           "ratio": 0.66,
-          "avg": 5288.7,
-          "formattedTurnover": "₹3,514.6 Cr",
+          "avg": 5288.4,
+          "formattedTurnover": "₹3,515.6 Cr",
           "formattedRatio": "0.66x"
         }
       }
@@ -2991,111 +2991,111 @@
       "name": "Healthcare",
       "sym": "NIFTY HEALTHCARE",
       "category": "Healthcare",
-      "baseAvg": 3221.2,
+      "baseAvg": 3221.1,
       "days": {
         "26-11": {
-          "turnover": 1984.8,
-          "ratio": 0.62,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,984.8 Cr",
-          "formattedRatio": "0.62x"
+          "turnover": 1980.5,
+          "ratio": 0.61,
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,980.5 Cr",
+          "formattedRatio": "0.61x"
         },
         "25-11": {
-          "turnover": 3504.7,
+          "turnover": 3505.2,
           "ratio": 1.09,
-          "avg": 3221.2,
-          "formattedTurnover": "₹3,504.7 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹3,505.2 Cr",
           "formattedRatio": "1.09x"
         },
         "23-11": {
-          "turnover": 3299.5,
+          "turnover": 3300,
           "ratio": 1.02,
-          "avg": 3221.2,
-          "formattedTurnover": "₹3,299.5 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹3,300.0 Cr",
           "formattedRatio": "1.02x"
         },
         "20-11": {
-          "turnover": 5655.7,
+          "turnover": 5656.6,
           "ratio": 1.76,
-          "avg": 3221.2,
-          "formattedTurnover": "₹5,655.7 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹5,656.6 Cr",
           "formattedRatio": "1.76x"
         },
         "19-11": {
-          "turnover": 1583,
+          "turnover": 1583.2,
           "ratio": 0.49,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,583.0 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,583.2 Cr",
           "formattedRatio": "0.49x"
         },
         "18-11": {
-          "turnover": 2252.7,
+          "turnover": 2253.1,
           "ratio": 0.7,
-          "avg": 3221.2,
-          "formattedTurnover": "₹2,252.7 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹2,253.1 Cr",
           "formattedRatio": "0.70x"
         },
         "17-11": {
-          "turnover": 3288.8,
+          "turnover": 3289.4,
           "ratio": 1.02,
-          "avg": 3221.2,
-          "formattedTurnover": "₹3,288.8 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹3,289.4 Cr",
           "formattedRatio": "1.02x"
         },
         "16-11": {
-          "turnover": 4200,
+          "turnover": 4200.6,
           "ratio": 1.3,
-          "avg": 3221.2,
-          "formattedTurnover": "₹4,200.0 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹4,200.6 Cr",
           "formattedRatio": "1.30x"
         },
         "13-11": {
-          "turnover": 371.4,
+          "turnover": 371.5,
           "ratio": 0.12,
-          "avg": 3221.2,
-          "formattedTurnover": "₹371.4 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹371.5 Cr",
           "formattedRatio": "0.12x"
         },
         "12-11": {
-          "turnover": 2636.9,
+          "turnover": 2637.3,
           "ratio": 0.82,
-          "avg": 3221.2,
-          "formattedTurnover": "₹2,636.9 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹2,637.3 Cr",
           "formattedRatio": "0.82x"
         },
         "11-11": {
-          "turnover": 1633.4,
+          "turnover": 1633.7,
           "ratio": 0.51,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,633.4 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,633.7 Cr",
           "formattedRatio": "0.51x"
         },
         "09-11": {
-          "turnover": 1695.6,
+          "turnover": 1695.9,
           "ratio": 0.53,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,695.6 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,695.9 Cr",
           "formattedRatio": "0.53x"
         },
         "08-11": {
-          "turnover": 1923.6,
+          "turnover": 1923.9,
           "ratio": 0.6,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,923.6 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,923.9 Cr",
           "formattedRatio": "0.60x"
         },
         "06-11": {
-          "turnover": 1583.9,
+          "turnover": 1584.1,
           "ratio": 0.49,
-          "avg": 3221.2,
-          "formattedTurnover": "₹1,583.9 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹1,584.1 Cr",
           "formattedRatio": "0.49x"
         },
         "05-11": {
-          "turnover": 2398.6,
+          "turnover": 2398.9,
           "ratio": 0.74,
-          "avg": 3221.2,
-          "formattedTurnover": "₹2,398.6 Cr",
+          "avg": 3221.1,
+          "formattedTurnover": "₹2,398.9 Cr",
           "formattedRatio": "0.74x"
         }
       }
@@ -3108,108 +3108,108 @@
       "baseAvg": 305.6,
       "days": {
         "26-11": {
-          "turnover": 266.3,
+          "turnover": 264.4,
           "ratio": 0.87,
           "avg": 305.6,
-          "formattedTurnover": "₹266.3 Cr",
+          "formattedTurnover": "₹264.4 Cr",
           "formattedRatio": "0.87x"
         },
         "25-11": {
-          "turnover": 325.1,
+          "turnover": 325.4,
           "ratio": 1.06,
           "avg": 305.6,
-          "formattedTurnover": "₹325.1 Cr",
+          "formattedTurnover": "₹325.4 Cr",
           "formattedRatio": "1.06x"
         },
         "23-11": {
-          "turnover": 289.5,
+          "turnover": 289.7,
           "ratio": 0.95,
           "avg": 305.6,
-          "formattedTurnover": "₹289.5 Cr",
+          "formattedTurnover": "₹289.7 Cr",
           "formattedRatio": "0.95x"
         },
         "20-11": {
-          "turnover": 187,
+          "turnover": 187.1,
           "ratio": 0.61,
           "avg": 305.6,
-          "formattedTurnover": "₹187.0 Cr",
+          "formattedTurnover": "₹187.1 Cr",
           "formattedRatio": "0.61x"
         },
         "19-11": {
-          "turnover": 279.9,
+          "turnover": 280.1,
           "ratio": 0.92,
           "avg": 305.6,
-          "formattedTurnover": "₹279.9 Cr",
+          "formattedTurnover": "₹280.1 Cr",
           "formattedRatio": "0.92x"
         },
         "18-11": {
-          "turnover": 413.6,
+          "turnover": 413.9,
           "ratio": 1.35,
           "avg": 305.6,
-          "formattedTurnover": "₹413.6 Cr",
+          "formattedTurnover": "₹413.9 Cr",
           "formattedRatio": "1.35x"
         },
         "17-11": {
-          "turnover": 293.5,
+          "turnover": 293.7,
           "ratio": 0.96,
           "avg": 305.6,
-          "formattedTurnover": "₹293.5 Cr",
+          "formattedTurnover": "₹293.7 Cr",
           "formattedRatio": "0.96x"
         },
         "16-11": {
-          "turnover": 390.1,
+          "turnover": 390.4,
           "ratio": 1.28,
           "avg": 305.6,
-          "formattedTurnover": "₹390.1 Cr",
+          "formattedTurnover": "₹390.4 Cr",
           "formattedRatio": "1.28x"
         },
         "13-11": {
-          "turnover": 47,
+          "turnover": 47.1,
           "ratio": 0.15,
           "avg": 305.6,
-          "formattedTurnover": "₹47.0 Cr",
+          "formattedTurnover": "₹47.1 Cr",
           "formattedRatio": "0.15x"
         },
         "12-11": {
-          "turnover": 407.8,
-          "ratio": 1.33,
+          "turnover": 408.1,
+          "ratio": 1.34,
           "avg": 305.6,
-          "formattedTurnover": "₹407.8 Cr",
-          "formattedRatio": "1.33x"
+          "formattedTurnover": "₹408.1 Cr",
+          "formattedRatio": "1.34x"
         },
         "11-11": {
-          "turnover": 292.1,
+          "turnover": 292.3,
           "ratio": 0.96,
           "avg": 305.6,
-          "formattedTurnover": "₹292.1 Cr",
+          "formattedTurnover": "₹292.3 Cr",
           "formattedRatio": "0.96x"
         },
         "09-11": {
-          "turnover": 343.8,
+          "turnover": 344.1,
           "ratio": 1.13,
           "avg": 305.6,
-          "formattedTurnover": "₹343.8 Cr",
+          "formattedTurnover": "₹344.1 Cr",
           "formattedRatio": "1.13x"
         },
         "08-11": {
-          "turnover": 454.9,
+          "turnover": 455.3,
           "ratio": 1.49,
           "avg": 305.6,
-          "formattedTurnover": "₹454.9 Cr",
+          "formattedTurnover": "₹455.3 Cr",
           "formattedRatio": "1.49x"
         },
         "06-11": {
-          "turnover": 173.9,
+          "turnover": 174,
           "ratio": 0.57,
           "avg": 305.6,
-          "formattedTurnover": "₹173.9 Cr",
+          "formattedTurnover": "₹174.0 Cr",
           "formattedRatio": "0.57x"
         },
         "05-11": {
-          "turnover": 501.6,
+          "turnover": 502,
           "ratio": 1.64,
           "avg": 305.6,
-          "formattedTurnover": "₹501.6 Cr",
+          "formattedTurnover": "₹502.0 Cr",
           "formattedRatio": "1.64x"
         }
       }
@@ -3219,111 +3219,111 @@
       "name": "Defence",
       "sym": "NIFTY IND DEFENCE",
       "category": "Defence",
-      "baseAvg": 2574.9,
+      "baseAvg": 2574.7,
       "days": {
         "26-11": {
-          "turnover": 2450.3,
+          "turnover": 2439.3,
           "ratio": 0.95,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,450.3 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,439.3 Cr",
           "formattedRatio": "0.95x"
         },
         "25-11": {
-          "turnover": 2477.4,
+          "turnover": 2478.7,
           "ratio": 0.96,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,477.4 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,478.7 Cr",
           "formattedRatio": "0.96x"
         },
         "23-11": {
-          "turnover": 2791,
+          "turnover": 2792.4,
           "ratio": 1.08,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,791.0 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,792.4 Cr",
           "formattedRatio": "1.08x"
         },
         "20-11": {
-          "turnover": 2050.8,
+          "turnover": 2051.8,
           "ratio": 0.8,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,050.8 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,051.8 Cr",
           "formattedRatio": "0.80x"
         },
         "19-11": {
-          "turnover": 2403.1,
+          "turnover": 2404.4,
           "ratio": 0.93,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,403.1 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,404.4 Cr",
           "formattedRatio": "0.93x"
         },
         "18-11": {
-          "turnover": 2643.7,
+          "turnover": 2645.1,
           "ratio": 1.03,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,643.7 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,645.1 Cr",
           "formattedRatio": "1.03x"
         },
         "17-11": {
-          "turnover": 2953.3,
+          "turnover": 2954.9,
           "ratio": 1.15,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,953.3 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,954.9 Cr",
           "formattedRatio": "1.15x"
         },
         "16-11": {
-          "turnover": 2829.3,
+          "turnover": 2830.7,
           "ratio": 1.1,
-          "avg": 2574.9,
-          "formattedTurnover": "₹2,829.3 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹2,830.7 Cr",
           "formattedRatio": "1.10x"
         },
         "13-11": {
-          "turnover": 579,
+          "turnover": 579.3,
           "ratio": 0.22,
-          "avg": 2574.9,
-          "formattedTurnover": "₹579.0 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹579.3 Cr",
           "formattedRatio": "0.22x"
         },
         "12-11": {
-          "turnover": 7538.2,
+          "turnover": 7542,
           "ratio": 2.93,
-          "avg": 2574.9,
-          "formattedTurnover": "₹7,538.2 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹7,542.0 Cr",
           "formattedRatio": "2.93x"
         },
         "11-11": {
-          "turnover": 5089.7,
+          "turnover": 5092.3,
           "ratio": 1.98,
-          "avg": 2574.9,
-          "formattedTurnover": "₹5,089.7 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹5,092.3 Cr",
           "formattedRatio": "1.98x"
         },
         "09-11": {
-          "turnover": 5081.6,
+          "turnover": 5084.2,
           "ratio": 1.97,
-          "avg": 2574.9,
-          "formattedTurnover": "₹5,081.6 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹5,084.2 Cr",
           "formattedRatio": "1.97x"
         },
         "08-11": {
-          "turnover": 5877.5,
+          "turnover": 5880.5,
           "ratio": 2.28,
-          "avg": 2574.9,
-          "formattedTurnover": "₹5,877.5 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹5,880.5 Cr",
           "formattedRatio": "2.28x"
         },
         "06-11": {
-          "turnover": 3779.9,
+          "turnover": 3781.9,
           "ratio": 1.47,
-          "avg": 2574.9,
-          "formattedTurnover": "₹3,779.9 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹3,781.9 Cr",
           "formattedRatio": "1.47x"
         },
         "05-11": {
-          "turnover": 3858.7,
+          "turnover": 3860.7,
           "ratio": 1.5,
-          "avg": 2574.9,
-          "formattedTurnover": "₹3,858.7 Cr",
+          "avg": 2574.7,
+          "formattedTurnover": "₹3,860.7 Cr",
           "formattedRatio": "1.50x"
         }
       }
@@ -3333,111 +3333,111 @@
       "name": "Capital Markets",
       "sym": "NIFTY CAPITAL MKT",
       "category": "Finance",
-      "baseAvg": 5839,
+      "baseAvg": 5837.6,
       "days": {
         "26-11": {
-          "turnover": 9166.2,
-          "ratio": 1.57,
-          "avg": 5839,
-          "formattedTurnover": "₹9,166.2 Cr",
-          "formattedRatio": "1.57x"
+          "turnover": 9086.2,
+          "ratio": 1.56,
+          "avg": 5837.6,
+          "formattedTurnover": "₹9,086.2 Cr",
+          "formattedRatio": "1.56x"
         },
         "25-11": {
-          "turnover": 3963.6,
+          "turnover": 3970.9,
           "ratio": 0.68,
-          "avg": 5839,
-          "formattedTurnover": "₹3,963.6 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹3,970.9 Cr",
           "formattedRatio": "0.68x"
         },
         "23-11": {
-          "turnover": 4693.3,
-          "ratio": 0.8,
-          "avg": 5839,
-          "formattedTurnover": "₹4,693.3 Cr",
-          "formattedRatio": "0.80x"
+          "turnover": 4701.9,
+          "ratio": 0.81,
+          "avg": 5837.6,
+          "formattedTurnover": "₹4,701.9 Cr",
+          "formattedRatio": "0.81x"
         },
         "20-11": {
-          "turnover": 4518.2,
-          "ratio": 0.77,
-          "avg": 5839,
-          "formattedTurnover": "₹4,518.2 Cr",
-          "formattedRatio": "0.77x"
+          "turnover": 4526.5,
+          "ratio": 0.78,
+          "avg": 5837.6,
+          "formattedTurnover": "₹4,526.5 Cr",
+          "formattedRatio": "0.78x"
         },
         "19-11": {
-          "turnover": 5256.7,
+          "turnover": 5266.3,
           "ratio": 0.9,
-          "avg": 5839,
-          "formattedTurnover": "₹5,256.7 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹5,266.3 Cr",
           "formattedRatio": "0.90x"
         },
         "18-11": {
-          "turnover": 5957,
+          "turnover": 5967.8,
           "ratio": 1.02,
-          "avg": 5839,
-          "formattedTurnover": "₹5,957.0 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹5,967.8 Cr",
           "formattedRatio": "1.02x"
         },
         "17-11": {
-          "turnover": 9553.7,
+          "turnover": 9571.2,
           "ratio": 1.64,
-          "avg": 5839,
-          "formattedTurnover": "₹9,553.7 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹9,571.2 Cr",
           "formattedRatio": "1.64x"
         },
         "16-11": {
-          "turnover": 3603,
+          "turnover": 3609.6,
           "ratio": 0.62,
-          "avg": 5839,
-          "formattedTurnover": "₹3,603.0 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹3,609.6 Cr",
           "formattedRatio": "0.62x"
         },
         "13-11": {
-          "turnover": 639.3,
+          "turnover": 640.5,
           "ratio": 0.11,
-          "avg": 5839,
-          "formattedTurnover": "₹639.3 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹640.5 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 4256.5,
+          "turnover": 4264.3,
           "ratio": 0.73,
-          "avg": 5839,
-          "formattedTurnover": "₹4,256.5 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹4,264.3 Cr",
           "formattedRatio": "0.73x"
         },
         "11-11": {
-          "turnover": 3962.7,
+          "turnover": 3970,
           "ratio": 0.68,
-          "avg": 5839,
-          "formattedTurnover": "₹3,962.7 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹3,970.0 Cr",
           "formattedRatio": "0.68x"
         },
         "09-11": {
-          "turnover": 3083.7,
+          "turnover": 3089.3,
           "ratio": 0.53,
-          "avg": 5839,
-          "formattedTurnover": "₹3,083.7 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹3,089.3 Cr",
           "formattedRatio": "0.53x"
         },
         "08-11": {
-          "turnover": 6098.7,
-          "ratio": 1.04,
-          "avg": 5839,
-          "formattedTurnover": "₹6,098.7 Cr",
-          "formattedRatio": "1.04x"
+          "turnover": 6109.9,
+          "ratio": 1.05,
+          "avg": 5837.6,
+          "formattedTurnover": "₹6,109.9 Cr",
+          "formattedRatio": "1.05x"
         },
         "06-11": {
-          "turnover": 5035,
+          "turnover": 5044.2,
           "ratio": 0.86,
-          "avg": 5839,
-          "formattedTurnover": "₹5,035.0 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹5,044.2 Cr",
           "formattedRatio": "0.86x"
         },
         "05-11": {
-          "turnover": 6136.8,
+          "turnover": 6148,
           "ratio": 1.05,
-          "avg": 5839,
-          "formattedTurnover": "₹6,136.8 Cr",
+          "avg": 5837.6,
+          "formattedTurnover": "₹6,148.0 Cr",
           "formattedRatio": "1.05x"
         }
       }
@@ -3447,111 +3447,111 @@
       "name": "Consumer Durables",
       "sym": "NIFTY CONSR DURBL",
       "category": "Consumer",
-      "baseAvg": 2964.9,
+      "baseAvg": 2963.2,
       "days": {
         "26-11": {
-          "turnover": 9140.9,
-          "ratio": 3.08,
-          "avg": 2964.9,
-          "formattedTurnover": "₹9,140.9 Cr",
-          "formattedRatio": "3.08x"
+          "turnover": 9056.4,
+          "ratio": 3.06,
+          "avg": 2963.2,
+          "formattedTurnover": "₹9,056.4 Cr",
+          "formattedRatio": "3.06x"
         },
         "25-11": {
-          "turnover": 1988.1,
+          "turnover": 1997.9,
           "ratio": 0.67,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,988.1 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,997.9 Cr",
           "formattedRatio": "0.67x"
         },
         "23-11": {
-          "turnover": 1705,
+          "turnover": 1713.3,
           "ratio": 0.58,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,705.0 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,713.3 Cr",
           "formattedRatio": "0.58x"
         },
         "20-11": {
-          "turnover": 2231.7,
-          "ratio": 0.75,
-          "avg": 2964.9,
-          "formattedTurnover": "₹2,231.7 Cr",
-          "formattedRatio": "0.75x"
+          "turnover": 2242.6,
+          "ratio": 0.76,
+          "avg": 2963.2,
+          "formattedTurnover": "₹2,242.6 Cr",
+          "formattedRatio": "0.76x"
         },
         "19-11": {
-          "turnover": 4356.7,
-          "ratio": 1.47,
-          "avg": 2964.9,
-          "formattedTurnover": "₹4,356.7 Cr",
-          "formattedRatio": "1.47x"
+          "turnover": 4378,
+          "ratio": 1.48,
+          "avg": 2963.2,
+          "formattedTurnover": "₹4,378.0 Cr",
+          "formattedRatio": "1.48x"
         },
         "18-11": {
-          "turnover": 1107.2,
-          "ratio": 0.37,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,107.2 Cr",
-          "formattedRatio": "0.37x"
+          "turnover": 1112.6,
+          "ratio": 0.38,
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,112.6 Cr",
+          "formattedRatio": "0.38x"
         },
         "17-11": {
-          "turnover": 1529.2,
+          "turnover": 1536.6,
           "ratio": 0.52,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,529.2 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,536.6 Cr",
           "formattedRatio": "0.52x"
         },
         "16-11": {
-          "turnover": 1660.1,
+          "turnover": 1668.2,
           "ratio": 0.56,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,660.1 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,668.2 Cr",
           "formattedRatio": "0.56x"
         },
         "13-11": {
-          "turnover": 396.7,
+          "turnover": 398.6,
           "ratio": 0.13,
-          "avg": 2964.9,
-          "formattedTurnover": "₹396.7 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹398.6 Cr",
           "formattedRatio": "0.13x"
         },
         "12-11": {
-          "turnover": 2263.8,
-          "ratio": 0.76,
-          "avg": 2964.9,
-          "formattedTurnover": "₹2,263.8 Cr",
-          "formattedRatio": "0.76x"
+          "turnover": 2274.8,
+          "ratio": 0.77,
+          "avg": 2963.2,
+          "formattedTurnover": "₹2,274.8 Cr",
+          "formattedRatio": "0.77x"
         },
         "11-11": {
-          "turnover": 1545.7,
+          "turnover": 1553.2,
           "ratio": 0.52,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,545.7 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,553.2 Cr",
           "formattedRatio": "0.52x"
         },
         "09-11": {
-          "turnover": 1916,
+          "turnover": 1925.4,
           "ratio": 0.65,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,916.0 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,925.4 Cr",
           "formattedRatio": "0.65x"
         },
         "08-11": {
-          "turnover": 2291.8,
-          "ratio": 0.77,
-          "avg": 2964.9,
-          "formattedTurnover": "₹2,291.8 Cr",
-          "formattedRatio": "0.77x"
+          "turnover": 2302.9,
+          "ratio": 0.78,
+          "avg": 2963.2,
+          "formattedTurnover": "₹2,302.9 Cr",
+          "formattedRatio": "0.78x"
         },
         "06-11": {
-          "turnover": 2976,
-          "ratio": 1,
-          "avg": 2964.9,
-          "formattedTurnover": "₹2,976.0 Cr",
-          "formattedRatio": "1.00x"
+          "turnover": 2990.5,
+          "ratio": 1.01,
+          "avg": 2963.2,
+          "formattedTurnover": "₹2,990.5 Cr",
+          "formattedRatio": "1.01x"
         },
         "05-11": {
-          "turnover": 1838.6,
+          "turnover": 1847.6,
           "ratio": 0.62,
-          "avg": 2964.9,
-          "formattedTurnover": "₹1,838.6 Cr",
+          "avg": 2963.2,
+          "formattedTurnover": "₹1,847.6 Cr",
           "formattedRatio": "0.62x"
         }
       }
@@ -3561,111 +3561,111 @@
       "name": "EV & New Age Auto",
       "sym": "NIFTY EV",
       "category": "Auto",
-      "baseAvg": 8015.2,
+      "baseAvg": 8013.7,
       "days": {
         "26-11": {
-          "turnover": 6618.7,
-          "ratio": 0.83,
-          "avg": 8015.2,
-          "formattedTurnover": "₹6,618.7 Cr",
-          "formattedRatio": "0.83x"
+          "turnover": 6546.2,
+          "ratio": 0.82,
+          "avg": 8013.7,
+          "formattedTurnover": "₹6,546.2 Cr",
+          "formattedRatio": "0.82x"
         },
         "25-11": {
-          "turnover": 5685.4,
+          "turnover": 5691.4,
           "ratio": 0.71,
-          "avg": 8015.2,
-          "formattedTurnover": "₹5,685.4 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹5,691.4 Cr",
           "formattedRatio": "0.71x"
         },
         "23-11": {
-          "turnover": 6234.1,
+          "turnover": 6240.8,
           "ratio": 0.78,
-          "avg": 8015.2,
-          "formattedTurnover": "₹6,234.1 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹6,240.8 Cr",
           "formattedRatio": "0.78x"
         },
         "20-11": {
-          "turnover": 5728.4,
-          "ratio": 0.71,
-          "avg": 8015.2,
-          "formattedTurnover": "₹5,728.4 Cr",
-          "formattedRatio": "0.71x"
+          "turnover": 5734.4,
+          "ratio": 0.72,
+          "avg": 8013.7,
+          "formattedTurnover": "₹5,734.4 Cr",
+          "formattedRatio": "0.72x"
         },
         "19-11": {
-          "turnover": 8614.6,
-          "ratio": 1.07,
-          "avg": 8015.2,
-          "formattedTurnover": "₹8,614.6 Cr",
-          "formattedRatio": "1.07x"
+          "turnover": 8623.7,
+          "ratio": 1.08,
+          "avg": 8013.7,
+          "formattedTurnover": "₹8,623.7 Cr",
+          "formattedRatio": "1.08x"
         },
         "18-11": {
-          "turnover": 8220.2,
+          "turnover": 8228.9,
           "ratio": 1.03,
-          "avg": 8015.2,
-          "formattedTurnover": "₹8,220.2 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹8,228.9 Cr",
           "formattedRatio": "1.03x"
         },
         "17-11": {
-          "turnover": 8660.4,
+          "turnover": 8669.6,
           "ratio": 1.08,
-          "avg": 8015.2,
-          "formattedTurnover": "₹8,660.4 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹8,669.6 Cr",
           "formattedRatio": "1.08x"
         },
         "16-11": {
-          "turnover": 14359.5,
+          "turnover": 14374.8,
           "ratio": 1.79,
-          "avg": 8015.2,
-          "formattedTurnover": "₹14,359.5 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹14,374.8 Cr",
           "formattedRatio": "1.79x"
         },
         "13-11": {
-          "turnover": 1170.7,
+          "turnover": 1172,
           "ratio": 0.15,
-          "avg": 8015.2,
-          "formattedTurnover": "₹1,170.7 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹1,172.0 Cr",
           "formattedRatio": "0.15x"
         },
         "12-11": {
-          "turnover": 9882.8,
+          "turnover": 9893.3,
           "ratio": 1.23,
-          "avg": 8015.2,
-          "formattedTurnover": "₹9,882.8 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹9,893.3 Cr",
           "formattedRatio": "1.23x"
         },
         "11-11": {
-          "turnover": 8559.7,
+          "turnover": 8568.8,
           "ratio": 1.07,
-          "avg": 8015.2,
-          "formattedTurnover": "₹8,559.7 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹8,568.8 Cr",
           "formattedRatio": "1.07x"
         },
         "09-11": {
-          "turnover": 8042.8,
+          "turnover": 8051.3,
           "ratio": 1,
-          "avg": 8015.2,
-          "formattedTurnover": "₹8,042.8 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹8,051.3 Cr",
           "formattedRatio": "1.00x"
         },
         "08-11": {
-          "turnover": 13471.9,
+          "turnover": 13486.2,
           "ratio": 1.68,
-          "avg": 8015.2,
-          "formattedTurnover": "₹13,471.9 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹13,486.2 Cr",
           "formattedRatio": "1.68x"
         },
         "06-11": {
-          "turnover": 7889.8,
-          "ratio": 0.98,
-          "avg": 8015.2,
-          "formattedTurnover": "₹7,889.8 Cr",
-          "formattedRatio": "0.98x"
+          "turnover": 7898.2,
+          "ratio": 0.99,
+          "avg": 8013.7,
+          "formattedTurnover": "₹7,898.2 Cr",
+          "formattedRatio": "0.99x"
         },
         "05-11": {
-          "turnover": 10429.2,
+          "turnover": 10440.3,
           "ratio": 1.3,
-          "avg": 8015.2,
-          "formattedTurnover": "₹10,429.2 Cr",
+          "avg": 8013.7,
+          "formattedTurnover": "₹10,440.3 Cr",
           "formattedRatio": "1.30x"
         }
       }
@@ -3675,111 +3675,111 @@
       "name": "Digital & Tech",
       "sym": "NIFTY IND DIGITAL",
       "category": "Tech",
-      "baseAvg": 9034.4,
+      "baseAvg": 9033.5,
       "days": {
         "26-11": {
-          "turnover": 10175.5,
-          "ratio": 1.13,
-          "avg": 9034.4,
-          "formattedTurnover": "₹10,175.5 Cr",
-          "formattedRatio": "1.13x"
+          "turnover": 10123.9,
+          "ratio": 1.12,
+          "avg": 9033.5,
+          "formattedTurnover": "₹10,123.9 Cr",
+          "formattedRatio": "1.12x"
         },
         "25-11": {
-          "turnover": 9225.3,
+          "turnover": 9231.9,
           "ratio": 1.02,
-          "avg": 9034.4,
-          "formattedTurnover": "₹9,225.3 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹9,231.9 Cr",
           "formattedRatio": "1.02x"
         },
         "23-11": {
-          "turnover": 6216.4,
+          "turnover": 6220.8,
           "ratio": 0.69,
-          "avg": 9034.4,
-          "formattedTurnover": "₹6,216.4 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹6,220.8 Cr",
           "formattedRatio": "0.69x"
         },
         "20-11": {
-          "turnover": 5493.2,
+          "turnover": 5497,
           "ratio": 0.61,
-          "avg": 9034.4,
-          "formattedTurnover": "₹5,493.2 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹5,497.0 Cr",
           "formattedRatio": "0.61x"
         },
         "19-11": {
-          "turnover": 11006.3,
+          "turnover": 11014.1,
           "ratio": 1.22,
-          "avg": 9034.4,
-          "formattedTurnover": "₹11,006.3 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹11,014.1 Cr",
           "formattedRatio": "1.22x"
         },
         "18-11": {
-          "turnover": 11332.8,
-          "ratio": 1.25,
-          "avg": 9034.4,
-          "formattedTurnover": "₹11,332.8 Cr",
-          "formattedRatio": "1.25x"
+          "turnover": 11340.8,
+          "ratio": 1.26,
+          "avg": 9033.5,
+          "formattedTurnover": "₹11,340.8 Cr",
+          "formattedRatio": "1.26x"
         },
         "17-11": {
-          "turnover": 11500.6,
+          "turnover": 11508.8,
           "ratio": 1.27,
-          "avg": 9034.4,
-          "formattedTurnover": "₹11,500.6 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹11,508.8 Cr",
           "formattedRatio": "1.27x"
         },
         "16-11": {
-          "turnover": 7325.3,
+          "turnover": 7330.5,
           "ratio": 0.81,
-          "avg": 9034.4,
-          "formattedTurnover": "₹7,325.3 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹7,330.5 Cr",
           "formattedRatio": "0.81x"
         },
         "13-11": {
-          "turnover": 775.5,
+          "turnover": 776,
           "ratio": 0.09,
-          "avg": 9034.4,
-          "formattedTurnover": "₹775.5 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹776.0 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 6112.4,
+          "turnover": 6116.8,
           "ratio": 0.68,
-          "avg": 9034.4,
-          "formattedTurnover": "₹6,112.4 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹6,116.8 Cr",
           "formattedRatio": "0.68x"
         },
         "11-11": {
-          "turnover": 8691.7,
+          "turnover": 8697.8,
           "ratio": 0.96,
-          "avg": 9034.4,
-          "formattedTurnover": "₹8,691.7 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹8,697.8 Cr",
           "formattedRatio": "0.96x"
         },
         "09-11": {
-          "turnover": 4726.1,
+          "turnover": 4729.5,
           "ratio": 0.52,
-          "avg": 9034.4,
-          "formattedTurnover": "₹4,726.1 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹4,729.5 Cr",
           "formattedRatio": "0.52x"
         },
         "08-11": {
-          "turnover": 6581.8,
+          "turnover": 6586.4,
           "ratio": 0.73,
-          "avg": 9034.4,
-          "formattedTurnover": "₹6,581.8 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹6,586.4 Cr",
           "formattedRatio": "0.73x"
         },
         "06-11": {
-          "turnover": 6093,
+          "turnover": 6097.3,
           "ratio": 0.67,
-          "avg": 9034.4,
-          "formattedTurnover": "₹6,093.0 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹6,097.3 Cr",
           "formattedRatio": "0.67x"
         },
         "05-11": {
-          "turnover": 9576.6,
+          "turnover": 9583.4,
           "ratio": 1.06,
-          "avg": 9034.4,
-          "formattedTurnover": "₹9,576.6 Cr",
+          "avg": 9033.5,
+          "formattedTurnover": "₹9,583.4 Cr",
           "formattedRatio": "1.06x"
         }
       }
@@ -3789,111 +3789,111 @@
       "name": "Telecom",
       "sym": "NIFTY MS IT TELCM",
       "category": "Telecom",
-      "baseAvg": 4152,
+      "baseAvg": 4153.6,
       "days": {
         "26-11": {
-          "turnover": 3395.3,
-          "ratio": 0.82,
-          "avg": 4152,
-          "formattedTurnover": "₹3,395.3 Cr",
-          "formattedRatio": "0.82x"
+          "turnover": 3483.2,
+          "ratio": 0.84,
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,483.2 Cr",
+          "formattedRatio": "0.84x"
         },
         "25-11": {
-          "turnover": 4372.1,
+          "turnover": 4361.1,
           "ratio": 1.05,
-          "avg": 4152,
-          "formattedTurnover": "₹4,372.1 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹4,361.1 Cr",
           "formattedRatio": "1.05x"
         },
         "23-11": {
-          "turnover": 4697.6,
+          "turnover": 4685.8,
           "ratio": 1.13,
-          "avg": 4152,
-          "formattedTurnover": "₹4,697.6 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹4,685.8 Cr",
           "formattedRatio": "1.13x"
         },
         "20-11": {
-          "turnover": 3136.8,
-          "ratio": 0.76,
-          "avg": 4152,
-          "formattedTurnover": "₹3,136.8 Cr",
-          "formattedRatio": "0.76x"
+          "turnover": 3129,
+          "ratio": 0.75,
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,129.0 Cr",
+          "formattedRatio": "0.75x"
         },
         "19-11": {
-          "turnover": 3742.7,
+          "turnover": 3733.3,
           "ratio": 0.9,
-          "avg": 4152,
-          "formattedTurnover": "₹3,742.7 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,733.3 Cr",
           "formattedRatio": "0.90x"
         },
         "18-11": {
-          "turnover": 3945.1,
+          "turnover": 3935.2,
           "ratio": 0.95,
-          "avg": 4152,
-          "formattedTurnover": "₹3,945.1 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,935.2 Cr",
           "formattedRatio": "0.95x"
         },
         "17-11": {
-          "turnover": 4885.1,
-          "ratio": 1.18,
-          "avg": 4152,
-          "formattedTurnover": "₹4,885.1 Cr",
-          "formattedRatio": "1.18x"
+          "turnover": 4872.8,
+          "ratio": 1.17,
+          "avg": 4153.6,
+          "formattedTurnover": "₹4,872.8 Cr",
+          "formattedRatio": "1.17x"
         },
         "16-11": {
-          "turnover": 5041.1,
+          "turnover": 5028.4,
           "ratio": 1.21,
-          "avg": 4152,
-          "formattedTurnover": "₹5,041.1 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹5,028.4 Cr",
           "formattedRatio": "1.21x"
         },
         "13-11": {
-          "turnover": 581.4,
+          "turnover": 579.9,
           "ratio": 0.14,
-          "avg": 4152,
-          "formattedTurnover": "₹581.4 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹579.9 Cr",
           "formattedRatio": "0.14x"
         },
         "12-11": {
-          "turnover": 3660.1,
+          "turnover": 3650.9,
           "ratio": 0.88,
-          "avg": 4152,
-          "formattedTurnover": "₹3,660.1 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,650.9 Cr",
           "formattedRatio": "0.88x"
         },
         "11-11": {
-          "turnover": 3684.9,
-          "ratio": 0.89,
-          "avg": 4152,
-          "formattedTurnover": "₹3,684.9 Cr",
-          "formattedRatio": "0.89x"
+          "turnover": 3675.7,
+          "ratio": 0.88,
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,675.7 Cr",
+          "formattedRatio": "0.88x"
         },
         "09-11": {
-          "turnover": 2961.1,
+          "turnover": 2953.7,
           "ratio": 0.71,
-          "avg": 4152,
-          "formattedTurnover": "₹2,961.1 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹2,953.7 Cr",
           "formattedRatio": "0.71x"
         },
         "08-11": {
-          "turnover": 5147.5,
+          "turnover": 5134.6,
           "ratio": 1.24,
-          "avg": 4152,
-          "formattedTurnover": "₹5,147.5 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹5,134.6 Cr",
           "formattedRatio": "1.24x"
         },
         "06-11": {
-          "turnover": 5007.6,
-          "ratio": 1.21,
-          "avg": 4152,
-          "formattedTurnover": "₹5,007.6 Cr",
-          "formattedRatio": "1.21x"
+          "turnover": 4995,
+          "ratio": 1.2,
+          "avg": 4153.6,
+          "formattedTurnover": "₹4,995.0 Cr",
+          "formattedRatio": "1.20x"
         },
         "05-11": {
-          "turnover": 3127,
+          "turnover": 3119.1,
           "ratio": 0.75,
-          "avg": 4152,
-          "formattedTurnover": "₹3,127.0 Cr",
+          "avg": 4153.6,
+          "formattedTurnover": "₹3,119.1 Cr",
           "formattedRatio": "0.75x"
         }
       }
@@ -3903,111 +3903,111 @@
       "name": "MNC",
       "sym": "NIFTY MNC",
       "category": "Diversified",
-      "baseAvg": 4775.7,
+      "baseAvg": 4774.6,
       "days": {
         "26-11": {
-          "turnover": 4805.2,
-          "ratio": 1.01,
-          "avg": 4775.7,
-          "formattedTurnover": "₹4,805.2 Cr",
-          "formattedRatio": "1.01x"
+          "turnover": 4745,
+          "ratio": 0.99,
+          "avg": 4774.6,
+          "formattedTurnover": "₹4,745.0 Cr",
+          "formattedRatio": "0.99x"
         },
         "25-11": {
-          "turnover": 3351.6,
+          "turnover": 3356.7,
           "ratio": 0.7,
-          "avg": 4775.7,
-          "formattedTurnover": "₹3,351.6 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹3,356.7 Cr",
           "formattedRatio": "0.70x"
         },
         "23-11": {
-          "turnover": 3440.6,
+          "turnover": 3445.9,
           "ratio": 0.72,
-          "avg": 4775.7,
-          "formattedTurnover": "₹3,440.6 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹3,445.9 Cr",
           "formattedRatio": "0.72x"
         },
         "20-11": {
-          "turnover": 4863.2,
+          "turnover": 4870.7,
           "ratio": 1.02,
-          "avg": 4775.7,
-          "formattedTurnover": "₹4,863.2 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹4,870.7 Cr",
           "formattedRatio": "1.02x"
         },
         "19-11": {
-          "turnover": 4778,
+          "turnover": 4785.4,
           "ratio": 1,
-          "avg": 4775.7,
-          "formattedTurnover": "₹4,778.0 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹4,785.4 Cr",
           "formattedRatio": "1.00x"
         },
         "18-11": {
-          "turnover": 4212.1,
+          "turnover": 4218.6,
           "ratio": 0.88,
-          "avg": 4775.7,
-          "formattedTurnover": "₹4,212.1 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹4,218.6 Cr",
           "formattedRatio": "0.88x"
         },
         "17-11": {
-          "turnover": 9448.9,
+          "turnover": 9463.4,
           "ratio": 1.98,
-          "avg": 4775.7,
-          "formattedTurnover": "₹9,448.9 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹9,463.4 Cr",
           "formattedRatio": "1.98x"
         },
         "16-11": {
-          "turnover": 3305.7,
+          "turnover": 3310.8,
           "ratio": 0.69,
-          "avg": 4775.7,
-          "formattedTurnover": "₹3,305.7 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹3,310.8 Cr",
           "formattedRatio": "0.69x"
         },
         "13-11": {
-          "turnover": 429.1,
+          "turnover": 429.8,
           "ratio": 0.09,
-          "avg": 4775.7,
-          "formattedTurnover": "₹429.1 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹429.8 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 13864.5,
-          "ratio": 2.9,
-          "avg": 4775.7,
-          "formattedTurnover": "₹13,864.5 Cr",
-          "formattedRatio": "2.90x"
+          "turnover": 13885.9,
+          "ratio": 2.91,
+          "avg": 4774.6,
+          "formattedTurnover": "₹13,885.9 Cr",
+          "formattedRatio": "2.91x"
         },
         "11-11": {
-          "turnover": 3265.9,
-          "ratio": 0.68,
-          "avg": 4775.7,
-          "formattedTurnover": "₹3,265.9 Cr",
-          "formattedRatio": "0.68x"
+          "turnover": 3270.9,
+          "ratio": 0.69,
+          "avg": 4774.6,
+          "formattedTurnover": "₹3,270.9 Cr",
+          "formattedRatio": "0.69x"
         },
         "09-11": {
-          "turnover": 2132.2,
+          "turnover": 2135.5,
           "ratio": 0.45,
-          "avg": 4775.7,
-          "formattedTurnover": "₹2,132.2 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹2,135.5 Cr",
           "formattedRatio": "0.45x"
         },
         "08-11": {
-          "turnover": 3530.6,
+          "turnover": 3536.1,
           "ratio": 0.74,
-          "avg": 4775.7,
-          "formattedTurnover": "₹3,530.6 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹3,536.1 Cr",
           "formattedRatio": "0.74x"
         },
         "06-11": {
-          "turnover": 2974.2,
+          "turnover": 2978.8,
           "ratio": 0.62,
-          "avg": 4775.7,
-          "formattedTurnover": "₹2,974.2 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹2,978.8 Cr",
           "formattedRatio": "0.62x"
         },
         "05-11": {
-          "turnover": 2768.6,
+          "turnover": 2772.9,
           "ratio": 0.58,
-          "avg": 4775.7,
-          "formattedTurnover": "₹2,768.6 Cr",
+          "avg": 4774.6,
+          "formattedTurnover": "₹2,772.9 Cr",
           "formattedRatio": "0.58x"
         }
       }
@@ -4017,111 +4017,111 @@
       "name": "PSE / CPSE",
       "sym": "NIFTY PSE",
       "category": "PSU",
-      "baseAvg": 6447.5,
+      "baseAvg": 6447,
       "days": {
         "26-11": {
-          "turnover": 6058.2,
-          "ratio": 0.94,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,058.2 Cr",
-          "formattedRatio": "0.94x"
+          "turnover": 6026.7,
+          "ratio": 0.93,
+          "avg": 6447,
+          "formattedTurnover": "₹6,026.7 Cr",
+          "formattedRatio": "0.93x"
         },
         "25-11": {
-          "turnover": 6432.7,
+          "turnover": 6436.5,
           "ratio": 1,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,432.7 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹6,436.5 Cr",
           "formattedRatio": "1.00x"
         },
         "23-11": {
-          "turnover": 8546.6,
+          "turnover": 8551.7,
           "ratio": 1.33,
-          "avg": 6447.5,
-          "formattedTurnover": "₹8,546.6 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹8,551.7 Cr",
           "formattedRatio": "1.33x"
         },
         "20-11": {
-          "turnover": 6673.5,
+          "turnover": 6677.5,
           "ratio": 1.04,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,673.5 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹6,677.5 Cr",
           "formattedRatio": "1.04x"
         },
         "19-11": {
-          "turnover": 6374.4,
+          "turnover": 6378.2,
           "ratio": 0.99,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,374.4 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹6,378.2 Cr",
           "formattedRatio": "0.99x"
         },
         "18-11": {
-          "turnover": 7157.5,
+          "turnover": 7161.7,
           "ratio": 1.11,
-          "avg": 6447.5,
-          "formattedTurnover": "₹7,157.5 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹7,161.7 Cr",
           "formattedRatio": "1.11x"
         },
         "17-11": {
-          "turnover": 5916.8,
+          "turnover": 5920.3,
           "ratio": 0.92,
-          "avg": 6447.5,
-          "formattedTurnover": "₹5,916.8 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹5,920.3 Cr",
           "formattedRatio": "0.92x"
         },
         "16-11": {
-          "turnover": 4420.4,
+          "turnover": 4423,
           "ratio": 0.69,
-          "avg": 6447.5,
-          "formattedTurnover": "₹4,420.4 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹4,423.0 Cr",
           "formattedRatio": "0.69x"
         },
         "13-11": {
-          "turnover": 582.1,
+          "turnover": 582.4,
           "ratio": 0.09,
-          "avg": 6447.5,
-          "formattedTurnover": "₹582.1 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹582.4 Cr",
           "formattedRatio": "0.09x"
         },
         "12-11": {
-          "turnover": 6317.6,
+          "turnover": 6321.3,
           "ratio": 0.98,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,317.6 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹6,321.3 Cr",
           "formattedRatio": "0.98x"
         },
         "11-11": {
-          "turnover": 6324.4,
+          "turnover": 6328.2,
           "ratio": 0.98,
-          "avg": 6447.5,
-          "formattedTurnover": "₹6,324.4 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹6,328.2 Cr",
           "formattedRatio": "0.98x"
         },
         "09-11": {
-          "turnover": 4843.8,
+          "turnover": 4846.6,
           "ratio": 0.75,
-          "avg": 6447.5,
-          "formattedTurnover": "₹4,843.8 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹4,846.6 Cr",
           "formattedRatio": "0.75x"
         },
         "08-11": {
-          "turnover": 5196.9,
+          "turnover": 5200,
           "ratio": 0.81,
-          "avg": 6447.5,
-          "formattedTurnover": "₹5,196.9 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹5,200.0 Cr",
           "formattedRatio": "0.81x"
         },
         "06-11": {
-          "turnover": 4751.4,
+          "turnover": 4754.2,
           "ratio": 0.74,
-          "avg": 6447.5,
-          "formattedTurnover": "₹4,751.4 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹4,754.2 Cr",
           "formattedRatio": "0.74x"
         },
         "05-11": {
-          "turnover": 5152.3,
+          "turnover": 5155.4,
           "ratio": 0.8,
-          "avg": 6447.5,
-          "formattedTurnover": "₹5,152.3 Cr",
+          "avg": 6447,
+          "formattedTurnover": "₹5,155.4 Cr",
           "formattedRatio": "0.80x"
         }
       }
@@ -4131,111 +4131,111 @@
       "name": "Services Sector",
       "sym": "NIFTY SERV SECTOR",
       "category": "Services",
-      "baseAvg": 15479.3,
+      "baseAvg": 15478.1,
       "days": {
         "26-11": {
-          "turnover": 12602.4,
+          "turnover": 12542.6,
           "ratio": 0.81,
-          "avg": 15479.3,
-          "formattedTurnover": "₹12,602.4 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹12,542.6 Cr",
           "formattedRatio": "0.81x"
         },
         "25-11": {
-          "turnover": 14082.9,
+          "turnover": 14089.3,
           "ratio": 0.91,
-          "avg": 15479.3,
-          "formattedTurnover": "₹14,082.9 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹14,089.3 Cr",
           "formattedRatio": "0.91x"
         },
         "23-11": {
-          "turnover": 16588.8,
+          "turnover": 16596.3,
           "ratio": 1.07,
-          "avg": 15479.3,
-          "formattedTurnover": "₹16,588.8 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹16,596.3 Cr",
           "formattedRatio": "1.07x"
         },
         "20-11": {
-          "turnover": 13819,
+          "turnover": 13825.3,
           "ratio": 0.89,
-          "avg": 15479.3,
-          "formattedTurnover": "₹13,819.0 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹13,825.3 Cr",
           "formattedRatio": "0.89x"
         },
         "19-11": {
-          "turnover": 30279.7,
+          "turnover": 30293.5,
           "ratio": 1.96,
-          "avg": 15479.3,
-          "formattedTurnover": "₹30,279.7 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹30,293.5 Cr",
           "formattedRatio": "1.96x"
         },
         "18-11": {
-          "turnover": 9490.2,
+          "turnover": 9494.5,
           "ratio": 0.61,
-          "avg": 15479.3,
-          "formattedTurnover": "₹9,490.2 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹9,494.5 Cr",
           "formattedRatio": "0.61x"
         },
         "17-11": {
-          "turnover": 12056.5,
+          "turnover": 12062,
           "ratio": 0.78,
-          "avg": 15479.3,
-          "formattedTurnover": "₹12,056.5 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹12,062.0 Cr",
           "formattedRatio": "0.78x"
         },
         "16-11": {
-          "turnover": 14914.6,
+          "turnover": 14921.4,
           "ratio": 0.96,
-          "avg": 15479.3,
-          "formattedTurnover": "₹14,914.6 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹14,921.4 Cr",
           "formattedRatio": "0.96x"
         },
         "13-11": {
-          "turnover": 2482.7,
+          "turnover": 2483.8,
           "ratio": 0.16,
-          "avg": 15479.3,
-          "formattedTurnover": "₹2,482.7 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹2,483.8 Cr",
           "formattedRatio": "0.16x"
         },
         "12-11": {
-          "turnover": 22331.7,
+          "turnover": 22341.9,
           "ratio": 1.44,
-          "avg": 15479.3,
-          "formattedTurnover": "₹22,331.7 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹22,341.9 Cr",
           "formattedRatio": "1.44x"
         },
         "11-11": {
-          "turnover": 11055.4,
+          "turnover": 11060.4,
           "ratio": 0.71,
-          "avg": 15479.3,
-          "formattedTurnover": "₹11,055.4 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹11,060.4 Cr",
           "formattedRatio": "0.71x"
         },
         "09-11": {
-          "turnover": 8444.5,
+          "turnover": 8448.3,
           "ratio": 0.55,
-          "avg": 15479.3,
-          "formattedTurnover": "₹8,444.5 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹8,448.3 Cr",
           "formattedRatio": "0.55x"
         },
         "08-11": {
-          "turnover": 11073.5,
+          "turnover": 11078.6,
           "ratio": 0.72,
-          "avg": 15479.3,
-          "formattedTurnover": "₹11,073.5 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹11,078.6 Cr",
           "formattedRatio": "0.72x"
         },
         "06-11": {
-          "turnover": 9009.8,
+          "turnover": 9013.9,
           "ratio": 0.58,
-          "avg": 15479.3,
-          "formattedTurnover": "₹9,009.8 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹9,013.9 Cr",
           "formattedRatio": "0.58x"
         },
         "05-11": {
-          "turnover": 13663.8,
+          "turnover": 13670,
           "ratio": 0.88,
-          "avg": 15479.3,
-          "formattedTurnover": "₹13,663.8 Cr",
+          "avg": 15478.1,
+          "formattedTurnover": "₹13,670.0 Cr",
           "formattedRatio": "0.88x"
         }
       }
@@ -4245,112 +4245,112 @@
       "name": "Core Housing",
       "sym": "NIFTY CORE HOUSING",
       "category": "Housing",
-      "baseAvg": 2221,
+      "baseAvg": 2220,
       "days": {
         "26-11": {
-          "turnover": 7606.3,
-          "ratio": 3.42,
-          "avg": 2221,
-          "formattedTurnover": "₹7,606.3 Cr",
-          "formattedRatio": "3.42x"
+          "turnover": 7535.5,
+          "ratio": 3.39,
+          "avg": 2220,
+          "formattedTurnover": "₹7,535.5 Cr",
+          "formattedRatio": "3.39x"
         },
         "25-11": {
-          "turnover": 1190.3,
+          "turnover": 1197.6,
           "ratio": 0.54,
-          "avg": 2221,
-          "formattedTurnover": "₹1,190.3 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹1,197.6 Cr",
           "formattedRatio": "0.54x"
         },
         "23-11": {
-          "turnover": 4514.9,
-          "ratio": 2.03,
-          "avg": 2221,
-          "formattedTurnover": "₹4,514.9 Cr",
-          "formattedRatio": "2.03x"
+          "turnover": 4542.6,
+          "ratio": 2.05,
+          "avg": 2220,
+          "formattedTurnover": "₹4,542.6 Cr",
+          "formattedRatio": "2.05x"
         },
         "20-11": {
-          "turnover": 890.6,
+          "turnover": 896.1,
           "ratio": 0.4,
-          "avg": 2221,
-          "formattedTurnover": "₹890.6 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹896.1 Cr",
           "formattedRatio": "0.40x"
         },
         "19-11": {
-          "turnover": 650.1,
+          "turnover": 654.1,
           "ratio": 0.29,
-          "avg": 2221,
-          "formattedTurnover": "₹650.1 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹654.1 Cr",
           "formattedRatio": "0.29x"
         },
         "18-11": {
-          "turnover": 1002.3,
+          "turnover": 1008.4,
           "ratio": 0.45,
-          "avg": 2221,
-          "formattedTurnover": "₹1,002.3 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹1,008.4 Cr",
           "formattedRatio": "0.45x"
         },
         "17-11": {
-          "turnover": 1068.5,
+          "turnover": 1075.1,
           "ratio": 0.48,
-          "avg": 2221,
-          "formattedTurnover": "₹1,068.5 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹1,075.1 Cr",
           "formattedRatio": "0.48x"
         },
         "16-11": {
-          "turnover": 845.3,
+          "turnover": 850.5,
           "ratio": 0.38,
-          "avg": 2221,
-          "formattedTurnover": "₹845.3 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹850.5 Cr",
           "formattedRatio": "0.38x"
         },
         "13-11": {
-          "turnover": 83.8,
+          "turnover": 84.3,
           "ratio": 0.04,
-          "avg": 2221,
-          "formattedTurnover": "₹83.8 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹84.3 Cr",
           "formattedRatio": "0.04x"
         },
         "12-11": {
-          "turnover": 628.7,
+          "turnover": 632.6,
           "ratio": 0.28,
-          "avg": 2221,
-          "formattedTurnover": "₹628.7 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹632.6 Cr",
           "formattedRatio": "0.28x"
         },
         "11-11": {
-          "turnover": 738,
+          "turnover": 742.5,
           "ratio": 0.33,
-          "avg": 2221,
-          "formattedTurnover": "₹738.0 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹742.5 Cr",
           "formattedRatio": "0.33x"
         },
         "09-11": {
-          "turnover": 645,
+          "turnover": 648.9,
           "ratio": 0.29,
-          "avg": 2221,
-          "formattedTurnover": "₹645.0 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹648.9 Cr",
           "formattedRatio": "0.29x"
         },
         "08-11": {
-          "turnover": 841.6,
+          "turnover": 846.7,
           "ratio": 0.38,
-          "avg": 2221,
-          "formattedTurnover": "₹841.6 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹846.7 Cr",
           "formattedRatio": "0.38x"
         },
         "06-11": {
-          "turnover": 701.9,
+          "turnover": 706.2,
           "ratio": 0.32,
-          "avg": 2221,
-          "formattedTurnover": "₹701.9 Cr",
+          "avg": 2220,
+          "formattedTurnover": "₹706.2 Cr",
           "formattedRatio": "0.32x"
         },
         "05-11": {
-          "turnover": 1693.8,
-          "ratio": 0.76,
-          "avg": 2221,
-          "formattedTurnover": "₹1,693.8 Cr",
-          "formattedRatio": "0.76x"
+          "turnover": 1704.1,
+          "ratio": 0.77,
+          "avg": 2220,
+          "formattedTurnover": "₹1,704.1 Cr",
+          "formattedRatio": "0.77x"
         }
       }
     },
@@ -4359,111 +4359,111 @@
       "name": "Rural Economy",
       "sym": "NIFTY RURAL",
       "category": "Consumer",
-      "baseAvg": 3852.4,
+      "baseAvg": 3852.2,
       "days": {
         "26-11": {
-          "turnover": 4358.5,
+          "turnover": 4346.5,
           "ratio": 1.13,
-          "avg": 3852.4,
-          "formattedTurnover": "₹4,358.5 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹4,346.5 Cr",
           "formattedRatio": "1.13x"
         },
         "25-11": {
-          "turnover": 4496.2,
+          "turnover": 4498,
           "ratio": 1.17,
-          "avg": 3852.4,
-          "formattedTurnover": "₹4,496.2 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹4,498.0 Cr",
           "formattedRatio": "1.17x"
         },
         "23-11": {
-          "turnover": 3792.8,
+          "turnover": 3794.3,
           "ratio": 0.98,
-          "avg": 3852.4,
-          "formattedTurnover": "₹3,792.8 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹3,794.3 Cr",
           "formattedRatio": "0.98x"
         },
         "20-11": {
-          "turnover": 3432.2,
+          "turnover": 3433.5,
           "ratio": 0.89,
-          "avg": 3852.4,
-          "formattedTurnover": "₹3,432.2 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹3,433.5 Cr",
           "formattedRatio": "0.89x"
         },
         "19-11": {
-          "turnover": 6146.7,
+          "turnover": 6149.1,
           "ratio": 1.6,
-          "avg": 3852.4,
-          "formattedTurnover": "₹6,146.7 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹6,149.1 Cr",
           "formattedRatio": "1.60x"
         },
         "18-11": {
-          "turnover": 2591.9,
+          "turnover": 2592.9,
           "ratio": 0.67,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,591.9 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,592.9 Cr",
           "formattedRatio": "0.67x"
         },
         "17-11": {
-          "turnover": 2713.9,
+          "turnover": 2714.9,
           "ratio": 0.7,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,713.9 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,714.9 Cr",
           "formattedRatio": "0.70x"
         },
         "16-11": {
-          "turnover": 3286.9,
+          "turnover": 3288.2,
           "ratio": 0.85,
-          "avg": 3852.4,
-          "formattedTurnover": "₹3,286.9 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹3,288.2 Cr",
           "formattedRatio": "0.85x"
         },
         "13-11": {
-          "turnover": 421.6,
+          "turnover": 421.8,
           "ratio": 0.11,
-          "avg": 3852.4,
-          "formattedTurnover": "₹421.6 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹421.8 Cr",
           "formattedRatio": "0.11x"
         },
         "12-11": {
-          "turnover": 5403.7,
+          "turnover": 5405.7,
           "ratio": 1.4,
-          "avg": 3852.4,
-          "formattedTurnover": "₹5,403.7 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹5,405.7 Cr",
           "formattedRatio": "1.40x"
         },
         "11-11": {
-          "turnover": 2620.7,
+          "turnover": 2621.7,
           "ratio": 0.68,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,620.7 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,621.7 Cr",
           "formattedRatio": "0.68x"
         },
         "09-11": {
-          "turnover": 2487.7,
+          "turnover": 2488.6,
           "ratio": 0.65,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,487.7 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,488.6 Cr",
           "formattedRatio": "0.65x"
         },
         "08-11": {
-          "turnover": 2961.1,
+          "turnover": 2962.3,
           "ratio": 0.77,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,961.1 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,962.3 Cr",
           "formattedRatio": "0.77x"
         },
         "06-11": {
-          "turnover": 2631.8,
+          "turnover": 2632.8,
           "ratio": 0.68,
-          "avg": 3852.4,
-          "formattedTurnover": "₹2,631.8 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹2,632.8 Cr",
           "formattedRatio": "0.68x"
         },
         "05-11": {
-          "turnover": 4292.7,
+          "turnover": 4294.3,
           "ratio": 1.11,
-          "avg": 3852.4,
-          "formattedTurnover": "₹4,292.7 Cr",
+          "avg": 3852.2,
+          "formattedTurnover": "₹4,294.3 Cr",
           "formattedRatio": "1.11x"
         }
       }
@@ -4473,111 +4473,111 @@
       "name": "Chemicals",
       "sym": "NIFTY CHEMICALS",
       "category": "Chemicals",
-      "baseAvg": 2277.6,
+      "baseAvg": 2277.3,
       "days": {
         "26-11": {
-          "turnover": 2007,
-          "ratio": 0.88,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,007.0 Cr",
-          "formattedRatio": "0.88x"
+          "turnover": 1990,
+          "ratio": 0.87,
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,990.0 Cr",
+          "formattedRatio": "0.87x"
         },
         "25-11": {
-          "turnover": 1924.1,
-          "ratio": 0.84,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,924.1 Cr",
-          "formattedRatio": "0.84x"
+          "turnover": 1925.8,
+          "ratio": 0.85,
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,925.8 Cr",
+          "formattedRatio": "0.85x"
         },
         "23-11": {
-          "turnover": 3363.8,
+          "turnover": 3366.8,
           "ratio": 1.48,
-          "avg": 2277.6,
-          "formattedTurnover": "₹3,363.8 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹3,366.8 Cr",
           "formattedRatio": "1.48x"
         },
         "20-11": {
-          "turnover": 2279.8,
+          "turnover": 2281.9,
           "ratio": 1,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,279.8 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,281.9 Cr",
           "formattedRatio": "1.00x"
         },
         "19-11": {
-          "turnover": 1903.7,
+          "turnover": 1905.5,
           "ratio": 0.84,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,903.7 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,905.5 Cr",
           "formattedRatio": "0.84x"
         },
         "18-11": {
-          "turnover": 2769.8,
+          "turnover": 2772.3,
           "ratio": 1.22,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,769.8 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,772.3 Cr",
           "formattedRatio": "1.22x"
         },
         "17-11": {
-          "turnover": 1900.6,
-          "ratio": 0.83,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,900.6 Cr",
-          "formattedRatio": "0.83x"
+          "turnover": 1902.3,
+          "ratio": 0.84,
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,902.3 Cr",
+          "formattedRatio": "0.84x"
         },
         "16-11": {
-          "turnover": 2072,
+          "turnover": 2073.9,
           "ratio": 0.91,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,072.0 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,073.9 Cr",
           "formattedRatio": "0.91x"
         },
         "13-11": {
-          "turnover": 332,
+          "turnover": 332.3,
           "ratio": 0.15,
-          "avg": 2277.6,
-          "formattedTurnover": "₹332.0 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹332.3 Cr",
           "formattedRatio": "0.15x"
         },
         "12-11": {
-          "turnover": 2110.9,
+          "turnover": 2112.8,
           "ratio": 0.93,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,110.9 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,112.8 Cr",
           "formattedRatio": "0.93x"
         },
         "11-11": {
-          "turnover": 2663.1,
+          "turnover": 2665.5,
           "ratio": 1.17,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,663.1 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,665.5 Cr",
           "formattedRatio": "1.17x"
         },
         "09-11": {
-          "turnover": 1743.1,
+          "turnover": 1744.6,
           "ratio": 0.77,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,743.1 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,744.6 Cr",
           "formattedRatio": "0.77x"
         },
         "08-11": {
-          "turnover": 2600.3,
+          "turnover": 2602.6,
           "ratio": 1.14,
-          "avg": 2277.6,
-          "formattedTurnover": "₹2,600.3 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹2,602.6 Cr",
           "formattedRatio": "1.14x"
         },
         "06-11": {
-          "turnover": 1374.1,
+          "turnover": 1375.3,
           "ratio": 0.6,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,374.1 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,375.3 Cr",
           "formattedRatio": "0.60x"
         },
         "05-11": {
-          "turnover": 1756.1,
+          "turnover": 1757.7,
           "ratio": 0.77,
-          "avg": 2277.6,
-          "formattedTurnover": "₹1,756.1 Cr",
+          "avg": 2277.3,
+          "formattedTurnover": "₹1,757.7 Cr",
           "formattedRatio": "0.77x"
         }
       }
