@@ -28777,26 +28777,46 @@
               </button>
             </div>
 
-            <div class="heatmap-select-wrap">
-              <span>Index:</span>
-              <select id="heatmap-index-select" class="heatmap-select">
-                <optgroup label="Core Heatmaps">
-                  <option value="Nifty 50" ${activeNorm === "NIFTY 50" || activeNorm === "NIFTY50" ? "selected" : ""}>⭐ Nifty 50 (Bluechips)</option>
-                  <option value="Nifty Bank" ${activeNorm === "NIFTY BANK" || activeNorm === "BANK" ? "selected" : ""}>🏦 Nifty Bank</option>
-                  <option value="Nifty MidCap 150" ${activeNorm === "NIFTY MIDCAP 150" || activeNorm === "MIDCAP 150" || activeNorm === "NIFTY MIDCAP" ? "selected" : ""}>📊 Nifty MidCap 150</option>
-                  <option value="Nifty SmallCap 250" ${activeNorm === "NIFTY SMLCAP 250" || activeNorm === "NIFTY SMALLCAP 250" || activeNorm === "SMALLCAP 250" ? "selected" : ""}>📈 Nifty SmallCap 250</option>
-                  <option value="NIFTY IPO" ${activeNorm === "NIFTY IPO" || activeNorm === "IPO" || activeNorm === "IPO UNIVERSE" ? "selected" : ""}>🚀 Nifty IPO Universe</option>
-                  <option value="All Sectors" ${isAllSectors ? "selected" : ""}>📊 All Sectors (44 Indices)</option>
-                  <option value="All Stocks" ${activeNorm === "ALL STOCKS" ? "selected" : ""}>🌐 All Stocks</option>
-                </optgroup>
-                <optgroup label="44 Sectoral & Thematic Indices">
-                  ${(typeof SC !== "undefined" ? SC : []).filter(sec => sec[0] !== "NIFTY 50").map((sec, idx) => {
+            <div class="hm-picker" id="heatmap-index-picker">
+              <button type="button" class="heatmap-select-wrap hm-picker-trigger" id="heatmap-index-trigger" aria-haspopup="listbox" aria-expanded="false">
+                <span>Index:</span>
+                <strong id="heatmap-index-label" style="color:var(--ink);font-weight:700;">${escapeHtml(isAllSectors ? "All Sectors (44)" : (activeIndex || "Nifty 50"))}</strong>
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;opacity:0.75;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <div class="hm-picker-menu" id="heatmap-index-menu" style="display:none;">
+                <div class="hm-picker-search-wrap">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hm-picker-search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="heatmap-index-search" class="hm-picker-search" placeholder="Search index (e.g. Nifty, IT, Bank)..." autocomplete="off" />
+                </div>
+                <div class="hm-picker-list" id="heatmap-index-list">
+                  <div class="hm-picker-group-label" data-group="core">Core Heatmaps</div>
+                  ${[
+                    { val: "Nifty 50", label: "Nifty 50 (Bluechips)", sel: activeNorm === "NIFTY 50" || activeNorm === "NIFTY50" },
+                    { val: "Nifty Bank", label: "Nifty Bank", sel: activeNorm === "NIFTY BANK" || activeNorm === "BANK" },
+                    { val: "Nifty MidCap 150", label: "Nifty MidCap 150", sel: activeNorm === "NIFTY MIDCAP 150" || activeNorm === "MIDCAP 150" || activeNorm === "NIFTY MIDCAP" },
+                    { val: "Nifty SmallCap 250", label: "Nifty SmallCap 250", sel: activeNorm === "NIFTY SMLCAP 250" || activeNorm === "NIFTY SMALLCAP 250" || activeNorm === "SMALLCAP 250" },
+                    { val: "NIFTY IPO", label: "Nifty IPO Universe", sel: activeNorm === "NIFTY IPO" || activeNorm === "IPO" || activeNorm === "IPO UNIVERSE" },
+                    { val: "All Sectors", label: "All Sectors (44 Indices)", sel: isAllSectors },
+                    { val: "All Stocks", label: "All Stocks", sel: activeNorm === "ALL STOCKS" }
+                  ].map(opt => `
+                    <button type="button" class="hm-picker-item ${opt.sel ? "active" : ""}" data-group="core" data-value="${escapeHtml(opt.val)}" data-search="${escapeHtml(opt.label.toLowerCase())}">
+                      <span class="hm-picker-check">${opt.sel ? "✓" : ""}</span>
+                      <span>${escapeHtml(opt.label)}</span>
+                    </button>
+                  `).join("")}
+                  <div class="hm-picker-group-label" data-group="sector">44 Sectoral &amp; Thematic Indices</div>
+                  ${(typeof SC !== "undefined" ? SC : []).filter(sec => sec[0] !== "NIFTY 50").map(sec => {
                     const secName = sec[0];
                     const isSel = (activeNorm === secName.toUpperCase() || activeNorm === secName.replace(/^NIFTY\s+/, '').toUpperCase());
-                    return `<option value="${secName}" ${isSel ? "selected" : ""}>${secName}</option>`;
+                    return `
+                      <button type="button" class="hm-picker-item ${isSel ? "active" : ""}" data-group="sector" data-value="${escapeHtml(secName)}" data-search="${escapeHtml(secName.toLowerCase())}">
+                        <span class="hm-picker-check">${isSel ? "✓" : ""}</span>
+                        <span>${escapeHtml(secName)}</span>
+                      </button>`;
                   }).join("")}
-                </optgroup>
-              </select>
+                  <div id="heatmap-index-empty" style="display:none;padding:14px 12px;text-align:center;font-size:12px;color:var(--mu);">No matching index found</div>
+                </div>
+              </div>
             </div>
 
             <div class="heatmap-select-wrap">
@@ -28865,6 +28885,77 @@
   }
 
   function setupHeatmapEvents() {
+    const picker = document.getElementById("heatmap-index-picker");
+    const pickerTrigger = document.getElementById("heatmap-index-trigger");
+    const pickerMenu = document.getElementById("heatmap-index-menu");
+    const pickerSearch = document.getElementById("heatmap-index-search");
+    const pickerList = document.getElementById("heatmap-index-list");
+    if (picker && pickerTrigger && pickerMenu) {
+      const closePicker = () => {
+        pickerMenu.style.display = "none";
+        pickerTrigger.setAttribute("aria-expanded", "false");
+      };
+      pickerTrigger.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        const isOpen = pickerMenu.style.display === "block";
+        if (isOpen) { closePicker(); return; }
+        pickerMenu.style.display = "block";
+        pickerTrigger.setAttribute("aria-expanded", "true");
+        if (pickerSearch) {
+          pickerSearch.value = "";
+          pickerSearch.dispatchEvent(new Event("input"));
+          setTimeout(() => pickerSearch.focus(), 20);
+        }
+      });
+      if (pickerSearch && pickerList) {
+        pickerSearch.addEventListener("click", ev => ev.stopPropagation());
+        pickerSearch.addEventListener("input", () => {
+          const q = pickerSearch.value.trim().toLowerCase();
+          const items = pickerList.querySelectorAll(".hm-picker-item");
+          let coreVis = 0, secVis = 0;
+          items.forEach(btn => {
+            const match = !q || (btn.dataset.search || "").includes(q);
+            btn.style.display = match ? "flex" : "none";
+            if (match) {
+              if (btn.dataset.group === "core") coreVis++;
+              else secVis++;
+            }
+          });
+          const coreLbl = pickerList.querySelector('.hm-picker-group-label[data-group="core"]');
+          const secLbl = pickerList.querySelector('.hm-picker-group-label[data-group="sector"]');
+          const emptyEl = document.getElementById("heatmap-index-empty");
+          if (coreLbl) coreLbl.style.display = coreVis > 0 ? "block" : "none";
+          if (secLbl) secLbl.style.display = secVis > 0 ? "block" : "none";
+          if (emptyEl) emptyEl.style.display = (coreVis + secVis === 0) ? "block" : "none";
+        });
+        pickerSearch.addEventListener("keydown", ev => {
+          if (ev.key === "Escape") closePicker();
+        });
+      }
+      if (pickerList) {
+        pickerList.addEventListener("click", (ev) => {
+          const btn = ev.target.closest(".hm-picker-item");
+          if (!btn) return;
+          const val = (btn.dataset.value || "").replace(/^\d+[\.\s\-]+/, "").trim();
+          if (!val) return;
+          closePicker();
+          State.heatmapIndex = val;
+          renderActiveView();
+        });
+      }
+      if (!window._hmPickerDocBound) {
+        window._hmPickerDocBound = true;
+        document.addEventListener("click", (ev) => {
+          const m = document.getElementById("heatmap-index-menu");
+          const p = document.getElementById("heatmap-index-picker");
+          const t = document.getElementById("heatmap-index-trigger");
+          if (m && p && m.style.display === "block" && !p.contains(ev.target)) {
+            m.style.display = "none";
+            if (t) t.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    }
     const idxSelect = document.getElementById("heatmap-index-select");
     const sortSelect = document.getElementById("heatmap-sort-select");
     const perfSelect = document.getElementById("heatmap-perf-select");
