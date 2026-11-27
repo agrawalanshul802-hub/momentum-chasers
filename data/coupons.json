@@ -1,0 +1,14 @@
+{
+  "modifiedAt": 1795785954292,
+  "coupons": [
+    {
+      "id": "cp_1795676619569",
+      "code": "MOMENTUMXHNI",
+      "type": "percent",
+      "amount": 100,
+      "appliesTo": "monthly",
+      "active": true,
+      "createdAt": "2026-11-26"
+    }
+  ]
+}
