@@ -1232,48 +1232,48 @@
         </div>
     </div>
     <script>
-      window.openAppFeedbackModal = function () {
-        var m = document.getElementById('app-feedback-modal');
-        if (!m) return;
-        m.style.display = 'flex';
-        var mount = document.getElementById('helpful-rating-app-mount');
-        if (mount && !mount.dataset.mounted && typeof window.mountHelpfulRating === 'function') {
-          mount.dataset.mounted = '1';
-          window.mountHelpfulRating(mount, {
-            question: 'Was Momentum Chasers helpful?',
-            onSubmit: async function (fb) {
-              var u = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
-              var msgParts = [];
-              if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
-              if (fb.note) msgParts.push(fb.note);
-              try {
-                await fetch('/api/feedback', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    name: u.name || 'Trader',
-                    email: u.email || localStorage.getItem('mc_user_email') || 'trader@momentumchasers.in',
-                    topic: 'Helpful Rating (' + fb.rating + '/5)',
-                    sentiment: fb.sentiment,
-                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
-                  })
+        window.openAppFeedbackModal = function () {
+            var m = document.getElementById('app-feedback-modal');
+            if (!m) return;
+            m.style.display = 'flex';
+            var mount = document.getElementById('helpful-rating-app-mount');
+            if (mount && !mount.dataset.mounted && typeof window.mountHelpfulRating === 'function') {
+                mount.dataset.mounted = '1';
+                window.mountHelpfulRating(mount, {
+                    question: 'Was Momentum Chasers helpful?',
+                    onSubmit: async function (fb) {
+                        var u = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
+                        var msgParts = [];
+                        if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
+                        if (fb.note) msgParts.push(fb.note);
+                        try {
+                            await fetch('/api/feedback', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    name: u.name || 'Trader',
+                                    email: u.email || localStorage.getItem('mc_user_email') || 'trader@momentumchasers.in',
+                                    topic: 'Helpful Rating (' + fb.rating + '/5)',
+                                    sentiment: fb.sentiment,
+                                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
+                                })
+                            });
+                        } catch (_) { }
+                    }
                 });
-              } catch (_) { }
             }
-          });
-        }
-      };
-      window.closeAppFeedbackModal = function () {
-        var m = document.getElementById('app-feedback-modal');
-        if (m) m.style.display = 'none';
-      };
+        };
+        window.closeAppFeedbackModal = function () {
+            var m = document.getElementById('app-feedback-modal');
+            if (m) m.style.display = 'none';
+        };
     </script>
 
     <!-- ScreeningMantis Live Authentic Technical Indicators Feed -->
     <script src="data/screeningmantis-emas.js?v=6.4.7" defer></script>
 
     <!-- Main JavaScript File -->
-    <script src="script.js?v=7.5.4" defer></script>
+    <script src="script.js?v=7.5.5" defer></script>
 </body>
 
 </html>

@@ -28743,7 +28743,7 @@
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <h2 class="heatmap-main-title">
-              ${isAllSectors ? "All Sectors Heatmap" : activeNorm === "NIFTY IPO" ? `NIFTY IPO Heatmap (${(State.heatmapIpoWindow || "1y") === "1y" ? "Past 1 Year" : State.heatmapIpoWindow === "all" ? "All Recent" : `Year ${State.heatmapIpoWindow}`})` : activeIndex === "All Stocks" ? "All Stocks Heatmap" : `${activeIndex} Heatmap`} <span class="heatmap-info-icon" title="${isAllSectors ? 'Squarified treemap of all 44 Nifty Sectoral & Thematic Indices. Click any sector tile to view its stock heatmap.' : 'Squarified market cap treemap: Tile area is proportional to market capitalization; color represents percentage price change.'}">ⓘ</span>
+              ${isAllSectors ? "All Sectors Heatmap" : activeNorm === "NIFTY IPO" ? `NIFTY IPO Heatmap (${(State.heatmapIpoWindow || "1y") === "1y" ? "Past 1 Year" : State.heatmapIpoWindow === "all" ? "All Recent" : `Year ${State.heatmapIpoWindow}`})` : activeIndex === "All Stocks" ? "All Stocks Heatmap" : `${activeIndex} Heatmap`}
             </h2>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
