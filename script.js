@@ -35455,7 +35455,7 @@
                       </svg>
                     </span>
                     <span class="flex-1 text-left">Social Links</span>
-                    <span style="display:inline-flex;align-items:center;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;margin-left:auto;">
                       <a href="mailto:support@momentumchasers.in" title="Email Support" aria-label="Email"
                         style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:24px;color:#fcd34d;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.28);border-radius:6px;text-decoration:none;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
