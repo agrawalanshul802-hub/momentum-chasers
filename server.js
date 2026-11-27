@@ -7541,8 +7541,8 @@ const server = http.createServer(async (req, res) => {
     };
 
     if (!isSync) {
-      // Respond immediately (202 Accepted) so external cron services like cron-job.org never hit 30s timeouts
-      res.writeHead(202, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      // Respond immediately (200 OK) so external cron services like cron-job.org never hit 30s timeouts or non-200 checks
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ success: true, status: 'started', mode, timestamp: new Date().toISOString() }));
       executePipeline().catch(err => console.error('[CRON] Background pipeline error:', err.message));
       return;

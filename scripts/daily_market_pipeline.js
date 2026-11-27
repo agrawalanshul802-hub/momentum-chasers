@@ -386,9 +386,10 @@ async function runEodMarketUpdate() {
         }
       }
     }
-    const missingPriority = prioritySyms.filter(sym => !quoteMap[sym]);
-    if (missingPriority.length > 0) {
-      const candles = await poolAll(missingPriority, (s) => fetchCompletedDailyCandle(s, dateStr), 12);
+    const missingAll = allToFetch.filter(sym => !quoteMap[sym]);
+    if (missingAll.length > 0) {
+      console.log(`↻ Falling back to v8 daily candles for ${missingAll.length} remaining .NS symbols...`);
+      const candles = await poolAll(missingAll, (s) => fetchCompletedDailyCandle(s, dateStr), 28);
       for (const q of candles) if (q && q.symbol) quoteMap[q.symbol] = q;
     }
     // Also fetch .BO (BSE / BSE SME) fallback for universe stocks not found on .NS
