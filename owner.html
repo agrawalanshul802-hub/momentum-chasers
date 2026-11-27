@@ -1570,17 +1570,7 @@
           </div>
           <div>
             <label class="form-label">Max Users Limit</label>
-            <select id="coupon-max-uses" class="form-select">
-              <option value="0">∞ Unlimited Users</option>
-              <option value="1">1 User</option>
-              <option value="5">5 Users</option>
-              <option value="10">10 Users</option>
-              <option value="25">25 Users</option>
-              <option value="50">50 Users</option>
-              <option value="100">100 Users</option>
-              <option value="250">250 Users</option>
-              <option value="500">500 Users</option>
-            </select>
+            <input type="number" id="coupon-max-uses" class="form-input" placeholder="Unlimited (or type max)" min="0" step="1">
           </div>
           <div>
             <button type="submit" class="btn-gold" style="width:100%;height:38px;padding:0;">
