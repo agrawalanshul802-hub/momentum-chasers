@@ -30907,12 +30907,6 @@
     const monthLabel = `${EVENTS_MONTH_NAMES[State.eventsMonth]} ${State.eventsYear}`;
 
     const rows = data.map(item => {
-      const impactBadge = item.impact === "high"
-        ? `<span class="event-impact-badge high">🔴 High</span>`
-        : item.impact === "medium"
-          ? `<span class="event-impact-badge medium">🟡 Medium</span>`
-          : `<span class="event-impact-badge low">🟢 Low</span>`;
-
       const isReleased = item.actual && item.actual !== "—";
       const statusBadge = isReleased
         ? `<span class="val-green" style="font-weight:700">● Released</span>`
@@ -30920,7 +30914,6 @@
 
       return `
           <tr>
-            <td>${impactBadge}</td>
             <td><strong>${item.country}</strong></td>
             <td><strong style="color:var(--ink)">${item.event}</strong></td>
             <td style="white-space:nowrap">${item.date} <span style="font-size:11px;color:var(--mu)">${item.time}</span></td>
@@ -30942,7 +30935,6 @@
           <table class="data-table-main">
             <thead>
               <tr>
-                <th>Impact</th>
                 <th>Region</th>
                 <th>Event / Release</th>
                 <th>Date &amp; Time (IST)</th>
@@ -30954,7 +30946,7 @@
               </tr>
             </thead>
             <tbody>
-              ${rows || `<tr><td colspan="9" style="text-align:center;color:var(--mu);padding:32px">No economic events scheduled for ${monthLabel}.</td></tr>`}
+              ${rows || `<tr><td colspan="8" style="text-align:center;color:var(--mu);padding:32px">No economic events scheduled for ${monthLabel}.</td></tr>`}
             </tbody>
           </table>
         </div>
@@ -31835,7 +31827,7 @@
         `,
         actionsHtml: `
           <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
-            <span class="event-impact-badge ${escapeHtml(e.impact)}" style="text-transform:uppercase;margin:0">${escapeHtml(e.impact)}</span>
+            <span style="font-size:11px;color:var(--mu);">Macro</span>
           </div>
         `,
         raw: e
@@ -32434,7 +32426,6 @@
             <div class="events-day-card" style="border-left:3px solid #3b82f6">
               <div class="events-day-card-left">
                 <div style="display:flex;align-items:center;gap:6px">
-                  <span class="event-impact-badge ${escapeHtml(e.impact)}">${escapeHtml(e.impact)}</span>
                   <span style="font-size:11px;color:var(--mu)">${escapeHtml(e.country)}</span>
                   <span style="font-size:11px;color:#3b82f6;font-weight:700">🕒 ${escapeHtml(e.time)}</span>
                 </div>
