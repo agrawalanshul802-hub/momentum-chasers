@@ -25,6 +25,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: daily-market-pipeline
+  cancel-in-progress: false
+
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
@@ -73,6 +77,7 @@ jobs:
             echo "No new data changes to commit."
           else
             git commit -m "chore(data): automated daily market update [$MODE] [skip ci]"
+            git pull --rebase -X theirs origin main
             git push origin main
             echo "Pushed updated market data to main."
           fi
