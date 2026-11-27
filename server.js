@@ -6361,14 +6361,71 @@ const server = http.createServer(async (req, res) => {
     return _ownerIdeasMemory;
   }
 
+  // 6g-0. GitHub Auto-Sync Queue (Persists owner panel changes across Render redeploys when GITHUB_TOKEN is set)
+  const _ghSyncQueue = [];
+  let _ghSyncBusy = false;
+  async function _runGhSyncQueue() {
+    if (_ghSyncBusy || _ghSyncQueue.length === 0) return;
+    const token = (process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '').trim();
+    if (!token) { _ghSyncQueue.length = 0; return; }
+    const repo = (process.env.GITHUB_REPO || 'agrawalanshul802-hub/momentum-chasers').trim();
+    const branch = (process.env.GITHUB_BRANCH || 'main').trim();
+    _ghSyncBusy = true;
+    while (_ghSyncQueue.length > 0) {
+      const { relPath, content } = _ghSyncQueue.shift();
+      try {
+        const apiUrl = `https://api.github.com/repos/${repo}/contents/${relPath}`;
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'User-Agent': 'MomentumChasers-Server'
+        };
+        let sha = undefined;
+        const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
+        if (getRes.ok) {
+          const meta = await getRes.json();
+          sha = meta && meta.sha;
+        }
+        const b64 = Buffer.isBuffer(content) ? content.toString('base64') : Buffer.from(String(content), 'utf8').toString('base64');
+        const putRes = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `chore(owner): persist ${relPath} [skip ci]`,
+            content: b64,
+            branch,
+            ...(sha ? { sha } : {})
+          })
+        });
+        if (!putRes.ok) {
+          const errTxt = await putRes.text();
+          console.warn(`[GitHub Sync] Failed ${relPath}:`, putRes.status, errTxt.slice(0, 160));
+        }
+      } catch (err) {
+        console.warn(`[GitHub Sync] Error syncing ${relPath}:`, err.message);
+      }
+    }
+    _ghSyncBusy = false;
+  }
+  function queueGitHubSync(relPath, content) {
+    if (!(process.env.GITHUB_TOKEN || process.env.GH_TOKEN)) return;
+    const cleanRel = String(relPath).replace(/\\/g, '/').replace(/^\/+/, '');
+    const existingIdx = _ghSyncQueue.findIndex(item => item.relPath === cleanRel);
+    if (existingIdx >= 0) _ghSyncQueue[existingIdx].content = content;
+    else _ghSyncQueue.push({ relPath: cleanRel, content });
+    _runGhSyncQueue();
+  }
+
   function saveStoredOwnerIdeas(ideas) {
     _ownerIdeasMemory = ideas;
+    const jsonStr = JSON.stringify(ideas, null, 2) + '\n';
     try {
       fs.mkdirSync(path.dirname(ownerIdeasPath), { recursive: true });
-      fs.writeFileSync(ownerIdeasPath, JSON.stringify(ideas, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(ownerIdeasPath, jsonStr, 'utf8');
     } catch (e) {
       console.warn('Could not persist owner ideas to disk (ephemeral FS):', e.message);
     }
+    queueGitHubSync('data/owner-ideas.json', jsonStr);
     return true;
   }
 
@@ -6405,10 +6462,12 @@ const server = http.createServer(async (req, res) => {
   function saveStoredCoupons(list) {
     _couponsMemory = list;
     _couponsModified = true;
+    const jsonStr = JSON.stringify({ modifiedAt: Date.now(), coupons: list }, null, 2) + '\n';
     try {
       fs.mkdirSync(path.dirname(couponsPath), { recursive: true });
-      fs.writeFileSync(couponsPath, JSON.stringify({ modifiedAt: Date.now(), coupons: list }, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(couponsPath, jsonStr, 'utf8');
     } catch (_) { }
+    queueGitHubSync('data/coupons.json', jsonStr);
     return true;
   }
 
@@ -6444,10 +6503,12 @@ const server = http.createServer(async (req, res) => {
   }
   function saveStoredGatewaySettings(settings) {
     _gatewayMemory = settings;
+    const jsonStr = JSON.stringify(settings, null, 2) + '\n';
     try {
       fs.mkdirSync(path.dirname(gatewaySettingsPath), { recursive: true });
-      fs.writeFileSync(gatewaySettingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(gatewaySettingsPath, jsonStr, 'utf8');
     } catch (_) { }
+    queueGitHubSync('data/gateway-settings.json', jsonStr);
     return true;
   }
 
@@ -6468,10 +6529,12 @@ const server = http.createServer(async (req, res) => {
   }
   function saveStoredMasterCode(obj) {
     _masterCodeMemory = obj;
+    const jsonStr = JSON.stringify(obj, null, 2) + '\n';
     try {
       fs.mkdirSync(path.dirname(masterCodePath), { recursive: true });
-      fs.writeFileSync(masterCodePath, JSON.stringify(obj, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(masterCodePath, jsonStr, 'utf8');
     } catch (_) { }
+    queueGitHubSync('data/master-code.json', jsonStr);
     return true;
   }
 
@@ -6514,10 +6577,12 @@ const server = http.createServer(async (req, res) => {
   }
   function saveStoredPurchases(list) {
     _purchasesMemory = list;
+    const jsonStr = JSON.stringify(list, null, 2) + '\n';
     try {
       fs.mkdirSync(path.dirname(purchasesPath), { recursive: true });
-      fs.writeFileSync(purchasesPath, JSON.stringify(list, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(purchasesPath, jsonStr, 'utf8');
     } catch (_) { }
+    queueGitHubSync('data/purchases.json', jsonStr);
     return true;
   }
 
@@ -7563,29 +7628,37 @@ const server = http.createServer(async (req, res) => {
   const ipoPdfsPath = path.join(__dirname, 'data', 'ipo-pdfs.json');
   const ipoUploadsDir = path.join(__dirname, 'uploads', 'ipo-pdfs');
 
+  let _ipoPdfsMemory = null;
   function getStoredIpoPdfs() {
+    if (_ipoPdfsMemory !== null) return _ipoPdfsMemory;
     try {
       if (fs.existsSync(ipoPdfsPath)) {
         const parsed = JSON.parse(fs.readFileSync(ipoPdfsPath, 'utf8'));
         if (parsed && Array.isArray(parsed.items)) {
-          return {
+          _ipoPdfsMemory = {
             globalPaidLock: !!parsed.globalPaidLock,
             items: parsed.items
           };
+          return _ipoPdfsMemory;
         }
       }
     } catch (_) { }
-    return { globalPaidLock: false, items: [] };
+    _ipoPdfsMemory = { globalPaidLock: false, items: [] };
+    return _ipoPdfsMemory;
   }
 
   function saveStoredIpoPdfs(data) {
+    const normalized = {
+      globalPaidLock: !!data.globalPaidLock,
+      items: Array.isArray(data.items) ? data.items : []
+    };
+    _ipoPdfsMemory = normalized;
+    const jsonStr = JSON.stringify(normalized, null, 2) + '\n';
     try {
       const dir = path.dirname(ipoPdfsPath);
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(ipoPdfsPath, JSON.stringify({
-        globalPaidLock: !!data.globalPaidLock,
-        items: Array.isArray(data.items) ? data.items : []
-      }, null, 2) + '\n', 'utf8');
+      fs.writeFileSync(ipoPdfsPath, jsonStr, 'utf8');
+      queueGitHubSync('data/ipo-pdfs.json', jsonStr);
       return true;
     } catch (e) {
       console.error('Failed saving IPO PDFs:', e.message);
@@ -7665,6 +7738,7 @@ const server = http.createServer(async (req, res) => {
         const slugBase = (symbol || company).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'ipo';
         const diskName = `${slugBase}-${Date.now()}.pdf`;
         fs.writeFileSync(path.join(ipoUploadsDir, diskName), buf);
+        queueGitHubSync(`uploads/ipo-pdfs/${diskName}`, buf);
         finalPdfUrl = `/uploads/ipo-pdfs/${diskName}`;
         if (!cleanFileName) cleanFileName = `${slugBase}.pdf`;
         sizeLabel = buf.length >= 1048576
@@ -7760,9 +7834,11 @@ const server = http.createServer(async (req, res) => {
   }
   function saveStoredLaunchSettings(obj) {
     _launchMemory = obj;
+    const jsonStr = JSON.stringify(obj, null, 2) + '\n';
     try {
-      fs.writeFileSync(launchSettingsPath, JSON.stringify(obj, null, 2), 'utf8');
+      fs.writeFileSync(launchSettingsPath, jsonStr, 'utf8');
     } catch (_) { }
+    queueGitHubSync('data/launch-settings.json', jsonStr);
   }
 
   if (pathname === '/api/owner/launch-settings') {
