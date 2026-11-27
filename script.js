@@ -13342,7 +13342,6 @@
           </div>
           <div class="breadth-metric-row">
             <span class="breadth-pct-val ${b.ema10 >= 60 ? "val-green" : "val-amber"}">${b.ema10}%</span>
-            <span style="font-size:11px;color:var(--mu)">Short-term thrust</span>
           </div>
           <div class="breadth-progress-bg">
             <div class="breadth-progress-fill ${b.ema10 >= 60 ? "bg-green" : "bg-amber"}" style="width:${b.ema10}%"></div>
@@ -13358,7 +13357,6 @@
           </div>
           <div class="breadth-metric-row">
             <span class="breadth-pct-val ${b.ema20 >= 60 ? "val-green" : "val-amber"}">${b.ema20}%</span>
-            <span style="font-size:11px;color:var(--mu)">Swing base level</span>
           </div>
           <div class="breadth-progress-bg">
             <div class="breadth-progress-fill ${b.ema20 >= 60 ? "bg-green" : "bg-amber"}" style="width:${b.ema20}%"></div>
@@ -13374,7 +13372,6 @@
           </div>
           <div class="breadth-metric-row">
             <span class="breadth-pct-val ${b.ema50 >= 60 ? "val-green" : "val-amber"}">${b.ema50}%</span>
-            <span style="font-size:11px;color:var(--mu)">Institutional line</span>
           </div>
           <div class="breadth-progress-bg">
             <div class="breadth-progress-fill ${b.ema50 >= 60 ? "bg-green" : "bg-amber"}" style="width:${b.ema50}%"></div>
@@ -13390,7 +13387,6 @@
           </div>
           <div class="breadth-metric-row">
             <span class="breadth-pct-val ${b.ema200 >= 60 ? "val-green" : "val-amber"}">${b.ema200}%</span>
-            <span style="font-size:11px;color:var(--mu)">Macro structural health</span>
           </div>
           <div class="breadth-progress-bg">
             <div class="breadth-progress-fill ${b.ema200 >= 60 ? "bg-green" : "bg-amber"}" style="width:${b.ema200}%"></div>
