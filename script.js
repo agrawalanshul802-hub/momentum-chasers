@@ -10937,7 +10937,7 @@
     heatmapSortBy: "mcap",      // "mcap", "volume", "turnover", "equal"
     heatmapPerfBy: "d",         // "d", "w", "15m"
     heatmapGrouping: "flat",    // "flat", "sector"
-    portfolioAccount: "All",    // "All", "Zerodha", "Groww", "Angel One", "Dhan", "Upstox", "ICICI Direct"
+    portfolioAccount: "All",    // "All", "Zerodha", "Groww", "Angel One", "Dhan", "Upstox", "Others"
     portfolioFilter: "all",     // "all", "profit", "loss", "dayProfit", "dayLoss"
     portfolioSearch: "",        // search filter
     portfolioSort: "default",   // "default", "gainPct", "dayChg", "gain", "value", "buyVal", "symbol"
@@ -29603,7 +29603,7 @@
         </tr>`;
     }).join("");
 
-    const accounts = ["All", "Zerodha", "Groww", "Angel One", "Dhan", "Upstox", "ICICI Direct"];
+    const accounts = ["All", "Zerodha", "Groww", "Angel One", "Dhan", "Upstox", "Others"];
     const accountButtons = accounts.map(acc => `
       <button class="pill-segment-btn ${State.portfolioAccount === acc ? 'active' : ''}" data-action="set-portfolio-acc" data-val="${acc}">${acc === "All" ? "All Combined" : acc}</button>
     `).join("");
