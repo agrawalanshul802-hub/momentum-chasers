@@ -29685,16 +29685,9 @@
       </div>
 
       <!-- Live Sync Status Row -->
-      <div class="portfolio-status-bar">
-        <div class="portfolio-status-left">
-          <span class="live-dot-pulse"></span>
-          <span>Live Exchange Feed &middot; ${DematPortfolioService._lastSyncTime ? `Synced ${DematPortfolioService._lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : 'Syncing live market...'} &middot; auto-refresh 30s</span>
-          <button class="portfolio-sync-btn" data-action="sync-portfolio-live" title="Sync Live Market Quotes Now">
-            <span class="sync-icon">↻</span> <span>Sync Live Prices</span>
-          </button>
-        </div>
+      <div class="portfolio-status-bar" style="justify-content:flex-end;">
         <div class="portfolio-status-right">
-          <span style="color:var(--g)">●</span> ${scopeHoldings.length}/${scopeHoldings.length} live prices
+          <span style="color:var(--g)">●</span> ${scopeHoldings.length}/${scopeHoldings.length} prices
         </div>
       </div>
 
