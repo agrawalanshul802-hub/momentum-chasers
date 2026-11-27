@@ -5262,10 +5262,14 @@ const server = http.createServer(async (req, res) => {
   parsedUrl.query = Object.fromEntries(parsedUrl.searchParams.entries());
   const pathname = parsedUrl.pathname;
 
-  // Global CORS
+  // Global CORS & Security Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -7447,8 +7451,18 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/admin/pipeline/run' && req.method === 'POST') {
     let rawBody = '';
-    req.on('data', chunk => rawBody += chunk);
+    let bodyTooLarge = false;
+    req.on('data', chunk => {
+      if (bodyTooLarge) return;
+      rawBody += chunk;
+      if (rawBody.length > 1024 * 1024) {
+        bodyTooLarge = true;
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Payload too large' }));
+      }
+    });
     req.on('end', async () => {
+      if (bodyTooLarge) return;
       try {
         const payload = JSON.parse(rawBody || '{}');
         const pin = (payload.pin || req.headers['x-owner-pin'] || '').toString().trim();
@@ -7789,7 +7803,7 @@ const server = http.createServer(async (req, res) => {
     }
     res.writeHead(200, {
       'Content-Type': 'application/json',
-      'Set-Cookie': 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; SameSite=Lax'
+      'Set-Cookie': 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax'
     });
     res.end(JSON.stringify({ success: true }));
     return;
@@ -7809,7 +7823,7 @@ const server = http.createServer(async (req, res) => {
     const qPrev = (parsedUrl.query.preview || '').toString().trim();
     const hasValidQueryPreview = (qPrev === 'mc264500' || isAuthorizedOwnerPin(qPrev));
     if (hasValidQueryPreview && !hasPreviewCookie) {
-      res.setHeader('Set-Cookie', 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; SameSite=Lax');
+      res.setHeader('Set-Cookie', 'mc_owner_preview=mc_owner_ok; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax');
     } else if (!hasPreviewCookie && !hasValidQueryPreview) {
       reqPath = 'coming-soon.html';
     }
