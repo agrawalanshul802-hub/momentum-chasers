@@ -3214,6 +3214,33 @@ body.theme-white .ticker-inline-suggestion-row:hover {
     border-color: var(--g);
 }
 
+.toolbar-refresh-btn {
+    height: 32px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--sf2);
+    border: 1px solid var(--ln);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.toolbar-refresh-btn:hover {
+    background: var(--sf3);
+    border-color: rgba(34, 197, 94, 0.45);
+    color: var(--g);
+}
+
+.toolbar-refresh-btn:active {
+    transform: translateY(1px);
+}
+
 /* Preset Chips Rows */
 .preset-section-divider {
     display: flex;

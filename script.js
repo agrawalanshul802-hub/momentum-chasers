@@ -16105,7 +16105,7 @@
               </select>
             </div>
 
-            <button class="pill-segment-btn" data-action="refresh-sector-turnover" title="Fetch fresh live EOD Bhavcopy data from NSE archives" style="height:32px;padding:4px 10px;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
+            <button class="toolbar-refresh-btn" data-action="refresh-sector-turnover" title="Fetch fresh live EOD Bhavcopy data from NSE archives">
               <span>⚡</span> Refresh
             </button>
           </div>
@@ -29153,7 +29153,7 @@
           <span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.25);font-weight:600;display:inline-flex;align-items:center;gap:5px;">
             <span>⚡</span> As of ${escapeHtml(asOfDate)} (Official NSE Archive)
           </span>
-          <button class="pill-segment-btn" data-action="refresh-valuation" title="Fetch fresh daily valuation archives from NSE" style="height:32px;padding:4px 12px;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
+          <button class="toolbar-refresh-btn" data-action="refresh-valuation" title="Fetch fresh daily valuation archives from NSE">
             <span>⚡</span> Refresh
           </button>
         </div>
