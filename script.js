@@ -35374,15 +35374,35 @@
 
                 <!-- Navigation Items -->
                 <div class="kokonut-items-list">
-                  <button type="button" class="kokonut-menu-item" data-action="open-user-profile-modal">
+                  <div class="kokonut-menu-item" style="cursor:default;">
                     <span class="kokonut-item-icon">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                        <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                       </svg>
                     </span>
-                    <span class="flex-1 text-left">Trading Profile</span>
-                    <span class="kokonut-item-val" style="color:#38bdf8;">${escapeHtml(broker)}</span>
-                  </button>
+                    <span class="flex-1 text-left">Social Links</span>
+                    <span style="display:inline-flex;align-items:center;gap:6px;">
+                      <a href="mailto:support@momentumchasers.in" title="Email Support" aria-label="Email"
+                        style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:24px;color:#fcd34d;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.28);border-radius:6px;text-decoration:none;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                      </a>
+                      <a href="https://www.instagram.com/monentum_chasers/" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram"
+                        style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:24px;color:#e1306c;background:rgba(225,48,108,0.12);border:1px solid rgba(225,48,108,0.28);border-radius:6px;text-decoration:none;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                      </a>
+                      <a href="https://x.com/MCHASERS2026" target="_blank" rel="noopener noreferrer" title="X (Twitter)" aria-label="X (Twitter)"
+                        style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:24px;color:var(--ink);background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.28);border-radius:6px;text-decoration:none;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                      </a>
+                    </span>
+                  </div>
 
                   <button type="button" class="kokonut-menu-item" data-action="open-stock-alerts-manager">
                     <span class="kokonut-item-icon">
