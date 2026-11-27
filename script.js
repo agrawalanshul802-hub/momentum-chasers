@@ -9212,7 +9212,7 @@
       2590,
       19.63,
       2025,
-      "ICICIPRUAM"
+      "ICICIAMC"
     ],
     [
       "Vishal Mega Mart Ltd.",
@@ -9224,7 +9224,7 @@
       118.5,
       51.92,
       2025,
-      "VISHALMEGA"
+      "VMM"
     ],
     [
       "Meesho Ltd.",
@@ -9320,7 +9320,7 @@
       565,
       32.94,
       2025,
-      "QUALITYPOW"
+      "QPOWER"
     ],
     [
       "Laxmi Dental Ltd.",
@@ -9332,7 +9332,7 @@
       520,
       21.5,
       2025,
-      "LAXMIDNTL"
+      "LAXMIDENTL"
     ],
     [
       "MobiKwik Systems Ltd.",
@@ -9380,7 +9380,7 @@
       210,
       50,
       2025,
-      "STNDRDGLAS"
+      "SGLTL"
     ],
     [
       "Vidya Wires Ltd.",
@@ -9416,7 +9416,7 @@
       198,
       32,
       2025,
-      "DENTAWATR"
+      "DENTA"
     ],
     [
       "Stallion India Fluorochemicals Ltd.",
@@ -9440,7 +9440,7 @@
       214,
       27.38,
       2025,
-      "DIFFUSION"
+      "DIFFNKG"
     ],
     [
       "Highway Infrastructure Ltd.",
@@ -9584,7 +9584,7 @@
       475,
       50.79,
       2024,
-      "AADHARHFL"
+      "AADHARHFC"
     ],
     [
       "Emcure Pharmaceuticals Ltd.",
@@ -9656,7 +9656,7 @@
       585,
       29.42,
       2024,
-      "INDEGENE"
+      "INDGN"
     ],
     [
       "Jyoti CNC Automation Ltd.",
@@ -9680,7 +9680,7 @@
       235,
       58.78,
       2024,
-      "ENVIRO"
+      "EIEL"
     ],
     [
       "Tata Technologies Ltd.",
@@ -10011,17 +10011,17 @@
     { symbol: "BHARTIHEXA", name: "Bharti Hexacom Ltd.", sector: "Telecom", price: 1380.00, chg: 142.11, isIpo: true },
     { symbol: "FIRSTCRY", name: "Brainbees Solutions Ltd. (FirstCry)", sector: "E-Commerce", price: 540.00, chg: 16.13, isIpo: true },
     { symbol: "GODIGIT", name: "Go Digit General Insurance", sector: "Insurance", price: 342.00, chg: 25.74, isIpo: true },
-    { symbol: "AADHARHFL", name: "Aadhar Housing Finance Ltd.", sector: "Housing Finance", price: 475.00, chg: 50.79, isIpo: true },
+    { symbol: "AADHARHFC", name: "Aadhar Housing Finance Ltd.", sector: "Housing Finance", price: 475.00, chg: 50.79, isIpo: true },
     { symbol: "EMCURE", name: "Emcure Pharmaceuticals Ltd.", sector: "Pharmaceuticals", price: 1380.00, chg: 36.90, isIpo: true },
     { symbol: "AFCONS", name: "Afcons Infrastructure Ltd.", sector: "Infrastructure", price: 492.00, chg: 6.26, isIpo: true },
     { symbol: "ACMESOLAR", name: "ACME Solar Holdings Ltd.", sector: "Solar Power", price: 240.00, chg: -16.96, isIpo: true },
     { symbol: "KRN", name: "KRN Heat Exchanger Ltd.", sector: "Engineering", price: 710.00, chg: 222.73, isIpo: true },
     { symbol: "TBOTEK", name: "TBO Tek Ltd.", sector: "Travel Tech", price: 1620.00, chg: 76.09, isIpo: true },
-    { symbol: "INDEGENE", name: "Indegene Ltd.", sector: "Healthcare IT", price: 585.00, chg: 29.42, isIpo: true },
+    { symbol: "INDGN", name: "Indegene Ltd.", sector: "Healthcare IT", price: 585.00, chg: 29.42, isIpo: true },
     { symbol: "JYOTICNC", name: "Jyoti CNC Automation Ltd.", sector: "Industrial Machinery", price: 1180.00, chg: 256.50, isIpo: true },
-    { symbol: "VISHAL", name: "Vishal Mega Mart Ltd.", sector: "Retail", price: 115.00, chg: 47.44, isIpo: true },
-    { symbol: "ZINKA", name: "Zinka Logistics (BlackBuck)", sector: "Logistics", price: 310.00, chg: 13.55, isIpo: true },
-    { symbol: "ENVIRO", name: "Enviro Infra Engineers Ltd.", sector: "Water / Infra", price: 235.00, chg: 58.78, isIpo: true },
+    { symbol: "VMM", name: "Vishal Mega Mart Ltd.", sector: "Retail", price: 115.00, chg: 47.44, isIpo: true },
+    { symbol: "BLACKBUCK", name: "Zinka Logistics (BlackBuck)", sector: "Logistics", price: 310.00, chg: 13.55, isIpo: true },
+    { symbol: "EIEL", name: "Enviro Infra Engineers Ltd.", sector: "Water / Infra", price: 235.00, chg: 58.78, isIpo: true },
     { symbol: "NIVABUPA", name: "Niva Bupa Health Insurance", sector: "Insurance", price: 78.50, chg: 6.08, isIpo: true },
     { symbol: "LENSKART", name: "Lenskart Solutions Ltd.", sector: "Eyewear / Retail", price: 540.00, chg: 31.07, isIpo: true },
     { symbol: "BOAT", name: "Imagine Marketing (boAt)", sector: "Consumer Tech", price: 420.00, chg: 21.74, isIpo: true },
@@ -13570,14 +13570,31 @@
         if (r[0] && r[8] >= 2023) _recentIpoCache.add(String(r[0]).trim().toUpperCase());
       });
     }
-    // 2. All verified landmark recent 3-year IPO listings present in ST
+    // 2. All verified landmark recent 3-year Indian IPO listings (2023–2026) present in ST
     const verifiedRecentIpos = [
+      // 2025–2026 Major Listings
+      "ICICIAMC", "VMM", "QPOWER", "LAXMIDENTL", "SGLTL", "DENTA", "DIFFNKG",
+      "SAGILITY", "BLACKBUCK", "SAILIFE", "IGIL", "VENTIVE", "CARRARO", "MAMATA",
+      "DAMCAPITAL", "TRANSRAILL", "SENORES", "UNIMECH", "INDOFARM", "AJAXENGG",
+      "GODAVARIB", "NIVABUPA", "GARUDA", "MANBA", "NORTHARC", "TOLINS", "GALAPREC",
+      "INTERARCH", "ORIENTTECH", "AKUMS", "BANSALWIRE", "IXIGO", "AWFIS", "SRM",
+      "KRYSTAL", "RKSWAMY", "MUKKA", "JUNIPER", "GPTHEALTH", "ENTERO", "JSFB",
+      "RPTECH", "PARKHOTELS", "BLSE", "EPACK", "MEDIASSIST", "INNOVACAP", "MUFTI",
+      "SURAJEST", "INOXINDIA", "INDIASHLTR", "ESAFSFB", "BLUEJET", "IRMENERGY",
+      "SAMHI", "ZAGGLE", "RISHABH", "VISHNU", "TVSSCS", "YATHARTH", "HMAAGRO",
+      "AVALON", "DIVGIITTS", "KRN", "EMCURE", "JYOTICNC", "AFCONS", "MOBIKWIK",
+      "ACMESOLAR", "PREMIERENE", "WAAREEENER", "NTPCGREEN", "SWIGGY", "HYUNDAI",
+      "BAJAJHFL", "GODIGIT", "TBOTEK", "INDGN", "AADHARHFC", "EIEL",
+      // 2023–2024 Landmark IPOs
       "DOMS", "KAYNES", "ARKADE", "CEIGALL", "SANSTAR", "STANLEY",
       "JGCHEM", "GOPAL", "EXICOM", "AZAD", "HAPPYFORGE", "MOTISONS",
       "MUTHOOTMF", "ASKAUTOLTD", "PROTEAN", "IKIO", "SULA", "KALYANKJIL",
       "MEDANTA", "DELHIVERY", "CAMPUS", "AETHER", "SYRMA", "HAPPSTMNDS",
-      "MAPMYINDIA", "TATACAP", "BHARTIHEXA", "HDBFS", "ZOMATO", "PAYTM",
-      "NYKAA", "POLICYBZR", "CAMS", "OLA", "OLAELEC", "FIRSTCRY", "HONASA"
+      "MAPMYINDIA", "TATACAP", "BHARTIHEXA", "HDBFS", "ETERNAL", "PAYTM",
+      "NYKAA", "POLICYBZR", "CAMS", "OLAELEC", "FIRSTCRY", "HONASA",
+      "TATATECH", "IREDA", "JSWINFRA", "FEDFINA", "GANDHAR", "FLAIR",
+      "RRKABEL", "CONCORDBIO", "SBFC", "NETWEB", "UTKARSHBNK", "SENCO",
+      "CYIENTDLM", "IDEAFORGE", "AEROFLEX", "CELLO", "MANKIND"
     ];
     verifiedRecentIpos.forEach(s => _recentIpoCache.add(s));
     return _recentIpoCache;
@@ -27668,7 +27685,7 @@
     "NIFTY MS IT TELCM": ["TATAELXSI", "KPITTECH", "PERSISTENT", "COFORGE", "CYIENT", "SONATSOFTW", "ROUTE", "HFCL", "TEJASNET", "STERLITE"],
     "NIFTY RAILWAYS PSU": ["IRCTC", "IRFC", "RVNL", "RAILTEL", "RITES", "IRCON", "TITAGARH", "JUPITERIN", "TEXRAIL"],
     "NIFTY ENERGY": ["RELIANCE", "NTPC", "POWERGRID", "ONGC", "BPCL", "IOC", "COALINDIA", "TATAPOWER", "ADANIGREEN", "ADANIPOWER", "SUZLON"],
-    "NIFTY IPO": ["ANTALA", "VPFL", "VECTRAS", "MAXENGS", "JOHNSONCAB", "HGSINDIALT", "BCSSL", "CRL", "MKSONS", "AJWA", "BLSPOLY", "SFCTECH", "WISCON", "EDELALTS", "CORE4", "PARASHLTH", "JPL", "ZETWERK", "SMT", "TONBO", "SHELLZ", "BONFIG", "RAVITA", "FUSIONCX", "HDFIRE", "LOANFRONT", "RKFAL", "PARASYNTEX", "ACMERAIL", "TNA", "EIMS", "SHREETNB", "DSL", "OMARA", "NITYAS", "SOLLFEGE", "SJP", "EVENTIONS", "VNL", "GREENASIA", "BLACKOPAL", "PAPADMALJI", "VANS", "SRIT", "SHIVCHEM", "ACMEUNIV", "PIND", "SHAHINVEST", "SAIURJA", "BMISL", "HIMALAYAN", "ACEVECTOR", "GERMAN", "RUNWALENTR", "ORIENTCABL", "DUDANI", "AONESTEELS", "MONEYVIEW", "PESHWA", "ROOPA", "SKOFFSET", "ARMEE", "LIQVD", "SWASTIKAIN", "ELEVATE", "POOJALOGIS", "UNITEC", "ADROITIND", "COREIN", "HNIL", "VARMORA", "ANAND", "ROBOKIDZ", "FXML", "VIVEKANAND", "AXIOMGAS", "SONA", "KHERIAAUTO", "NSE", "SPECTRAA", "JSIPL", "SSRETAIL", "HEROMOTORS", "QAL", "SHAKTIPOLY", "VAMAWOVEN", "MANIKA", "CENTURYOOH", "INJECTO", "VEEGALAND", "PANCHATV", "RAKSAN", "OMGL", "SPEEDEX", "AMTECH", "ARCIL", "STEAMHOUSE", "KARAMTARA", "LCCPROJECT", "VINOD", "INFRAX", "MPIMANIPAL", "RENTOMOJO", "KANOHAR", "PRASOLCHEM", "GLASSWALL", "PRANAV", "APANA", "QUALIANCE", "MOMSBELIEF", "DEEPA", "FARMPEACE", "FLYHI", "SHANTIINOR", "PHYCHEM", "PERNIASPOP", "ASHUTOSH", "PRIORITY", "PALUCK", "CSML", "ESDS", "KWICK", "LUMINO", "SUMAX", "ANNU", "SKYWAYS", "ABH", "MADHURKNIT", "SYMBIOTEC", "HTEL", "AUGMONT", "TEMPSENS", "DHANWEL", "GAJA", "MOPSHOP", "SUNSHINE", "SHANKESH", "FASCINATE", "LALITHAA", "HORIZONIND", "ENS", "TECHNOCRAT", "SKYTECH", "CREDENT", "PRAMODINI", "SHIPROCKET", "BLEL", "QTFOODS", "MILKYMIST", "SHAMFOAM", "DHOOTTRANS", "MOLBIO", "TECHNOCRAF", "OPTIMYSTIX", "LEAP", "LAPL", "TATACAP", "HDBFS", "LGEINDIA", "ICICIPRUAM", "VISHALMEGA", "MEESHO", "KALPATARU", "CORONAREM", "WAKEFIT", "RUBICON", "PARKMEDI", "AEQUS", "QUALITYPOW", "LAXMIDNTL", "MOBIKWIK", "KSHINTL", "NEPHROCARE", "STNDRDGLAS", "VIDYAWIRES", "QUADRANT", "DENTAWATR", "STALLION", "DIFFUSION", "HIGHWAYINF", "HYUNDAI", "SWIGGY", "WAAREEENER", "PREMIERENE", "BAJAJHFL", "NTPCGREEN", "OLAELEC", "BHARTIHEXA", "FIRSTCRY", "GODIGIT", "AADHARHFL", "EMCURE", "AFCONS", "ACMESOLAR", "KRN", "TBOTEK", "INDEGENE", "JYOTICNC", "ENVIRO"],
+    "NIFTY IPO": ["ANTALA", "VPFL", "VECTRAS", "MAXENGS", "JOHNSONCAB", "HGSINDIALT", "BCSSL", "CRL", "MKSONS", "AJWA", "BLSPOLY", "SFCTECH", "WISCON", "EDELALTS", "CORE4", "PARASHLTH", "JPL", "ZETWERK", "SMT", "TONBO", "SHELLZ", "BONFIG", "RAVITA", "FUSIONCX", "HDFIRE", "LOANFRONT", "RKFAL", "PARASYNTEX", "ACMERAIL", "TNA", "EIMS", "SHREETNB", "DSL", "OMARA", "NITYAS", "SOLLFEGE", "SJP", "EVENTIONS", "VNL", "GREENASIA", "BLACKOPAL", "PAPADMALJI", "VANS", "SRIT", "SHIVCHEM", "ACMEUNIV", "PIND", "SHAHINVEST", "SAIURJA", "BMISL", "HIMALAYAN", "ACEVECTOR", "GERMAN", "RUNWALENTR", "ORIENTCABL", "DUDANI", "AONESTEELS", "MONEYVIEW", "PESHWA", "ROOPA", "SKOFFSET", "ARMEE", "LIQVD", "SWASTIKAIN", "ELEVATE", "POOJALOGIS", "UNITEC", "ADROITIND", "COREIN", "HNIL", "VARMORA", "ANAND", "ROBOKIDZ", "FXML", "VIVEKANAND", "AXIOMGAS", "SONA", "KHERIAAUTO", "NSE", "SPECTRAA", "JSIPL", "SSRETAIL", "HEROMOTORS", "QAL", "SHAKTIPOLY", "VAMAWOVEN", "MANIKA", "CENTURYOOH", "INJECTO", "VEEGALAND", "PANCHATV", "RAKSAN", "OMGL", "SPEEDEX", "AMTECH", "ARCIL", "STEAMHOUSE", "KARAMTARA", "LCCPROJECT", "VINOD", "INFRAX", "MPIMANIPAL", "RENTOMOJO", "KANOHAR", "PRASOLCHEM", "GLASSWALL", "PRANAV", "APANA", "QUALIANCE", "MOMSBELIEF", "DEEPA", "FARMPEACE", "FLYHI", "SHANTIINOR", "PHYCHEM", "PERNIASPOP", "ASHUTOSH", "PRIORITY", "PALUCK", "CSML", "ESDS", "KWICK", "LUMINO", "SUMAX", "ANNU", "SKYWAYS", "ABH", "MADHURKNIT", "SYMBIOTEC", "HTEL", "AUGMONT", "TEMPSENS", "DHANWEL", "GAJA", "MOPSHOP", "SUNSHINE", "SHANKESH", "FASCINATE", "LALITHAA", "HORIZONIND", "ENS", "TECHNOCRAT", "SKYTECH", "CREDENT", "PRAMODINI", "SHIPROCKET", "BLEL", "QTFOODS", "MILKYMIST", "SHAMFOAM", "DHOOTTRANS", "MOLBIO", "TECHNOCRAF", "OPTIMYSTIX", "LEAP", "LAPL", "TATACAP", "HDBFS", "LGEINDIA", "ICICIAMC", "VMM", "MEESHO", "KALPATARU", "CORONAREM", "WAKEFIT", "RUBICON", "PARKMEDI", "AEQUS", "QPOWER", "LAXMIDENTL", "MOBIKWIK", "KSHINTL", "NEPHROCARE", "SGLTL", "VIDYAWIRES", "QUADRANT", "DENTA", "STALLION", "DIFFNKG", "HIGHWAYINF", "HYUNDAI", "SWIGGY", "WAAREEENER", "PREMIERENE", "BAJAJHFL", "NTPCGREEN", "OLAELEC", "BHARTIHEXA", "FIRSTCRY", "GODIGIT", "AADHARHFC", "EMCURE", "AFCONS", "ACMESOLAR", "KRN", "TBOTEK", "INDGN", "JYOTICNC", "EIEL"],
     "NIFTY SMLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "NIFTY SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),
     "SMALLCAP 250": NIFTY_SMALLCAP_250_DATA.map(s => s.symbol),

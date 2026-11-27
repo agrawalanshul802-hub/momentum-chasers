@@ -1,6 +1,6 @@
 {
   "eodMarket": {
-    "lastRun": "2026-11-27T04:32:32.899Z",
+    "lastRun": "2026-11-27T04:44:23.302Z",
     "status": "success",
     "date": "2026-11-26",
     "dateLabel": "26 Nov 2026 (3:30 pm Closing)",
@@ -12,10 +12,10 @@
     "updatedEmasCount": 1611,
     "adNetFlow": {
       "advances": 1098,
-      "declines": 1535,
-      "unchanged": 64,
-      "netAD": -437,
-      "adRatio": 0.72
+      "declines": 1537,
+      "unchanged": 62,
+      "netAD": -439,
+      "adRatio": 0.71
     },
     "nifty50": {
       "price": "25,884.50",
@@ -32,7 +32,7 @@
     "errors": []
   },
   "fiiDii": {
-    "lastRun": "2026-11-27T04:30:14.494Z",
+    "lastRun": "2026-11-27T04:24:09.561Z",
     "status": "success",
     "date": "2026-11-26",
     "source": "Groww + ScreeningMantis Official Feeds",
