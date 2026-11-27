@@ -18666,7 +18666,7 @@
       if (_orderFlowTimer) clearInterval(_orderFlowTimer);
       if (json && json.isLiveSession) {
         _orderFlowTimer = setInterval(() => {
-          if (document.getElementById("tv-orderflow-panel") && State.activeStock === cleanSym) {
+          if (document.getElementById("tv-orderflow-panel") && (State.activeStock === cleanSym || (State.view === "orderflow" && State.orderFlowSymbol === cleanSym))) {
             loadStockOrderFlow(cleanSym, true);
           } else {
             clearInterval(_orderFlowTimer);
@@ -18681,6 +18681,78 @@
       }
     }
   }
+  function renderOrderFlowView() {
+    const activeSym = (State.orderFlowSymbol || State.activeStock || "RELIANCE").toUpperCase();
+    const quickPicks = ["RELIANCE", "HDFCBANK", "ICICIBANK", "SBIN", "INFY", "TCS", "BHARTIARTL", "AXISBANK", "LT", "ETERNAL"];
+    const stockRow = (typeof ST_MAP !== "undefined" && ST_MAP[activeSym]) || null;
+    const stockName = stockRow && stockRow[8] ? stockRow[8].name : activeSym;
+
+    return `
+      <div class="view-header-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+        <div class="view-title-left">
+          <button class="section-back-btn" data-action="go-back" onclick="navigateBack(event)" title="Go back to previous page">
+            <span class="back-arrow">←</span> <span>Back</span>
+          </button>
+          <div>
+            <h2 class="view-heading"><span>📉</span> Live Order Flow &amp; Volume Profile</h2>
+            <p class="view-subheading">Real-time 5-minute intraday Buy/Sell Delta, Point of Control (POC), 70% Value Area, and Price-by-Volume Footprint Ladder for any NSE/BSE stock.</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button class="toolbar-refresh-btn" type="button" onclick="window.openStockViewFromOrderFlow('${escapeHtml(activeSym)}')" title="Open full candlestick chart for ${escapeHtml(activeSym)}">
+            <span>📈</span> Open Full Chart
+          </button>
+          <button class="toolbar-refresh-btn" type="button" onclick="window.loadStockOrderFlow('${escapeHtml(activeSym)}', true)">
+            <span>⚡</span> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div class="tv-orderflow-card" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:260px;max-width:480px;">
+            <input id="of-symbol-input" type="text" value="${escapeHtml(activeSym)}" placeholder="Type NSE/BSE symbol (e.g. RELIANCE, VMM, HDFCBANK)..."
+              style="flex:1;height:34px;padding:0 12px;border-radius:6px;border:1px solid var(--ln);background:var(--sf1, #0c1017);color:var(--ink);font-size:12.5px;font-family:var(--font-mono);text-transform:uppercase;"
+              onkeydown="if(event.key==='Enter'){window.selectOrderFlowSymbol(this.value);}" />
+            <button class="toolbar-refresh-btn" type="button" onclick="window.selectOrderFlowSymbol(document.getElementById('of-symbol-input').value)" style="height:34px;">
+              <span>🔍</span> Analyze Flow
+            </button>
+          </div>
+          <div style="font-size:12px;color:var(--mu);">
+            Active: <strong style="color:var(--ink);">${escapeHtml(activeSym)}</strong> · ${escapeHtml(stockName)}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--mu);font-weight:600;margin-right:4px;">Quick Picks:</span>
+          ${quickPicks.map(sym => `
+            <button type="button" class="pill-segment-btn ${sym === activeSym ? "active" : ""}"
+              style="border:1px solid var(--ln);padding:4px 10px;font-size:11px;"
+              onclick="window.selectOrderFlowSymbol('${sym}')">${sym}</button>
+          `).join("")}
+        </div>
+      </div>
+
+      <div id="tv-orderflow-panel" class="tv-orderflow-card">
+        <div style="font-size:12px;color:var(--mu);">Loading live 5m Order Flow &amp; Volume Profile for ${escapeHtml(activeSym)}...</div>
+      </div>
+    `;
+  }
+
+  window.selectOrderFlowSymbol = function (rawSym) {
+    const clean = String(rawSym || "").trim().toUpperCase().replace(/\.(NS|BO)$/i, "");
+    if (!clean) return;
+    State.orderFlowSymbol = clean;
+    _lastOrderFlowKey = "";
+    renderCurrentView();
+  };
+
+  window.openStockViewFromOrderFlow = function (sym) {
+    if (!sym) return;
+    State.activeStock = sym;
+    State.view = "stock";
+    renderCurrentView();
+  };
+
   window.loadStockOrderFlow = loadStockOrderFlow;
 
   function renderNativeCandlestickChart(symbol) {
@@ -35692,6 +35764,13 @@
         container.innerHTML = renderNetFlowView();
         setupNetFlowEvents();
         break;
+      case "orderflow": {
+        const ofSym = (State.orderFlowSymbol || State.activeStock || "RELIANCE").toUpperCase();
+        State.orderFlowSymbol = ofSym;
+        container.innerHTML = renderOrderFlowView();
+        loadStockOrderFlow(ofSym, true);
+        break;
+      }
       case "stock":
         container.innerHTML = renderStockView();
         try {
