@@ -28729,7 +28729,6 @@
             <div class="heatmap-tile-symbol">${t.symbol}</div>
             <div class="heatmap-tile-price">${priceText}</div>
             <div class="heatmap-tile-chg">${chgText}</div>
-            ${t.isSector ? `<div class="heatmap-tile-drill-hint">Click for stocks →</div>` : ''}
           </div>
         </div>
       `;
