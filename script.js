@@ -10486,7 +10486,7 @@
     midcap150: { ema10: 46, ema20: 53, ema50: 48, ema200: 48 },
     smallcap250: { ema10: 50, ema20: 52, ema50: 46, ema200: 43 }
   };
-  let BREADTH_LAST_UPDATED = "Live Market Session";
+  let BREADTH_LAST_UPDATED = "Daily EOD Breadth";
 
   function getEmaPillClass(val) {
     const v = Number(val) || 0;
@@ -10564,7 +10564,7 @@
         if (scBreadth) BREADTH.smallcap250 = scBreadth;
       }
 
-      BREADTH_LAST_UPDATED = `Live Market Session · Updated ${new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' })}`;
+      BREADTH_LAST_UPDATED = `Updated ${new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' })}`;
     } catch (e) {
       console.warn("calculateLiveMarketBreadth notice:", e);
     }
@@ -13324,10 +13324,6 @@
           <div>
             <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg> Market Breadth Intelligence</h2>
             <div style="display:flex;align-items:center;gap:10px;margin-top:4px;flex-wrap:wrap;">
-              <span class="nav-badge-pill" style="background:rgba(34,197,94,0.15);color:#22c55e;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
-                <span class="live-pulse" style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
-                <span>Live Breadth Stream</span>
-              </span>
               <span style="font-size:12px;color:var(--mu);">${escapeHtml(BREADTH_LAST_UPDATED)}</span>
             </div>
           </div>
