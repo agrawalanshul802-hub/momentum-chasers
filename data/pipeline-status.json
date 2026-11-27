@@ -32,21 +32,21 @@
     "errors": []
   },
   "fiiDii": {
-    "lastRun": "2026-11-27T04:24:09.561Z",
+    "lastRun": "2026-11-27T22:09:35.362Z",
     "status": "success",
-    "date": "2026-11-26",
+    "date": "2026-11-27",
     "source": "Groww + ScreeningMantis Official Feeds",
     "entry": {
-      "date": "2026-11-26",
-      "fiiBuy": 17879.74,
-      "fiiSell": 12036.41,
-      "fiiNet": 5843.33,
-      "diiBuy": 24352.87,
-      "diiSell": 18722.15,
-      "diiNet": 5630.72
+      "date": "2026-11-27",
+      "fiiBuy": 14259.45,
+      "fiiSell": 12625.12,
+      "fiiNet": 1634.33,
+      "diiBuy": 17263.65,
+      "diiSell": 17820.07,
+      "diiNet": -556.42
     },
     "sectorTurnover": {
-      "latestDate": "26-11",
+      "latestDate": "27-11",
       "totalSectors": 44
     },
     "errors": []
