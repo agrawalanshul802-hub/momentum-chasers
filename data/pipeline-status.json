@@ -1,38 +1,38 @@
 {
   "eodMarket": {
-    "lastRun": "2026-11-26T19:44:08.005Z",
+    "lastRun": "2026-11-27T04:30:08.818Z",
     "status": "success",
-    "date": "2026-11-25",
-    "dateLabel": "25 Nov 2026 (3:30 pm Closing)",
-    "shortEodLabel": "25 Nov EOD",
+    "date": "2026-11-26",
+    "dateLabel": "26 Nov 2026 (3:30 pm Closing)",
+    "shortEodLabel": "26 Nov EOD",
     "quoteMatches": 2703,
     "updatedSectors": 40,
     "updatedHeatmapStocks": 956,
     "updatedUniverseStocks": 2660,
     "updatedEmasCount": 1611,
     "adNetFlow": {
-      "advances": 1046,
-      "declines": 1588,
-      "unchanged": 63,
-      "netAD": -542,
-      "adRatio": 0.66
+      "advances": 1098,
+      "declines": 1535,
+      "unchanged": 64,
+      "netAD": -437,
+      "adRatio": 0.72
     },
     "nifty50": {
-      "price": "25,819.25",
-      "chg": "469.60",
-      "pct": "1.85",
+      "price": "25,884.50",
+      "chg": "65.25",
+      "pct": "0.25",
       "isUp": true
     },
     "bankNifty": {
-      "price": "63,703.25",
-      "chg": "1117.90",
-      "pct": "1.79",
-      "isUp": true
+      "price": "63,535.30",
+      "chg": "-167.95",
+      "pct": "-0.26",
+      "isUp": false
     },
     "errors": []
   },
   "fiiDii": {
-    "lastRun": "2026-11-27T04:24:09.561Z",
+    "lastRun": "2026-11-27T04:30:14.494Z",
     "status": "success",
     "date": "2026-11-26",
     "source": "Groww + ScreeningMantis Official Feeds",
