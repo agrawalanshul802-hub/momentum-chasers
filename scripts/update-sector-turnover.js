@@ -127,19 +127,45 @@ async function run() {
     };
   });
 
+  const outPath = path.join(__dirname, '..', 'data', 'authentic-sector-turnover.json');
+  let mergedDates = [...dates];
+  let mergedSectors = sectors;
+
+  // Preserve older authentic sessions up to 20+ sessions so Trailing 20 Sessions always has full history
+  if (fs.existsSync(outPath)) {
+    try {
+      const prevPayload = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+      const prevDates = Array.isArray(prevPayload.dates) ? prevPayload.dates : [];
+      const extraDates = prevDates.filter(d => !mergedDates.includes(d));
+      if (extraDates.length > 0) {
+        mergedDates = [...mergedDates, ...extraDates].slice(0, 30);
+        const prevMap = new Map((prevPayload.sectors || []).map(s => [s.id || s.name, s]));
+        mergedSectors = sectors.map(sec => {
+          const prevSec = prevMap.get(sec.id) || prevMap.get(sec.name);
+          const mergedDays = { ...sec.days };
+          for (const d of mergedDates) {
+            if (!mergedDays[d] && prevSec && prevSec.days && prevSec.days[d]) {
+              mergedDays[d] = prevSec.days[d];
+            }
+          }
+          return { ...sec, days: mergedDays };
+        });
+      }
+    } catch (_) {}
+  }
+
   const payload = {
     success: true,
     source: 'ScreeningMantis Live Market Engine & NSE Official Bhavcopy',
     metric: "Today's turnover vs the sector's own trailing 8-session average",
     baselineSessions: 8,
-    dates: dates,
-    totalSectors: sectors.length,
-    sectors: sectors
+    dates: mergedDates,
+    totalSectors: mergedSectors.length,
+    sectors: mergedSectors
   };
 
-  const outPath = path.join(__dirname, '..', 'data', 'authentic-sector-turnover.json');
   fs.writeFileSync(outPath, JSON.stringify(payload, null, 2), 'utf8');
-  console.log('[TurnoverUpdater] Successfully saved authentic-sector-turnover.json');
+  console.log(`[TurnoverUpdater] Successfully saved authentic-sector-turnover.json (${mergedDates.length} sessions)`);
 
   // Also print authenticMatrix snippet for script.js
   const matrixPath = path.join(__dirname, '..', 'data', 'authentic-matrix.json');
