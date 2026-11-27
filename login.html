@@ -7808,19 +7808,39 @@
               const msgParts = [];
               if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
               if (fb.note) msgParts.push(fb.note);
+              const payload = {
+                name: u.name || 'Visitor',
+                email: u.email || 'visitor@momentumchasers.in',
+                topic: 'Helpful Rating (' + fb.rating + '/5)',
+                sentiment: fb.sentiment,
+                message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
+              };
+              let emailDispatched = false;
               try {
-                await fetch('/api/feedback', {
+                const res = await fetch('/api/feedback', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    name: u.name || 'Visitor',
-                    email: u.email || 'visitor@momentumchasers.in',
-                    topic: 'Helpful Rating (' + fb.rating + '/5)',
-                    sentiment: fb.sentiment,
-                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
-                  })
+                  body: JSON.stringify(payload)
                 });
+                const data = await res.json().catch(() => ({}));
+                emailDispatched = !!(data && data.emailDispatched);
               } catch (_) { }
+              if (!emailDispatched) {
+                fetch('https://formsubmit.co/ajax/support@momentumchasers.in', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                  body: JSON.stringify({
+                    name: payload.name,
+                    email: payload.email,
+                    topic: payload.topic,
+                    sentiment: payload.sentiment,
+                    message: payload.message,
+                    _subject: '⚡ Momentum Chasers Feedback [' + fb.sentiment + ']: ' + payload.topic,
+                    _template: 'table',
+                    _captcha: 'false'
+                  })
+                }).catch(() => {});
+              }
             }
           });
         }

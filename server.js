@@ -7471,38 +7471,93 @@ const server = http.createServer(async (req, res) => {
 
       console.log(`📩 [Direct Feedback] from ${name} (${email || 'No email'}) [${topic}]: ${message.slice(0, 80)}...`);
 
+      const targetEmail = (process.env.FEEDBACK_TO_EMAIL || 'support@momentumchasers.in').trim();
+      const resendKey = (process.env.RESEND_API_KEY || '').trim();
+      let emailDispatched = false;
+
+      if (resendKey) {
+        try {
+          const resendRes = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: process.env.RESEND_FROM_EMAIL || 'Momentum Chasers <onboarding@resend.dev>',
+              to: [targetEmail],
+              reply_to: email || undefined,
+              subject: `⚡ Momentum Chasers Feedback [${sentiment || 'Review'}]: ${topic} (${name})`,
+              html: `
+                <h2>New User Feedback — Momentum Chasers</h2>
+                <p><strong>From:</strong> ${name} (${email || 'No email'})</p>
+                <p><strong>Topic / Rating:</strong> ${topic}</p>
+                <p><strong>Sentiment:</strong> ${sentiment || 'N/A'}</p>
+                <p><strong>Message:</strong></p>
+                <blockquote style="background:#f4f4f5;padding:12px;border-left:4px solid #10b981;">${message.replace(/</g, '&lt;')}</blockquote>
+                <p><small>ID: ${feedbackItem.id} · ${feedbackItem.receivedAt}</small></p>
+              `
+            })
+          });
+          if (resendRes.ok) {
+            emailDispatched = true;
+            console.log(`✅ [Feedback Email] Delivered via Resend to ${targetEmail}`);
+          } else {
+            const errTxt = await resendRes.text().catch(() => '');
+            console.warn(`⚠️ [Feedback Email] Resend status ${resendRes.status}: ${errTxt}`);
+          }
+        } catch (e) {
+          console.warn('⚠️ [Feedback Email] Resend error:', e.message);
+        }
+      }
+
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       });
       res.end(JSON.stringify({
         success: true,
-        message: 'Feedback received and archived. Sent to support@momentumchasers.in',
+        emailDispatched,
+        message: `Feedback received and archived. Sent to ${targetEmail}`,
         id: feedbackItem.id
       }));
 
-      // Non-blocking background email dispatch to support@momentumchasers.in
-      (async () => {
-        try {
-          await fetch('https://formsubmit.co/ajax/support@momentumchasers.in', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({
-              name,
-              email: email || 'no-reply@momentumchasers.in',
-              topic,
-              sentiment,
-              message,
-              _subject: `⚡ Momentum Chasers Feedback [${sentiment}]: ${topic} (${name})`,
-              _template: 'table',
-              _captcha: 'false',
-              _replyto: email || 'support@momentumchasers.in'
-            })
-          });
-        } catch (e) {
-          console.warn('Background FormSubmit email dispatch warning:', e.message);
-        }
-      })();
+      // Non-blocking FormSubmit fallback when Resend is not configured
+      if (!emailDispatched) {
+        (async () => {
+          try {
+            const origin = req.headers.origin || (req.headers.host ? `https://${req.headers.host}` : 'https://momentumchasers.in');
+            const fbRes = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Origin': origin,
+                'Referer': origin + '/'
+              },
+              body: JSON.stringify({
+                name,
+                email: email || 'no-reply@momentumchasers.in',
+                topic,
+                sentiment,
+                message,
+                _subject: `⚡ Momentum Chasers Feedback [${sentiment || 'Review'}]: ${topic} (${name})`,
+                _template: 'table',
+                _captcha: 'false',
+                _replyto: email || targetEmail
+              })
+            });
+            const fbData = await fbRes.json().catch(() => ({}));
+            if (fbRes.ok && fbData && (fbData.success === 'true' || fbData.success === true)) {
+              console.log(`✅ [Feedback Email] Delivered via FormSubmit to ${targetEmail}`);
+            } else {
+              console.warn(`⚠️ [Feedback Email] FormSubmit status ${fbRes.status}:`, JSON.stringify(fbData));
+            }
+          } catch (e) {
+            console.warn('Background FormSubmit email dispatch warning:', e.message);
+          }
+        })();
+      }
       return;
     } catch (err) {
       console.error('Error handling feedback submission:', err);
