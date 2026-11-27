@@ -1231,28 +1231,41 @@
             <div id="helpful-rating-app-mount"></div>
         </div>
     </div>
-    <script>            indow.openAppFeedbackModal = function () {
-        var             ment.getElementB            -feedback-modal');
-                    return;
+    <script>
+      window.openAppFeedbackModal = function () {
+        var m = document.getElementById('app-feedback-modal');
+        if (!m) return;
         m.style.display = 'flex';
-        var mount = do            etElementById('helpful-rating-app-mount');
-        if (mount && !mount.dataset.mounted &&                 dow.mountHelpfulRating === 'f                {
-          mount.dataset.mounted =                        window.mountHelpfulRating(mount, {
-                        tion: 'Was Momentum Chasers help                             onSubmit: async function (fb) {
-              var u = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAut                        indow.MomentumAuth.                        {};
+        var mount = document.getElementById('helpful-rating-app-mount');
+        if (mount && !mount.dataset.mounted && typeof window.mountHelpfulRating === 'function') {
+          mount.dataset.mounted = '1';
+          window.mountHelpfulRating(mount, {
+            question: 'Was Momentum Chasers helpful?',
+            onSubmit: async function (fb) {
+              var u = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
               var msgParts = [];
-              if (fb.reasons && fb.reasons.length) m                        Reasons: ' + fb.reasons.join(', '));
-                        if (fb                            push(fb.note);
-              tr                                  await fetch('/                                                 method: 'POST',
-                                                ent-Type': 'application                                            body: JSON.stringi                                         name: u.name || 'Trader',
-                    email: u.email || localStorage.getIte                                    | 'trader@momentumchasers.in',
-                                                    Rating (' + fb.rating + '                                          sentiment: fb.sentiment,
-                    message: msgParts.join(' | ') || ('                                g +                            time                                      })                                                       c        _)                   }
+              if (fb.reasons && fb.reasons.length) msgParts.push('Reasons: ' + fb.reasons.join(', '));
+              if (fb.note) msgParts.push(fb.note);
+              try {
+                await fetch('/api/feedback', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    name: u.name || 'Trader',
+                    email: u.email || localStorage.getItem('mc_user_email') || 'trader@momentumchasers.in',
+                    topic: 'Helpful Rating (' + fb.rating + '/5)',
+                    sentiment: fb.sentiment,
+                    message: msgParts.join(' | ') || ('Rated ' + fb.rating + '/5 (' + fb.sentiment + ')')
+                  })
+                });
+              } catch (_) { }
+            }
           });
         }
       };
-            ndow.closeAppFeedbackModal = function () {
-        var             ment.getElementById('app-feedback        ');     if (yle.display = 'none';
+      window.closeAppFeedbackModal = function () {
+        var m = document.getElementById('app-feedback-modal');
+        if (m) m.style.display = 'none';
       };
     </script>
 
