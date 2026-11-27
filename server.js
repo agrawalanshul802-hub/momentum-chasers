@@ -7491,26 +7491,52 @@ const server = http.createServer(async (req, res) => {
     }
 
     const mode = (parsedUrl.query.mode || 'eod').toString().toLowerCase();
+    const isSync = parsedUrl.query.sync === '1';
+
+    if (global._cronPipelineRunning) {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, status: 'already_running', mode, timestamp: new Date().toISOString() }));
+      return;
+    }
+
+    const executePipeline = async () => {
+      global._cronPipelineRunning = true;
+      try {
+        const pipelineModule = require('./scripts/daily_market_pipeline');
+        const result = {};
+        if (mode === 'eod' || mode === 'all') {
+          result.eod = await pipelineModule.runEodMarketUpdate();
+        }
+        if (mode === 'fii' || mode === 'all') {
+          result.fii = await pipelineModule.runFiiDiiUpdate();
+        }
+        CACHE.clear();
+        if (typeof MomentumMarketEngine !== 'undefined') {
+          MomentumMarketEngine.cachedSectors = null;
+          MomentumMarketEngine.cachedSnapshot = null;
+          MomentumMarketEngine.cachedBreadth = null;
+          MomentumMarketEngine.cachedSectorShare = null;
+          MomentumMarketEngine.lastSectorsTime = 0;
+          MomentumMarketEngine.lastSnapshotTime = 0;
+          MomentumMarketEngine.lastBreadthTime = 0;
+          MomentumMarketEngine.lastSectorShareTime = 0;
+        }
+        return result;
+      } finally {
+        global._cronPipelineRunning = false;
+      }
+    };
+
+    if (!isSync) {
+      // Respond immediately (202 Accepted) so external cron services like cron-job.org never hit 30s timeouts
+      res.writeHead(202, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ success: true, status: 'started', mode, timestamp: new Date().toISOString() }));
+      executePipeline().catch(err => console.error('[CRON] Background pipeline error:', err.message));
+      return;
+    }
+
     try {
-      const pipelineModule = require('./scripts/daily_market_pipeline');
-      const result = {};
-      if (mode === 'eod' || mode === 'all') {
-        result.eod = await pipelineModule.runEodMarketUpdate();
-      }
-      if (mode === 'fii' || mode === 'all') {
-        result.fii = await pipelineModule.runFiiDiiUpdate();
-      }
-      CACHE.clear();
-      if (typeof MomentumMarketEngine !== 'undefined') {
-        MomentumMarketEngine.cachedSectors = null;
-        MomentumMarketEngine.cachedSnapshot = null;
-        MomentumMarketEngine.cachedBreadth = null;
-        MomentumMarketEngine.cachedSectorShare = null;
-        MomentumMarketEngine.lastSectorsTime = 0;
-        MomentumMarketEngine.lastSnapshotTime = 0;
-        MomentumMarketEngine.lastBreadthTime = 0;
-        MomentumMarketEngine.lastSectorShareTime = 0;
-      }
+      const result = await executePipeline();
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ success: true, mode, timestamp: new Date().toISOString(), result }));
     } catch (err) {
