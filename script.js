@@ -15675,11 +15675,14 @@
     }
 
     try {
+      const uObj = (window.State && window.State.user) || (window.MomentumAuth && window.MomentumAuth.getUser && window.MomentumAuth.getUser()) || {};
+      const userEmail = uObj.email || localStorage.getItem('mc_user_email') || '';
+      const userName = uObj.name || '';
       const base = getApiBase();
       const res = await fetch(`${base}/api/payment/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code, ideaId: _currentPaymentIdeaId, planTier: planCfg.tierKey })
+        body: JSON.stringify({ code: code, ideaId: _currentPaymentIdeaId, planTier: planCfg.tierKey, email: userEmail, userName: userName })
       });
       const data = await res.json();
       if (data && data.success && data.unlocked) {

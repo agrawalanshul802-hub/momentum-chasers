@@ -1569,6 +1569,20 @@
             </select>
           </div>
           <div>
+            <label class="form-label">Max Users Limit</label>
+            <select id="coupon-max-uses" class="form-select">
+              <option value="0">∞ Unlimited Users</option>
+              <option value="1">1 User</option>
+              <option value="5">5 Users</option>
+              <option value="10">10 Users</option>
+              <option value="25">25 Users</option>
+              <option value="50">50 Users</option>
+              <option value="100">100 Users</option>
+              <option value="250">250 Users</option>
+              <option value="500">500 Users</option>
+            </select>
+          </div>
+          <div>
             <button type="submit" class="btn-gold" style="width:100%;height:38px;padding:0;">
               Add Coupon
             </button>
@@ -1593,13 +1607,14 @@
                 <th>Coupon Code</th>
                 <th>Discount</th>
                 <th>Applies To</th>
+                <th>Redemptions</th>
                 <th>Status</th>
                 <th style="text-align:right;">Actions</th>
               </tr>
             </thead>
             <tbody id="coupons-table-body">
               <tr>
-                <td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">Loading promo codes...
+                <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading promo codes...
                 </td>
               </tr>
             </tbody>
@@ -3093,7 +3108,7 @@
       var tbody = document.getElementById('coupons-table-body');
       if (!tbody) return;
       if (allCoupons.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">No coupon codes created yet. Use form above to add one.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No coupon codes created yet. Use form above to add one.</td></tr>';
         return;
       }
       var html = '';
@@ -3104,11 +3119,16 @@
         if (c.appliesTo === 'monthly') appliesText = 'Monthly VIP Pass';
         else if (c.appliesTo === 'quarterly') appliesText = 'Quarterly VIP Pass';
         else if (c.appliesTo === 'yearly') appliesText = 'Yearly VIP Pass';
+        var used = Number(c.usedCount || 0);
+        var maxU = Number(c.maxUses || 0);
+        var isLimitReached = maxU > 0 && used >= maxU;
+        var limitText = maxU > 0 ? (used + ' / ' + maxU + ' users') : (used + ' / ∞');
 
         html += '<tr>' +
           '<td><strong style="color:#f59e0b;font-family:monospace;font-size:13px;letter-spacing:0.05em;">' + escapeHtml(c.code) + '</strong></td>' +
           '<td><span style="color:#22c55e;font-weight:700;">' + escapeHtml(discountText) + '</span></td>' +
           '<td><span style="color:#94a3b8;">' + escapeHtml(appliesText) + '</span></td>' +
+          '<td><span style="font-family:monospace;font-size:12px;font-weight:700;color:' + (isLimitReached ? '#ef4444' : '#38bdf8') + ';">' + escapeHtml(limitText) + '</span></td>' +
           '<td><span class="badge-status ' + (c.active ? 'active' : 'disabled') + '">' + (c.active ? 'Active' : 'Disabled') + '</span></td>' +
           '<td style="text-align:right;white-space:nowrap;">' +
           '<button type="button" class="btn-outline" style="padding:3px 8px;font-size:11px;margin-right:6px;" onclick="toggleCoupon(\'' + escapeHtml(c.id) + '\', \'' + escapeHtml(c.code) + '\')">' +
@@ -3129,6 +3149,7 @@
       var type = document.getElementById('coupon-type').value;
       var amount = parseFloat(document.getElementById('coupon-amount').value);
       var appliesTo = document.getElementById('coupon-applies').value;
+      var maxUses = parseInt((document.getElementById('coupon-max-uses') || {}).value, 10) || 0;
       if (!code || isNaN(amount) || amount <= 0) {
         alert('Please provide a valid coupon code and discount amount.');
         return;
@@ -3137,7 +3158,7 @@
       fetch('/api/owner/coupons', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-owner-pin': activePin },
-        body: JSON.stringify({ pin: activePin, code: code, type: type, amount: amount, appliesTo: appliesTo })
+        body: JSON.stringify({ pin: activePin, code: code, type: type, amount: amount, appliesTo: appliesTo, maxUses: maxUses })
       })
         .then(function (res) { return res.json(); })
         .then(function (data) {
@@ -3414,8 +3435,12 @@
             '</button>' +
             '<button type="button" class="btn-outline" style="padding:2px 7px;font-size:10.5px;color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="deletePass(\'' + escapeHtml(p.id) + '\', \'' + escapeHtml(p.mobile) + '\')">🗑️</button>';
 
+        var sourceLabel = p.source || (p.couponCode ? ('Coupon (' + p.couponCode + ')') : ((p.mobile && p.mobile.indexOf('Coupon User') !== -1) ? p.mobile : (p.amount > 0 || p.utr || p.txRef ? 'Paid' : 'Owner Issued')));
+        var isCouponSrc = sourceLabel.toLowerCase().indexOf('coupon') !== -1 || sourceLabel.toLowerCase().indexOf('master') !== -1;
+        var sourceBadge = '<span style="display:inline-block;margin-left:6px;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;background:' + (isCouponSrc ? 'rgba(245,158,11,0.16);color:#fbbf24;' : 'rgba(34,197,94,0.16);color:#22c55e;') + '">' + escapeHtml(isCouponSrc ? ('🎟️ ' + sourceLabel) : ('💳 ' + sourceLabel)) + '</span>';
+        var timeDisplay = p.purchasedAt || p.issuedAt || '-';
         html += '<tr' + rowStyle + '>' +
-          '<td><strong>' + escapeHtml(p.mobile) + '</strong>' + (p.email ? '<br><span style="font-size:10.5px;color:#38bdf8;">' + escapeHtml(p.email) + '</span>' : '') + utrLine + '<br><span style="font-size:10.5px;color:#94a3b8;">Issued: ' + escapeHtml(p.issuedAt || (p.purchasedAt ? p.purchasedAt.slice(0, 10) : '')) + ' • Exp: ' + escapeHtml(p.expiresAt || '-') + '</span></td>' +
+          '<td><strong>' + escapeHtml(p.mobile) + '</strong>' + sourceBadge + (p.userName ? ' <span style="font-size:11px;color:#cbd5e1;">(' + escapeHtml(p.userName) + ')</span>' : '') + (p.email ? '<br><span style="font-size:10.5px;color:#38bdf8;">' + escapeHtml(p.email) + '</span>' : '') + utrLine + '<br><span style="font-size:10.5px;color:#94a3b8;">Date/Time: ' + escapeHtml(timeDisplay) + ' • Exp: ' + escapeHtml(p.expiresAt || '-') + '</span></td>' +
           '<td><span style="background:rgba(56,189,248,0.12);color:#38bdf8;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">' + escapeHtml(p.planTier) + '</span></td>' +
           '<td><code style="color:#f59e0b;font-weight:700;font-size:12px;background:#090d14;padding:2px 6px;border-radius:3px;">' + escapeHtml(p.secretPin || '----') + '</code></td>' +
           '<td><span style="font-size:11px;color:' + (p.deviceLock && p.deviceLock.includes('Locked') ? '#22c55e' : '#94a3b8') + ';">' + escapeHtml(p.deviceLock || 'Unbound') + '</span></td>' +

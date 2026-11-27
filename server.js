@@ -6921,6 +6921,8 @@ const server = http.createServer(async (req, res) => {
           type: c.type === 'percent' ? 'percent' : 'flat',
           amount: parseFloat(c.amount) || 0,
           appliesTo: c.appliesTo || 'all',
+          maxUses: Math.max(0, parseInt(c.maxUses, 10) || 0),
+          usedCount: Math.max(0, parseInt(c.usedCount, 10) || 0),
           active: c.active !== false,
           createdAt: c.createdAt || new Date().toISOString().slice(0, 10)
         }));
@@ -6941,6 +6943,8 @@ const server = http.createServer(async (req, res) => {
           type: body.type === 'percent' ? 'percent' : 'flat',
           amount: parseFloat(body.amount) || 0,
           appliesTo: body.appliesTo || 'all',
+          maxUses: Math.max(0, parseInt(body.maxUses, 10) || 0),
+          usedCount: 0,
           active: true,
           createdAt: new Date().toISOString().slice(0, 10)
         };
@@ -7090,6 +7094,7 @@ const server = http.createServer(async (req, res) => {
           else if (planTier.includes('Day') || planTier.includes('Tip')) days = 1;
         }
         const now = new Date();
+        const istTimeStr = new Date(now.getTime() + 5.5 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' IST';
         const exp = body.expiresAt && !isNaN(new Date(body.expiresAt).getTime())
           ? new Date(body.expiresAt)
           : new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
@@ -7100,8 +7105,10 @@ const server = http.createServer(async (req, res) => {
           email: email || '',
           planTier,
           secretPin,
+          source: 'Owner Issued',
           deviceLock: 'Unbound (Ready for first login)',
           issuedAt: now.toISOString().slice(0, 10),
+          purchasedAt: istTimeStr,
           expiresAt: exp.toISOString().slice(0, 10),
           status: 'Active'
         };
@@ -7258,6 +7265,7 @@ const server = http.createServer(async (req, res) => {
 
     const amount = parseFloat(body.amount) || defaultAmt;
     const nowDate = new Date();
+    const istTimeStr = new Date(nowDate.getTime() + 5.5 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' IST';
     const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
     const purchases = getStoredPurchases();
 
@@ -7292,8 +7300,9 @@ const server = http.createServer(async (req, res) => {
       planTier: planTitle,
       daysTotal: durationDays,
       amount: amount,
+      source: 'Paid',
       issuedAt: nowDate.toISOString().slice(0, 10),
-      purchasedAt: nowDate.toISOString().replace('T', ' ').slice(0, 19),
+      purchasedAt: istTimeStr,
       expiresAt: expDate.toISOString().slice(0, 10),
       deviceLock: '1 Active Device',
       status: 'Pending Approval',
@@ -7333,7 +7342,21 @@ const server = http.createServer(async (req, res) => {
     const coupons = getStoredCoupons();
     const couponMatch = coupons.find(c => c.active !== false && c.code && c.code.toUpperCase() === code);
 
+    if (!isMaster && couponMatch && Number(couponMatch.maxUses) > 0 && Number(couponMatch.usedCount || 0) >= Number(couponMatch.maxUses)) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: false,
+        unlocked: false,
+        error: `Coupon limit reached (${couponMatch.usedCount}/${couponMatch.maxUses} users redeemed).`
+      }));
+      return;
+    }
+
     if (isMaster || couponMatch) {
+      if (!isMaster && couponMatch) {
+        couponMatch.usedCount = (Number(couponMatch.usedCount) || 0) + 1;
+        saveStoredCoupons(coupons);
+      }
       // Resolve plan tier & validity days from Master Code, coupon appliesTo, or user's selected plan
       const applies = couponMatch && couponMatch.appliesTo ? couponMatch.appliesTo.toString().toLowerCase() : 'all';
       const targetTierRaw = isMaster ? 'yearly' : ((applies && applies !== 'all') ? applies : (requestedTierRaw || 'quarterly'));
@@ -7360,16 +7383,22 @@ const server = http.createServer(async (req, res) => {
       }
 
       const nowDate = new Date();
+      const istTimeStr = new Date(nowDate.getTime() + 5.5 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' IST';
       const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
       const purchases = getStoredPurchases();
       const newPurchase = {
         id: 'PUR-' + Date.now().toString().slice(-6),
-        mobile: isMaster ? 'Master Code User' : ('Coupon User (' + code + ')'),
+        mobile: (body.mobile || '').toString().trim() || (isMaster ? 'Master Code User' : ('Coupon User (' + code + ')')),
+        email: (body.email || '').toString().trim().toLowerCase(),
+        userName: (body.userName || '').toString().trim(),
         secretPin: 'PASS-' + Math.floor(1000 + Math.random() * 9000),
         tierKey: tierKey,
         planTier: planTitle,
         amount: 0,
-        purchasedAt: nowDate.toISOString().replace('T', ' ').slice(0, 19),
+        source: isMaster ? 'Master Code' : ('Coupon (' + code + ')'),
+        couponCode: isMaster ? '' : code,
+        issuedAt: nowDate.toISOString().slice(0, 10),
+        purchasedAt: istTimeStr,
         expiresAt: expDate.toISOString().slice(0, 10),
         deviceLock: '1 Active Device',
         status: 'Active (Auto-Verified)',
