@@ -4829,10 +4829,13 @@ body.theme-white .netflow-header-cell.is-sort-active .netflow-sort-indicator {
     min-width: 240px;
     position: sticky;
     left: 0;
-    z-index: 4;
+    z-index: 10;
     background: var(--sf);
-    padding: 4px 10px 4px 2px;
-    border-radius: 6px;
+    padding: 6px 12px 6px 10px;
+    margin-left: -10px;
+    border-radius: 6px 0 0 6px;
+    border-right: 1px solid var(--ln);
+    box-shadow: 6px 0 12px -4px rgba(0, 0, 0, 0.45);
 }
 
 .netflow-row:hover .netflow-sector-cell,
@@ -4941,7 +4944,7 @@ body.theme-white .netflow-header-cell.is-sort-active .netflow-sort-indicator {
     outline-offset: 1px;
     box-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
     transform: scale(1.06);
-    z-index: 5;
+    z-index: 3;
 }
 
 /* Intensity Classes for Net Flow - Modern Toned Palette */
@@ -5341,6 +5344,13 @@ body.theme-white .netflow-header-cell.font-bold {
 body.theme-white .netflow-sector-name {
     color: #0f172a !important;
     font-weight: 700 !important;
+}
+
+body.theme-white .netflow-sector-cell,
+body.theme-white .netflow-row:hover .netflow-sector-cell,
+body.theme-white .netflow-row.active-sector-row .netflow-sector-cell {
+    background: #ffffff !important;
+    box-shadow: 6px 0 12px -4px rgba(15, 23, 42, 0.12) !important;
 }
 
 body.theme-white .netflow-row:hover {
