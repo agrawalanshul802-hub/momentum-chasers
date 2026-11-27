@@ -13322,7 +13322,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>📊</span> Market Breadth Intelligence</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg> Market Breadth Intelligence</h2>
             <div style="display:flex;align-items:center;gap:10px;margin-top:4px;flex-wrap:wrap;">
               <span class="nav-badge-pill" style="background:rgba(34,197,94,0.15);color:#22c55e;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
                 <span class="live-pulse" style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
@@ -14268,7 +14268,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>⚡</span> Smart Stock Screener</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Smart Stock Screener</h2>
             <p class="view-subheading">Precision technical and financial filters run against daily and weekly momentum criteria.</p>
           </div>
         </div>
@@ -16224,7 +16224,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>📈</span> Live Sectoral Indices Dashboard</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Live Sectoral Indices Dashboard</h2>
             <p class="view-subheading">Relative strength, All-Time High / Low proximity, and EMA status across key National Stock Exchange sector benchmarks.</p>
           </div>
         </div>
@@ -17068,7 +17068,7 @@
               <span class="back-arrow">←</span> <span>Back</span>
             </button>
             <div>
-              <h2 class="view-heading"><span>🧭</span> Market Mood Index (MMI)</h2>
+              <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m14.8 9.2-1.8 5.6-5.6 1.8 1.8-5.6z"/></svg> Market Mood Index (MMI)</h2>
               <p class="view-subheading">Current Market Mood Index published by Tickertape.</p>
             </div>
           </div>
@@ -18008,7 +18008,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>🌊</span> Sector Advance/Decline Net Flow</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg> Sector Advance/Decline Net Flow</h2>
             <p class="view-subheading">Institutional volume pressure matrix measuring net advances minus declines across all 44 Nifty sectoral & thematic indices.</p>
           </div>
         </div>
@@ -29147,7 +29147,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>⚖️</span> Live Market Valuation Dashboard</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Live Market Valuation Dashboard</h2>
             <p class="view-subheading">Official Price-to-Earnings (P/E), Price-to-Book (P/B), and Dividend Yield across Indian Benchmark & Sectoral Indices directly from National Stock Exchange (NSE) Daily Archives.</p>
           </div>
         </div>
@@ -29526,7 +29526,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>💼</span> Multi-Demat Portfolio Tracker</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M2 12h20"/></svg> Multi-Demat Portfolio Tracker</h2>
             <p class="view-subheading">Consolidated Indian Equities Portfolio manager with live multi-broker sync (NSE / BSE).</p>
           </div>
         </div>
@@ -29745,7 +29745,7 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>🚀</span> ${currentMeta.title}</h2>
+            <h2 class="view-heading" style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--g)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 3 5-6"/></svg> ${currentMeta.title}</h2>
             <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;">
               <button class="nav-link ${State.ipoTab === 'timetable' ? 'active' : ''}" data-view="ipo" data-tab="timetable" style="background:${State.ipoTab === 'timetable' ? 'var(--g)' : 'var(--sf)'};color:${State.ipoTab === 'timetable' ? '#fff' : 'var(--ink)'};border:1px solid ${State.ipoTab === 'timetable' ? 'var(--g)' : 'var(--ln)'};padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-weight:700;font-size:12px;">
                 📅 IPO Timetable
