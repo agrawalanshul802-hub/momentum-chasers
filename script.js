@@ -18595,7 +18595,7 @@
     host.innerHTML = `
       <div class="of-header">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <span style="font-size:13px;font-weight:700;color:var(--ink);">📊 Live Order Flow &amp; Volume Profile (5m)</span>
+          <span style="font-size:13px;font-weight:600;color:var(--ink);">Live Order Flow &amp; Volume Profile (5m)</span>
           <span class="of-live-badge ${data.isLiveSession ? "live" : "eod"}">
             <span class="of-dot"></span>
             ${data.isLiveSession ? "LIVE INTRADAY" : "LAST SESSION"} · ${escapeHtml(data.sessionDate)} ${escapeHtml(data.lastBarTime)}
@@ -18694,16 +18694,16 @@
             <span class="back-arrow">←</span> <span>Back</span>
           </button>
           <div>
-            <h2 class="view-heading"><span>📉</span> Live Order Flow &amp; Volume Profile</h2>
-            <p class="view-subheading">Real-time 5-minute intraday Buy/Sell Delta, Point of Control (POC), 70% Value Area, and Price-by-Volume Footprint Ladder for any NSE/BSE stock.</p>
+            <h2 class="view-heading">Live Order Flow &amp; Volume Profile</h2>
+            <p class="view-subheading">5-minute intraday Buy/Sell Delta, Point of Control (POC), 70% Value Area, and Price-by-Volume Footprint Ladder for any NSE/BSE stock</p>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <button class="toolbar-refresh-btn" type="button" onclick="window.openStockViewFromOrderFlow('${escapeHtml(activeSym)}')" title="Open full candlestick chart for ${escapeHtml(activeSym)}">
-            <span>📈</span> Open Full Chart
+            Open Full Chart
           </button>
           <button class="toolbar-refresh-btn" type="button" onclick="window.loadStockOrderFlow('${escapeHtml(activeSym)}', true)">
-            <span>⚡</span> Refresh
+            Refresh
           </button>
         </div>
       </div>
@@ -18711,11 +18711,11 @@
       <div class="tv-orderflow-card" style="margin-bottom:14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:260px;max-width:480px;">
-            <input id="of-symbol-input" type="text" value="${escapeHtml(activeSym)}" placeholder="Type NSE/BSE symbol (e.g. RELIANCE, VMM, HDFCBANK)..."
+            <input id="of-symbol-input" type="text" value="${escapeHtml(activeSym)}" placeholder="Symbol (e.g. RELIANCE, VMM)"
               style="flex:1;height:34px;padding:0 12px;border-radius:6px;border:1px solid var(--ln);background:var(--sf1, #0c1017);color:var(--ink);font-size:12.5px;font-family:var(--font-mono);text-transform:uppercase;"
               onkeydown="if(event.key==='Enter'){window.selectOrderFlowSymbol(this.value);}" />
             <button class="toolbar-refresh-btn" type="button" onclick="window.selectOrderFlowSymbol(document.getElementById('of-symbol-input').value)" style="height:34px;">
-              <span>🔍</span> Analyze Flow
+              Analyze Flow
             </button>
           </div>
           <div style="font-size:12px;color:var(--mu);">
