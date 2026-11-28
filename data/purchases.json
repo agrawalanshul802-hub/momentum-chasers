@@ -14,10 +14,11 @@
     "purchasedAt": "2026-11-28 12:28:31 IST",
     "expiresAt": "2026-12-28",
     "deviceLock": "1 Active Device",
-    "status": "Pending Approval",
+    "status": "Active",
     "ideaId": "idea_auto_ancillary",
     "utr": "555555555587",
-    "txRef": "TX-MC-103210"
+    "txRef": "TX-MC-103210",
+    "approvedAt": "2026-11-28 06:58:40"
   },
   {
     "id": "PUR-056531",
