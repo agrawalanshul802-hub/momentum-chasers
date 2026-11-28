@@ -15592,17 +15592,23 @@
 
   window.triggerAutoVerifyUnlock = async function () {
     const btn = document.getElementById('btn-autopay-confirm');
+    const utrBtn = document.getElementById('btn-verify-utr');
     const origText = btn ? btn.innerHTML : '';
+    const origUtrText = utrBtn ? utrBtn.textContent : 'Verify & Unlock';
     const planCfg = getVipPlanConfig(_activeVipPlan || 'quarterly');
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = '<span>⏳ Sending to Owner for Approval...</span>';
     }
+    if (utrBtn) {
+      utrBtn.disabled = true;
+      utrBtn.textContent = 'Sending...';
+    }
 
     try {
       const utrInput = document.getElementById('idea-utr-input');
       const utr = utrInput ? utrInput.value.trim() : '';
-      const base = getApiBase();
+      const base = getApiBase() || '';
       const userObj = (typeof State !== 'undefined' && State.user) ? State.user : {};
       const userEmail = userObj.email || localStorage.getItem('mc_user_email') || '';
       const userName = userObj.name || userObj.displayName || localStorage.getItem('mc_user_name') || '';
@@ -15623,6 +15629,7 @@
       });
       const data = await res.json();
       if (data && data.success && data.unlocked) {
+        if (utrBtn) { utrBtn.disabled = false; utrBtn.textContent = origUtrText; }
         handlePaymentSuccess(_currentPaymentIdeaId, 'Payment Verified Successfully!', {
           tier: data.tierKey || planCfg.tierKey,
           days: data.daysTotal || planCfg.days,
@@ -15636,16 +15643,22 @@
           btn.disabled = true;
           btn.innerHTML = '<span>⏳ Sent to Owner Panel · Waiting for Approval...</span>';
         }
+        if (utrBtn) {
+          utrBtn.disabled = true;
+          utrBtn.textContent = '✓ Sent';
+        }
         startAutopayDetection(_currentTxRef, _currentPaymentIdeaId);
         if (typeof showToast === 'function') {
           showToast('Payment notification sent to Owner Panel! VIP unlocks automatically once approved.', '🔔');
         }
       } else {
         if (btn) { btn.disabled = false; btn.innerHTML = origText; }
+        if (utrBtn) { utrBtn.disabled = false; utrBtn.textContent = origUtrText; }
         alert(data.error || 'Verification pending. Please ensure payment is completed.');
       }
     } catch (e) {
       if (btn) { btn.disabled = false; btn.innerHTML = origText; }
+      if (utrBtn) { utrBtn.disabled = false; utrBtn.textContent = origUtrText; }
       if (typeof showToast === 'function') {
         showToast('Network error submitting payment request. Please retry.', '⚠️');
       }
@@ -39000,6 +39013,13 @@
     const gw = State.gatewaySettings || {};
     const cfg = getVipPlanConfig(tier || 'quarterly');
     const activeTier = cfg.tierKey;
+    if (_activeVipPlan !== activeTier) {
+      _currentTxRef = 'TX-MC-' + Date.now().toString().slice(-6);
+      const utrBtn = document.getElementById('btn-verify-utr');
+      const autoBtn = document.getElementById('btn-autopay-confirm');
+      if (utrBtn) { utrBtn.disabled = false; utrBtn.textContent = 'Verify & Unlock'; }
+      if (autoBtn) { autoBtn.disabled = false; autoBtn.innerHTML = '<span>⚡ I Have Paid • Auto-Detect &amp; Unlock Now</span>'; }
+    }
     _activeVipPlan = activeTier;
     const price = cfg.price;
     const label = cfg.label;

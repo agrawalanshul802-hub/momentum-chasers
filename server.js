@@ -7281,7 +7281,12 @@ const server = http.createServer(async (req, res) => {
     const expDate = new Date(nowDate.getTime() + durationDays * 24 * 60 * 60 * 1000);
     const purchases = getStoredPurchases();
 
-    let existingPending = purchases.find(p => p.txRef === txRef && p.status === 'Pending Approval');
+    let existingPending = purchases.find(p =>
+      p.txRef === txRef &&
+      p.status === 'Pending Approval' &&
+      p.tierKey === tierKey &&
+      (!p.utr || !utr || p.utr === utr)
+    );
     if (existingPending) {
       if (utr) existingPending.utr = utr;
       if (email) existingPending.email = email;
