@@ -42,25 +42,6 @@
     "rejectedAt": "2026-11-28 06:58:11"
   },
   {
-    "id": "PUR-356975",
-    "mobile": "Coupon User (MOMENTUMXHNI)",
-    "email": "sodiummetalisdangerous9@gmail.com",
-    "userName": "sodiummetalisdangerous9",
-    "secretPin": "PASS-9747",
-    "tierKey": "monthly",
-    "planTier": "Monthly VIP Pass (30 Days)",
-    "amount": 0,
-    "source": "Coupon (MOMENTUMXHNI)",
-    "couponCode": "MOMENTUMXHNI",
-    "issuedAt": "2026-11-27",
-    "purchasedAt": "2026-11-27 19:52:36 IST",
-    "expiresAt": "2026-12-27",
-    "deviceLock": "1 Active Device",
-    "status": "Active (Auto-Verified)",
-    "ideaId": "all",
-    "code": "MOMENTUMXHNI"
-  },
-  {
     "id": "pass_1732185600",
     "mobile": "9588470423",
     "planTier": "Weekly VIP Pass (7 Days)",
