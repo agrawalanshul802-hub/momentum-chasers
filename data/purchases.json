@@ -14,9 +14,10 @@
     "purchasedAt": "2026-11-28 12:31:23 IST",
     "expiresAt": "2026-12-28",
     "deviceLock": "1 Active Device",
-    "status": "Pending Approval",
+    "status": "Active",
     "ideaId": "all",
     "utr": "142536748596",
-    "txRef": "TX-MC-206603"
+    "txRef": "TX-MC-206603",
+    "approvedAt": "2026-11-28 07:01:31"
   }
 ]
