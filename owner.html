@@ -3617,7 +3617,12 @@
             allPurchases = data.purchases || [];
             renderPurchasesTable(allPurchases);
             showToast('Pass deleted');
+          } else {
+            showToast((data && data.error) || 'Failed to delete pass', true);
           }
+        })
+        .catch(function (err) {
+          showToast('Delete failed: ' + (err && err.message ? err.message : 'Network error'), true);
         });
     }
 

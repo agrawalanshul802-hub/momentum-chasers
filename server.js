@@ -6387,16 +6387,24 @@ const server = http.createServer(async (req, res) => {
           sha = meta && meta.sha;
         }
         const b64 = Buffer.isBuffer(content) ? content.toString('base64') : Buffer.from(String(content), 'utf8').toString('base64');
-        const putRes = await fetch(apiUrl, {
+        const putCommit = async (currentSha) => fetch(apiUrl, {
           method: 'PUT',
           headers: { ...headers, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `chore(owner): persist ${relPath} [skip ci]`,
+            message: `chore(owner): persist ${relPath} [skip ci] [skip render]`,
             content: b64,
             branch,
-            ...(sha ? { sha } : {})
+            ...(currentSha ? { sha: currentSha } : {})
           })
         });
+        let putRes = await putCommit(sha);
+        if (putRes.status === 409) {
+          const retryGet = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
+          if (retryGet.ok) {
+            const retryMeta = await retryGet.json();
+            putRes = await putCommit(retryMeta && retryMeta.sha);
+          }
+        }
         if (!putRes.ok) {
           const errTxt = await putRes.text();
           console.warn(`[GitHub Sync] Failed ${relPath}:`, putRes.status, errTxt.slice(0, 160));
@@ -7060,7 +7068,11 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       const purchases = getStoredPurchases();
-      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache'
+      });
       res.end(JSON.stringify({ success: true, count: purchases.length, purchases }));
       return;
     }
@@ -7159,7 +7171,7 @@ const server = http.createServer(async (req, res) => {
         const target = purchases.find(p => p.id === body.id || p.mobile === body.mobile);
         if (target) target.status = target.status === 'Revoked' ? 'Active' : 'Revoked';
       } else if (body.action === 'delete') {
-        purchases = purchases.filter(p => p.id !== body.id && p.mobile !== body.mobile);
+        purchases = purchases.filter(p => (body.id ? p.id !== body.id : p.mobile !== body.mobile));
       }
       saveStoredPurchases(purchases);
       res.writeHead(200, { 'Content-Type': 'application/json' });
