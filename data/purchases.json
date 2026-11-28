@@ -1,15 +1,5 @@
 [
   {
-    "id": "pass_1732185600",
-    "mobile": "9588470423",
-    "planTier": "Weekly VIP Pass (7 Days)",
-    "secretPin": "8429",
-    "deviceLock": "Locked (1 Device: Chrome/Win)",
-    "issuedAt": "2026-11-20",
-    "expiresAt": "2026-11-27",
-    "status": "Active"
-  },
-  {
     "id": "pass_1732185601",
     "mobile": "9820145521",
     "planTier": "Monthly VIP Pass (30 Days)",
