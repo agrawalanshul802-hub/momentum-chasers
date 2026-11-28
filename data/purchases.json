@@ -14,10 +14,11 @@
     "purchasedAt": "2026-11-28 12:27:36 IST",
     "expiresAt": "2026-12-28",
     "deviceLock": "1 Active Device",
-    "status": "Pending Approval",
+    "status": "Rejected",
     "ideaId": "idea_auto_ancillary",
     "utr": "555555555588",
-    "txRef": "TX-MC-995187"
+    "txRef": "TX-MC-995187",
+    "rejectedAt": "2026-11-28 06:58:11"
   },
   {
     "id": "PUR-356975",
